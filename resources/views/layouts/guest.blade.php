@@ -11,20 +11,22 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        <div class="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-light py-4">
-            <div class="mb-4">
-                <a href="/" wire:navigate class="text-decoration-none">
-                    <x-application-logo class="w-20 h-20 fill-current text-muted" />
-                </a>
-            </div>
+        <div class="auth-page-wrapper">
+            <div class="auth-page-overlay"></div>
 
-            <div class="w-100" style="max-width: 420px;">
-                <div class="card shadow-sm">
-                    <div class="card-body">
+            <div class="auth-page-inner container">
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center mb-4">
+                        <a href="/" class="text-decoration-none d-inline-block">
+                            <x-application-logo class="w-20 h-20 fill-current text-muted" />
+                        </a>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8">
                         {{ $slot }}
                     </div>
                 </div>
