@@ -19,9 +19,11 @@ class Role extends Model
         return $this->hasMany(User::class);
     }
 
-    public function permissions()
+    /**
+     * The menu items this role has access to.
+     */
+    public function menuItems()
     {
-        return $this->belongsToMany(Permission::class, 'role_permission');
+        return $this->belongsToMany(MenuItem::class, 'role_menu_item');
     }
 }
-

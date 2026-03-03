@@ -1,0 +1,145 @@
+.rp-header {
+    background: linear-gradient(135deg, #275e26 0%, #007a10 100%);
+    color: #fff;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 8px 8px 0 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+.rp-body {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 28px 32px;
+}
+
+.rp-form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.rp-form-row label {
+    min-width: 120px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.rp-form-row select {
+    min-width: 200px;
+}
+
+.rp-split {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.rp-left {
+    flex: 0 0 320px;
+}
+
+.rp-right {
+    flex: 1;
+    min-width: 300px;
+}
+
+.rp-menu-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+.rp-tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rp-tree li {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 6px 0;
+}
+
+.rp-tree li:last-child {
+    border-bottom: none;
+}
+
+.rp-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rp-tree-toggle {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: .75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #f8fafc;
+    transition: all .15s;
+    flex-shrink: 0;
+}
+
+.rp-tree-toggle:hover {
+    background: #e2e8f0;
+}
+
+.rp-tree-toggle.no-children {
+    visibility: hidden;
+}
+
+.rp-tree-label {
+    font-weight: 600;
+    color: #334155;
+    font-size: .95rem;
+}
+
+.rp-subtree {
+    list-style: none;
+    padding: 0 0 0 44px;
+    margin: 0;
+    display: none;
+}
+
+.rp-subtree.open {
+    display: block;
+}
+
+.rp-subtree li {
+    padding: 4px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.rp-subtree li:last-child {
+    border-bottom: none;
+}
+
+.rp-all-row {
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 4px;
+}
+
+/* Override for consistent checkbox color */
+.form-check-input:checked {
+    background-color: #275e26;
+    border-color: #275e26;
+}
+
+.rp-container {
+    max-width: 860px;
+}

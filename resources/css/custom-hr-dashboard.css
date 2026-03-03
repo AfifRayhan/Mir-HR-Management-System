@@ -1,0 +1,494 @@
+/* Custom styles for the HR Dashboard */
+
+:root {
+    --hr-primary: #275e26;
+    --hr-primary-hover: #007a10;
+    --hr-secondary: #64748B;
+    --hr-background: #F8FAFC;
+    --hr-text: #0F172A;
+    --hr-text-light: #64748B;
+    --hr-border: #E2E8F0;
+    --hr-card-bg: #FFFFFF;
+
+    --hr-success: #10B981;
+    --hr-success-soft: #D1FAE5;
+    --hr-warning: #F59E0B;
+    --hr-warning-soft: #FEF3C7;
+    --hr-info: #3B82F6;
+    --hr-info-soft: #DBEAFE;
+}
+
+body {
+    background-color: var(--hr-background);
+    color: var(--hr-text);
+    font-family: 'Figtree', sans-serif;
+}
+
+/* Layout */
+.hr-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.hr-sidebar {
+    width: 260px;
+    background-color: var(--hr-card-bg);
+    border-right: 1px solid var(--hr-border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    position: fixed;
+    height: 100vh;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
+}
+
+.hr-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #007a10;
+    margin-bottom: 2.5rem;
+    padding: 0 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.hr-logo span:last-child {
+    color: var(--hr-text);
+}
+
+.hr-sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.hr-sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--hr-text-light);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.hr-sidebar-link i {
+    font-size: 1.25rem;
+    margin-right: 1rem;
+}
+
+.hr-sidebar-link:hover {
+    background-color: var(--hr-background);
+    color: var(--hr-primary);
+}
+
+.hr-sidebar-link.active {
+    background-color: var(--hr-primary);
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+}
+
+/* Main Content Area */
+.hr-main {
+    flex: 1;
+    margin-left: 260px;
+    padding: 2rem 3rem;
+    background-color: var(--hr-background);
+}
+
+/* Panels */
+.hr-panel {
+    background: var(--hr-card-bg);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    height: 100%;
+}
+
+.hr-form-container {
+    max-width: 700px;
+}
+
+.hr-panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--hr-text);
+    display: flex;
+    align-items: center;
+}
+
+.hr-panel-subtitle {
+    font-size: 0.875rem;
+    color: var(--hr-text-light);
+    margin-bottom: 1rem;
+}
+
+/* Profile Specific */
+.profile-panel {
+    background: linear-gradient(to right bottom, #ffffff, #f8fafc);
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--hr-primary), #007a10);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+}
+
+.profile-role-badge {
+    background-color: var(--hr-info-soft);
+    color: var(--hr-info);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    display: inline-block;
+}
+
+.info-group {
+    background-color: var(--hr-background);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--hr-border);
+}
+
+.info-group label {
+    font-size: 0.8rem;
+    color: var(--hr-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.info-group .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--hr-text);
+}
+
+/* Metric Cards */
+.hr-metric-card {
+    background: var(--hr-card-bg);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.hr-metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.metric-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.hr-metric-label,
+.metric-label {
+    font-size: 0.875rem;
+    color: var(--hr-text-light);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.hr-metric-value,
+.metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--hr-text);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.hr-metric-sub,
+.metric-sub {
+    font-size: 0.75rem;
+    color: var(--hr-text-light);
+}
+
+/* Utility colors */
+.bg-success-soft {
+    background-color: var(--hr-success-soft);
+}
+
+.text-success {
+    color: var(--hr-success);
+}
+
+.bg-warning-soft {
+    background-color: var(--hr-warning-soft);
+}
+
+.text-warning {
+    color: var(--hr-warning);
+}
+
+.bg-info-soft {
+    background-color: var(--hr-info-soft);
+}
+
+.text-info {
+    color: var(--hr-info);
+}
+
+.bg-primary-soft {
+    background-color: #E0E7FF;
+}
+
+.text-primary {
+    color: var(--hr-primary);
+}
+
+/* Tables or Lists (using the .hr-list from existing page) */
+.hr-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hr-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--hr-border);
+    color: var(--hr-text);
+    font-size: 0.95rem;
+}
+
+.hr-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.hr-chart-placeholder {
+    width: 100%;
+    height: 250px;
+    background-color: var(--hr-background);
+    border-radius: 0.75rem;
+    border: 1px dashed var(--hr-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hr-text-light);
+}
+
+.hr-mini-chart {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--hr-primary), #007a10);
+    opacity: 0.8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .hr-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .hr-main {
+        margin-left: 0;
+        padding: 1.5rem;
+    }
+}
+
+/* ======== Sidebar Submenu (collapsible) ======== */
+.hr-sidebar-parent .hr-sidebar-submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.hr-sidebar-parent.open>.hr-sidebar-submenu {
+    max-height: 300px;
+}
+
+.hr-sidebar-submenu .hr-sidebar-link {
+    padding: 0.5rem 1rem 0.5rem 2.75rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.15rem;
+}
+
+.hr-sidebar-toggle {
+    position: relative;
+}
+
+.hr-chevron {
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+}
+
+.hr-sidebar-parent.open>.hr-sidebar-toggle .hr-chevron {
+    transform: rotate(180deg);
+}
+
+/* ======== Data Tables ======== */
+.hr-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.hr-table thead th {
+    background-color: var(--hr-background);
+    color: var(--hr-text-light);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--hr-border);
+    white-space: nowrap;
+}
+
+.hr-table tbody td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--hr-border);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.hr-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.hr-table tbody tr:hover {
+    background-color: rgba(79, 70, 229, 0.02);
+}
+
+/* ======== Badges ======== */
+.hr-badge {
+    display: inline-block;
+    background-color: var(--hr-background);
+    color: var(--hr-text);
+    border: 1px solid var(--hr-border);
+    border-radius: 20px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.hr-badge-info {
+    background-color: var(--hr-info-soft);
+    color: var(--hr-info);
+    border-color: transparent;
+}
+
+/* ======== Status Badges ======== */
+.hr-status-badge {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.hr-status-active {
+    background-color: var(--hr-success-soft);
+    color: var(--hr-success);
+}
+
+.hr-status-inactive {
+    background-color: #FEE2E2;
+    color: #EF4444;
+}
+
+/* ======== Small Avatars ======== */
+.hr-avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--hr-primary), #818cf8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* ======== Permission Grid (Role form) ======== */
+.hr-permission-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.hr-permission-group {
+    background: var(--hr-background);
+    border: 1px solid var(--hr-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.hr-permission-module {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--hr-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+
+.hr-permission-group .form-check {
+    margin-bottom: 0.25rem;
+}
+
+/* ======== Buttons (consistency) ======== */
+.btn-primary {
+    background-color: var(--hr-primary);
+    border-color: var(--hr-primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: var(--hr-primary-hover);
+    border-color: var(--hr-primary-hover);
+    color: #fff;
+}
+
+.btn-outline-primary {
+    color: var(--hr-primary);
+    border-color: var(--hr-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--hr-primary);
+    border-color: var(--hr-primary);
+    color: #fff;
+}

@@ -7,18 +7,16 @@
             <!-- Left branding column -->
             <div class="col-md-5 d-none d-md-flex flex-column justify-content-center align-items-center bg-success text-white p-4">
                 <div class="text-center">
-                    <div class="rounded-circle bg-white bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width:110px;height:110px;">
+                    <div class="rounded-circle bg-white bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3 auth-logo-container">
                         <img
                             src="{{ asset('images/finallogo.png') }}"
                             alt="{{ config('app.name', 'Mir HR Management System') }} logo"
-                            class="img-fluid rounded-circle"
-                            style="width:110px;height:110px;object-fit:cover;"
-                        >
+                            class="img-fluid rounded-circle auth-logo-img">
                     </div>
                     <h2 class="h5 fw-semibold mb-2">
                         {{ 'Mir HR Management System' }}
                     </h2>
-                    
+
                 </div>
             </div>
 
@@ -46,8 +44,7 @@
                                 class="form-control"
                                 required
                                 autofocus
-                                autocomplete="username"
-                            />
+                                autocomplete="username" />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
@@ -57,12 +54,11 @@
                                 <x-input-label for="password" :value="__('Password')" />
 
                                 @if (Route::has('password.request'))
-                                    <a
-                                        class="small text-decoration-underline text-muted"
-                                        href="{{ route('password.request') }}"
-                                    >
-                                        {{ __('Forgot your password?') }}
-                                    </a>
+                                <a
+                                    class="small text-decoration-underline text-muted"
+                                    href="{{ route('password.request') }}">
+                                    {{ __('Forgot your password?') }}
+                                </a>
                                 @endif
                             </div>
 
@@ -72,8 +68,7 @@
                                 name="password"
                                 class="form-control"
                                 required
-                                autocomplete="current-password"
-                            />
+                                autocomplete="current-password" />
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
@@ -83,8 +78,7 @@
                                 id="remember_me"
                                 type="checkbox"
                                 class="form-check-input"
-                                name="remember"
-                            >
+                                name="remember">
                             <label class="form-check-label small" for="remember_me">
                                 {{ __('Remember me') }}
                             </label>
@@ -98,13 +92,13 @@
 
                         <div class="row justify-content-center">
                             @if (Route::has('register'))
-                                <p class="small text-muted mb-0 text-center">
-                                    {{ __("Don't have an account?") }}
-                                    <a href="{{ route('register') }}" class="text-decoration-underline text-dark">
-                                        {{ __('Register') }}
-                                    </a>
-                                </p>
-                            @endif    
+                            <p class="small text-muted mb-0 text-center">
+                                {{ __("Don't have an account?") }}
+                                <a href="{{ route('register') }}" class="text-decoration-underline text-dark">
+                                    {{ __('Register') }}
+                                </a>
+                            </p>
+                            @endif
                         </div>
                     </form>
                 </div>

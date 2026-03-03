@@ -22,9 +22,20 @@ class UserSeeder extends Seeder
             User::firstOrCreate(
                 ['email' => 'hradmin@example.com'],
                 [
-                    'name' => 'HR Admin',
+                    'name' => null,
                     'password' => Hash::make('password'),
-                    'employee_id' => 'HR-0001',
+                    'employee_id' => null,
+                    'role_id' => $hrAdminRole->id,
+                    'status' => 'active',
+                ]
+            );
+
+            User::firstOrCreate(
+                ['email' => 'sophia.miles@example.com'],
+                [
+                    'name' => null,
+                    'password' => Hash::make('password'),
+                    'employee_id' => null,
                     'role_id' => $hrAdminRole->id,
                     'status' => 'active',
                 ]
@@ -42,6 +53,17 @@ class UserSeeder extends Seeder
                     'status' => 'active',
                 ]
             );
+
+            User::firstOrCreate(
+                ['email' => 'david.chen@example.com'],
+                [
+                    'name' => 'David Chen',
+                    'password' => Hash::make('password'),
+                    'employee_id' => 'TL-0002',
+                    'role_id' => $teamLeadRole->id,
+                    'status' => 'active',
+                ]
+            );
         }
 
         if ($employeeRole) {
@@ -55,7 +77,39 @@ class UserSeeder extends Seeder
                     'status' => 'active',
                 ]
             );
+
+            User::firstOrCreate(
+                ['email' => 'amir.khan@example.com'],
+                [
+                    'name' => 'Amir Khan',
+                    'password' => Hash::make('password'),
+                    'employee_id' => 'EMP-0002',
+                    'role_id' => $employeeRole->id,
+                    'status' => 'active',
+                ]
+            );
+
+            User::firstOrCreate(
+                ['email' => 'linda.okafor@example.com'],
+                [
+                    'name' => 'Linda Okafor',
+                    'password' => Hash::make('password'),
+                    'employee_id' => 'EMP-0003',
+                    'role_id' => $employeeRole->id,
+                    'status' => 'active',
+                ]
+            );
+
+            User::firstOrCreate(
+                ['email' => 'marco.rossi@example.com'],
+                [
+                    'name' => 'Marco Rossi',
+                    'password' => Hash::make('password'),
+                    'employee_id' => 'EMP-0004',
+                    'role_id' => $employeeRole->id,
+                    'status' => 'inactive',
+                ]
+            );
         }
     }
 }
-

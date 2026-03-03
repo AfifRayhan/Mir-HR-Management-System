@@ -53,4 +53,19 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    /**
+     * Check if the user's role has access to a given menu item by slug.
+     * HR Admin role always has full access.
+     */
+    public function hasMenuAccess(string $slug): bool
+    {
+        $role = $this->role;
+
+        if (!$role) {
+            return false;
+        }
+
+        return $role->menuItems()->where('slug', $slug)->exists();
+    }
 }
