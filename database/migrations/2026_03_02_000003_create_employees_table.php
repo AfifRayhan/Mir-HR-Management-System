@@ -14,25 +14,29 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
+            $table->string('employee_code', 50)->unique()->nullable();
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('phone', 20)->nullable();
+            $table->text('address')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->date('joining_date')->nullable();
 
-            $table->unsignedBigInteger('department_id')->nullable();
-            $table->unsignedBigInteger('section_id')->nullable();
-            $table->unsignedBigInteger('designation_id')->nullable();
-            $table->unsignedBigInteger('grade_id')->nullable();
-            $table->unsignedBigInteger('office_time_id')->nullable();
-            $table->unsignedBigInteger('reporting_manager_id')->nullable();
+            $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('section_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('designation_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('grade_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('office_time_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('reporting_manager_id')->nullable()->constrained('employees')->nullOnDelete();
 
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['active', 'resigned'])->default('active');
 
             $table->timestamps();
+        });
+
+        // Now add the foreign key to departments since employees table is created
+        Schema::table('departments', function (Blueprint $table) {
+            $table->foreign('incharge_id')->references('id')->on('employees')->nullOnDelete();
         });
     }
 
@@ -44,4 +48,3 @@ return new class extends Migration
         Schema::dropIfExists('employees');
     }
 };
-

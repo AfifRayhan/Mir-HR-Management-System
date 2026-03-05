@@ -19,7 +19,13 @@
 
             <ul class="emp-sidebar-nav">
                 <li>
-                    <a href="{{ route('employee-dashboard') }}" class="emp-sidebar-link active">
+                    <a href="{{ route('employee-dashboard') }}" class="emp-sidebar-link {{ request()->routeIs('employee-dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('employee-profile') }}" class="emp-sidebar-link {{ request()->routeIs('employee-profile') ? 'active' : '' }}">
                         <i class="bi bi-person-vcard"></i>
                         <span>{{ __('My Profile') }}</span>
                     </a>
@@ -71,50 +77,6 @@
                     </div>
                     <div class="text-end text-sm text-gray-500">
                         <i class="bi bi-calendar-event me-2"></i>{{ now()->format('l, d M Y') }}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Profile Overview Panel -->
-            <div class="row g-4 mb-4">
-                <div class="col-12">
-                    <div class="emp-panel profile-panel">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="profile-avatar">
-                                {{ strtoupper(substr($employee ? $employee->first_name : $user->name, 0, 1)) }}
-                            </div>
-                            <div class="ms-4">
-                                <h3 class="mb-1 text-xl font-bold">{{ $employee ? $employee->first_name . ' ' . $employee->last_name : $user->name }}</h3>
-                                <div class="badge bg-primary profile-role-badge text-white font-bold">{{ $roleName }}</div>
-                            </div>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6 col-lg-3">
-                                <div class="info-group">
-                                    <label>{{ __('Email Address') }}</label>
-                                    <div class="value">{{ $user->email }}</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="info-group">
-                                    <label>{{ __('Phone Number') }}</label>
-                                    <div class="value">{{ $employee ? $employee->phone : 'N/A' }}</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="info-group">
-                                    <label>{{ __('Department') }}</label>
-                                    <div class="value">{{ $employee && $employee->department ? $employee->department->name : 'N/A' }}</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="info-group">
-                                    <label>{{ __('Joining Date') }}</label>
-                                    <div class="value">{{ $employee ? \Carbon\Carbon::parse($employee->joining_date)->format('d M Y') : 'N/A' }}</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

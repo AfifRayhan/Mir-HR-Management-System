@@ -29,24 +29,13 @@ class UserSeeder extends Seeder
                     'status' => 'active',
                 ]
             );
-
-            User::firstOrCreate(
-                ['email' => 'sophia.miles@example.com'],
-                [
-                    'name' => null,
-                    'password' => Hash::make('password'),
-                    'employee_id' => null,
-                    'role_id' => $hrAdminRole->id,
-                    'status' => 'active',
-                ]
-            );
         }
 
         if ($teamLeadRole) {
             User::firstOrCreate(
                 ['email' => 'teamlead@example.com'],
                 [
-                    'name' => 'Team Lead',
+                    'name' => 'Nadia Khan',
                     'password' => Hash::make('password'),
                     'employee_id' => 'TL-0001',
                     'role_id' => $teamLeadRole->id,
@@ -70,7 +59,7 @@ class UserSeeder extends Seeder
             User::firstOrCreate(
                 ['email' => 'employee@example.com'],
                 [
-                    'name' => 'Employee User',
+                    'name' => 'Rakib Islam',
                     'password' => Hash::make('password'),
                     'employee_id' => 'EMP-0001',
                     'role_id' => $employeeRole->id,

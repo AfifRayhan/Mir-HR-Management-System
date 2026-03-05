@@ -24,4 +24,24 @@ class EmployeeDashboardController extends Controller
             'employee'
         ));
     }
+
+    /**
+     * Display the dedicated Employee Profile.
+     */
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+
+        // Load employee with all necessary relationships for the profile view
+        $employee = Employee::where('user_id', $user->id)
+            ->with(['department', 'section', 'designation', 'grade', 'officeTime', 'reportingManager'])
+            ->first();
+
+        return view('personnel.employees.profile', compact(
+            'user',
+            'roleName',
+            'employee'
+        ));
+    }
 }

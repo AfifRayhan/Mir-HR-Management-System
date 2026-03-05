@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Department;
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 class HrDashboardController extends Controller
@@ -23,8 +25,8 @@ class HrDashboardController extends Controller
 
         $totalEmployees = Employee::count();
         $activeEmployees = Employee::where('status', 'active')->count();
-        $maleEmployees = Employee::where('gender', 'male')->count();
-        $femaleEmployees = Employee::where('gender', 'female')->count();
+        $totalDepartments = Department::count();
+        $totalSections = Section::count();
 
         return view('hr-dashboard', compact(
             'user',
@@ -32,8 +34,8 @@ class HrDashboardController extends Controller
             'employee',
             'totalEmployees',
             'activeEmployees',
-            'maleEmployees',
-            'femaleEmployees'
+            'totalDepartments',
+            'totalSections'
         ));
     }
 }

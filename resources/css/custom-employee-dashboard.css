@@ -250,6 +250,14 @@ body {
     color: var(--emp-info);
 }
 
+.bg-danger-soft {
+    background-color: #FEE2E2;
+}
+
+.text-danger {
+    color: #EF4444;
+}
+
 /* Tables */
 .emp-table {
     width: 100%;
@@ -321,6 +329,41 @@ body {
     font-size: 0.85rem;
     color: var(--emp-text-light);
     line-height: 1.4;
+}
+
+/* Show All / Hide Button */
+.btn-show-all {
+    background: transparent;
+    border: 1px solid var(--emp-border);
+    color: var(--emp-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn-show-all:hover {
+    background-color: var(--emp-primary);
+    color: white;
+    border-color: var(--emp-primary);
+}
+
+.extra-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--emp-border);
+}
+
+[x-cloak] {
+    display: none !important;
 }
 
 /* Responsive adjustments */

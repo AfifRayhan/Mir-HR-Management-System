@@ -65,36 +65,24 @@
                 <div class="col-md-3 col-sm-6">
                     <div class="hr-metric-card">
                         <div class="metric-icon bg-primary-soft text-primary">
-                            <i class="bi bi-gender-male text-2xl"></i>
+                            <i class="bi bi-building text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Male') }}</div>
-                            <div class="metric-value">{{ $maleEmployees }}</div>
-                            <div class="metric-sub">
-                                @if($totalEmployees > 0)
-                                {{ round(($maleEmployees / max($totalEmployees,1)) * 100) }}% {{ __('of staff') }}
-                                @else
-                                {{ __('No data yet') }}
-                                @endif
-                            </div>
+                            <div class="metric-label">{{ __('Departments') }}</div>
+                            <div class="metric-value">{{ $totalDepartments }}</div>
+                            <div class="metric-sub">{{ __('Organization units') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="hr-metric-card">
                         <div class="metric-icon bg-warning-soft text-warning">
-                            <i class="bi bi-gender-female text-2xl"></i>
+                            <i class="bi bi-diagram-2 text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Female') }}</div>
-                            <div class="metric-value">{{ $femaleEmployees }}</div>
-                            <div class="metric-sub">
-                                @if($totalEmployees > 0)
-                                {{ round(($femaleEmployees / max($totalEmployees,1)) * 100) }}% {{ __('of staff') }}
-                                @else
-                                {{ __('No data yet') }}
-                                @endif
-                            </div>
+                            <div class="metric-label">{{ __('Sections') }}</div>
+                            <div class="metric-value">{{ $totalSections }}</div>
+                            <div class="metric-sub">{{ __('Department subunits') }}</div>
                         </div>
                     </div>
                 </div>

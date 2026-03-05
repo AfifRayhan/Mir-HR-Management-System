@@ -15,8 +15,8 @@ class MenuItemSeeder extends Seeder
     {
         // Define top-level menu items
         $items = [
-            ['name' => 'Dashboard',   'slug' => 'hr-dashboard',       'icon' => 'bi-speedometer2',   'route_name' => 'hr-dashboard',       'sort_order' => 1],
-            ['name' => 'Dashboard',   'slug' => 'employee-dashboard', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
+            ['name' => 'HR Dashboard', 'slug' => 'hr-dashboard',       'icon' => 'bi-speedometer2',   'route_name' => 'hr-dashboard',       'sort_order' => 1],
+            ['name' => 'Employee Dashboard', 'slug' => 'employee-dashboard', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
             ['name' => 'Security',    'slug' => 'security',           'icon' => 'bi-shield-lock',    'route_name' => null,                 'sort_order' => 2],
             ['name' => 'Settings',    'slug' => 'settings',           'icon' => 'bi-gear',           'route_name' => null,                 'sort_order' => 3],
             ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 4],
@@ -42,6 +42,24 @@ class MenuItemSeeder extends Seeder
 
         foreach ($securityChildren as $child) {
             $child['parent_id'] = $menuModels['security']->id;
+            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Define child menu items under Personnel
+        $personnelChildren = [
+            ['name' => 'Employees',    'slug' => 'personnel-employees',    'icon' => 'bi-people',       'route_name' => 'personnel.employees.index',    'sort_order' => 1],
+            ['name' => 'Departments',  'slug' => 'personnel-departments',  'icon' => 'bi-building',     'route_name' => 'personnel.departments.index',  'sort_order' => 2],
+            ['name' => 'Sections',     'slug' => 'personnel-sections',     'icon' => 'bi-diagram-2',    'route_name' => 'personnel.sections.index',     'sort_order' => 3],
+            ['name' => 'Designations', 'slug' => 'personnel-designations', 'icon' => 'bi-award',        'route_name' => 'personnel.designations.index', 'sort_order' => 4],
+            ['name' => 'Grades',       'slug' => 'personnel-grades',       'icon' => 'bi-layers',       'route_name' => 'personnel.grades.index',       'sort_order' => 5],
+            ['name' => 'Office Times', 'slug' => 'personnel-office-times', 'icon' => 'bi-clock',        'route_name' => 'personnel.office-times.index', 'sort_order' => 6],
+        ];
+
+        foreach ($personnelChildren as $child) {
+            $child['parent_id'] = $menuModels['personnel']->id;
             $menuModels[$child['slug']] = MenuItem::firstOrCreate(
                 ['slug' => $child['slug']],
                 $child

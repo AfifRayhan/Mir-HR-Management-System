@@ -16,6 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             MenuItemSeeder::class,
+            DepartmentSeeder::class,
+            SectionSeeder::class,
+            DesignationSeeder::class,
+            GradeSeeder::class,
+            OfficeTimeSeeder::class,
             UserSeeder::class,
             EmployeeSeeder::class,
         ]);

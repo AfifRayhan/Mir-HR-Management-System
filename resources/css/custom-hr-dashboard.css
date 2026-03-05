@@ -63,6 +63,29 @@ body {
     padding: 0;
     margin: 0;
     flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    /* Space for scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(39, 94, 38, 0.2) transparent;
+}
+
+/* Custom Scrollbar for Sidebar */
+.hr-sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.hr-sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.hr-sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(39, 94, 38, 0.2);
+    border-radius: 10px;
+}
+
+.hr-sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(39, 94, 38, 0.4);
 }
 
 .hr-sidebar-link {

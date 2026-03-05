@@ -119,16 +119,90 @@
 
     @push('scripts')
     <script>
-        // Handle role change redirect
-        const roleIdSelect = document.getElementById('role_id');
-        if (roleIdSelect) {
-            roleIdSelect.addEventListener('change', function() {
-                const baseUrl = this.getAttribute('data-index-url');
-                window.location.href = `${baseUrl}?role_id=${this.value}`;
-            });
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle role change redirect
+            const roleIdSelect = document.getElementById('role_id');
+            if (roleIdSelect) {
+                roleIdSelect.addEventListener('change', function() {
+                    const roleId = this.value;
+                    const baseUrl = this.getAttribute('data-index-url');
 
-        // Toggle subtree expand/collapse
+                    if (roleId && baseUrl) {
+                        const url = new URL(baseUrl, window.location.origin);
+                        url.searchParams.set('role_id', roleId);
+                        window.location.href = url.toString();
+                    }
+                });
+            }
+
+            // "All" checkbox logic
+            const checkAll = document.getElementById('checkAll');
+            const allChecks = document.querySelectorAll('.menu-check');
+
+            function updateCheckAll() {
+                if (allChecks.length === 0) return;
+                const checkedCount = [...allChecks].filter(c => c.checked).length;
+                const allChecked = checkedCount === allChecks.length;
+                const someChecked = checkedCount > 0 && !allChecked;
+
+                checkAll.checked = allChecked;
+                checkAll.indeterminate = someChecked;
+            }
+
+            checkAll.addEventListener('change', function() {
+                const isChecked = this.checked;
+                allChecks.forEach(c => {
+                    if (c.checked !== isChecked) {
+                        c.checked = isChecked;
+                        // For parent checks, we need to handle their siblings/children if needed
+                        // but since we're setting EVERY checkbox, we don't need the individual triggers
+                    }
+                });
+                updateCheckAll();
+            });
+
+            // Parent ↔ child cascade
+            document.querySelectorAll('.parent-check').forEach(parent => {
+                parent.addEventListener('change', function() {
+                    const children = document.querySelectorAll('.child-check[data-parent="' + this.value + '"]');
+                    children.forEach(c => c.checked = this.checked);
+                    updateCheckAll();
+                });
+            });
+
+            document.querySelectorAll('.child-check').forEach(child => {
+                child.addEventListener('change', function() {
+                    const parentId = this.getAttribute('data-parent');
+                    const siblings = document.querySelectorAll('.child-check[data-parent="' + parentId + '"]');
+                    const parentCheck = document.getElementById('menu_' + parentId);
+                    if (parentCheck) {
+                        const anyChecked = [...siblings].some(c => c.checked);
+                        parentCheck.checked = anyChecked;
+                    }
+                    updateCheckAll();
+                });
+            });
+
+            allChecks.forEach(c => c.addEventListener('change', updateCheckAll));
+
+            // Set initial "All" state
+            updateCheckAll();
+
+            // Auto-expand subtrees that have checked children
+            document.querySelectorAll('.rp-subtree').forEach(sub => {
+                const hasChecked = sub.querySelector('.menu-check:checked');
+                if (hasChecked) {
+                    sub.classList.add('open');
+                    const toggle = document.querySelector('[data-target="' + sub.id + '"]');
+                    if (toggle) {
+                        const icon = toggle.querySelector('i');
+                        if (icon) icon.className = 'bi bi-dash-square';
+                    }
+                }
+            });
+        });
+
+        // Toggle function needs to be global for onclick
         function toggleSub(el) {
             const targetId = el.getAttribute('data-target');
             const sub = document.getElementById(targetId);
@@ -142,57 +216,6 @@
                 icon.className = 'bi bi-dash-square';
             }
         }
-
-        // "All" checkbox logic
-        const checkAll = document.getElementById('checkAll');
-        const allChecks = document.querySelectorAll('.menu-check');
-
-        function updateCheckAll() {
-            checkAll.checked = [...allChecks].every(c => c.checked);
-            checkAll.indeterminate = !checkAll.checked && [...allChecks].some(c => c.checked);
-        }
-
-        checkAll.addEventListener('change', function() {
-            allChecks.forEach(c => c.checked = this.checked);
-        });
-
-        // Parent ↔ child cascade
-        document.querySelectorAll('.parent-check').forEach(parent => {
-            parent.addEventListener('change', function() {
-                const children = document.querySelectorAll('.child-check[data-parent="' + this.value + '"]');
-                children.forEach(c => c.checked = this.checked);
-                updateCheckAll();
-            });
-        });
-
-        document.querySelectorAll('.child-check').forEach(child => {
-            child.addEventListener('change', function() {
-                const parentId = this.getAttribute('data-parent');
-                const siblings = document.querySelectorAll('.child-check[data-parent="' + parentId + '"]');
-                const parentCheck = document.getElementById('menu_' + parentId);
-                const anyChecked = [...siblings].some(c => c.checked);
-                parentCheck.checked = anyChecked;
-                updateCheckAll();
-            });
-        });
-
-        allChecks.forEach(c => c.addEventListener('change', updateCheckAll));
-
-        // Set initial "All" state
-        updateCheckAll();
-
-        // Auto-expand subtrees that have checked children
-        document.querySelectorAll('.rp-subtree').forEach(sub => {
-            const hasChecked = sub.querySelector('.menu-check:checked');
-            if (hasChecked) {
-                sub.classList.add('open');
-                const toggle = document.querySelector('[data-target="' + sub.id + '"]');
-                if (toggle) {
-                    const icon = toggle.querySelector('i');
-                    if (icon) icon.className = 'bi bi-dash-square';
-                }
-            }
-        });
     </script>
     @endpush
 </x-app-layout>
