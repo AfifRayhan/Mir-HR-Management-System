@@ -55,12 +55,31 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Sections',     'slug' => 'personnel-sections',     'icon' => 'bi-diagram-2',    'route_name' => 'personnel.sections.index',     'sort_order' => 3],
             ['name' => 'Designations', 'slug' => 'personnel-designations', 'icon' => 'bi-award',        'route_name' => 'personnel.designations.index', 'sort_order' => 4],
             ['name' => 'Grades',       'slug' => 'personnel-grades',       'icon' => 'bi-layers',       'route_name' => 'personnel.grades.index',       'sort_order' => 5],
-            ['name' => 'Office Times', 'slug' => 'personnel-office-times', 'icon' => 'bi-clock',        'route_name' => 'personnel.office-times.index', 'sort_order' => 6],
         ];
 
         foreach ($personnelChildren as $child) {
             $child['parent_id'] = $menuModels['personnel']->id;
             $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Remove old Office Times from Personnel if it exists
+        MenuItem::where('slug', 'personnel-office-times')->delete();
+
+        // Define child menu items under Settings
+        $settingsChildren = [
+            ['name' => 'Office Type',    'slug' => 'settings-office-types',    'icon' => 'bi-grid-3x3-gap', 'route_name' => 'settings.office-types.index', 'sort_order' => 1],
+            ['name' => 'Offices',        'slug' => 'settings-offices',         'icon' => 'bi-building',     'route_name' => 'settings.offices.index',      'sort_order' => 2],
+            ['name' => 'Office Times',   'slug' => 'settings-office-times',    'icon' => 'bi-clock',        'route_name' => 'settings.office-times.index', 'sort_order' => 3],
+            ['name' => 'Weekly Holiday', 'slug' => 'settings-holidays-weekly', 'icon' => 'bi-calendar-week', 'route_name' => 'settings.holidays.weekly.index', 'sort_order' => 4],
+            ['name' => 'Other Holiday',  'slug' => 'settings-holidays-others', 'icon' => 'bi-calendar-plus', 'route_name' => 'settings.holidays.others.index', 'sort_order' => 5],
+        ];
+
+        foreach ($settingsChildren as $child) {
+            $child['parent_id'] = $menuModels['settings']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
             );

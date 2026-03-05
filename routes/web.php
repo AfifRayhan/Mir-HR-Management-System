@@ -11,7 +11,6 @@ use App\Http\Controllers\Personnel\DepartmentController;
 use App\Http\Controllers\Personnel\SectionController;
 use App\Http\Controllers\Personnel\DesignationController;
 use App\Http\Controllers\Personnel\GradeController;
-use App\Http\Controllers\Personnel\OfficeTimeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -52,7 +51,23 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::resource('sections', SectionController::class);
     Route::resource('designations', DesignationController::class);
     Route::resource('grades', GradeController::class);
-    Route::resource('office-times', OfficeTimeController::class);
+});
+
+// Settings management routes
+Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->group(function () {
+    Route::resource('office-types', \App\Http\Controllers\Settings\OfficeTypeController::class);
+    Route::resource('offices', \App\Http\Controllers\Settings\OfficeController::class);
+    Route::resource('office-times', \App\Http\Controllers\Settings\OfficeTimeController::class);
+
+    // Holiday configuration routes
+    Route::prefix('holidays')->name('holidays.')->group(function () {
+        Route::get('weekly', [\App\Http\Controllers\Settings\WeeklyHolidayController::class, 'index'])->name('weekly.index');
+        Route::put('weekly', [\App\Http\Controllers\Settings\WeeklyHolidayController::class, 'update'])->name('weekly.update');
+
+        Route::get('others', [\App\Http\Controllers\Settings\HolidayController::class, 'index'])->name('others.index');
+        Route::post('others', [\App\Http\Controllers\Settings\HolidayController::class, 'store'])->name('others.store');
+        Route::delete('others/{holiday}', [\App\Http\Controllers\Settings\HolidayController::class, 'destroy'])->name('others.destroy');
+    });
 });
 
 require __DIR__ . '/auth.php';

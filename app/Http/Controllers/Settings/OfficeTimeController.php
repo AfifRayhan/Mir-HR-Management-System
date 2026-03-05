@@ -1,22 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\Personnel;
+namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\OfficeTime;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class OfficeTimeController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = Employee::where('user_id', $user->id)->first();
         $officeTimes = OfficeTime::all();
-        return view('personnel.office-times.index', compact('officeTimes'));
+
+        return view('settings.office-times.index', compact('officeTimes', 'user', 'roleName', 'employee'));
     }
 
     public function create()
     {
-        return view('personnel.office-times.create');
+        $user = auth()->user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = Employee::where('user_id', $user->id)->first();
+
+        return view('settings.office-times.create', compact('user', 'roleName', 'employee'));
     }
 
     public function store(Request $request)
@@ -32,12 +41,16 @@ class OfficeTimeController extends Controller
         ]);
 
         OfficeTime::create($validated);
-        return redirect()->route('personnel.office-times.index')->with('success', 'Office Time created successfully.');
+        return redirect()->route('settings.office-times.index')->with('success', 'Office Time created successfully.');
     }
 
     public function edit(OfficeTime $officeTime)
     {
-        return view('personnel.office-times.edit', compact('officeTime'));
+        $user = auth()->user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = Employee::where('user_id', $user->id)->first();
+
+        return view('settings.office-times.edit', compact('officeTime', 'user', 'roleName', 'employee'));
     }
 
     public function update(Request $request, OfficeTime $officeTime)
@@ -53,12 +66,12 @@ class OfficeTimeController extends Controller
         ]);
 
         $officeTime->update($validated);
-        return redirect()->route('personnel.office-times.index')->with('success', 'Office Time updated successfully.');
+        return redirect()->route('settings.office-times.index')->with('success', 'Office Time updated successfully.');
     }
 
     public function destroy(OfficeTime $officeTime)
     {
         $officeTime->delete();
-        return redirect()->route('personnel.office-times.index')->with('success', 'Office Time deleted successfully.');
+        return redirect()->route('settings.office-times.index')->with('success', 'Office Time deleted successfully.');
     }
 }
