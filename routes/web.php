@@ -11,6 +11,14 @@ use App\Http\Controllers\Personnel\DepartmentController;
 use App\Http\Controllers\Personnel\SectionController;
 use App\Http\Controllers\Personnel\DesignationController;
 use App\Http\Controllers\Personnel\GradeController;
+use App\Http\Controllers\Settings\OfficeTypeController;
+use App\Http\Controllers\Settings\OfficeController;
+use App\Http\Controllers\Settings\OfficeTimeController;
+use App\Http\Controllers\Settings\HolidayController;
+use App\Http\Controllers\Settings\WeeklyHolidayController;
+use App\Http\Controllers\Settings\LeaveTypeController;
+use App\Http\Controllers\LeaveApplicationController;
+use App\Http\Controllers\Personnel\LeaveBalanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -51,22 +59,45 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::resource('sections', SectionController::class);
     Route::resource('designations', DesignationController::class);
     Route::resource('grades', GradeController::class);
+
+    Route::get('leave-applications', [LeaveApplicationController::class, 'indexHR'])->name('leave-applications.index');
+    Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatus'])->name('leave-applications.status');
+
+    Route::get('leave-accounts', [LeaveBalanceController::class, 'index'])->name('leave-balances.index');
+    Route::post('leave-accounts', [LeaveBalanceController::class, 'store'])->name('leave-balances.store');
+});
+
+// Employee specific routes
+Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('leave', [LeaveApplicationController::class, 'indexEmployee'])->name('leave.index');
+    Route::post('leave', [LeaveApplicationController::class, 'store'])->name('leave.store');
+});
+
+// Team Lead specific routes
+Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')->group(function () {
+    Route::get('leave', [LeaveApplicationController::class, 'indexTeamLeadSelf'])->name('leave.index');
+    Route::post('leave', [LeaveApplicationController::class, 'store'])->name('leave.store');
+
+    Route::get('leave-applications', [LeaveApplicationController::class, 'indexTeamLead'])->name('leave-applications.index');
+    Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatusTeamLead'])->name('leave-applications.status');
 });
 
 // Settings management routes
 Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->group(function () {
-    Route::resource('office-types', \App\Http\Controllers\Settings\OfficeTypeController::class);
-    Route::resource('offices', \App\Http\Controllers\Settings\OfficeController::class);
-    Route::resource('office-times', \App\Http\Controllers\Settings\OfficeTimeController::class);
+    Route::resource('office-types', OfficeTypeController::class);
+    Route::resource('offices', OfficeController::class);
+    Route::resource('office-times', OfficeTimeController::class);
+    Route::resource('leave-types', LeaveTypeController::class)->except(['show', 'create', 'edit']);
 
     // Holiday configuration routes
     Route::prefix('holidays')->name('holidays.')->group(function () {
-        Route::get('weekly', [\App\Http\Controllers\Settings\WeeklyHolidayController::class, 'index'])->name('weekly.index');
-        Route::put('weekly', [\App\Http\Controllers\Settings\WeeklyHolidayController::class, 'update'])->name('weekly.update');
+        Route::get('weekly', [WeeklyHolidayController::class, 'index'])->name('weekly.index');
+        Route::put('weekly', [WeeklyHolidayController::class, 'update'])->name('weekly.update');
 
-        Route::get('others', [\App\Http\Controllers\Settings\HolidayController::class, 'index'])->name('others.index');
-        Route::post('others', [\App\Http\Controllers\Settings\HolidayController::class, 'store'])->name('others.store');
-        Route::delete('others/{holiday}', [\App\Http\Controllers\Settings\HolidayController::class, 'destroy'])->name('others.destroy');
+        Route::get('others', [HolidayController::class, 'index'])->name('others.index');
+        Route::post('others', [HolidayController::class, 'store'])->name('others.store');
+        Route::put('others/{holiday}', [HolidayController::class, 'update'])->name('others.update');
+        Route::delete('others/{holiday}', [HolidayController::class, 'destroy'])->name('others.destroy');
     });
 });
 

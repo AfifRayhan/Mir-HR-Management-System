@@ -68,4 +68,9 @@ class User extends Authenticatable
 
         return $role->menuItems()->where('slug', $slug)->exists();
     }
+
+    public function approvedLeaveApplications()
+    {
+        return $this->hasMany(LeaveApplication::class, 'approved_by');
+    }
 }

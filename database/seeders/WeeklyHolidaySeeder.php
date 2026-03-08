@@ -21,7 +21,7 @@ class WeeklyHolidaySeeder extends Seeder
 
         foreach ($days as $day) {
             WeeklyHoliday::firstOrCreate(['day_name' => $day], [
-                'is_holiday' => in_array($day, ['Friday']) // Default Friday as holiday
+                'is_holiday' => in_array($day, ['Friday', 'Saturday']) // Default Friday as holiday
             ]);
         }
     }

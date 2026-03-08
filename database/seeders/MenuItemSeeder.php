@@ -65,6 +65,21 @@ class MenuItemSeeder extends Seeder
             );
         }
 
+        // Define child menu items under Leave
+        $leaveChildren = [
+            ['name' => 'Leave Types',    'slug' => 'leave-types',        'icon' => 'bi-tag',              'route_name' => 'settings.leave-types.index',   'sort_order' => 1],
+            ['name' => 'Leave Accounts', 'slug' => 'leave-accounts',     'icon' => 'bi-wallet2',          'route_name' => 'personnel.leave-balances.index', 'sort_order' => 2],
+            ['name' => 'Applications',   'slug' => 'leave-applications', 'icon' => 'bi-file-earmark-text', 'route_name' => 'personnel.leave-applications.index', 'sort_order' => 3],
+        ];
+
+        foreach ($leaveChildren as $child) {
+            $child['parent_id'] = $menuModels['leave']->id;
+            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
         // Remove old Office Times from Personnel if it exists
         MenuItem::where('slug', 'personnel-office-times')->delete();
 
@@ -118,11 +133,34 @@ class MenuItemSeeder extends Seeder
             $menuModels['employee-dashboard']->id,
         ]);
 
-        // Team Lead gets Employee Dashboard, Personnel, Attendances
+        // Team Lead gets Employee Dashboard, Personnel, Attendances + Leave sub-menu
+        // Add team-lead specific leave menu items
+        $teamLeadLeaveChildren = [
+            ['name' => 'Leave Request',  'slug' => 'team-lead-leave-request',  'icon' => 'bi-journal-plus',      'route_name' => 'team-lead.leave.index',              'sort_order' => 1],
+            ['name' => 'Applications',   'slug' => 'team-lead-leave-apps',     'icon' => 'bi-file-earmark-text', 'route_name' => 'team-lead.leave-applications.index', 'sort_order' => 2],
+        ];
+
+        // Create a parent "Leave" menu item for team lead if not exists
+        $teamLeadLeaveParent = MenuItem::firstOrCreate(
+            ['slug' => 'team-lead-leave'],
+            ['name' => 'Leave', 'icon' => 'bi-calendar2-minus', 'route_name' => null, 'sort_order' => 4]
+        );
+
+        foreach ($teamLeadLeaveChildren as $child) {
+            $child['parent_id'] = $teamLeadLeaveParent->id;
+            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
         $roleModels['team_lead']->menuItems()->sync([
             $menuModels['employee-dashboard']->id,
             $menuModels['personnel']->id,
             $menuModels['attendances']->id,
+            $teamLeadLeaveParent->id,
+            $menuModels['team-lead-leave-request']->id,
+            $menuModels['team-lead-leave-apps']->id,
         ]);
     }
 }

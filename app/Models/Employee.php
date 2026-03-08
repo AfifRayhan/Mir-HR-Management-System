@@ -71,4 +71,14 @@ class Employee extends Model
     {
         return $this->hasOne(Department::class, 'incharge_id');
     }
+
+    public function leaveBalances()
+    {
+        return $this->hasMany(LeaveBalance::class);
+    }
+
+    public function leaveApplications()
+    {
+        return $this->hasMany(LeaveApplication::class);
+    }
 }
