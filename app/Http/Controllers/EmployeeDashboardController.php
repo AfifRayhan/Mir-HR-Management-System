@@ -12,7 +12,8 @@ class EmployeeDashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
 
         // An Employee might have an associated Employee record
@@ -30,7 +31,8 @@ class EmployeeDashboardController extends Controller
      */
     public function profile(Request $request)
     {
-        $user = $request->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
 
         // Load employee with all necessary relationships for the profile view

@@ -11,7 +11,8 @@ class HolidayController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = \App\Models\Employee::where('user_id', $user->id)->first();
         $holidays = Holiday::with('office')->orderBy('from_date', 'desc')->get();

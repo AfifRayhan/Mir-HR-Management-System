@@ -19,6 +19,8 @@ use App\Http\Controllers\Settings\WeeklyHolidayController;
 use App\Http\Controllers\Settings\LeaveTypeController;
 use App\Http\Controllers\LeaveApplicationController;
 use App\Http\Controllers\Personnel\LeaveBalanceController;
+use App\Http\Controllers\Personnel\AttendanceController;
+use App\Http\Controllers\Settings\DeviceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,6 +67,12 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
 
     Route::get('leave-accounts', [LeaveBalanceController::class, 'index'])->name('leave-balances.index');
     Route::post('leave-accounts', [LeaveBalanceController::class, 'store'])->name('leave-balances.store');
+
+    // Attendance routes
+    Route::get('attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::post('attendances/process', [AttendanceController::class, 'processLogs'])->name('attendances.process');
+    Route::get('attendances/adjust', [AttendanceController::class, 'adjust'])->name('attendances.adjust');
+    Route::post('attendances/adjust', [AttendanceController::class, 'storeAdjustment'])->name('attendances.store-adjustment');
 });
 
 // Employee specific routes
@@ -87,6 +95,7 @@ Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->
     Route::resource('office-types', OfficeTypeController::class);
     Route::resource('offices', OfficeController::class);
     Route::resource('office-times', OfficeTimeController::class);
+    Route::resource('devices', DeviceController::class);
     Route::resource('leave-types', LeaveTypeController::class)->except(['show', 'create', 'edit']);
 
     // Holiday configuration routes

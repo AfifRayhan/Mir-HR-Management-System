@@ -12,8 +12,8 @@ class OfficeTimeSeeder extends Seeder
         $shifts = [
             [
                 'shift_name'   => 'General Shift',
-                'start_time'   => '09:00:00',
-                'end_time'     => '18:00:00',
+                'start_time'   => '09:30:00',
+                'end_time'     => '17:30:00',
                 'late_after'   => '09:15:00',
                 'absent_after' => '10:30:00',
                 'lunch_start'  => '13:00:00',
@@ -31,7 +31,7 @@ class OfficeTimeSeeder extends Seeder
         ];
 
         foreach ($shifts as $shift) {
-            OfficeTime::firstOrCreate(['shift_name' => $shift['shift_name']], $shift);
+            OfficeTime::updateOrCreate(['shift_name' => $shift['shift_name']], $shift);
         }
     }
 }

@@ -32,9 +32,21 @@ class MenuService
             // Filter children by access
             $filteredChildren = $item->children->filter(function ($child) use ($user) {
                 return $user && $user->hasMenuAccess($child->slug);
-            })->map(function ($child) use ($currentRoute) {
-                // Determine active state for child
-                $child->is_active = $child->route_name && str_starts_with($currentRoute, str_replace('.index', '', $child->route_name));
+            });
+
+            // Find if any child has an exact route match
+            $exactChildMatch = $filteredChildren->first(function ($child) use ($currentRoute) {
+                return $child->route_name && $currentRoute === $child->route_name;
+            });
+
+            $filteredChildren = $filteredChildren->map(function ($child) use ($currentRoute, $exactChildMatch) {
+                if ($exactChildMatch) {
+                    // If there's an exact match in the group, only that one is active
+                    $child->is_active = ($child->id === $exactChildMatch->id);
+                } else {
+                    // Fallback to prefix matching for resource sub-routes (show, edit, etc.)
+                    $child->is_active = $child->route_name && str_starts_with($currentRoute, str_replace('.index', '', $child->route_name));
+                }
                 return $child;
             });
 

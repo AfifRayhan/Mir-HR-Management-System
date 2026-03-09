@@ -14,7 +14,8 @@ class HrDashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
 
         if ($roleName !== 'HR Admin') {

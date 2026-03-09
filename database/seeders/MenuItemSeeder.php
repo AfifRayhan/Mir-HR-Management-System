@@ -90,10 +90,25 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Office Times',   'slug' => 'settings-office-times',    'icon' => 'bi-clock',        'route_name' => 'settings.office-times.index', 'sort_order' => 3],
             ['name' => 'Weekly Holiday', 'slug' => 'settings-holidays-weekly', 'icon' => 'bi-calendar-week', 'route_name' => 'settings.holidays.weekly.index', 'sort_order' => 4],
             ['name' => 'Other Holiday',  'slug' => 'settings-holidays-others', 'icon' => 'bi-calendar-plus', 'route_name' => 'settings.holidays.others.index', 'sort_order' => 5],
+            ['name' => 'Devices',        'slug' => 'settings-devices',         'icon' => 'bi-cpu',           'route_name' => 'settings.devices.index',      'sort_order' => 6],
         ];
 
         foreach ($settingsChildren as $child) {
             $child['parent_id'] = $menuModels['settings']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Define child menu items under Attendances
+        $attendanceChildren = [
+            ['name' => 'Daily Attendance', 'slug' => 'attendance-daily', 'icon' => 'bi-calendar-check', 'route_name' => 'personnel.attendances.index', 'sort_order' => 1],
+            ['name' => 'Adjustment',       'slug' => 'attendance-adjust', 'icon' => 'bi-pencil-square',  'route_name' => 'personnel.attendances.adjust', 'sort_order' => 2],
+        ];
+
+        foreach ($attendanceChildren as $child) {
+            $child['parent_id'] = $menuModels['attendances']->id;
             $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
