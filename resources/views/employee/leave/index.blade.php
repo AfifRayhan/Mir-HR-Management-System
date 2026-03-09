@@ -1,26 +1,6 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-employee-dashboard.css'])
-    <style>
-        .balance-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: transform 0.2s;
-        }
-
-        .balance-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .balance-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-    </style>
     @endpush
 
     <div class="emp-layout">

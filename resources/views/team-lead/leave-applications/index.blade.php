@@ -1,20 +1,6 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
-    <style>
-        .emp-avatar-sm {
-            width: 40px;
-            height: 40px;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            background: #ecfdf5;
-            color: #059669;
-        }
-    </style>
     @endpush
 
     <div class="hr-layout">

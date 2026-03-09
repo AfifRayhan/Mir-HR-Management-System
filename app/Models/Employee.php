@@ -22,6 +22,7 @@ class Employee extends Model
         'section_id',
         'designation_id',
         'grade_id',
+        'office_id',
         'office_time_id',
         'reporting_manager_id',
         'status',
@@ -30,6 +31,11 @@ class Employee extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
     }
 
     public function department()

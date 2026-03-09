@@ -1,43 +1,6 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
-    <style>
-        .form-section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #ecfdf5;
-            display: flex;
-            align-items: center;
-        }
-
-        .form-section-title i {
-            margin-right: 0.75rem;
-            color: #059669;
-        }
-
-        .form-card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
-            border: 1px solid #f1f5f9;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #059669;
-            box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.1);
-        }
-    </style>
     @endpush
 
     <div class="hr-layout">
@@ -149,6 +112,16 @@
                                 @endforeach
                             </select>
                             @error('grade_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Office') }}</label>
+                            <select name="office_id" class="form-select @error('office_id') is-invalid @enderror">
+                                <option value="">{{ __('Select Office') }}</option>
+                                @foreach($offices as $office)
+                                <option value="{{ $office->id }}" {{ old('office_id', $employee->office_id ?? '') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('office_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Office Time (Shift)') }}</label>

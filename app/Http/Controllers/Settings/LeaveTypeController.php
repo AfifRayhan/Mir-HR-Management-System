@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\LeaveType;
 use App\Models\Employee;
+use App\Models\Office;
 use Illuminate\Http\Request;
 
 class LeaveTypeController extends Controller
@@ -16,15 +17,17 @@ class LeaveTypeController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
-        $leaveTypes = LeaveType::orderBy('sort_order')->orderBy('name')->get();
+        $leaveTypes = LeaveType::with('office')->orderBy('sort_order')->orderBy('name')->get();
+        $offices = Office::all();
 
-        return view('settings.leave-types.index', compact('leaveTypes', 'user', 'roleName', 'employee'));
+        return view('settings.leave-types.index', compact('leaveTypes', 'user', 'roleName', 'employee', 'offices'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name'                 => 'required|string|max:100',
+            'office_id'           => 'nullable|exists:offices,id',
             'total_days_per_year' => 'required|integer|min:0',
             'max_consecutive_days' => 'nullable|integer|min:1',
             'carry_forward'       => 'boolean',
@@ -41,6 +44,7 @@ class LeaveTypeController extends Controller
     {
         $validated = $request->validate([
             'name'                 => 'required|string|max:100',
+            'office_id'           => 'nullable|exists:offices,id',
             'total_days_per_year' => 'required|integer|min:0',
             'max_consecutive_days' => 'nullable|integer|min:1',
             'carry_forward'       => 'boolean',

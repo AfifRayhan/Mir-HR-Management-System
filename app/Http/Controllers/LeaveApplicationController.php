@@ -98,7 +98,10 @@ class LeaveApplicationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $leaveTypes = LeaveType::all();
+        $leaveTypes = LeaveType::where(function ($query) use ($employee) {
+            $query->whereNull('office_id')
+                ->orWhere('office_id', $employee->office_id);
+        })->orderBy('sort_order')->get();
         $balances = LeaveBalance::with('leaveType')
             ->where('employee_id', $employee->id)
             ->where('year', date('Y'))
@@ -166,7 +169,10 @@ class LeaveApplicationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $leaveTypes = LeaveType::all();
+        $leaveTypes = LeaveType::where(function ($query) use ($employee) {
+            $query->whereNull('office_id')
+                ->orWhere('office_id', $employee->office_id);
+        })->orderBy('sort_order')->get();
         $balances = LeaveBalance::with('leaveType')
             ->where('employee_id', $employee->id)
             ->where('year', date('Y'))

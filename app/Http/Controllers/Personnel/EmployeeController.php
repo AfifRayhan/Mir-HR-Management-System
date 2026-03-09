@@ -9,6 +9,7 @@ use App\Models\Section;
 use App\Models\Designation;
 use App\Models\Grade;
 use App\Models\OfficeTime;
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Employee::with(['department', 'section', 'designation', 'grade', 'officeTime', 'user']);
+        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
 
         // Search
         if ($request->search) {
@@ -59,6 +60,7 @@ class EmployeeController extends Controller
         $sections = Section::all();
         $designations = Designation::orderBy('priority', 'desc')->get();
         $grades = Grade::all();
+        $offices = Office::all();
         $officeTimes = OfficeTime::all();
         $managers = Employee::all();
 
@@ -71,6 +73,7 @@ class EmployeeController extends Controller
             'sections',
             'designations',
             'grades',
+            'offices',
             'officeTimes',
             'managers',
             'users'
@@ -94,6 +97,7 @@ class EmployeeController extends Controller
             'section_id' => 'nullable|exists:sections,id',
             'designation_id' => 'nullable|exists:designations,id',
             'grade_id' => 'nullable|exists:grades,id',
+            'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
             'user_id' => 'nullable|exists:users,id|unique:employees,user_id',
@@ -122,6 +126,7 @@ class EmployeeController extends Controller
         $sections = Section::all();
         $designations = Designation::orderBy('priority', 'desc')->get();
         $grades = Grade::all();
+        $offices = Office::all();
         $officeTimes = OfficeTime::all();
         $managers = Employee::where('id', '!=', $employee->id)->get();
 
@@ -138,6 +143,7 @@ class EmployeeController extends Controller
             'sections',
             'designations',
             'grades',
+            'offices',
             'officeTimes',
             'managers',
             'users'
@@ -161,6 +167,7 @@ class EmployeeController extends Controller
             'section_id' => 'nullable|exists:sections,id',
             'designation_id' => 'nullable|exists:designations,id',
             'grade_id' => 'nullable|exists:grades,id',
+            'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
             'user_id' => 'nullable|exists:users,id|unique:employees,user_id,' . $employee->id,

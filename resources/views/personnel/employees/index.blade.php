@@ -1,44 +1,6 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
-    <style>
-        .filter-bar {
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 2rem;
-        }
-
-        .emp-avatar-sm {
-            width: 40px;
-            height: 40px;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            background: #ecfdf5;
-            color: #059669;
-        }
-
-        .sort-icon {
-            font-size: 0.8rem;
-            margin-left: 0.25rem;
-            color: #94a3b8;
-        }
-
-        .sort-link {
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-        }
-
-        .sort-link:hover {
-            color: #059669;
-        }
-    </style>
     @endpush
 
     <div class="hr-layout">
@@ -132,6 +94,7 @@
                                     </a>
                                 </th>
                                 <th>{{ __('Department') }}</th>
+                                <th>{{ __('Office') }}</th>
                                 <th>{{ __('Designation') }}</th>
                                 <th>
                                     <a href="{{ route('personnel.employees.index', array_merge(request()->query(), ['sort' => 'joining_date', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
@@ -164,6 +127,7 @@
                                     </div>
                                 </td>
                                 <td><span class="badge bg-light text-dark">{{ $emp->department->name ?? 'N/A' }}</span></td>
+                                <td>{{ $emp->office->name ?? 'N/A' }}</td>
                                 <td>{{ $emp->designation->name ?? 'N/A' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($emp->joining_date)->format('d M Y') }}</td>
                                 <td>

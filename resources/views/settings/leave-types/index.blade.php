@@ -57,6 +57,17 @@
                                 <input type="text" name="name" class="form-control rounded-3" placeholder="{{ __('e.g. Annual, Sick, Casual') }}" required>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Office Availability') }}</label>
+                                <select name="office_id" class="form-select rounded-3">
+                                    <option value="">{{ __('All Offices') }}</option>
+                                    @foreach($offices as $office)
+                                    <option value="{{ $office->id }}">{{ $office->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text small text-muted">{{ __('Leave empty if applicable to all offices') }}</div>
+                            </div>
+
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('Total Days / Year') }} <span class="text-danger">*</span></label>
@@ -103,6 +114,7 @@
                                     <tr>
                                         <th>{{ __('Priority') }}</th>
                                         <th>{{ __('Type Name') }}</th>
+                                        <th>{{ __('Office') }}</th>
                                         <th class="text-center">{{ __('Days/Year') }}</th>
                                         <th class="text-center">{{ __('Max Consec.') }}</th>
                                         <th class="text-center">{{ __('Carry Fwd') }}</th>
@@ -117,6 +129,13 @@
                                         </td>
                                         <td>
                                             <div class="fw-bold text-primary">{{ $leaveType->name }}</div>
+                                        </td>
+                                        <td>
+                                            @if($leaveType->office)
+                                            <span class="badge bg-secondary-soft text-secondary rounded-pill px-2">{{ $leaveType->office->name }}</span>
+                                            @else
+                                            <span class="badge bg-light text-muted rounded-pill px-2">{{ __('All Offices') }}</span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <span class="badge bg-info text-dark rounded-pill px-3">{{ $leaveType->total_days_per_year }}</span>
@@ -167,6 +186,15 @@
                                                         <div class="mb-3 text-start">
                                                             <label class="form-label small fw-bold text-muted">{{ __('Leave Type Name') }}</label>
                                                             <input type="text" name="name" class="form-control rounded-3" value="{{ $leaveType->name }}" required>
+                                                        </div>
+                                                        <div class="mb-3 text-start">
+                                                            <label class="form-label small fw-bold text-muted">{{ __('Office Availability') }}</label>
+                                                            <select name="office_id" class="form-select rounded-3">
+                                                                <option value="">{{ __('All Offices') }}</option>
+                                                                @foreach($offices as $office)
+                                                                <option value="{{ $office->id }}" {{ $leaveType->office_id == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                         <div class="row g-2 mb-3">
                                                             <div class="col-6 text-start">

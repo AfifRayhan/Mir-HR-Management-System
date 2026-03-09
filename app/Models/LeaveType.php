@@ -13,11 +13,17 @@ class LeaveType extends Model
 
     protected $fillable = [
         'name',
+        'office_id',
         'total_days_per_year',
         'max_consecutive_days',
         'carry_forward',
         'sort_order',
     ];
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
 
     public function balances()
     {
