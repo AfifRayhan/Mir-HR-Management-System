@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'api/device/sync',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

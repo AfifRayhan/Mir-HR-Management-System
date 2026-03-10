@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('devices', function (Blueprint $table) {
-            //
+            $table->string('device_uid', 50)->unique()->after('name')->nullable();
+            $table->string('api_token', 80)->unique()->after('device_uid')->nullable();
+            $table->timestamp('last_sync_at')->nullable()->after('address');
         });
     }
 
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('devices', function (Blueprint $table) {
-            //
+            $table->dropColumn(['device_uid', 'api_token', 'last_sync_at']);
         });
     }
 };

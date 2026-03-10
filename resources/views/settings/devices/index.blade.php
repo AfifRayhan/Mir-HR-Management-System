@@ -37,7 +37,9 @@
                                 <tr>
                                     <th>{{ __('ID') }}</th>
                                     <th>{{ __('Name') }}</th>
-                                    <th>{{ __('Address/Location') }}</th>
+                                    <th>{{ __('Device UID') }}</th>
+                                    <th>{{ __('API Token') }}</th>
+                                    <th>{{ __('Last Sync') }}</th>
                                     <th class="text-end">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
@@ -45,8 +47,25 @@
                                 @forelse($devices as $device)
                                 <tr>
                                     <td>{{ $device->id }}</td>
-                                    <td><strong>{{ $device->name }}</strong></td>
-                                    <td>{{ $device->address ?? __('N/A') }}</td>
+                                    <td><strong>{{ $device->name }}</strong><br><small class="text-muted">{{ $device->address }}</small></td>
+                                    <td><code>{{ $device->device_uid ?? __('N/A') }}</code></td>
+                                    <td>
+                                        @if($device->api_token)
+                                        <div class="input-group input-group-sm" style="max-width: 200px;">
+                                            <input type="password" class="form-control" value="{{ $device->api_token }}" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"><i class="bi bi-eye"></i></button>
+                                        </div>
+                                        @else
+                                        {{ __('N/A') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($device->last_sync_at)
+                                        <span class="badge bg-success">{{ \Carbon\Carbon::parse($device->last_sync_at)->diffForHumans() }}</span>
+                                        @else
+                                        <span class="badge bg-secondary">{{ __('Never') }}</span>
+                                        @endif
+                                    </td>
                                     <td class="text-end">
                                         <button class="btn btn-sm btn-outline-primary me-1"
                                             data-bs-toggle="modal"
@@ -76,13 +95,26 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-3">
-                                                        <label class="form-label">{{ __('Device Name') }}</label>
+                                                        <label class="form-label">{{ __('Device Name') }} *</label>
                                                         <input type="text" name="name" class="form-control" value="{{ $device->name }}" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">{{ __('Address') }}</label>
-                                                        <textarea name="address" class="form-control" rows="3">{{ $device->address }}</textarea>
+                                                        <label class="form-label">{{ __('Device UID (Unique ID)') }}</label>
+                                                        <input type="text" name="device_uid" class="form-control" value="{{ $device->device_uid }}" placeholder="e.g. H94139">
+                                                        <small class="text-muted">{{ __('This ID must match the identifier sent by the device.') }}</small>
                                                     </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">{{ __('Address/Location') }}</label>
+                                                        <input type="text" name="address" class="form-control" value="{{ $device->address }}" placeholder="e.g. 192.168.1.10">
+                                                    </div>
+                                                    @if($device->device_uid)
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" name="regenerate_token" id="regToken{{ $device->id }}">
+                                                        <label class="form-check-label text-danger" for="regToken{{ $device->id }}">
+                                                            {{ __('Regenerate API Token') }}
+                                                        </label>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
@@ -117,12 +149,17 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">{{ __('Device Name') }}</label>
+                            <label class="form-label">{{ __('Device Name') }} *</label>
                             <input type="text" name="name" class="form-control" placeholder="e.g. Main Entrance Biometric" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">{{ __('Address') }}</label>
-                            <textarea name="address" class="form-control" rows="3" placeholder="IP Address or Location"></textarea>
+                            <label class="form-label">{{ __('Device UID (Unique ID)') }}</label>
+                            <input type="text" name="device_uid" class="form-control" placeholder="e.g. H94139">
+                            <small class="text-muted">{{ __('Assigning a UID will automatically generate an API token.') }}</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Address/Location') }}</label>
+                            <input type="text" name="address" class="form-control" placeholder="e.g. 192.168.1.10 or Main Gate">
                         </div>
                     </div>
                     <div class="modal-footer">

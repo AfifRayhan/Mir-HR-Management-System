@@ -110,4 +110,7 @@ Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->
     });
 });
 
+// Device Sync API (Exempt from CSRF in bootstrap/app.php)
+Route::post('api/device/sync', [\App\Http\Controllers\Api\DeviceLogController::class, 'sync'])->name('api.device.sync');
+
 require __DIR__ . '/auth.php';

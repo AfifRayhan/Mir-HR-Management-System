@@ -9,7 +9,7 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'address'];
+    protected $fillable = ['name', 'address', 'device_uid', 'api_token', 'last_sync_at'];
 
     public function logs()
     {
