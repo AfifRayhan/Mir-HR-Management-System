@@ -33,7 +33,7 @@
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Employee Code') }} <span class="text-danger">*</span></label>
-                            <input type="text" name="employee_code" class="form-control @error('employee_code') is-invalid @enderror" value="{{ old('employee_code', $employee->employee_code ?? '') }}" required placeholder="e.g. EMP001">
+                            <input type="text" name="employee_code" class="form-control @error('employee_code') is-invalid @enderror" value="{{ old('employee_code', $employee->employee_code ?? $autoEmployeeCode ?? '') }}" required placeholder="e.g. EMP001">
                             @error('employee_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">

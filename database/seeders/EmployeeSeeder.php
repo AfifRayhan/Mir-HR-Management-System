@@ -24,6 +24,7 @@ class EmployeeSeeder extends Seeder
         $designations = Designation::all();
         $grades = Grade::all();
         $officeTimes = OfficeTime::all();
+        $generalShift = OfficeTime::where('shift_name', 'General Shift')->first();
         $offices = \App\Models\Office::all();
         $officeCount = $offices->count();
 
@@ -52,7 +53,7 @@ class EmployeeSeeder extends Seeder
                         'designation_id' => $designations->random()->id ?? null,
                         'grade_id' => $grades->random()->id ?? null,
                         'office_id' => $office->id,
-                        'office_time_id' => $officeTimes->random()->id ?? null,
+                        'office_time_id' => $generalShift->id ?? $officeTimes->random()->id,
                         'status' => 'active',
                     ]
                 );

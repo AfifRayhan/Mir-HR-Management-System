@@ -6,15 +6,40 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('role')->orderBy('name')->paginate(15);
+        $query = User::with('role');
 
-        return view('security.users.index', compact('users'));
+        // Search
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filters
+        if ($request->role_id) {
+            $query->where('role_id', $request->role_id);
+        }
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        // Sorting
+        $sortColumn = $request->input('sort', 'name');
+        $sortDirection = $request->input('direction', 'asc');
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $users = $query->paginate(10)->withQueryString();
+        $roles = Role::all();
+
+        return view('security.users.index', compact('users', 'roles'));
     }
 
     public function create()
@@ -73,7 +98,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id === (int) auth()->id()) {
+        if ($user->id === (int) Auth::id()) {
             return back()->with('error', 'You cannot delete your own account.');
         }
 

@@ -73,7 +73,7 @@ class AttendanceService
         $officeTime = $employee->officeTime;
 
         $status = 'absent';
-        $lateMinutes = 0;
+        $lateSeconds = 0;
         $workingHours = 0;
 
         if ($inTime) {
@@ -84,10 +84,13 @@ class AttendanceService
             $status = 'present';
 
             if ($officeTime && $officeTime->late_after) {
+                $startTime = Carbon::parse($date . ' ' . $officeTime->start_time);
                 $lateAfter = Carbon::parse($date . ' ' . $officeTime->late_after);
-                if ($inTime->greaterThan($lateAfter)) {
+
+                // Only mark as late if inTime is AFTER both shift start and late threshold
+                if ($inTime->greaterThan($startTime) && $inTime->greaterThan($lateAfter)) {
                     $status = 'late';
-                    $lateMinutes = abs($inTime->diffInMinutes($lateAfter));
+                    $lateSeconds = abs($inTime->diffInSeconds($lateAfter));
                 }
             }
 
@@ -115,7 +118,7 @@ class AttendanceService
                 'in_time' => $inTime,
                 'out_time' => $outTime,
                 'working_hours' => $workingHours,
-                'late_minutes' => $lateMinutes,
+                'late_seconds' => $lateSeconds,
                 'status' => $status,
             ]
         );

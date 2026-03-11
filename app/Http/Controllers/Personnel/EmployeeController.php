@@ -68,6 +68,14 @@ class EmployeeController extends Controller
         $linkedUserIds = Employee::whereNotNull('user_id')->pluck('user_id')->toArray();
         $users = User::whereNotIn('id', $linkedUserIds)->get();
 
+        // Generate auto employee code
+        $lastEmployee = Employee::orderBy('id', 'desc')->first();
+        $nextNumber = 1;
+        if ($lastEmployee && preg_match('/EMP(\d+)/', $lastEmployee->employee_code, $matches)) {
+            $nextNumber = (int)$matches[1] + 1;
+        }
+        $autoEmployeeCode = 'EMP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
         return view('personnel.employees.form', compact(
             'departments',
             'sections',
@@ -76,7 +84,8 @@ class EmployeeController extends Controller
             'offices',
             'officeTimes',
             'managers',
-            'users'
+            'users',
+            'autoEmployeeCode'
         ));
     }
 

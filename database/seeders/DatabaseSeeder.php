@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             OfficeTimeSeeder::class,
             UserSeeder::class,
             EmployeeSeeder::class,
+            LeaveTypeSeeder::class,
         ]);
     }
 }

@@ -70,7 +70,7 @@
                                     <th>{{ __('In Time') }}</th>
                                     <th>{{ __('Out Time') }}</th>
                                     <th>{{ __('Working Hours') }}</th>
-                                    <th>{{ __('Late (Min)') }}</th>
+                                    <th>{{ __('Late (H:M:S)') }}</th>
                                     <th>{{ __('Status') }}</th>
                                 </tr>
                             </thead>
@@ -93,8 +93,8 @@
                                     <td>{{ $record->out_time ? $record->out_time->format('H:i') : '-' }}</td>
                                     <td>{{ $record->working_hours }}h</td>
                                     <td>
-                                        <span class="{{ $record->late_minutes > 0 ? 'text-danger fw-bold' : '' }}">
-                                            {{ $record->late_minutes }}
+                                        <span class="{{ $record->late_seconds > 0 ? 'text-danger fw-bold' : '' }}">
+                                            {{ $record->late_timing }}
                                         </span>
                                     </td>
                                     <td>
