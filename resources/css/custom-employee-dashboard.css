@@ -498,3 +498,30 @@ body {
     font-size: 13px;
     font-weight: 600;
 }
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* bg-danger-soft override for employee dashboard */
+.bg-danger-soft {
+    background-color: #FEE2E2;
+}
+
+.text-danger {
+    color: #EF4444;
+}

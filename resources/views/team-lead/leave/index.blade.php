@@ -6,19 +6,13 @@
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             border: 1px solid #e2e8f0;
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 1rem 1.15rem;
             transition: transform 0.2s;
         }
 
         .balance-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .balance-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            line-height: 1;
         }
     </style>
     @endpush
@@ -61,18 +55,18 @@
             @endif
 
             {{-- Balance Cards --}}
-            <div class="row g-4 mb-5">
+            <div class="row g-3 mb-5 flex-nowrap" style="overflow-x: auto;">
                 @forelse($balances as $balance)
-                <div class="col-md-4">
+                <div class="col">
                     <div class="balance-card h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="text-uppercase fw-bold text-muted mb-0">{{ $balance->leaveType->name }}</h6>
-                            <i class="bi bi-calendar-check text-success fs-4"></i>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.03em;">{{ $balance->leaveType->name }}</span>
+                            <i class="bi bi-calendar-check text-success" style="font-size: 1.1rem;"></i>
                         </div>
-                        <div class="balance-number text-dark mb-2">{{ $balance->remaining_days }}</div>
-                        <div class="small fw-bold text-muted">{{ __('Days Remaining') }}</div>
-                        <div class="mt-3 pt-3 border-top">
-                            <div class="d-flex justify-content-between small text-muted">
+                        <div class="fw-bold text-dark mb-1" style="font-size: 1.75rem; line-height: 1;">{{ $balance->remaining_days }}</div>
+                        <div class="fw-bold text-muted" style="font-size: 0.72rem;">{{ __('Days Remaining') }}</div>
+                        <div class="mt-2 pt-2 border-top">
+                            <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
                                 <span>{{ __('Used:') }} <span class="fw-bold">{{ $balance->used_days }}</span></span>
                                 <span>{{ __('Total:') }} <span class="fw-bold">{{ $balance->opening_balance }}</span></span>
                             </div>

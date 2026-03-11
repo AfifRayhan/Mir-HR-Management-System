@@ -41,18 +41,18 @@
             @endif
 
             <!-- Balances Row -->
-            <div class="row g-4 mb-5">
+            <div class="row g-3 mb-5 flex-nowrap" style="overflow-x: auto;">
                 @forelse($balances as $balance)
-                <div class="col-md-4">
-                    <div class="balance-card h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="text-uppercase fw-bold text-gray-500 mb-0">{{ $balance->leaveType->name }}</h6>
-                            <i class="bi bi-calendar-check text-success fs-4"></i>
+                <div class="col">
+                    <div class="balance-card h-100" style="padding: 1rem 1.15rem;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-uppercase fw-bold text-gray-500" style="font-size: 0.7rem; letter-spacing: 0.03em;">{{ $balance->leaveType->name }}</span>
+                            <i class="bi bi-calendar-check text-success" style="font-size: 1.1rem;"></i>
                         </div>
-                        <div class="balance-number text-gray-800 mb-2">{{ $balance->remaining_days }}</div>
-                        <div class="small fw-bold text-gray-500">{{ __('Days Remaining') }}</div>
-                        <div class="mt-3 pt-3 border-top border-gray-200">
-                            <div class="d-flex justify-content-between small text-muted">
+                        <div class="fw-bold text-gray-800 mb-1" style="font-size: 1.75rem; line-height: 1;">{{ $balance->remaining_days }}</div>
+                        <div class="fw-bold text-gray-500" style="font-size: 0.72rem;">{{ __('Days Remaining') }}</div>
+                        <div class="mt-2 pt-2 border-top border-gray-200">
+                            <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
                                 <span>{{ __('Used:') }} <span class="fw-bold">{{ $balance->used_days }}</span></span>
                                 <span>{{ __('Total:') }} <span class="fw-bold">{{ $balance->opening_balance }}</span></span>
                             </div>

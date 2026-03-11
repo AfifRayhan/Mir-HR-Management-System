@@ -170,6 +170,34 @@
                         </ul>
                     </div>
 
+                    <!-- Notices & Events -->
+                    <div class="hr-panel mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="font-bold text-gray-800 mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
+                            <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm p-0 text-decoration-none small">{{ __('Manage') }}</a>
+                        </div>
+                        <ul class="hr-list px-2">
+                            @forelse($activeNotices as $notice)
+                            <li class="small mb-3 border-bottom pb-2 last:border-bottom-0">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
+                                    @if($notice->type === 'event')
+                                        <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
+                                    @else
+                                        <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
+                                    @endif
+                                </div>
+                                <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ Str::limit($notice->content, 80) }}</p>
+                                <div class="text-muted" style="font-size: 0.65rem;">
+                                    <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
+                                </div>
+                            </li>
+                            @empty
+                            <li class="small text-center text-muted py-2">{{ __('No active notices.') }}</li>
+                            @endforelse
+                        </ul>
+                    </div>
+
 
                 </div>
             </div>

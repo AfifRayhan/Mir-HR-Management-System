@@ -25,44 +25,53 @@
                         <div class="hr-panel">
                             <form action="{{ route('personnel.attendances.store-adjustment') }}" method="POST">
                                 @csrf
-                                <div class="mb-3">
-                                    <label class="form-label">{{ __('Select Employee') }}</label>
-                                    <select name="employee_id" class="form-select select2" required>
+                                <div class="mb-4">
+                                    <label class="form-label font-bold text-gray-700">{{ __('Select Employee') }}</label>
+                                    <select name="employee_id" class="form-select select2 rounded-3 @error('employee_id') is-invalid @enderror" required>
                                         <option value="">{{ __('-- Choose Employee --') }}</option>
                                         @foreach($employees as $emp)
-                                        <option value="{{ $emp->id }}">
+                                        <option value="{{ $emp->id }}" {{ old('employee_id') == $emp->id ? 'selected' : '' }}>
                                             {{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})
                                         </option>
                                         @endforeach
                                     </select>
+                                    @error('employee_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
-                                <div class="mb-3">
-                                    <label class="form-label">{{ __('Date') }}</label>
-                                    <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                                <div class="mb-4">
+                                    <label class="form-label font-bold text-gray-700">{{ __('Date') }}</label>
+                                    <input type="date" name="date" class="form-control rounded-3 @error('date') is-invalid @enderror" value="{{ old('date', date('Y-m-d')) }}" required>
+                                    @error('date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">{{ __('In Time') }}</label>
-                                        <input type="datetime-local" name="in_time" class="form-control" required>
+                                        <label class="form-label font-bold text-gray-700">{{ __('In Time') }}</label>
+                                        <input type="time" name="in_time" class="form-control rounded-3" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">{{ __('Out Time') }}</label>
-                                        <input type="datetime-local" name="out_time" class="form-control">
+                                        <label class="form-label font-bold text-gray-700">{{ __('Out Time') }}</label>
+                                        <input type="time" name="out_time" class="form-control rounded-3">
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label class="form-label">{{ __('Reason') }}</label>
-                                    <textarea name="reason" class="form-control" rows="3" required placeholder="e.g. Device failure, Field work, etc."></textarea>
+                                <div class="mb-4">
+                                    <label class="form-label font-bold text-gray-700">{{ __('Reason') }}</label>
+                                    <textarea name="reason" class="form-control rounded-3 @error('reason') is-invalid @enderror" rows="3" required placeholder="e.g. Device failure, Field work, etc.">{{ old('reason') }}</textarea>
+                                    @error('reason')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <a href="{{ route('personnel.attendances.index') }}" class="btn btn-secondary">
+                                <div class="d-flex justify-content-end gap-2 mt-4 pt-4 border-top">
+                                    <a href="{{ route('personnel.attendances.index') }}" class="btn btn-light rounded-pill px-4">
                                         {{ __('Cancel') }}
                                     </a>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">
                                         <i class="bi bi-save me-2"></i>{{ __('Save Adjustment') }}
                                     </button>
                                 </div>

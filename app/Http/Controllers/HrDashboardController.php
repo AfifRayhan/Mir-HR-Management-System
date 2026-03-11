@@ -8,6 +8,7 @@ use App\Models\Section;
 use App\Models\AttendanceRecord;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
+use App\Models\Notice;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -65,6 +66,9 @@ class HrDashboardController extends Controller
         $totalDepartments = Department::count();
         $totalSections = Section::count();
 
+        // Active Notices & Events
+        $activeNotices = Notice::active()->orderBy('created_at', 'desc')->get();
+
         return view('hr-dashboard', compact(
             'user',
             'roleName',
@@ -79,7 +83,8 @@ class HrDashboardController extends Controller
             'onLeaveToday',
             'pendingLeavesCount',
             'recentAttendance',
-            'upcomingHolidays'
+            'upcomingHolidays',
+            'activeNotices'
         ));
     }
 }

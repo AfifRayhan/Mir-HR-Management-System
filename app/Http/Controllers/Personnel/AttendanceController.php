@@ -68,10 +68,25 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'date' => 'required|date',
-            'in_time' => 'required|date_format:Y-m-d\TH:i',
-            'out_time' => 'nullable|date_format:Y-m-d\TH:i|after_or_equal:in_time',
+            'in_time' => 'required|date_format:H:i',
+            'out_time' => 'nullable|date_format:H:i',
             'reason' => 'required|string',
         ]);
+
+        $date = $validated['date'];
+        
+        // Combine date and time string to full timestamp
+        $validated['in_time'] = $date . ' ' . $validated['in_time'];
+        if ($validated['out_time']) {
+            $validated['out_time'] = $date . ' ' . $validated['out_time'];
+            
+            // Validate after_or_equal:in_time manually or using custom logic
+            if (strtotime($validated['out_time']) < strtotime($validated['in_time'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['out_time' => 'The out time must be after or equal to in time.']);
+            }
+        }
 
         $validated['adjusted_by'] = \Illuminate\Support\Facades\Auth::id();
 

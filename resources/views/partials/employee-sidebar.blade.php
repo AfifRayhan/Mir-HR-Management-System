@@ -18,10 +18,10 @@
                     </a>
                 </li>
                 <li>
-                    <span class="emp-sidebar-link">
+                    <a href="{{ route('employee.attendance.index') }}" class="emp-sidebar-link {{ request()->routeIs('employee.attendance.*') ? 'active' : '' }}">
                         <i class="bi bi-clock"></i>
                         <span>{{ __('Attendances') }}</span>
-                    </span>
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('employee.leave.index') }}" class="emp-sidebar-link {{ request()->routeIs('employee.leave.*') ? 'active' : '' }}">

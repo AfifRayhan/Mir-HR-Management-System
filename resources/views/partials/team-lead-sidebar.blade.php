@@ -18,10 +18,10 @@
                     </a>
                 </li>
                 <li>
-                    <span class="hr-sidebar-link">
+                    <a href="{{ route('employee.attendance.index') }}" class="hr-sidebar-link {{ request()->routeIs('employee.attendance.*') ? 'active' : '' }}">
                         <i class="bi bi-clock"></i>
                         <span>{{ __('Attendances') }}</span>
-                    </span>
+                    </a>
                 </li>
 
                 {{-- Leave dropdown --}}

@@ -91,6 +91,7 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Weekly Holiday', 'slug' => 'settings-holidays-weekly', 'icon' => 'bi-calendar-week', 'route_name' => 'settings.holidays.weekly.index', 'sort_order' => 4],
             ['name' => 'Other Holiday',  'slug' => 'settings-holidays-others', 'icon' => 'bi-calendar-plus', 'route_name' => 'settings.holidays.others.index', 'sort_order' => 5],
             ['name' => 'Devices',        'slug' => 'settings-devices',         'icon' => 'bi-cpu',           'route_name' => 'settings.devices.index',      'sort_order' => 6],
+            ['name' => 'Notices & Events', 'slug' => 'settings-notices',       'icon' => 'bi-megaphone',     'route_name' => 'settings.notices.index',      'sort_order' => 7],
         ];
 
         foreach ($settingsChildren as $child) {
