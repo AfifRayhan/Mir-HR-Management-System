@@ -9,11 +9,18 @@ use App\Models\AttendanceRecord;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
 use App\Models\Notice;
+use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class HrDashboardController extends Controller
 {
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
+    }
     /**
      * Display the HR dashboard.
      */
@@ -49,12 +56,43 @@ class HrDashboardController extends Controller
         // Summaries
         $pendingLeavesCount = LeaveApplication::where('status', 'pending')->count();
 
-        $recentAttendance = AttendanceRecord::with('employee')
-            ->whereDate('date', $today)
-            ->whereIn('status', ['present', 'late'])
-            ->orderBy('created_at', 'desc')
-            ->take(7)
-            ->get();
+        // Recent Attendance: Show all active employees for today
+        $activeEmployees = Employee::where('status', 'active')->get();
+        $todayAttendance = AttendanceRecord::whereDate('date', $today)
+            ->get()
+            ->keyBy('employee_id');
+ 
+        // Fetch approved leaves for today
+        $approvedLeavesToday = LeaveApplication::where('status', 'approved')
+            ->whereDate('from_date', '<=', $today)
+            ->whereDate('to_date', '>=', $today)
+            ->get()
+            ->keyBy('employee_id');
+
+        $recentAttendance = collect();
+        foreach ($activeEmployees as $emp) {
+            if (isset($todayAttendance[$emp->id])) {
+                $recentAttendance->push($todayAttendance[$emp->id]);
+            } else {
+                // Check if today is a working day for this employee
+                if ($this->attendanceService->isWorkingDay($emp, $today)) {
+                    $onLeave = isset($approvedLeavesToday[$emp->id]);
+                    $absentRecord = new AttendanceRecord([
+                        'employee_id' => $emp->id,
+                        'date' => $today->toDateString(),
+                        'status' => $onLeave ? 'leave' : 'absent',
+                        'late_seconds' => 0
+                    ]);
+                    $absentRecord->setRelation('employee', $emp);
+                    $recentAttendance->push($absentRecord);
+                }
+            }
+        }
+
+        // Sort by status (Present/Late first, then Absent) and take 7
+        $recentAttendance = $recentAttendance->sortBy(function ($record) {
+            return in_array($record->status, ['present', 'late']) ? 0 : 1;
+        })->take(7);
 
         $upcomingHolidays = Holiday::whereDate('from_date', '>=', $today)
             ->where('is_active', true)

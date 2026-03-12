@@ -161,19 +161,27 @@
                                     <tr>
                                         <td class="ps-4 small">{{ $record->date->format('d M Y') }}</td>
                                         <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '--' }}</td>
-                                        <td class="small">{{ $record->out_time ? \Carbon\Carbon::parse($record->out_time)->format('h:i A') : '--:-- PM' }}</td>
+                                        <td class="small">{{ $record->out_time ? \Carbon\Carbon::parse($record->out_time)->format('h:i A') : '--' }}</td>
                                         <td class="small">
-                                            @if($record->late_seconds > 0)
-                                            <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
+                                            @if($record->status === 'absent')
+                                                <span class="text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Absent') }}</span>
+                                            @elseif($record->status === 'leave')
+                                                <span class="text-info"><i class="bi bi-calendar2-range me-1"></i>{{ __('On Leave') }}</span>
+                                            @elseif($record->late_seconds > 0)
+                                                <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
                                             @else
-                                            <span class="text-success">{{ __('On Time') }}</span>
+                                                <span class="text-success">{{ __('On Time') }}</span>
                                             @endif
                                         </td>
                                         <td class="pe-4 text-end">
-                                            @if($record->status === 'late')
-                                            <span class="badge bg-warning-soft text-warning" style="font-size: 0.7rem;">{{ __('Late') }}</span>
+                                            @if($record->status === 'absent')
+                                                <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">{{ __('Absent') }}</span>
+                                            @elseif($record->status === 'leave')
+                                                <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">{{ __('Leave') }}</span>
+                                            @elseif($record->status === 'late')
+                                                <span class="badge bg-warning-soft text-warning" style="font-size: 0.7rem;">{{ __('Late') }}</span>
                                             @else
-                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">{{ __('Present') }}</span>
+                                                <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">{{ __('Present') }}</span>
                                             @endif
                                         </td>
                                     </tr>

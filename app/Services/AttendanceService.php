@@ -6,6 +6,8 @@ use App\Models\Employee;
 use App\Models\DeviceLog;
 use App\Models\AttendanceRecord;
 use App\Models\ManualAttendanceAdjustment;
+use App\Models\WeeklyHoliday;
+use App\Models\Holiday;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -122,5 +124,43 @@ class AttendanceService
                 'status' => $status,
             ]
         );
+    }
+
+    /**
+     * Check if a given date is a working day for the employee.
+     */
+    public function isWorkingDay(Employee $employee, $date)
+    {
+        $carbonDate = Carbon::parse($date);
+        $dayName = $carbonDate->format('l');
+
+        // 1. Check Weekly Holidays
+        $isWeeklyHoliday = WeeklyHoliday::where('day_name', $dayName)
+            ->where('is_holiday', true)
+            ->exists();
+
+        if ($isWeeklyHoliday) {
+            return false;
+        }
+
+        // 2. Check General Holidays
+        $isHoliday = Holiday::where('is_active', true)
+            ->where(function ($q) use ($carbonDate, $employee) {
+                $q->where(function ($sq) use ($carbonDate) {
+                    $sq->whereDate('from_date', '<=', $carbonDate)
+                        ->whereDate('to_date', '>=', $carbonDate);
+                })
+                ->where(function ($sq) use ($employee) {
+                    $sq->where('all_office', true)
+                        ->orWhere('office_id', $employee->office_id);
+                });
+            })
+            ->exists();
+
+        if ($isHoliday) {
+            return false;
+        }
+
+        return true;
     }
 }

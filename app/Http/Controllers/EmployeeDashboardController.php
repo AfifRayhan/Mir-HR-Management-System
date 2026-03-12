@@ -8,11 +8,18 @@ use App\Models\LeaveApplication;
 use App\Models\LeaveBalance;
 use App\Models\Holiday;
 use App\Models\Notice;
+use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class EmployeeDashboardController extends Controller
 {
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
+    }
     /**
      * Display the Employee dashboard.
      */
@@ -72,11 +79,47 @@ class EmployeeDashboardController extends Controller
 
             $absentDays = max(0, $totalWorkingDays - $presentDays - $leaveDaysThisMonth);
 
-            // Recent attendance records (last 7)
-            $recentAttendance = AttendanceRecord::where('employee_id', $employee->id)
-                ->orderBy('date', 'desc')
-                ->take(7)
+            // Recent attendance records (last 7 working days)
+            $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
+                ->whereBetween('date', [$today->copy()->subDays(14), $today])
+                ->get()
+                ->keyBy(function($item) {
+                    return $item->date->format('Y-m-d');
+                });
+ 
+            // Fetch approved leaves for the same window
+            $approvedLeavesWindow = LeaveApplication::where('employee_id', $employee->id)
+                ->where('status', 'approved')
+                ->where(function($q) use ($today) {
+                    $startOfWindow = $today->copy()->subDays(14);
+                    $q->whereBetween('from_date', [$startOfWindow, $today])
+                      ->orWhereBetween('to_date', [$startOfWindow, $today])
+                      ->orWhere(function($sub) use ($startOfWindow, $today) {
+                          $sub->where('from_date', '<=', $startOfWindow)
+                              ->where('to_date', '>=', $today);
+                      });
+                })
                 ->get();
+
+            $recentAttendance = collect();
+            $checkDate = $today->copy();
+            while ($recentAttendance->count() < 7 && $checkDate->gte($today->copy()->subDays(30))) {
+                $dateStr = $checkDate->toDateString();
+                if (isset($existingRecords[$dateStr])) {
+                    $recentAttendance->push($existingRecords[$dateStr]);
+                } elseif ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
+                    $onLeave = $approvedLeavesWindow->contains(function($leave) use ($checkDate) {
+                        return $checkDate->between($leave->from_date, $leave->to_date);
+                    });
+                    $recentAttendance->push(new AttendanceRecord([
+                        'employee_id' => $employee->id,
+                        'date' => $dateStr,
+                        'status' => $onLeave ? 'leave' : 'absent',
+                        'late_seconds' => 0
+                    ]));
+                }
+                $checkDate->subDay();
+            }
 
             // Leave data for current year
             $leaveApplications = LeaveApplication::where('employee_id', $employee->id)

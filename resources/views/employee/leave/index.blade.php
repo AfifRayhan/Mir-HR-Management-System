@@ -73,7 +73,7 @@
                 <div class="col-lg-4">
                     <div class="emp-panel">
                         <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-primary"></i>{{ __('Apply for Leave') }}</h5>
-                        <form action="{{ route('employee.leave.store') }}" method="POST">
+                        <form action="{{ route('employee.leave.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Leave Type') }} <span class="text-danger">*</span></label>
@@ -102,8 +102,11 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label small fw-bold text-muted">{{ __('Emergency Contact / Leave Address') }}</label>
-                                <textarea name="leave_address" class="form-control rounded-3" rows="2" placeholder="{{ __('Optional during leave period...') }}"></textarea>
+                                <label class="form-label small fw-bold text-muted">{{ __('Supporting Documents') }}</label>
+                                <input type="file" name="supporting_document" class="form-control rounded-3 shadow-sm" accept=".pdf,image/*,.doc,.docx">
+                                <div class="form-text small" style="font-size: 0.75rem;">
+                                    {{ __('Optional (PDF, JPG, PNG, DOC, DOCX). Highly recommended for Sick/Parental leave.') }}
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
@@ -126,7 +129,9 @@
                                         <th>{{ __('Duration') }}</th>
                                         <th>{{ __('Days') }}</th>
                                         <th>{{ __('Reason') }}</th>
+                                        <th>{{ __('Doc') }}</th>
                                         <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Approved By') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -142,12 +147,29 @@
                                             <span class="d-inline-block text-truncate small" style="max-width: 200px;" title="{{ $app->reason }}">{{ $app->reason }}</span>
                                         </td>
                                         <td>
+                                            @if($app->supporting_document)
+                                            <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none">
+                                                <i class="bi bi-file-earmark-medical me-1"></i>{{ __('Doc') }}
+                                            </a>
+                                            @else
+                                            <span class="text-muted small">--</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if($app->status === 'approved')
                                             <span class="badge bg-success-soft text-success"><i class="bi bi-check-circle me-1"></i>{{ __('Approved') }}</span>
                                             @elseif($app->status === 'rejected')
                                             <span class="badge bg-danger-soft text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Rejected') }}</span>
                                             @else
                                             <span class="badge bg-warning-soft text-warning"><i class="bi bi-hourglass-split me-1"></i>{{ __('Pending') }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($app->approver)
+                                                <div class="small fw-bold text-gray-800">{{ $app->approver->name ?: __('HR Admin') }}</div>
+                                                <div class="small text-muted" style="font-size: 0.7rem;">{{ $app->approved_at?->format('d M, h:i A') }}</div>
+                                            @else
+                                                <span class="text-muted small">--</span>
                                             @endif
                                         </td>
                                     </tr>

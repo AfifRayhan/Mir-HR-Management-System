@@ -33,7 +33,9 @@
                                 <th>{{ __('Duration') }}</th>
                                 <th>{{ __('Days') }}</th>
                                 <th>{{ __('Reason') }}</th>
+                                <th>{{ __('Doc') }}</th>
                                 <th>{{ __('Status') }}</th>
+                                <th>{{ __('Action By') }}</th>
                                 <th class="text-end pe-4">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
@@ -65,12 +67,29 @@
                                     </span>
                                 </td>
                                 <td>
+                                    @if($app->supporting_document)
+                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none shadow-sm">
+                                        <i class="bi bi-file-earmark-medical me-1"></i>{{ __('View') }}
+                                    </a>
+                                    @else
+                                    <span class="text-muted small">--</span>
+                                    @endif
+                                </td>
+                                <td>
                                     @if($app->status === 'approved')
                                     <span class="badge bg-success-soft text-success">{{ __('Approved') }}</span>
                                     @elseif($app->status === 'rejected')
                                     <span class="badge bg-danger-soft text-danger">{{ __('Rejected') }}</span>
                                     @else
                                     <span class="badge bg-warning-soft text-warning">{{ __('Pending') }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($app->approver)
+                                        <div class="small fw-bold text-dark">{{ $app->approver->name ?: __('HR Admin') }}</div>
+                                        <div class="small text-muted" style="font-size: 0.7rem;">{{ $app->approved_at?->format('d M, h:i A') }}</div>
+                                    @else
+                                        <span class="text-muted small">--</span>
                                     @endif
                                 </td>
                                 <td class="text-end pe-4">
@@ -80,16 +99,16 @@
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="status" value="approved">
-                                            <button type="submit" class="btn btn-sm btn-success rounded-pill px-3">
+                                            <button type="submit" class="btn btn-outline-success btn-sm px-3 font-bold rounded-pill btn-pill-action">
                                                 <i class="bi bi-check-lg me-1"></i>{{ __('Approve') }}
                                             </button>
                                         </form>
-
+ 
                                         <form action="{{ route('personnel.leave-applications.status', $app->id) }}" method="POST" onsubmit="return confirm('Reject this leave application?');">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="status" value="rejected">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                            <button type="submit" class="btn btn-outline-success btn-sm px-3 font-bold rounded-pill btn-pill-action">
                                                 <i class="bi bi-x-lg me-1"></i>{{ __('Reject') }}
                                             </button>
                                         </form>

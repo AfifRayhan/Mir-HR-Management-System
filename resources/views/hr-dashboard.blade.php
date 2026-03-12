@@ -112,16 +112,26 @@
                                                 <span class="small font-bold">{{ $record->employee->first_name }} {{ $record->employee->last_name }}</span>
                                             </div>
                                         </td>
-                                        <td class="small">{{ \Carbon\Carbon::parse($record->in_time)->format('h:i A') }}</td>
+                                        <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}</td>
                                         <td class="small">
-                                            @if($record->late_seconds > 0)
-                                            <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
+                                            @if($record->status == 'absent')
+                                                <span class="text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Absent') }}</span>
+                                            @elseif($record->status == 'leave')
+                                                <span class="text-info"><i class="bi bi-calendar2-range me-1"></i>{{ __('On Leave') }}</span>
+                                            @elseif($record->late_seconds > 0)
+                                                <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
                                             @else
-                                            <span class="text-success">{{ __('On Time') }}</span>
+                                                <span class="text-success"><i class="bi bi-check-circle me-1"></i>{{ __('On Time') }}</span>
                                             @endif
                                         </td>
                                         <td class="pe-4 text-end">
-                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">In</span>
+                                            @if($record->status == 'absent')
+                                                <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">Absent</span>
+                                            @elseif($record->status == 'leave')
+                                                <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">Leave</span>
+                                            @else
+                                                <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">In</span>
+                                            @endif
                                         </td>
                                     </tr>
                                     @empty
@@ -148,7 +158,7 @@
                                     <div class="small text-warning-emphasis">{{ __('New Applications') }}</div>
                                 </div>
                             </div>
-                            <a href="{{ route('personnel.leave-applications.index') }}" class="btn btn-success btn-sm text-white px-3 font-bold rounded-pill btn-pill-action">{{ __('Process') }}</a>
+                            <a href="{{ route('personnel.leave-applications.index') }}" class="btn btn-outline-success btn-sm px-3 font-bold rounded-pill btn-pill-action">{{ __('Process') }}</a>
                         </div>
                     </div>
 

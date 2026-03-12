@@ -20,7 +20,7 @@ class LeaveApplicationController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
-        $applications = LeaveApplication::with(['employee.user', 'leaveType'])
+        $applications = LeaveApplication::with(['employee.user', 'leaveType', 'approver'])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -34,13 +34,10 @@ class LeaveApplicationController extends Controller
         ]);
 
         $leaveApplication->status = $request->status;
-
+        $leaveApplication->approved_by = Auth::id();
+        $leaveApplication->approved_at = now();
+ 
         if ($request->status === 'approved') {
-            /** @var \App\Models\User $user */
-            $user = Auth::user();
-            $leaveApplication->approved_by = $user->id;
-            $leaveApplication->approved_at = now();
-
             // Deduct from balance
             $balance = LeaveBalance::where('employee_id', $leaveApplication->employee_id)
                 ->where('leave_type_id', $leaveApplication->leave_type_id)
@@ -74,7 +71,7 @@ class LeaveApplicationController extends Controller
         // Get IDs of all direct reports
         $directReportIds = Employee::where('reporting_manager_id', $employee->id)->pluck('id');
 
-        $applications = LeaveApplication::with(['employee.user', 'leaveType'])
+        $applications = LeaveApplication::with(['employee.user', 'leaveType', 'approver'])
             ->whereIn('employee_id', $directReportIds)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -93,7 +90,7 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'Only employees can access this page.');
         }
 
-        $applications = LeaveApplication::with('leaveType')
+        $applications = LeaveApplication::with(['leaveType', 'approver'])
             ->where('employee_id', $employee->id)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -130,10 +127,10 @@ class LeaveApplicationController extends Controller
         }
 
         $leaveApplication->status = $request->status;
-
+        $leaveApplication->approved_by = $user->id;
+        $leaveApplication->approved_at = now();
+ 
         if ($request->status === 'approved') {
-            $leaveApplication->approved_by = $user->id;
-            $leaveApplication->approved_at = now();
 
             $balance = LeaveBalance::where('employee_id', $leaveApplication->employee_id)
                 ->where('leave_type_id', $leaveApplication->leave_type_id)
@@ -164,7 +161,7 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'Only employees can access this page.');
         }
 
-        $applications = LeaveApplication::with('leaveType')
+        $applications = LeaveApplication::with(['leaveType', 'approver'])
             ->where('employee_id', $employee->id)
             ->orderBy('created_at', 'desc')
             ->get();
@@ -197,6 +194,7 @@ class LeaveApplicationController extends Controller
             'to_date' => 'required|date|after_or_equal:from_date',
             'reason' => 'required|string',
             'leave_address' => 'nullable|string',
+            'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
         ]);
 
         $fromDate = Carbon::parse($request->from_date);
@@ -242,6 +240,13 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'Insufficient leave balance.');
         }
 
+        $documentPath = null;
+        if ($request->hasFile('supporting_document')) {
+            $file = $request->file('supporting_document');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $documentPath = $file->storeAs('supporting_documents', $fileName, 'public');
+        }
+
         LeaveApplication::create([
             'employee_id' => $employee->id,
             'leave_type_id' => $request->leave_type_id,
@@ -250,6 +255,7 @@ class LeaveApplicationController extends Controller
             'total_days' => $totalDays,
             'reason' => $request->reason,
             'leave_address' => $request->leave_address,
+            'supporting_document' => $documentPath,
             'status' => 'pending',
         ]);
 
