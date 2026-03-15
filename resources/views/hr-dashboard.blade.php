@@ -82,6 +82,58 @@
                 </div>
             </div>
 
+            <!-- General HR Metrics -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="hr-metric-card">
+                        <div class="metric-icon bg-primary-soft text-primary">
+                            <i class="bi bi-people-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">{{ __('Total Employee') }}</div>
+                            <div class="metric-value">{{ $totalEmployees }}</div>
+                            <div class="metric-sub">{{ __('Registered staff') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="hr-metric-card">
+                        <div class="metric-icon bg-info-soft text-info">
+                            <i class="bi bi-building-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">{{ __('Total Dept.') }}</div>
+                            <div class="metric-value">{{ $totalDepartments }}</div>
+                            <div class="metric-sub">{{ __('Active Dept.') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="hr-metric-card">
+                        <div class="metric-icon bg-success-soft text-success">
+                            <i class="bi bi-award-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">{{ __('Total Grade') }}</div>
+                            <div class="metric-value">{{ $totalGrades }}</div>
+                            <div class="metric-sub">{{ __('Pay grade levels') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="hr-metric-card">
+                        <div class="metric-icon bg-warning-soft text-warning">
+                            <i class="bi bi-geo-alt-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">{{ __('Total Office') }}</div>
+                            <div class="metric-value">{{ $totalOffices }}</div>
+                            <div class="metric-sub">{{ __('Work locations') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Content Panels -->
             <div class="row g-4 mb-4">
                 <!-- Recent Attendance Summary -->
@@ -115,22 +167,22 @@
                                         <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}</td>
                                         <td class="small">
                                             @if($record->status == 'absent')
-                                                <span class="text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Absent') }}</span>
+                                            <span class="text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Absent') }}</span>
                                             @elseif($record->status == 'leave')
-                                                <span class="text-info"><i class="bi bi-calendar2-range me-1"></i>{{ __('On Leave') }}</span>
+                                            <span class="text-info"><i class="bi bi-calendar2-range me-1"></i>{{ __('On Leave') }}</span>
                                             @elseif($record->late_seconds > 0)
-                                                <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
+                                            <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ __('Late') }} ({{ $record->late_timing }})</span>
                                             @else
-                                                <span class="text-success"><i class="bi bi-check-circle me-1"></i>{{ __('On Time') }}</span>
+                                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>{{ __('On Time') }}</span>
                                             @endif
                                         </td>
                                         <td class="pe-4 text-end">
                                             @if($record->status == 'absent')
-                                                <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">Absent</span>
+                                            <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">Absent</span>
                                             @elseif($record->status == 'leave')
-                                                <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">Leave</span>
+                                            <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">Leave</span>
                                             @else
-                                                <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">In</span>
+                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">In</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -180,6 +232,35 @@
                         </ul>
                     </div>
 
+                    <!-- Upcoming Birthdays -->
+                    <div class="hr-panel mb-4">
+                        <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-gift me-2 text-danger"></i>{{ __('Upcoming Birthdays') }}</h6>
+                        <ul class="hr-list px-2">
+                            @forelse($upcomingBirthdays as $birthdayEmp)
+                            <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
+                                        {{ strtoupper(substr($birthdayEmp->first_name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->first_name }} {{ $birthdayEmp->last_name }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
+                                    </div>
+                                </div>
+                                @if($birthdayEmp->days_until_birthday === 0)
+                                <span class="badge bg-danger-soft text-danger align-self-center" style="font-size: 0.7rem;">{{ __('Today!') }}</span>
+                                @elseif($birthdayEmp->days_until_birthday === 1)
+                                <span class="badge bg-warning-soft text-warning align-self-center" style="font-size: 0.7rem;">{{ __('Tomorrow') }}</span>
+                                @else
+                                <span class="badge bg-light text-dark align-self-center" style="font-size: 0.7rem;">In {{ $birthdayEmp->days_until_birthday }} days</span>
+                                @endif
+                            </li>
+                            @empty
+                            <li class="small text-center text-muted">{{ __('No upcoming birthdays.') }}</li>
+                            @endforelse
+                        </ul>
+                    </div>
+
                     <!-- Notices & Events -->
                     <div class="hr-panel mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -192,9 +273,9 @@
                                 <div class="d-flex justify-content-between align-items-start mb-1">
                                     <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
                                     @if($notice->type === 'event')
-                                        <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
+                                    <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
                                     @else
-                                        <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
+                                    <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
                                     @endif
                                 </div>
                                 <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ Str::limit($notice->content, 80) }}</p>

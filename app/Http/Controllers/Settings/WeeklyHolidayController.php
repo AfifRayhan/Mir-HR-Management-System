@@ -8,27 +8,42 @@ use Illuminate\Http\Request;
 
 class WeeklyHolidayController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = \App\Models\Employee::where('user_id', $user->id)->first();
-        $weeklyHolidays = WeeklyHoliday::all();
+        
+        $offices = \App\Models\Office::orderBy('name')->get();
+        $officeId = $request->input('office_id');
+        
+        // System defaults if officeId is empty
+        $weeklyHolidays = WeeklyHoliday::where('office_id', $officeId ?: null)->get();
 
-        return view('settings.holidays.weekly', compact('weeklyHolidays', 'user', 'roleName', 'employee'));
+        // If specific office has no config yet, show global default but don't save yet
+        if ($weeklyHolidays->isEmpty() && $officeId) {
+            $weeklyHolidays = WeeklyHoliday::whereNull('office_id')->get();
+        }
+
+        return view('settings.holidays.weekly', compact('weeklyHolidays', 'user', 'roleName', 'employee', 'offices', 'officeId'));
     }
 
     public function update(Request $request)
     {
+        $officeId = $request->input('office_id') ?: null;
         $holidays = $request->input('holidays', []);
 
-        WeeklyHoliday::query()->update(['is_holiday' => false]);
+        $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-        if (!empty($holidays)) {
-            WeeklyHoliday::whereIn('day_name', $holidays)->update(['is_holiday' => true]);
+        foreach ($days as $day) {
+            WeeklyHoliday::updateOrCreate(
+                ['day_name' => $day, 'office_id' => $officeId],
+                ['is_holiday' => in_array($day, $holidays)]
+            );
         }
 
-        return redirect()->back()->with('success', 'Weekly holidays updated successfully.');
+        return redirect()->route('settings.holidays.weekly.index', ['office_id' => $officeId])
+            ->with('success', 'Weekly holidays updated successfully.');
     }
 }

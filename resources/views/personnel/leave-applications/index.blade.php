@@ -33,6 +33,7 @@
                                 <th>{{ __('Duration') }}</th>
                                 <th>{{ __('Days') }}</th>
                                 <th>{{ __('Reason') }}</th>
+                                <th>{{ __('Address') }}</th>
                                 <th>{{ __('Doc') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th>{{ __('Action By') }}</th>
@@ -64,6 +65,11 @@
                                 <td>
                                     <span class="d-inline-block text-truncate small text-muted" style="max-width: 150px;" title="{{ $app->reason }}">
                                         {{ $app->reason }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="d-inline-block text-truncate small text-muted" style="max-width: 150px;" title="{{ $app->leave_address }}">
+                                        {{ $app->leave_address ?: '--' }}
                                     </span>
                                 </td>
                                 <td>

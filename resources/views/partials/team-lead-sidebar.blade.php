@@ -42,9 +42,16 @@
                         </li>
                         <li>
                             <a href="{{ route('team-lead.leave-applications.index') }}"
-                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave-applications.*') ? 'active' : '' }}">
+                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave-applications.index') ? 'active' : '' }}">
                                 <i class="bi bi-file-earmark-text"></i>
                                 <span>{{ __('Applications') }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('team-lead.leave-applications.history') }}"
+                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave-applications.history') ? 'active' : '' }}">
+                                <i class="bi bi-clock-history"></i>
+                                <span>{{ __('History') }}</span>
                             </a>
                         </li>
                     </ul>

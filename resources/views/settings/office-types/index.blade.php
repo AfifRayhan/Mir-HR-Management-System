@@ -84,7 +84,7 @@
                                         <th style="width: 80px;">{{ __('Order') }}</th>
                                         <th>{{ __('Name') }}</th>
                                         <th>{{ __('Description') }}</th>
-                                        <th class="text-center">{{ __('Actions') }}</th>
+                                        <th class="text-end pe-4">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,16 +93,16 @@
                                         <td><span class="badge bg-secondary rounded-pill px-3">{{ $type->order_number }}</span></td>
                                         <td class="fw-bold text-primary">{{ $type->name }}</td>
                                         <td><span class="small text-muted">{{ Str::limit($type->description, 50) }}</span></td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <button class="btn btn-link text-primary p-1" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $type->id }}">
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $type->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <?php $statement = "Are you sure? This will fail if offices are assigned to this type."; ?>
+                                                @php $statement = "Are you sure? This will fail if offices are assigned to this type."; @endphp
                                                 <form action="{{ route('settings.office-types.destroy', $type) }}" method="POST" onsubmit="return confirm('{{ $statement }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-link text-danger p-1" title="{{ __('Delete') }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>

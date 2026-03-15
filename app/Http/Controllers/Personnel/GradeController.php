@@ -10,8 +10,13 @@ class GradeController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = \App\Models\Employee::where('user_id', $user->id)->first();
+
         $grades = Grade::all();
-        return view('personnel.grades.index', compact('grades'));
+        return view('personnel.grades.index', compact('grades', 'user', 'roleName', 'employee'));
     }
 
     public function create()

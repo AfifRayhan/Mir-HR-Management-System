@@ -85,10 +85,14 @@
                     </div>
                 </div>
 
-                <div class="info-grid" style="grid-template-columns: 1fr;">
+                <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
                     <div class="info-box">
                         <label>{{ __('Local Address') }}</label>
                         <div class="value">{{ $employee ? $employee->address : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Office Address') }}</label>
+                        <div class="value">{{ $employee && $employee->office ? $employee->office->address : 'N/A' }}</div>
                     </div>
                 </div>
             </div>

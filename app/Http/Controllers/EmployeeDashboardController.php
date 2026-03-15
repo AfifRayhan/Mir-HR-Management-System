@@ -47,6 +47,12 @@ class EmployeeDashboardController extends Controller
         $pendingLeaves = 0;
         $rejectedLeaves = 0;
         $totalLeaveDays = 0;
+        
+        $prevPresentDays = 0;
+        $prevLateDays = 0;
+        $prevAbsentDays = 0;
+        $prevTotalWorkingDays = 0;
+        $prevLeaveDays = 0;
 
         if ($employee) {
             // Attendance data for current month
@@ -78,6 +84,36 @@ class EmployeeDashboardController extends Controller
                 ->sum('total_days');
 
             $absentDays = max(0, $totalWorkingDays - $presentDays - $leaveDaysThisMonth);
+
+            // Previous month attendance breakdown
+            $startOfLastMonth = $today->copy()->subMonth()->startOfMonth();
+            $endOfLastMonth = $today->copy()->subMonth()->endOfMonth();
+            
+            $prevAttendanceRecords = AttendanceRecord::where('employee_id', $employee->id)
+                ->whereBetween('date', [$startOfLastMonth, $endOfLastMonth])
+                ->get();
+                
+            $prevPresentDays = $prevAttendanceRecords->whereIn('status', ['present', 'late'])->count();
+            $prevLateDays = $prevAttendanceRecords->where('status', 'late')->count();
+            
+            $prevTotalWorkingDays = 0;
+            $checkDate = $startOfLastMonth->copy();
+            while ($checkDate->lte($endOfLastMonth)) {
+                if (!in_array($checkDate->dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY])) {
+                    $prevTotalWorkingDays++;
+                }
+                $checkDate->addDay();
+            }
+            
+            $prevLeaveDays = LeaveApplication::where('employee_id', $employee->id)
+                ->where('status', 'approved')
+                ->where(function ($q) use ($startOfLastMonth, $endOfLastMonth) {
+                    $q->whereBetween('from_date', [$startOfLastMonth, $endOfLastMonth])
+                      ->orWhereBetween('to_date', [$startOfLastMonth, $endOfLastMonth]);
+                })
+                ->sum('total_days');
+                
+            $prevAbsentDays = max(0, $prevTotalWorkingDays - $prevPresentDays - $prevLeaveDays);
 
             // Recent attendance records (last 7 working days)
             $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
@@ -153,6 +189,25 @@ class EmployeeDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Upcoming Birthdays
+        $upcomingBirthdays = Employee::whereNotNull('date_of_birth')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($employee) use ($today) {
+                $birthday = Carbon::parse($employee->date_of_birth);
+                $birthdayThisYear = $birthday->copy()->year($today->year);
+                
+                if ($birthdayThisYear->isBefore($today) && !$birthdayThisYear->isSameDay($today)) {
+                    $birthdayThisYear->addYear();
+                }
+                
+                $employee->days_until_birthday = $today->diffInDays($birthdayThisYear);
+                $employee->next_birthday = $birthdayThisYear;
+                return $employee;
+            })
+            ->sortBy('days_until_birthday')
+            ->take(3);
+
         return view('employee-dashboard', compact(
             'user',
             'roleName',
@@ -161,6 +216,10 @@ class EmployeeDashboardController extends Controller
             'lateDays',
             'absentDays',
             'totalWorkingDays',
+            'prevPresentDays',
+            'prevLateDays',
+            'prevAbsentDays',
+            'prevTotalWorkingDays',
             'recentAttendance',
             'approvedLeaves',
             'pendingLeaves',
@@ -169,6 +228,7 @@ class EmployeeDashboardController extends Controller
             'totalUsedLeave',
             'totalAvailableLeave',
             'upcomingHolidays',
+            'upcomingBirthdays',
             'activeNotices'
         ));
     }

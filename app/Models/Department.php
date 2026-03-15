@@ -14,6 +14,7 @@ class Department extends Model
         'short_name',
         'incharge_id',
         'description',
+        'order_sequence',
     ];
 
     public function incharge()

@@ -74,27 +74,18 @@
                                     </td>
                                     <td class="small">{{ $notice->creator->name }}</td>
                                     <td class="pe-4 text-end">
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
-                                                <li>
-                                                    <a class="dropdown-item" href="{{ route('settings.notices.edit', $notice) }}">
-                                                        <i class="bi bi-pencil me-2 text-primary"></i>{{ __('Edit') }}
-                                                    </a>
-                                                </li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li>
-                                                    <form action="{{ route('settings.notices.destroy', $notice) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this notice?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="bi bi-trash me-2"></i>{{ __('Delete') }}
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-outline-primary border-0" href="{{ route('settings.notices.edit', $notice) }}" title="{{ __('Edit') }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            @php $confirmMsg = __('Are you sure you want to delete this notice?'); @endphp
+                                            <form action="{{ route('settings.notices.destroy', $notice) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

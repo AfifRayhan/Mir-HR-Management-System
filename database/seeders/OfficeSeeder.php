@@ -29,8 +29,20 @@ class OfficeSeeder extends Seeder
             ['name' => 'BTS Communications (BD) Ltd.', 'office_type_id' => $branchOffice->id, 'order_number' => 4],
         ];
 
-        foreach ($offices as $office) {
-            Office::firstOrCreate(['name' => $office['name']], $office);
+        foreach ($offices as $officeData) {
+            $office = Office::updateOrCreate(
+                ['name' => $officeData['name']], 
+                $officeData
+            );
+
+            // Fill address, phone, email if they are empty
+            if (empty($office->address) || empty($office->phone) || empty($office->email)) {
+                $office->update([
+                    'address' => $office->address ?: fake()->address(),
+                    'phone' => $office->phone ?: fake()->phoneNumber(),
+                    'email' => $office->email ?: fake()->unique()->companyEmail(),
+                ]);
+            }
         }
     }
 }

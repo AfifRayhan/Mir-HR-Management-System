@@ -10,8 +10,13 @@ class DesignationController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = \App\Models\Employee::where('user_id', $user->id)->first();
+
         $designations = Designation::orderBy('priority', 'desc')->get();
-        return view('personnel.designations.index', compact('designations'));
+        return view('personnel.designations.index', compact('designations', 'user', 'roleName', 'employee'));
     }
 
     public function create()

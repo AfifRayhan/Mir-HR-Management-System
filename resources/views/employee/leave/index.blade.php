@@ -101,6 +101,11 @@
                                 <textarea name="reason" class="form-control rounded-3" rows="3" required placeholder="{{ __('Why are you applying for leave?') }}"></textarea>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Leave Address') }}</label>
+                                <input type="text" name="leave_address" class="form-control rounded-3" placeholder="{{ __('Where will you be during this leave?') }}">
+                            </div>
+
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-muted">{{ __('Supporting Documents') }}</label>
                                 <input type="file" name="supporting_document" class="form-control rounded-3 shadow-sm" accept=".pdf,image/*,.doc,.docx">
@@ -119,7 +124,31 @@
                 <!-- My Applications History -->
                 <div class="col-lg-8">
                     <div class="emp-panel">
-                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                            <form action="{{ route('employee.leave.index') }}" method="GET" class="d-flex gap-2">
+                                <select name="month" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Months') }}</option>
+                                    @for($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
+                                        {{ date('M', mktime(0, 0, 0, $i, 1)) }}
+                                    </option>
+                                    @endfor
+                                </select>
+                                <select name="year" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Years') }}</option>
+                                    @for($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                    <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>
+                                        {{ $i }}
+                                    </option>
+                                    @endfor
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3">{{ __('Filter') }}</button>
+                                @if(request()->hasAny(['month', 'year']))
+                                <a href="{{ route('employee.leave.index') }}" class="btn btn-sm btn-light rounded-3">{{ __('Clear') }}</a>
+                                @endif
+                            </form>
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table emp-table">
@@ -129,6 +158,7 @@
                                         <th>{{ __('Duration') }}</th>
                                         <th>{{ __('Days') }}</th>
                                         <th>{{ __('Reason') }}</th>
+                                        <th>{{ __('Address') }}</th>
                                         <th>{{ __('Doc') }}</th>
                                         <th>{{ __('Status') }}</th>
                                         <th>{{ __('Approved By') }}</th>
@@ -147,6 +177,9 @@
                                             <span class="d-inline-block text-truncate small" style="max-width: 200px;" title="{{ $app->reason }}">{{ $app->reason }}</span>
                                         </td>
                                         <td>
+                                            <span class="d-inline-block text-truncate small text-muted" style="max-width: 150px;" title="{{ $app->leave_address }}">{{ $app->leave_address ?: '--' }}</span>
+                                        </td>
+                                        <td>
                                             @if($app->supporting_document)
                                             <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none">
                                                 <i class="bi bi-file-earmark-medical me-1"></i>{{ __('Doc') }}
@@ -159,17 +192,39 @@
                                             @if($app->status === 'approved')
                                             <span class="badge bg-success-soft text-success"><i class="bi bi-check-circle me-1"></i>{{ __('Approved') }}</span>
                                             @elseif($app->status === 'rejected')
-                                            <span class="badge bg-danger-soft text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Rejected') }}</span>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-danger-soft text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Rejected') }}</span>
+                                                @if($app->remarks)
+                                                <button type="button" class="btn btn-link p-0 text-danger" data-bs-toggle="modal" data-bs-target="#viewRemarksModal{{ $app->id }}" title="{{ __('View Remarks') }}">
+                                                    <i class="bi bi-info-circle"></i>
+                                                </button>
+
+                                                <!-- View Remarks Modal -->
+                                                <div class="modal fade" id="viewRemarksModal{{ $app->id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-sm">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header py-2">
+                                                                <h6 class="modal-title">{{ __('Approval Remarks') }}</h6>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body py-3">
+                                                                <p class="mb-0 small text-dark">{{ $app->remarks }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endif
+                                            </div>
                                             @else
                                             <span class="badge bg-warning-soft text-warning"><i class="bi bi-hourglass-split me-1"></i>{{ __('Pending') }}</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if($app->approver)
-                                                <div class="small fw-bold text-gray-800">{{ $app->approver->name ?: __('HR Admin') }}</div>
-                                                <div class="small text-muted" style="font-size: 0.7rem;">{{ $app->approved_at?->format('d M, h:i A') }}</div>
+                                            <div class="small fw-bold text-gray-800">{{ $app->approver->name ?: __('HR Admin') }}</div>
+                                            <div class="small text-muted" style="font-size: 0.7rem;">{{ $app->approved_at?->format('d M, h:i A') }}</div>
                                             @else
-                                                <span class="text-muted small">--</span>
+                                            <span class="text-muted small">--</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -184,6 +239,12 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        @if($applications->hasPages())
+                        <div class="mt-4 border-top pt-3">
+                            {{ $applications->appends(request()->query())->links('pagination::bootstrap-5') }}
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

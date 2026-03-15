@@ -74,7 +74,22 @@ class MenuItemSeeder extends Seeder
 
         foreach ($leaveChildren as $child) {
             $child['parent_id'] = $menuModels['leave']->id;
-            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Define additional leave items (Team Lead / Employee) under the same Leave parent
+        $additionalLeaveChildren = [
+            ['name' => 'My Applications', 'slug' => 'employee-leave-self',    'icon' => 'bi-journal-text',     'route_name' => 'employee.leave.index',       'sort_order' => 4],
+            ['name' => 'Leave Request',   'slug' => 'team-lead-leave-request', 'icon' => 'bi-journal-plus',     'route_name' => 'team-lead.leave.index',      'sort_order' => 5],
+            ['name' => 'Team Applications', 'slug' => 'team-lead-leave-apps', 'icon' => 'bi-people-fill',       'route_name' => 'team-lead.leave-applications.index', 'sort_order' => 6],
+        ];
+
+        foreach ($additionalLeaveChildren as $child) {
+            $child['parent_id'] = $menuModels['leave']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
             );
@@ -116,6 +131,24 @@ class MenuItemSeeder extends Seeder
             );
         }
 
+        // Define child menu items under Employee Dashboard
+        $employeeDashboardChildren = [
+            ['name' => 'Dashboard',       'slug' => 'employee-dashboard-main', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
+            ['name' => 'My Profile',      'slug' => 'employee-profile',       'icon' => 'bi-person-vcard',   'route_name' => 'employee-profile',   'sort_order' => 2],
+            ['name' => 'Attendances',     'slug' => 'employee-attendance',    'icon' => 'bi-clock',          'route_name' => 'employee.attendance.index', 'sort_order' => 3],
+            ['name' => 'Leave Requests',  'slug' => 'employee-leave',         'icon' => 'bi-calendar2-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4],
+            ['name' => 'Payslips',        'slug' => 'employee-payslips',      'icon' => 'bi-envelope-paper', 'route_name' => null,                 'sort_order' => 5],
+            ['name' => 'Notifications',   'slug' => 'employee-notifications', 'icon' => 'bi-bell',           'route_name' => null,                 'sort_order' => 6],
+        ];
+
+        foreach ($employeeDashboardChildren as $child) {
+            $child['parent_id'] = $menuModels['employee-dashboard']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
         // Define core roles
         $roles = [
             'employee' => [
@@ -140,43 +173,35 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // HR Admin gets HR Dashboard + all other items EXCEPT Employee Dashboard
-        $adminMenuIds = MenuItem::where('slug', '!=', 'employee-dashboard')->pluck('id')->all();
+        // HR Admin gets HR Dashboard + all other items EXCEPT Employee Dashboard and specific lead/employee leave items
+        $adminMenuIds = MenuItem::whereNotIn('slug', [
+            'employee-dashboard',
+            'employee-leave-self',
+            'team-lead-leave-request',
+            'team-lead-leave-apps'
+        ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Employee Dashboard only
-        $roleModels['employee']->menuItems()->sync([
-            $menuModels['employee-dashboard']->id,
-        ]);
+        // Employee gets Employee Dashboard + all its children
+        $employeeMenuIds = MenuItem::where('slug', 'employee-dashboard')
+            ->orWhere('parent_id', $menuModels['employee-dashboard']->id)
+            ->pluck('id')->all();
+        $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 
-        // Team Lead gets Employee Dashboard, Personnel, Attendances + Leave sub-menu
-        // Add team-lead specific leave menu items
-        $teamLeadLeaveChildren = [
-            ['name' => 'Leave Request',  'slug' => 'team-lead-leave-request',  'icon' => 'bi-journal-plus',      'route_name' => 'team-lead.leave.index',              'sort_order' => 1],
-            ['name' => 'Applications',   'slug' => 'team-lead-leave-apps',     'icon' => 'bi-file-earmark-text', 'route_name' => 'team-lead.leave-applications.index', 'sort_order' => 2],
-        ];
+        // Cleanup old team-lead-leave parent if it exists
+        MenuItem::where('slug', 'team-lead-leave')->delete();
 
-        // Create a parent "Leave" menu item for team lead if not exists
-        $teamLeadLeaveParent = MenuItem::firstOrCreate(
-            ['slug' => 'team-lead-leave'],
-            ['name' => 'Leave', 'icon' => 'bi-calendar2-minus', 'route_name' => null, 'sort_order' => 4]
+        $teamLeadMenuIds = array_merge(
+            $employeeMenuIds, 
+            [
+                $menuModels['personnel']->id,
+                $menuModels['attendances']->id,
+                $menuModels['leave']->id,
+                $menuModels['team-lead-leave-request']->id,
+                $menuModels['team-lead-leave-apps']->id,
+            ]
         );
 
-        foreach ($teamLeadLeaveChildren as $child) {
-            $child['parent_id'] = $teamLeadLeaveParent->id;
-            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
-                ['slug' => $child['slug']],
-                $child
-            );
-        }
-
-        $roleModels['team_lead']->menuItems()->sync([
-            $menuModels['employee-dashboard']->id,
-            $menuModels['personnel']->id,
-            $menuModels['attendances']->id,
-            $teamLeadLeaveParent->id,
-            $menuModels['team-lead-leave-request']->id,
-            $menuModels['team-lead-leave-apps']->id,
-        ]);
+        $roleModels['team_lead']->menuItems()->sync($teamLeadMenuIds);
     }
 }

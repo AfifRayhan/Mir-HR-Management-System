@@ -40,7 +40,7 @@
                                     <th>{{ __('Device UID') }}</th>
                                     <th>{{ __('API Token') }}</th>
                                     <th>{{ __('Last Sync') }}</th>
-                                    <th class="text-end">{{ __('Actions') }}</th>
+                                    <th class="text-end pe-4">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,19 +66,23 @@
                                         <span class="badge bg-secondary">{{ __('Never') }}</span>
                                         @endif
                                     </td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-primary me-1"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editDeviceModal{{ $device->id }}">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <form action="{{ route('settings.devices.destroy', $device) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
-                                                <i class="bi bi-trash"></i>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary border-0"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editDeviceModal{{ $device->id }}"
+                                                title="{{ __('Edit') }}">
+                                                <i class="bi bi-pencil-square"></i>
                                             </button>
-                                        </form>
+                                            @php $confirmMsg = __('Are you sure you want to delete this device?'); @endphp
+                                            <form action="{{ route('settings.devices.destroy', $device) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
 

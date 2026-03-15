@@ -9,6 +9,8 @@ use App\Models\AttendanceRecord;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
 use App\Models\Notice;
+use App\Models\Grade;
+use App\Models\Office;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -103,6 +105,27 @@ class HrDashboardController extends Controller
         $totalEmployees = Employee::count();
         $totalDepartments = Department::count();
         $totalSections = Section::count();
+        $totalGrades = Grade::count();
+        $totalOffices = Office::count();
+
+        // Upcoming Birthdays
+        $upcomingBirthdays = Employee::whereNotNull('date_of_birth')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($employee) use ($today) {
+                $birthday = Carbon::parse($employee->date_of_birth);
+                $birthdayThisYear = $birthday->copy()->year($today->year);
+                
+                if ($birthdayThisYear->isBefore($today) && !$birthdayThisYear->isSameDay($today)) {
+                    $birthdayThisYear->addYear();
+                }
+                
+                $employee->days_until_birthday = $today->diffInDays($birthdayThisYear);
+                $employee->next_birthday = $birthdayThisYear;
+                return $employee;
+            })
+            ->sortBy('days_until_birthday')
+            ->take(3);
 
         // Active Notices & Events
         $activeNotices = Notice::active()->orderBy('created_at', 'desc')->get();
@@ -115,6 +138,8 @@ class HrDashboardController extends Controller
             'activeEmployeesCount',
             'totalDepartments',
             'totalSections',
+            'totalGrades',
+            'totalOffices',
             'presentToday',
             'absentToday',
             'lateToday',
@@ -122,6 +147,7 @@ class HrDashboardController extends Controller
             'pendingLeavesCount',
             'recentAttendance',
             'upcomingHolidays',
+            'upcomingBirthdays',
             'activeNotices'
         ));
     }

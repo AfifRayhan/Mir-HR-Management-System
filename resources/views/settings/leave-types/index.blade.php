@@ -154,16 +154,16 @@
                                             <span class="text-danger"><i class="bi bi-x-circle-fill"></i> {{ __('No') }}</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <button type="button" class="btn btn-link text-primary p-1" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $leaveType->id }}">
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $leaveType->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <?php $statement = "Are you sure you want to delete this leave type?"; ?>
+                                                @php $statement = __('Are you sure you want to delete this leave type?'); @endphp
                                                 <form action="{{ route('settings.leave-types.destroy', $leaveType->id) }}" method="POST" onsubmit="return confirm('{{ $statement }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-link text-danger p-1" title="{{ __('Delete') }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>

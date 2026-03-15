@@ -90,16 +90,7 @@
                             </button>
                         </div>
 
-                        <div class="row justify-content-center">
-                            @if (Route::has('register'))
-                            <p class="small text-muted mb-0 text-center">
-                                {{ __("Don't have an account?") }}
-                                <a href="{{ route('register') }}" class="text-decoration-underline text-dark">
-                                    {{ __('Register') }}
-                                </a>
-                            </p>
-                            @endif
-                        </div>
+
                     </form>
                 </div>
             </div>

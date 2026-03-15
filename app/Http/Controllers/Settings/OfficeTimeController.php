@@ -11,7 +11,8 @@ class OfficeTimeController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
         $officeTimes = OfficeTime::all();
@@ -21,7 +22,8 @@ class OfficeTimeController extends Controller
 
     public function create()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
@@ -38,6 +40,7 @@ class OfficeTimeController extends Controller
             'absent_after' => 'nullable',
             'lunch_start'  => 'nullable',
             'lunch_end'    => 'nullable',
+            'remarks'      => 'nullable|string|max:100',
         ]);
 
         OfficeTime::create($validated);
@@ -46,7 +49,8 @@ class OfficeTimeController extends Controller
 
     public function edit(OfficeTime $officeTime)
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
@@ -63,6 +67,7 @@ class OfficeTimeController extends Controller
             'absent_after' => 'nullable',
             'lunch_start'  => 'nullable',
             'lunch_end'    => 'nullable',
+            'remarks'      => 'nullable|string|max:100',
         ]);
 
         $officeTime->update($validated);

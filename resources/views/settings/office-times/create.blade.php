@@ -68,6 +68,11 @@
                                     <label class="form-label small fw-bold text-muted">{{ __('Lunch End') }}</label>
                                     <input type="time" name="lunch_end" class="form-control rounded-3">
                                 </div>
+
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-muted">{{ __('Remarks') }}</label>
+                                    <textarea name="remarks" class="form-control rounded-3" rows="2" maxlength="100" placeholder="{{ __('Optional remarks (max 100 characters)') }}"></textarea>
+                                </div>
                             </div>
 
                             <div class="mt-5 border-top pt-4 d-flex justify-content-between">

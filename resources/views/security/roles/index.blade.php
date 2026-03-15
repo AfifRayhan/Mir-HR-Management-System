@@ -51,18 +51,20 @@
                                 <td class="text-muted">{{ $role->description ?? '—' }}</td>
                                 <td><span class="hr-badge">{{ $role->users_count }}</span></td>
                                 <td><span class="hr-badge hr-badge-info">{{ $role->menu_items_count }}</span></td>
-                                <td class="text-end">
-                                    <a href="{{ route('security.roles.edit', $role) }}" class="btn btn-sm btn-outline-primary me-1">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form action="{{ route('security.roles.destroy', $role) }}" method="POST" class="d-inline"
-                                        onsubmit="return confirm('Are you sure you want to delete this role?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a href="{{ route('security.roles.edit', $role) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        @php $confirmMsg = __('Are you sure you want to delete this role?'); @endphp
+                                        <form action="{{ route('security.roles.destroy', $role) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty

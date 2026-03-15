@@ -23,5 +23,10 @@ class ViewServiceProvider extends ServiceProvider
             $menuService = app(\App\Services\MenuService::class);
             $view->with('sidebarItems', $menuService->getSidebarMenu());
         });
+
+        \Illuminate\Support\Facades\View::composer('partials.employee-sidebar', function ($view) {
+            $menuService = app(\App\Services\MenuService::class);
+            $view->with('sidebarItems', $menuService->getSidebarMenu());
+        });
     }
 }

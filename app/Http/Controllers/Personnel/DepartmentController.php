@@ -11,8 +11,14 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::with('incharge')->get();
-        return view('personnel.departments.index', compact('departments'));
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = Employee::where('user_id', $user->id)->first();
+
+        $departments = Department::with('incharge')->orderBy('order_sequence', 'asc')->get();
+        $employees = Employee::all();
+        return view('personnel.departments.index', compact('departments', 'employees', 'user', 'roleName', 'employee'));
     }
 
     public function create()
@@ -24,10 +30,11 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:100',
-            'short_name'  => 'nullable|string|max:50',
-            'incharge_id' => 'nullable|exists:employees,id',
-            'description' => 'nullable|string',
+            'name'           => 'required|string|max:100',
+            'short_name'     => 'nullable|string|max:50',
+            'incharge_id'    => 'nullable|exists:employees,id',
+            'description'    => 'nullable|string',
+            'order_sequence' => 'nullable|integer',
         ]);
 
         Department::create($validated);
@@ -43,10 +50,11 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:100',
-            'short_name'  => 'nullable|string|max:50',
-            'incharge_id' => 'nullable|exists:employees,id',
-            'description' => 'nullable|string',
+            'name'           => 'required|string|max:100',
+            'short_name'     => 'nullable|string|max:50',
+            'incharge_id'    => 'nullable|exists:employees,id',
+            'description'    => 'nullable|string',
+            'order_sequence' => 'nullable|integer',
         ]);
 
         $department->update($validated);

@@ -124,14 +124,14 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <a href="{{ route('security.users.edit', $u) }}" class="btn btn-sm btn-outline-primary border-0 me-1">
+                                        <a href="{{ route('security.users.edit', $u) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <form action="{{ route('security.users.destroy', $u) }}" method="POST" class="d-inline"
-                                            onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                        @php $confirmMsg = __('Are you sure you want to delete this user?'); @endphp
+                                        <form action="{{ route('security.users.destroy', $u) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

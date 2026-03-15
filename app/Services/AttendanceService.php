@@ -135,7 +135,16 @@ class AttendanceService
         $dayName = $carbonDate->format('l');
 
         // 1. Check Weekly Holidays
+        $hasOfficeConfig = WeeklyHoliday::where('office_id', $employee->office_id)->exists();
+
         $isWeeklyHoliday = WeeklyHoliday::where('day_name', $dayName)
+            ->where(function ($q) use ($hasOfficeConfig, $employee) {
+                if ($hasOfficeConfig) {
+                    $q->where('office_id', $employee->office_id);
+                } else {
+                    $q->whereNull('office_id');
+                }
+            })
             ->where('is_holiday', true)
             ->exists();
 

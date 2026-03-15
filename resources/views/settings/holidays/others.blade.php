@@ -163,7 +163,7 @@
                                         <th>{{ __('Timeline') }}</th>
                                         <th>{{ __('Days') }}</th>
                                         <th class="text-center">{{ __('Status') }}</th>
-                                        <th class="text-center">{{ __('Actions') }}</th>
+                                        <th class="text-end pe-4">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -194,16 +194,16 @@
                                             <span class="hr-status-badge hr-status-inactive">{{ __('Inactive') }}</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <button type="button" class="btn btn-link text-primary p-1" data-bs-toggle="modal" data-bs-target="#editHolidayModal{{ $holiday->id }}" title="{{ __('Edit') }}">
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#editHolidayModal{{ $holiday->id }}" title="{{ __('Edit') }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <?php $statement = 'Are you sure you want to delete this holiday?'; ?>
+                                                @php $statement = 'Are you sure you want to delete this holiday?'; @endphp
                                                 <form action="{{ route('settings.holidays.others.destroy', $holiday->id) }}" method="POST" onsubmit="return confirm('{{ $statement }}')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-link text-danger p-1" title="{{ __('Delete') }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>

@@ -7,12 +7,14 @@ use App\Models\Office;
 use App\Models\OfficeType;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class OfficeController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
@@ -31,7 +33,13 @@ class OfficeController extends Controller
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'order_number' => 'required|integer',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('offices', 'public');
+            $validated['logo'] = $path;
+        }
 
         Office::create($validated);
         return redirect()->back()->with('success', 'Office created successfully.');
@@ -46,7 +54,17 @@ class OfficeController extends Controller
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'order_number' => 'required|integer',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($office->logo) {
+                Storage::disk('public')->delete($office->logo);
+            }
+            $path = $request->file('logo')->store('offices', 'public');
+            $validated['logo'] = $path;
+        }
 
         $office->update($validated);
         return redirect()->back()->with('success', 'Office updated successfully.');

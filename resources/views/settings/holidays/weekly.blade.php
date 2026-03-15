@@ -26,17 +26,36 @@
             <div class="row justify-content-center">
                 <div class="col-md-10">
                     <div class="hr-panel">
-                        <div class="hr-panel-title">
-                            <i class="bi bi-calendar-week me-2"></i>{{ __('Configure Weekly Holidays') }}
+                        <div class="hr-panel-title d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-calendar-week me-2"></i>{{ __('Configure Weekly Holidays') }}</span>
+                            <div style="min-width: 250px;">
+                                <form action="{{ route('settings.holidays.weekly.index') }}" method="GET" id="officeFilterForm">
+                                    <select name="office_id" class="form-select form-select-sm rounded-pill shadow-none" onchange="document.getElementById('officeFilterForm').submit()">
+                                        <option value="">{{ __('System Default') }}</option>
+                                        @foreach($offices as $office)
+                                        <option value="{{ $office->id }}" {{ $officeId == $office->id ? 'selected' : '' }}>
+                                            {{ $office->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </div>
                         </div>
 
                         <div class="hr-panel-subtitle mb-4">
-                            {{ __('Please select the days of the week that should be considered as recurring weekly holidays for the organization.') }}
+                            @if($officeId)
+                                {{ __('Configuring holidays for:') }} <strong>{{ $offices->find($officeId)->name }}</strong>. 
+                            @else
+                                {{ __('Configuring system-wide default holidays.') }}
+                            @endif
+                            <br>
+                            {{ __('Please select the days of the week that should be considered as recurring weekly holidays.') }}
                         </div>
 
                         <form action="{{ route('settings.holidays.weekly.update') }}" method="POST">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="office_id" value="{{ $officeId }}">
 
                             <div class="row g-4">
                                 @foreach($weeklyHolidays as $holiday)

@@ -30,17 +30,23 @@ class EmployeeSeeder extends Seeder
 
         // Core Users matching existing Employee records (Updating with office_id)
         $coreEmployees = [
-            ['email' => 'teamlead@example.com', 'code' => 'EMP001', 'first' => 'Nadia', 'last' => 'Khan'],
-            ['email' => 'david.chen@example.com', 'code' => 'EMP002', 'first' => 'David', 'last' => 'Chen'],
-            ['email' => 'employee@example.com', 'code' => 'EMP003', 'first' => 'Rakib', 'last' => 'Islam'],
-            ['email' => 'amir.khan@example.com', 'code' => 'EMP004', 'first' => 'Amir', 'last' => 'Khan'],
-            ['email' => 'linda.okafor@example.com', 'code' => 'EMP005', 'first' => 'Linda', 'last' => 'Okafor'],
-            ['email' => 'marco.rossi@example.com', 'code' => 'EMP006', 'first' => 'Marco', 'last' => 'Rossi'],
+            ['email' => 'teamlead@example.com', 'code' => 'EMP001', 'first' => 'Nadia', 'last' => 'Khan', 'manager_code' => null],
+            ['email' => 'david.chen@example.com', 'code' => 'EMP002', 'first' => 'David', 'last' => 'Chen', 'manager_code' => null],
+            ['email' => 'employee@example.com', 'code' => 'EMP003', 'first' => 'Rakib', 'last' => 'Islam', 'manager_code' => 'EMP001'],
+            ['email' => 'amir.khan@example.com', 'code' => 'EMP004', 'first' => 'Amir', 'last' => 'Khan', 'manager_code' => 'EMP001'],
+            ['email' => 'linda.okafor@example.com', 'code' => 'EMP005', 'first' => 'Linda', 'last' => 'Okafor', 'manager_code' => 'EMP004'],
+            ['email' => 'marco.rossi@example.com', 'code' => 'EMP006', 'first' => 'Marco', 'last' => 'Rossi', 'manager_code' => 'EMP004'],
         ];
 
         foreach ($coreEmployees as $index => $data) {
             if ($user = User::where('email', $data['email'])->first()) {
                 $office = $offices[$index % $officeCount];
+
+                $managerId = null;
+                if (!empty($data['manager_code'])) {
+                    $manager = Employee::where('employee_code', $data['manager_code'])->first();
+                    $managerId = $manager ? $manager->id : null;
+                }
 
                 Employee::updateOrCreate(
                     ['employee_code' => $data['code']],
@@ -48,12 +54,16 @@ class EmployeeSeeder extends Seeder
                         'user_id' => $user->id,
                         'first_name' => $data['first'],
                         'last_name' => $data['last'],
+                        'date_of_birth' => fake()->date('Y-m-d', '-20 years'),
+                        'phone' => fake()->phoneNumber(),
+                        'address' => fake()->address(),
                         'joining_date' => '2021-05-10',
                         'department_id' => $departments->random()->id ?? null,
                         'designation_id' => $designations->random()->id ?? null,
                         'grade_id' => $grades->random()->id ?? null,
                         'office_id' => $office->id,
                         'office_time_id' => $generalShift->id ?? $officeTimes->random()->id,
+                        'reporting_manager_id' => $managerId,
                         'status' => 'active',
                     ]
                 );
@@ -68,8 +78,9 @@ class EmployeeSeeder extends Seeder
             $lastName = fake()->lastName();
             $office = $offices[$i % $officeCount];
 
-            Employee::create([
-                'employee_code' => 'EMP' . str_pad($i, 003, '0', STR_PAD_LEFT),
+            Employee::updateOrCreate(
+                ['employee_code' => 'EMP' . str_pad($i, 003, '0', STR_PAD_LEFT)],
+                [
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'phone' => fake()->phoneNumber(),
@@ -84,7 +95,8 @@ class EmployeeSeeder extends Seeder
                 'office_time_id' => $officeTimes->random()->id ?? null,
                 'reporting_manager_id' => $manager->id ?? null,
                 'status' => 'active',
-            ]);
+                ]
+            );
         }
     }
 }

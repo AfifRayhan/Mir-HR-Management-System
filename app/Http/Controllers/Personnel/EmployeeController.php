@@ -36,19 +36,27 @@ class EmployeeController extends Controller
         if ($request->department_id) {
             $query->where('department_id', $request->department_id);
         }
+        if ($request->section_id) {
+            $query->where('section_id', $request->section_id);
+        }
+        if ($request->designation_id) {
+            $query->where('designation_id', $request->designation_id);
+        }
         if ($request->status) {
             $query->where('status', $request->status);
         }
-
+ 
         // Sorting
         $sortColumn = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
         $query->orderBy($sortColumn, $sortDirection);
-
+ 
         $employees = $query->paginate(10)->withQueryString();
         $departments = Department::all();
-
-        return view('personnel.employees.index', compact('employees', 'departments'));
+        $sections = Section::all();
+        $designations = Designation::all();
+ 
+        return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'designations'));
     }
 
     /**

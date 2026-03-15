@@ -28,20 +28,20 @@
 
             <!-- Filter Bar -->
             <div class="filter-bar">
-                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-3">
-                    <div class="col-md-4">
+                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2">
+                    <div class="col-md-3">
                         <label class="form-label small font-bold text-gray-600">{{ __('Search') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-gray-400">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or Employee ID..." value="{{ request('search') }}">
+                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or ID..." value="{{ request('search') }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Department') }}</label>
                         <select name="department_id" class="form-select">
-                            <option value="">{{ __('All Departments') }}</option>
+                            <option value="">{{ __('All') }}</option>
                             @foreach($departments as $dept)
                             <option value="{{ $dept->id }}" {{ request('department_id') == $dept->id ? 'selected' : '' }}>
                                 {{ $dept->name }}
@@ -49,19 +49,41 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label class="form-label small font-bold text-gray-600">{{ __('Section') }}</label>
+                        <select name="section_id" class="form-select">
+                            <option value="">{{ __('All') }}</option>
+                            @foreach($sections as $sec)
+                            <option value="{{ $sec->id }}" {{ request('section_id') == $sec->id ? 'selected' : '' }}>
+                                {{ $sec->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small font-bold text-gray-600">{{ __('Designation') }}</label>
+                        <select name="designation_id" class="form-select">
+                            <option value="">{{ __('All') }}</option>
+                            @foreach($designations as $des)
+                            <option value="{{ $des->id }}" {{ request('designation_id') == $des->id ? 'selected' : '' }}>
+                                {{ $des->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Status') }}</label>
                         <select name="status" class="form-select">
-                            <option value="">{{ __('All Status') }}</option>
+                            <option value="">{{ __('All') }}</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
                             <option value="resigned" {{ request('status') == 'resigned' ? 'selected' : '' }}>{{ __('Resigned') }}</option>
                         </select>
                     </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-outline-secondary w-100 me-2">
-                            {{ __('Filter') }}
+                    <div class="col-md-1 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-outline-secondary px-2" title="{{ __('Filter') }}">
+                            <i class="bi bi-funnel"></i>
                         </button>
-                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-link text-gray-500 p-0 mb-1">
+                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-link text-gray-500 p-0 mb-1" title="{{ __('Clear') }}">
                             <i class="bi bi-x-circle text-xl"></i>
                         </a>
                     </div>
@@ -148,13 +170,14 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="btn btn-sm btn-outline-primary border-0 me-1">
+                                        <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <form action="{{ route('personnel.employees.destroy', $emp->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                                        @php $confirmMsg = __('Are you sure you want to delete this employee?'); @endphp
+                                        <form action="{{ route('personnel.employees.destroy', $emp->id) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

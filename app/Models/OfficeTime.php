@@ -19,6 +19,7 @@ class OfficeTime extends Model
         'absent_after',
         'lunch_start',
         'lunch_end',
+        'remarks',
     ];
 
     public function employees()

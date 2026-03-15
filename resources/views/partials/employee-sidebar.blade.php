@@ -5,42 +5,27 @@
             </div>
 
             <ul class="emp-sidebar-nav">
-                <li>
-                    <a href="{{ route('employee-dashboard') }}" class="emp-sidebar-link {{ request()->routeIs('employee-dashboard') ? 'active' : '' }}">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>{{ __('Dashboard') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('employee-profile') }}" class="emp-sidebar-link {{ request()->routeIs('employee-profile') ? 'active' : '' }}">
-                        <i class="bi bi-person-vcard"></i>
-                        <span>{{ __('My Profile') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('employee.attendance.index') }}" class="emp-sidebar-link {{ request()->routeIs('employee.attendance.*') ? 'active' : '' }}">
-                        <i class="bi bi-clock"></i>
-                        <span>{{ __('Attendances') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('employee.leave.index') }}" class="emp-sidebar-link {{ request()->routeIs('employee.leave.*') ? 'active' : '' }}">
-                        <i class="bi bi-calendar2-minus"></i>
-                        <span>{{ __('Leave Requests') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <span class="emp-sidebar-link">
-                        <i class="bi bi-envelope-paper"></i>
-                        <span>{{ __('Payslips') }}</span>
-                    </span>
-                </li>
-                <li>
-                    <span class="emp-sidebar-link">
-                        <i class="bi bi-bell"></i>
-                        <span>{{ __('Notifications') }}</span>
-                    </span>
-                </li>
+                @foreach($sidebarItems as $item)
+                    @if($item->slug === 'employee-dashboard' && $item->filtered_children->isNotEmpty())
+                        @foreach($item->filtered_children as $child)
+                            <li>
+                                <a href="{{ $child->route_name ? route($child->route_name) : '#' }}" 
+                                   class="emp-sidebar-link {{ $child->is_active ? 'active' : '' }}">
+                                    <i class="bi {{ $child->icon }}"></i>
+                                    <span>{{ __($child->name) }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    @else
+                        <li>
+                            <a href="{{ $item->route_name ? route($item->route_name) : '#' }}" 
+                               class="emp-sidebar-link {{ $item->is_active ? 'active' : '' }}">
+                                <i class="bi {{ $item->icon }}"></i>
+                                <span>{{ __($item->name) }}</span>
+                            </a>
+                        </li>
+                    @endif
+                @endforeach
             </ul>
 
             <form method="POST" action="{{ route('logout') }}" class="mt-4">

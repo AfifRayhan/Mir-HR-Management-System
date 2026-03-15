@@ -90,6 +90,7 @@ Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')
     Route::post('leave', [LeaveApplicationController::class, 'store'])->name('leave.store');
 
     Route::get('leave-applications', [LeaveApplicationController::class, 'indexTeamLead'])->name('leave-applications.index');
+    Route::get('leave-applications/history', [LeaveApplicationController::class, 'historyTeamLead'])->name('leave-applications.history');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatusTeamLead'])->name('leave-applications.status');
 });
 

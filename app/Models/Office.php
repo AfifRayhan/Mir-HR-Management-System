@@ -15,6 +15,7 @@ class Office extends Model
         'address',
         'phone',
         'email',
+        'logo',
         'order_number',
     ];
 

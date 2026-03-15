@@ -115,22 +115,26 @@
                     </div>
                 </div>
 
-                <!-- Leave Summary Graph -->
+                <!-- Previous Month Attendance Summary Graph -->
                 <div class="col-lg-6">
                     <div class="hr-panel">
-                        <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-pie-chart me-2 text-info"></i>{{ __('Leave Summary') }}</h6>
-                        <p class="small text-muted mb-3">{{ __('Current year breakdown') }}</p>
+                        <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-pie-chart me-2 text-info"></i>{{ __('Attendance Summary') }}</h6>
+                        <p class="small text-muted mb-3">{{ __('Previous month breakdown') }}</p>
                         <div class="chart-container">
-                            <canvas id="leaveChart"></canvas>
+                            <canvas id="prevAttendanceChart"></canvas>
                         </div>
                         <div class="d-flex justify-content-center gap-4 mt-3">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="chart-legend-dot" style="background: #10B981;"></span>
-                                <span class="small text-muted">{{ __('Available') }} ({{ $totalAvailableLeave }})</span>
+                                <span class="small text-muted">{{ __('Present') }} ({{ $prevPresentDays - $prevLateDays }})</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="chart-legend-dot" style="background: #F59E0B;"></span>
+                                <span class="small text-muted">{{ __('Late') }} ({{ $prevLateDays }})</span>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <span class="chart-legend-dot" style="background: #EF4444;"></span>
-                                <span class="small text-muted">{{ __('Used') }} ({{ $totalUsedLeave }})</span>
+                                <span class="small text-muted">{{ __('Absent') }} ({{ $prevAbsentDays }})</span>
                             </div>
                         </div>
                     </div>
@@ -215,6 +219,35 @@
                         </ul>
                     </div>
 
+                    <!-- Upcoming Birthdays -->
+                    <div class="hr-panel mb-4 shadow-sm">
+                        <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-gift me-2 text-danger"></i>{{ __('Upcoming Birthdays') }}</h6>
+                        <ul class="hr-list px-2">
+                            @forelse($upcomingBirthdays as $birthdayEmp)
+                            <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
+                                        {{ strtoupper(substr($birthdayEmp->first_name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->first_name }} {{ $birthdayEmp->last_name }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
+                                    </div>
+                                </div>
+                                @if($birthdayEmp->days_until_birthday === 0)
+                                    <span class="badge bg-danger-soft text-danger align-self-center" style="font-size: 0.7rem;">{{ __('Today!') }}</span>
+                                @elseif($birthdayEmp->days_until_birthday === 1)
+                                    <span class="badge bg-warning-soft text-warning align-self-center" style="font-size: 0.7rem;">{{ __('Tomorrow') }}</span>
+                                @else
+                                    <span class="badge bg-light text-dark align-self-center" style="font-size: 0.7rem;">In {{ $birthdayEmp->days_until_birthday }} days</span>
+                                @endif
+                            </li>
+                            @empty
+                            <li class="small text-center text-muted">{{ __('No upcoming birthdays.') }}</li>
+                            @endforelse
+                        </ul>
+                    </div>
+
                     <!-- Notices & Events -->
                     <div class="hr-panel mb-4 shadow-sm">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
@@ -289,19 +322,20 @@
                     }
                 }
             });
-            // Leave Summary Doughnut Chart
-            const leaveCtx = document.getElementById('leaveChart').getContext('2d');
-            const leaveAvailable = Number("{{ $totalAvailableLeave }}");
-            const leaveUsed = Number("{{ $totalUsedLeave }}");
-            const leaveHasData = (leaveAvailable + leaveUsed) > 0;
+            // Previous Month Attendance Summary Doughnut Chart
+            const prevAttendanceCtx = document.getElementById('prevAttendanceChart').getContext('2d');
+            const prevAttendanceOnTime = Number("{{ $prevPresentDays - $prevLateDays }}");
+            const prevAttendanceLate = Number("{{ $prevLateDays }}");
+            const prevAttendanceAbsent = Number("{{ $prevAbsentDays }}");
+            const prevAttendanceHasData = (prevAttendanceOnTime + prevAttendanceLate + prevAttendanceAbsent) > 0;
             
-            new Chart(leaveCtx, {
+            new Chart(prevAttendanceCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Available', 'Used'],
+                    labels: ['On Time', 'Late', 'Absent'],
                     datasets: [{
-                        data: leaveHasData ? [leaveAvailable, leaveUsed] : [1],
-                        backgroundColor: leaveHasData ? ['#10B981', '#EF4444'] : ['#E2E8F0'],
+                        data: prevAttendanceHasData ? [prevAttendanceOnTime, prevAttendanceLate, prevAttendanceAbsent] : [1],
+                        backgroundColor: prevAttendanceHasData ? ['#10B981', '#F59E0B', '#EF4444'] : ['#E2E8F0'],
                         borderWidth: 0,
                         hoverOffset: 8,
                     }]
@@ -313,7 +347,7 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            enabled: leaveHasData,
+                            enabled: prevAttendanceHasData,
                             backgroundColor: '#1E293B',
                             titleFont: { size: 13, weight: '600' },
                             bodyFont: { size: 12 },
