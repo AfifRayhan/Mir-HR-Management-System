@@ -26,7 +26,8 @@ class DeviceController extends Controller
             'name' => 'required|string|max:50',
             'device_uid' => 'nullable|string|max:50|unique:devices,device_uid',
             'api_token' => 'nullable|string|max:80|unique:devices,api_token',
-            'address' => 'nullable|string',
+            'ip_address' => 'nullable|string',
+            'location' => 'nullable|string',
         ]);
 
         if (empty($validated['api_token']) && !empty($validated['device_uid'])) {
@@ -43,7 +44,8 @@ class DeviceController extends Controller
             'name' => 'required|string|max:50',
             'device_uid' => 'nullable|string|max:50|unique:devices,device_uid,' . $device->id,
             'api_token' => 'nullable|string|max:80|unique:devices,api_token,' . $device->id,
-            'address' => 'nullable|string',
+            'ip_address' => 'nullable|string',
+            'location' => 'nullable|string',
         ]);
 
         if ($request->has('regenerate_token')) {

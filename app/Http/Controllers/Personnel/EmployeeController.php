@@ -13,6 +13,8 @@ use App\Models\Office;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\EmployeesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
@@ -203,5 +205,15 @@ class EmployeeController extends Controller
     {
         $employee->delete();
         return redirect()->route('personnel.employees.index')->with('success', 'Employee deleted successfully.');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new EmployeesExport($request->all()), 'employees_' . date('Y-m-d_H-i-s') . '.xlsx');
+    }
+
+    public function exportCsv(Request $request)
+    {
+        return Excel::download(new EmployeesExport($request->all()), 'employees_' . date('Y-m-d_H-i-s') . '.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 }

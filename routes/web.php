@@ -58,6 +58,8 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
 
 // Personnel management routes
 Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')->group(function () {
+    Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
+    Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
     Route::resource('employees', EmployeeController::class);
     Route::resource('departments', DepartmentController::class);
     Route::resource('sections', SectionController::class);

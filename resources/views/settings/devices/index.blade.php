@@ -47,7 +47,11 @@
                                 @forelse($devices as $device)
                                 <tr>
                                     <td>{{ $device->id }}</td>
-                                    <td><strong>{{ $device->name }}</strong><br><small class="text-muted">{{ $device->address }}</small></td>
+                                    <td>
+                                        <strong>{{ $device->name }}</strong><br>
+                                        <small class="text-muted"><i class="bi bi-broadcast me-1"></i>{{ $device->ip_address }}</small><br>
+                                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $device->location }}</small>
+                                    </td>
                                     <td><code>{{ $device->device_uid ?? __('N/A') }}</code></td>
                                     <td>
                                         @if($device->api_token)
@@ -108,8 +112,12 @@
                                                         <small class="text-muted">{{ __('This ID must match the identifier sent by the device.') }}</small>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">{{ __('Address/Location') }}</label>
-                                                        <input type="text" name="address" class="form-control" value="{{ $device->address }}" placeholder="e.g. 192.168.1.10">
+                                                        <label class="form-label">{{ __('IP Address') }}</label>
+                                                        <input type="text" name="ip_address" class="form-control" value="{{ $device->ip_address }}" placeholder="e.g. 192.168.1.10">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">{{ __('Location') }}</label>
+                                                        <input type="text" name="location" class="form-control" value="{{ $device->location }}" placeholder="e.g. Main Gate">
                                                     </div>
                                                     @if($device->device_uid)
                                                     <div class="form-check mb-3">
@@ -162,8 +170,12 @@
                             <small class="text-muted">{{ __('Assigning a UID will automatically generate an API token.') }}</small>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">{{ __('Address/Location') }}</label>
-                            <input type="text" name="address" class="form-control" placeholder="e.g. 192.168.1.10 or Main Gate">
+                            <label class="form-label">{{ __('IP Address') }}</label>
+                            <input type="text" name="ip_address" class="form-control" placeholder="e.g. 192.168.1.10">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Location') }}</label>
+                            <input type="text" name="location" class="form-control" placeholder="e.g. Main Gate">
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -13,9 +13,17 @@
                         <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Management') }}</h5>
                         <p class="mb-0 text-gray-500">{{ __('Manage your organization\'s workforce') }}</p>
                     </div>
-                    <a href="{{ route('personnel.employees.create') }}" class="btn btn-primary d-flex align-items-center bg-success border-success">
-                        <i class="bi bi-person-plus me-2"></i>{{ __('Add Employee') }}
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('personnel.employees.export.excel', request()->query()) }}" class="btn btn-sm btn-outline-success d-flex align-items-center">
+                            <i class="bi bi-file-earmark-excel me-2"></i>{{ __('Export Excel') }}
+                        </a>
+                        <a href="{{ route('personnel.employees.export.csv', request()->query()) }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+                            <i class="bi bi-filetype-csv me-2"></i>{{ __('Export CSV') }}
+                        </a>
+                        <a href="{{ route('personnel.employees.create') }}" class="btn btn-sm btn-primary d-flex align-items-center">
+                            <i class="bi bi-person-plus me-2"></i>{{ __('Add Employee') }}
+                        </a>
+                    </div>
                 </div>
             </div>
 

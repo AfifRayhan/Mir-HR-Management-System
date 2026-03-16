@@ -93,13 +93,14 @@ body {
 .hr-sidebar-link {
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 0.85rem;
     color: var(--hr-text-light);
     text-decoration: none;
     border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.35rem;
     transition: all 0.2s ease;
     font-weight: 500;
+    font-size: 0.9rem;
     cursor: pointer;
 }
 
@@ -494,6 +495,19 @@ body {
 }
 
 /* ======== Buttons (consistency) ======== */
+.btn {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+}
+
 .btn-primary {
     background-color: var(--hr-primary);
     border-color: var(--hr-primary);
@@ -691,14 +705,14 @@ body {
 /* Pill shape for the ends of the action group */
 .btn-group > .btn:first-child,
 .btn-group > form:first-child > .btn {
-    border-top-left-radius: 50px !important;
-    border-bottom-left-radius: 50px !important;
-    padding-left: 1rem;
+    border-top-left-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+    padding-left: 0.85rem;
 }
 
 .btn-group > .btn:last-child,
 .btn-group > form:last-child > .btn {
-    border-top-right-radius: 50px !important;
-    border-bottom-right-radius: 50px !important;
-    padding-right: 1rem;
+    border-top-right-radius: 30px !important;
+    border-bottom-right-radius: 30px !important;
+    padding-right: 0.85rem;
 }
