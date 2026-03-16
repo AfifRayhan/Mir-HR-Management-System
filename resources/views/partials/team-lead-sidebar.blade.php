@@ -1,4 +1,15 @@
-        <aside class="hr-sidebar">
+{{-- Mobile Top Bar --}}
+<div class="mobile-topbar" id="tlMobileTopbar">
+    <button class="mobile-hamburger" id="tlSidebarToggle" aria-label="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+    </button>
+    <span class="topbar-brand"><span>Team</span>&nbsp;<span>Lead</span></span>
+</div>
+
+{{-- Sidebar Overlay --}}
+<div class="sidebar-overlay" id="tlSidebarOverlay"></div>
+
+        <aside class="hr-sidebar" id="tlSidebar">
             <div class="hr-logo">
                 <span>Team</span>
                 <span>Lead</span>
@@ -79,3 +90,33 @@
                 </button>
             </form>
         </aside>
+
+@pushOnce('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var toggle = document.getElementById('tlSidebarToggle');
+    var overlay = document.getElementById('tlSidebarOverlay');
+    var sidebar = document.getElementById('tlSidebar');
+    if (!toggle || !overlay || !sidebar) return;
+
+    function openSidebar() {
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    toggle.addEventListener('click', openSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    sidebar.querySelectorAll('a.hr-sidebar-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            if (window.innerWidth < 992) closeSidebar();
+        });
+    });
+});
+</script>
+@endPushOnce

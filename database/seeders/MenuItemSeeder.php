@@ -173,9 +173,15 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // HR Admin gets HR Dashboard + all other items EXCEPT Employee Dashboard and specific lead/employee leave items
+        // HR Admin gets HR Dashboard + all other items EXCEPT Employee Dashboard (and its children) and specific lead/employee leave items
         $adminMenuIds = MenuItem::whereNotIn('slug', [
             'employee-dashboard',
+            'employee-dashboard-main',
+            'employee-profile',
+            'employee-attendance',
+            'employee-leave',
+            'employee-payslips',
+            'employee-notifications',
             'employee-leave-self',
             'team-lead-leave-request',
             'team-lead-leave-apps'

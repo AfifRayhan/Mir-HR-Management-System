@@ -40,7 +40,7 @@
                                 id="email"
                                 type="email"
                                 name="email"
-                                :value="old('email')"
+                                :value="old('email', Cookie::get('remember_email'))"
                                 class="form-control"
                                 required
                                 autofocus
@@ -78,7 +78,8 @@
                                 id="remember_me"
                                 type="checkbox"
                                 class="form-check-input"
-                                name="remember">
+                                name="remember"
+                                value="1">
                             <label class="form-check-label small" for="remember_me">
                                 {{ __('Remember me') }}
                             </label>
