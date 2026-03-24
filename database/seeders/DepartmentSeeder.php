@@ -10,11 +10,17 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         $departments = [
-            ['name' => 'Information Technology', 'short_name' => 'IT',  'description' => 'Software and infrastructure management', 'order_sequence' => 1],
-            ['name' => 'Human Resources',        'short_name' => 'HR',  'description' => 'Employee relations and recruitment',    'order_sequence' => 2],
-            ['name' => 'Finance',                'short_name' => 'FIN', 'description' => 'Accounts and payroll',                'order_sequence' => 3],
-            ['name' => 'Operations',             'short_name' => 'OPS', 'description' => 'Daily business activities',           'order_sequence' => 4],
-            ['name' => 'Marketing',              'short_name' => 'MKT', 'description' => 'Brand and advertising',               'order_sequence' => 5],
+            ['name' => 'Billing & IT', 'short_name' => 'BIT', 'description' => 'Billing and Information Technology', 'order_sequence' => 1],
+            ['name' => 'Executive Office', 'short_name' => 'EXEC', 'description' => 'Executive Office', 'order_sequence' => 2],
+            ['name' => 'Field Operation', 'short_name' => 'FLD', 'description' => 'Field Operation', 'order_sequence' => 3],
+            ['name' => 'Finance & Accounts', 'short_name' => 'FIN', 'description' => 'Finance and Accounts', 'order_sequence' => 4],
+            ['name' => 'HR Admin & Legal', 'short_name' => 'HR', 'description' => 'Human Resources Admin and Legal', 'order_sequence' => 5],
+            ['name' => 'Infrastructure & Network Support', 'short_name' => 'INS', 'description' => 'Infrastructure and Network Support', 'order_sequence' => 6],
+            ['name' => 'Operation & Maintenance', 'short_name' => 'O&M', 'description' => 'Operation and Maintenance', 'order_sequence' => 7],
+            ['name' => 'Planning & Engineering', 'short_name' => 'P&E', 'description' => 'Planning and Engineering', 'order_sequence' => 8],
+            ['name' => 'Restaurant - BOH', 'short_name' => 'BOH', 'description' => 'Restaurant - Back of House', 'order_sequence' => 9],
+            ['name' => 'Restaurant - FOH', 'short_name' => 'FOH', 'description' => 'Restaurant - Front of House', 'order_sequence' => 10],
+            ['name' => 'Sales & Marketing', 'short_name' => 'S&M', 'description' => 'Sales and Marketing', 'order_sequence' => 11],
         ];
 
         foreach ($departments as $dept) {

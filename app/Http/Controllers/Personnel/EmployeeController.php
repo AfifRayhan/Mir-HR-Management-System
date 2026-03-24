@@ -28,8 +28,7 @@ class EmployeeController extends Controller
         // Search
         if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('first_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('last_name', 'like', '%' . $request->search . '%')
+                $q->where('name', 'like', '%' . $request->search . '%')
                     ->orWhere('employee_code', 'like', '%' . $request->search . '%');
             });
         }
@@ -78,13 +77,8 @@ class EmployeeController extends Controller
         $linkedUserIds = Employee::whereNotNull('user_id')->pluck('user_id')->toArray();
         $users = User::whereNotIn('id', $linkedUserIds)->get();
 
-        // Generate auto employee code
-        $lastEmployee = Employee::orderBy('id', 'desc')->first();
-        $nextNumber = 1;
-        if ($lastEmployee && preg_match('/EMP(\d+)/', $lastEmployee->employee_code, $matches)) {
-            $nextNumber = (int)$matches[1] + 1;
-        }
-        $autoEmployeeCode = 'EMP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        // Generate auto employee code based on today as default
+        $autoEmployeeCode = Employee::generateEmployeeCode(now());
 
         return view('personnel.employees.form', compact(
             'departments',
@@ -106,8 +100,7 @@ class EmployeeController extends Controller
     {
         $validated = $request->validate([
             'employee_code' => 'required|string|max:50|unique:employees,employee_code',
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
+            'name' => 'required|string|max:200',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'date_of_birth' => 'nullable|date',
@@ -176,8 +169,7 @@ class EmployeeController extends Controller
     {
         $validated = $request->validate([
             'employee_code' => 'required|string|max:50|unique:employees,employee_code,' . $employee->id,
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
+            'name' => 'required|string|max:200',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'date_of_birth' => 'nullable|date',
@@ -215,5 +207,15 @@ class EmployeeController extends Controller
     public function exportCsv(Request $request)
     {
         return Excel::download(new EmployeesExport($request->all()), 'employees_' . date('Y-m-d_H-i-s') . '.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    /**
+     * Get the next available employee code for a given date.
+     */
+    public function getNextCode(Request $request)
+    {
+        $date = $request->date ?: now();
+        $code = Employee::generateEmployeeCode($date);
+        return response()->json(['code' => $code]);
     }
 }

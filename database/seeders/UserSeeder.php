@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Nadia Khan',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'TL-0001',
+                    'employee_id' => '21050001',
                     'role_id' => $teamLeadRole->id,
                     'status' => 'active',
                 ]
@@ -48,7 +48,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'David Chen',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'TL-0002',
+                    'employee_id' => '21050002',
                     'role_id' => $teamLeadRole->id,
                     'status' => 'active',
                 ]
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Rakib Islam',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'EMP-0001',
+                    'employee_id' => '21050003',
                     'role_id' => $employeeRole->id,
                     'status' => 'active',
                 ]
@@ -72,7 +72,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Amir Khan',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'EMP-0002',
+                    'employee_id' => '21050004',
                     'role_id' => $employeeRole->id,
                     'status' => 'active',
                 ]
@@ -83,7 +83,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Linda Okafor',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'EMP-0003',
+                    'employee_id' => '21050005',
                     'role_id' => $employeeRole->id,
                     'status' => 'active',
                 ]
@@ -94,7 +94,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => 'Marco Rossi',
                     'password' => Hash::make('password'),
-                    'employee_id' => 'EMP-0004',
+                    'employee_id' => '21050006',
                     'role_id' => $employeeRole->id,
                     'status' => 'inactive',
                 ]

@@ -114,9 +114,9 @@
                                     </a>
                                 </th>
                                 <th>
-                                    <a href="{{ route('personnel.employees.index', array_merge(request()->query(), ['sort' => 'first_name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
+                                    <a href="{{ route('personnel.employees.index', array_merge(request()->query(), ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
                                         {{ __('Full Name') }}
-                                        @if(request('sort') === 'first_name')
+                                        @if(request('sort') === 'name')
                                         <i class="bi bi-sort-{{ request('direction') === 'asc' ? 'down' : 'up' }} sort-icon text-success"></i>
                                         @else
                                         <i class="bi bi-sort-down sort-icon"></i>
@@ -148,11 +148,11 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="emp-avatar-sm me-3">
-                                            {{ strtoupper(substr($emp->first_name, 0, 1)) }}
+                                            {{ strtoupper(substr($emp->name, 0, 1)) }}
                                         </div>
-                                        <div>
-                                            <div class="font-bold mb-0 text-gray-800">{{ $emp->first_name }} {{ $emp->last_name }}</div>
-                                            <div class="small text-muted">{{ $emp->phone ?? 'No phone' }}</div>
+                                        <div style="min-width: 150px;">
+                                            <div class="fw-bold mb-0 text-gray-800 text-nowrap">{{ $emp->name }}</div>
+                                            <div class="small text-muted text-nowrap">{{ $emp->phone ?? 'No phone' }}</div>
                                         </div>
                                     </div>
                                 </td>

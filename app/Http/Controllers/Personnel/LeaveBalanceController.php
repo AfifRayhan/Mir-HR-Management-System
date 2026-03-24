@@ -18,7 +18,7 @@ class LeaveBalanceController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
-        $employees = Employee::with('department', 'designation')->where('status', 'active')->orderBy('first_name')->get();
+        $employees = Employee::with('department', 'designation')->where('status', 'active')->orderBy('name')->get();
 
         $currentYear = date('Y');
 
@@ -68,9 +68,9 @@ class LeaveBalanceController extends Controller
         }
 
         if ($initializedCount > 0) {
-            return redirect()->back()->with('success', "Leave accounts initialized for {$employee->first_name} ({$request->year}). Added {$initializedCount} types.");
+            return redirect()->back()->with('success', "Leave accounts initialized for {$employee->name} ({$request->year}). Added {$initializedCount} types.");
         } else {
-            return redirect()->back()->with('error', "Leave accounts for {$employee->first_name} ({$request->year}) were already initialized.");
+            return redirect()->back()->with('error', "Leave accounts for {$employee->name} ({$request->year}) were already initialized.");
         }
     }
 }

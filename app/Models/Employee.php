@@ -12,8 +12,7 @@ class Employee extends Model
     protected $fillable = [
         'user_id',
         'employee_code',
-        'first_name',
-        'last_name',
+        'name',
         'phone',
         'address',
         'date_of_birth',
@@ -96,5 +95,40 @@ class Employee extends Model
     public function manualAttendanceAdjustments()
     {
         return $this->hasMany(ManualAttendanceAdjustment::class);
+    }
+
+    /**
+     * Generate next employee code based on joining date.
+     * Format: YYMMXXXX (8 digits total, 4 digits YYMM + 4 digits increment)
+     */
+    public static function generateEmployeeCode($joiningDate)
+    {
+        if (!$joiningDate) {
+            $joiningDate = now();
+        }
+        
+        $carbonDate = \Carbon\Carbon::parse($joiningDate);
+        $prefix = $carbonDate->format('ym'); // YYMM
+        
+        $lastEmployee = self::where('employee_code', 'like', $prefix . '%')
+            ->orderBy('employee_code', 'desc')
+            ->first();
+            
+        $nextNumber = 1;
+        if ($lastEmployee) {
+            // Extract the last 4 digits from the code (YYMMXXXX)
+            $lastCode = $lastEmployee->employee_code;
+            if (strlen($lastCode) >= 8) {
+                $lastNumberPart = substr($lastCode, 4);
+                if (is_numeric($lastNumberPart)) {
+                    $nextNumber = (int)$lastNumberPart + 1;
+                }
+            } else if (preg_match('/(\d+)$/', $lastCode, $matches)) {
+                // Fallback for non-matching formats if any
+                $nextNumber = (int)$matches[1] + 1;
+            }
+        }
+        
+        return $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
     }
 }

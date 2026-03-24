@@ -48,16 +48,18 @@ class EmployeeSeeder extends Seeder
                     $managerId = $manager ? $manager->id : null;
                 }
 
-                Employee::updateOrCreate(
-                    ['employee_code' => $data['code']],
+                $joiningDate = '2021-05-10';
+                $employeeCode = Employee::generateEmployeeCode($joiningDate);
+
+                $employee = Employee::updateOrCreate(
+                    ['user_id' => $user->id],
                     [
-                        'user_id' => $user->id,
-                        'first_name' => $data['first'],
-                        'last_name' => $data['last'],
+                        'employee_code' => $employeeCode,
+                        'name' => $data['first'] . ' ' . $data['last'],
                         'date_of_birth' => fake()->date('Y-m-d', '-20 years'),
                         'phone' => fake()->phoneNumber(),
                         'address' => fake()->address(),
-                        'joining_date' => '2021-05-10',
+                        'joining_date' => $joiningDate,
                         'department_id' => $departments->random()->id ?? null,
                         'designation_id' => $designations->random()->id ?? null,
                         'grade_id' => $grades->random()->id ?? null,
@@ -67,6 +69,9 @@ class EmployeeSeeder extends Seeder
                         'status' => 'active',
                     ]
                 );
+
+                // Store code for reference if needed (manager logic)
+                $data['generated_code'] = $employee->employee_code;
             }
         }
 
@@ -77,16 +82,16 @@ class EmployeeSeeder extends Seeder
             $firstName = fake()->firstName();
             $lastName = fake()->lastName();
             $office = $offices[$i % $officeCount];
+            $joiningDate = fake()->date('Y-m-d', '-2 years');
+            $employeeCode = Employee::generateEmployeeCode($joiningDate);
 
-            Employee::updateOrCreate(
-                ['employee_code' => 'EMP' . str_pad($i, 003, '0', STR_PAD_LEFT)],
-                [
-                'first_name' => $firstName,
-                'last_name' => $lastName,
+            Employee::create([
+                'employee_code' => $employeeCode,
+                'name' => $firstName . ' ' . $lastName,
                 'phone' => fake()->phoneNumber(),
                 'address' => fake()->address(),
                 'date_of_birth' => fake()->date('Y-m-d', '-20 years'),
-                'joining_date' => fake()->date('Y-m-d', '-2 years'),
+                'joining_date' => $joiningDate,
                 'department_id' => $departments->random()->id ?? null,
                 'section_id' => null,
                 'designation_id' => $designations->random()->id ?? null,
@@ -95,8 +100,7 @@ class EmployeeSeeder extends Seeder
                 'office_time_id' => $officeTimes->random()->id ?? null,
                 'reporting_manager_id' => $manager->id ?? null,
                 'status' => 'active',
-                ]
-            );
+            ]);
         }
     }
 }

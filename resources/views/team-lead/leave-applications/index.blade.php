@@ -51,10 +51,10 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <div class="emp-avatar-sm me-3">
-                                            {{ strtoupper(substr($app->employee->first_name, 0, 1)) }}
+                                            {{ strtoupper(substr($app->employee->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="fw-bold text-dark">{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
+                                            <div class="fw-bold text-dark">{{ $app->employee->name }}</div>
                                             <div class="small text-muted">{{ $app->employee->employee_code }}</div>
                                         </div>
                                     </div>
@@ -138,7 +138,7 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body text-start">
-                                                            <p class="mb-3">{{ __('Are you sure you want to reject this leave application for') }} <strong>{{ $app->employee->first_name }} {{ $app->employee->last_name }}</strong>?</p>
+                                                            <p class="mb-3">{{ __('Are you sure you want to reject this leave application for') }} <strong>{{ $app->employee->name }}</strong>?</p>
 
                                                             <div class="mb-3">
                                                                 <label for="remarks{{ $app->id }}" class="form-label fw-bold">{{ __('Approval Remarks') }} <span class="text-muted fw-normal">({{ __('Optional, max 50 chars') }})</span></label>

@@ -80,7 +80,7 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
-                                                <div class="fw-bold text-dark">{{ $record->employee->first_name }} {{ $record->employee->last_name }}</div>
+                                                <div class="fw-bold text-dark">{{ $record->employee->name }}</div>
                                                 <div class="small text-muted">{{ $record->employee->employee_code }}</div>
                                             </div>
                                         </div>

@@ -14,10 +14,10 @@
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-header-avatar">
-                        {{ strtoupper(substr($employee ? $employee->first_name : $user->name, 0, 1)) }}
+                        {{ strtoupper(substr($employee ? $employee->name : $user->name, 0, 1)) }}
                     </div>
                     <div class="profile-header-info">
-                        <h1>{{ $employee ? $employee->first_name . ' ' . $employee->last_name : $user->name }}</h1>
+                        <h1>{{ $employee ? $employee->name : $user->name }}</h1>
                         <div class="role-badge">{{ $roleName }}</div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                     </div>
                     <div class="info-box">
                         <label>{{ __('Reporting Manager') }}</label>
-                        <div class="value">{{ $employee && $employee->reportingManager ? $employee->reportingManager->first_name . ' ' . $employee->reportingManager->last_name : 'N/A' }}</div>
+                        <div class="value">{{ $employee && $employee->reportingManager ? $employee->reportingManager->name : 'N/A' }}</div>
                     </div>
                 </div>
 

@@ -39,7 +39,7 @@
                                 <option value="">{{ __('All Employees') }}</option>
                                 @foreach($teamEmployees as $teamEmp)
                                 <option value="{{ $teamEmp->id }}" {{ $employeeId == $teamEmp->id ? 'selected' : '' }}>
-                                    {{ $teamEmp->first_name }} {{ $teamEmp->last_name }} ({{ $teamEmp->employee_code }})
+                                    {{ $teamEmp->name }} ({{ $teamEmp->employee_code }})
                                 </option>
                                 @endforeach
                             </select>
@@ -88,10 +88,10 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <div class="emp-avatar-sm me-3">
-                                            {{ strtoupper(substr($app->employee->first_name, 0, 1)) }}
+                                            {{ strtoupper(substr($app->employee->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="fw-bold text-dark">{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
+                                            <div class="fw-bold text-dark">{{ $app->employee->name }}</div>
                                             <div class="small text-muted">{{ $app->employee->employee_code }}</div>
                                         </div>
                                     </div>

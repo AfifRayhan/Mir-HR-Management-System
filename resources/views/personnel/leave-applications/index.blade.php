@@ -46,10 +46,10 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <div class="emp-avatar-sm me-3">
-                                            {{ strtoupper(substr($app->employee->first_name, 0, 1)) }}
+                                            {{ strtoupper(substr($app->employee->name, 0, 1)) }}
                                         </div>
                                         <div>
-                                            <div class="font-bold text-gray-800">{{ $app->employee->first_name }} {{ $app->employee->last_name }}</div>
+                                            <div class="font-bold text-gray-800">{{ $app->employee->name }}</div>
                                             <div class="small text-muted">{{ $app->employee->employee_code }}</div>
                                         </div>
                                     </div>
