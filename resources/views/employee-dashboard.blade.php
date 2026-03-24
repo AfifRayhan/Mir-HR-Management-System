@@ -26,7 +26,7 @@
                         <h5 class="mb-1">{{ __('Employee Dashboard') }}</h5>
                         <p class="mb-0 small text-muted">
                             {{ __('Welcome,') }}
-                            {{ $employee ? $employee->first_name.' '.$employee->last_name : ($user->name ?? __('Employee')) }}
+                            {{ $employee ? $employee->name : ($user->name ?? __('Employee')) }}
                             • {{ $roleName }}
                         </p>
                     </div>
@@ -227,10 +227,10 @@
                             <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
                                 <div class="d-flex align-items-center">
                                     <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
-                                        {{ strtoupper(substr($birthdayEmp->first_name, 0, 1)) }}
+                                        {{ strtoupper(substr($birthdayEmp->name, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->first_name }} {{ $birthdayEmp->last_name }}</div>
+                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->name }}</div>
                                         <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
                                     </div>
                                 </div>

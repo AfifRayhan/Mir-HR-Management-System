@@ -36,15 +36,10 @@
                             <input type="text" name="employee_code" class="form-control @error('employee_code') is-invalid @enderror" value="{{ old('employee_code', $employee->employee_code ?? $autoEmployeeCode ?? '') }}" required placeholder="e.g. EMP001">
                             @error('employee_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">{{ __('First Name') }} <span class="text-danger">*</span></label>
-                            <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror" value="{{ old('first_name', $employee->first_name ?? '') }}" required>
-                            @error('first_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">{{ __('Last Name') }} <span class="text-danger">*</span></label>
-                            <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror" value="{{ old('last_name', $employee->last_name ?? '') }}" required>
-                            @error('last_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        <div class="col-md-8">
+                            <label class="form-label">{{ __('Full Name') }} <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $employee->name ?? '') }}" required>
+                            @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Phone Number') }}</label>
@@ -138,7 +133,7 @@
                             <select name="reporting_manager_id" class="form-select @error('reporting_manager_id') is-invalid @enderror">
                                 <option value="">{{ __('Select Manager') }}</option>
                                 @foreach($managers as $manager)
-                                <option value="{{ $manager->id }}" {{ old('reporting_manager_id', $employee->reporting_manager_id ?? '') == $manager->id ? 'selected' : '' }}>{{ $manager->first_name }} {{ $manager->last_name }} ({{ $manager->employee_code }})</option>
+                                <option value="{{ $manager->id }}" {{ old('reporting_manager_id', $employee->reporting_manager_id ?? '') == $manager->id ? 'selected' : '' }}>{{ $manager->name }} ({{ $manager->employee_code }})</option>
                                 @endforeach
                             </select>
                             @error('reporting_manager_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -192,4 +187,31 @@
             </form>
         </main>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const joiningDateInput = document.querySelector('input[name="joining_date"]');
+            const employeeCodeInput = document.querySelector('input[name="employee_code"]');
+            const isEditMode = "{{ isset($employee) ? 'true' : 'false' }}" === "true";
+
+            if (joiningDateInput && employeeCodeInput && !isEditMode) {
+                joiningDateInput.addEventListener('change', function() {
+                    const selectedDate = this.value;
+                    if (!selectedDate) return;
+
+                    const url = `{{ route('personnel.employees.next-code') }}?date=${selectedDate}`;
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.code) {
+                                employeeCodeInput.value = data.code;
+                            }
+                        })
+                        .catch(error => console.error('Error fetching next employee code:', error));
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

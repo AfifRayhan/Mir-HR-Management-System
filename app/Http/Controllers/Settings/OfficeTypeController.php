@@ -11,7 +11,8 @@ class OfficeTypeController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
         $officeTypes = OfficeType::orderBy('order_number')->get();

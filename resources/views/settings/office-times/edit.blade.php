@@ -14,7 +14,7 @@
                         <h5 class="mb-1">{{ __('Edit Office Time (Shift)') }}</h5>
                         <p class="mb-0 small text-muted">
                             {{ __('Welcome,') }}
-                            {{ $employee ? $employee->first_name.' '.$employee->last_name : ($user->name ?? __('HR Administrator')) }}
+                            {{ $employee ? $employee->name : ($user->name ?? __('HR Administrator')) }}
                             • {{ $roleName }}
                         </p>
                     </div>

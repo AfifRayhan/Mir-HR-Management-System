@@ -10,13 +10,13 @@ class SectionSeeder extends Seeder
 {
     public function run(): void
     {
-        $it = Department::where('short_name', 'IT')->first();
+        $bit = Department::where('short_name', 'BIT')->first();
         $hr = Department::where('short_name', 'HR')->first();
         $fin = Department::where('short_name', 'FIN')->first();
 
         $sections = [
-            ['department_id' => $it->id, 'name' => 'Software Development', 'description' => 'Web and Mobile development'],
-            ['department_id' => $it->id, 'name' => 'Quality Assurance', 'description' => 'Testing and QC'],
+            ['department_id' => $bit->id, 'name' => 'Software Development', 'description' => 'Web and Mobile development'],
+            ['department_id' => $bit->id, 'name' => 'Quality Assurance', 'description' => 'Testing and QC'],
             ['department_id' => $hr->id, 'name' => 'Recruitment', 'description' => 'Hiring and onboarding'],
             ['department_id' => $fin->id, 'name' => 'Payroll', 'description' => 'Salary processing'],
         ];

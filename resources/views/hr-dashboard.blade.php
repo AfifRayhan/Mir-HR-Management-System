@@ -20,7 +20,7 @@
                         <h5 class="mb-1">{{ __('HR Dashboard') }}</h5>
                         <p class="mb-0 small text-muted">
                             {{ __('Welcome,') }}
-                            {{ $employee ? $employee->first_name.' '.$employee->last_name : ($user->name ?? __('HR Administrator')) }}
+                            {{ $employee ? $employee->name : ($user->name ?? __('HR Administrator')) }}
                             • {{ $roleName }}
                         </p>
                     </div>
@@ -159,9 +159,9 @@
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center">
                                                 <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
-                                                    {{ strtoupper(substr($record->employee->first_name, 0, 1)) }}
+                                                    {{ strtoupper(substr($record->employee->name, 0, 1)) }}
                                                 </div>
-                                                <span class="small font-bold">{{ $record->employee->first_name }} {{ $record->employee->last_name }}</span>
+                                                <span class="small font-bold">{{ $record->employee->name }}</span>
                                             </div>
                                         </td>
                                         <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}</td>
@@ -240,10 +240,10 @@
                             <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
                                 <div class="d-flex align-items-center">
                                     <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
-                                        {{ strtoupper(substr($birthdayEmp->first_name, 0, 1)) }}
+                                        {{ strtoupper(substr($birthdayEmp->name, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->first_name }} {{ $birthdayEmp->last_name }}</div>
+                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->name }}</div>
                                         <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
                                     </div>
                                 </div>

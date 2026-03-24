@@ -98,7 +98,7 @@ class LeaveApplicationController extends Controller
         }
 
         $directReportIds = Employee::where('reporting_manager_id', $employee->id)->pluck('id');
-        $teamEmployees = Employee::whereIn('id', $directReportIds)->orderBy('first_name')->get();
+        $teamEmployees = Employee::whereIn('id', $directReportIds)->orderBy('name')->get();
 
         $month = $request->input('month');
         $year = $request->has('year') ? $request->input('year') : date('Y');

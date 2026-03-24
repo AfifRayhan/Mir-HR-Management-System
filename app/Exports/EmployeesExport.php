@@ -26,8 +26,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping
         // Search
         if ($this->request['search'] ?? null) {
             $query->where(function ($q) {
-                $q->where('first_name', 'like', '%' . $this->request['search'] . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->request['search'] . '%')
+                $q->where('name', 'like', '%' . $this->request['search'] . '%')
                     ->orWhere('employee_code', 'like', '%' . $this->request['search'] . '%');
             });
         }
@@ -58,8 +57,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             'Employee Code',
-            'First Name',
-            'Last Name',
+            'Full Name',
             'Email',
             'Phone',
             'Address',
@@ -82,8 +80,7 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             $employee->employee_code,
-            $employee->first_name,
-            $employee->last_name,
+            $employee->name,
             $employee->user->email ?? 'N/A',
             $employee->phone,
             $employee->address,

@@ -14,7 +14,7 @@
                         <h5 class="mb-1">{{ __('Department Management') }}</h5>
                         <p class="mb-0 small text-muted">
                             {{ __('Welcome,') }}
-                            {{ $employee ? $employee->first_name.' '.$employee->last_name : ($user->name ?? __('HR Administrator')) }}
+                            {{ $employee ? $employee->name : ($user->name ?? __('HR Administrator')) }}
                             • {{ $roleName }}
                         </p>
                     </div>
@@ -56,7 +56,7 @@
                                 <select name="incharge_id" class="form-select rounded-3">
                                     <option value="">{{ __('Select Employee') }}</option>
                                     @foreach($employees as $emp)
-                                    <option value="{{ $emp->id }}">{{ $emp->first_name }} {{ $emp->last_name }}</option>
+                                    <option value="{{ $emp->id }}">{{ $emp->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -114,7 +114,7 @@
                                         <td>
                                             <div class="small d-flex align-items-center">
                                                 <i class="bi bi-person-badge me-2 text-muted"></i>
-                                                {{ $department->incharge ? $department->incharge->first_name.' '.$department->incharge->last_name : '---' }}
+                                                {{ $department->incharge ? $department->incharge->name : '---' }}
                                             </div>
                                         </td>
                                         <td class="text-end pe-4">
@@ -165,7 +165,7 @@
                                                                     <option value="">{{ __('Select Employee') }}</option>
                                                                     @foreach($employees as $emp)
                                                                     <option value="{{ $emp->id }}" {{ $department->incharge_id == $emp->id ? 'selected' : '' }}>
-                                                                        {{ $emp->first_name }} {{ $emp->last_name }}
+                                                                        {{ $emp->name }}
                                                                     </option>
                                                                     @endforeach
                                                                 </select>

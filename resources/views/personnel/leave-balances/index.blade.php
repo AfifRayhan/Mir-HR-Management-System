@@ -59,7 +59,7 @@
                                 <select name="employee_id" class="form-select rounded-3" required>
                                     <option value="">{{ __('Choose...') }}</option>
                                     @foreach($employees as $emp)
-                                    <option value="{{ $emp->id }}">{{ $emp->first_name }} {{ $emp->last_name }} ({{ $emp->employee_code }})</option>
+                                    <option value="{{ $emp->id }}">{{ $emp->name }} ({{ $emp->employee_code }})</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -104,10 +104,10 @@
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center">
                                                 <div class="emp-avatar-sm me-3">
-                                                    {{ strtoupper(substr($emp->first_name, 0, 1)) }}
+                                                    {{ strtoupper(substr($emp->name, 0, 1)) }}
                                                 </div>
                                                 <div>
-                                                    <div class="font-bold text-gray-800">{{ $emp->first_name }} {{ $emp->last_name }}</div>
+                                                    <div class="font-bold text-gray-800">{{ $emp->name }}</div>
                                                     <div class="small text-muted">{{ $emp->employee_code }}</div>
                                                 </div>
                                             </div>
