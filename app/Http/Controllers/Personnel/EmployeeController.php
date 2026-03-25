@@ -37,8 +37,8 @@ class EmployeeController extends Controller
         if ($request->department_id) {
             $query->where('department_id', $request->department_id);
         }
-        if ($request->section_id) {
-            $query->where('section_id', $request->section_id);
+        if ($request->office_id) {
+            $query->where('office_id', $request->office_id);
         }
         if ($request->designation_id) {
             $query->where('designation_id', $request->designation_id);
@@ -50,14 +50,20 @@ class EmployeeController extends Controller
         // Sorting
         $sortColumn = $request->input('sort', 'created_at');
         $sortDirection = $request->input('direction', 'desc');
-        $query->orderBy($sortColumn, $sortDirection);
+        
+        if ($sortColumn === 'employee_code') {
+            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
+                  ->orderBy('employee_code', $sortDirection);
+        } else {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
  
         $employees = $query->paginate(10)->withQueryString();
         $departments = Department::all();
-        $sections = Section::all();
+        $offices = Office::all();
         $designations = Designation::all();
  
-        return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'designations'));
+        return view('personnel.employees.index', compact('employees', 'departments', 'offices', 'designations'));
     }
 
     /**
@@ -215,7 +221,8 @@ class EmployeeController extends Controller
     public function getNextCode(Request $request)
     {
         $date = $request->date ?: now();
-        $code = Employee::generateEmployeeCode($date);
+        $officeId = $request->office_id;
+        $code = Employee::generateEmployeeCode($date, $officeId);
         return response()->json(['code' => $code]);
     }
 }

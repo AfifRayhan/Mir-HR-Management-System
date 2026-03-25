@@ -3,17 +3,17 @@
     <button class="mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <span class="topbar-brand"><span>Employee</span>&nbsp;<span>Portal</span></span>
+    <a href="{{ route('employee-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
 </div>
 
 {{-- Sidebar Overlay --}}
 <div class="emp-sidebar-overlay" id="empSidebarOverlay"></div>
 
         <aside class="emp-sidebar" id="empSidebar">
-            <div class="emp-logo">
+            <a href="{{ route('employee-dashboard') }}" class="emp-logo" style="text-decoration: none;">
                 <span>Employee</span>
                 <span>Portal</span>
-            </div>
+            </a>
 
             <ul class="emp-sidebar-nav">
                 @foreach($sidebarItems as $item)

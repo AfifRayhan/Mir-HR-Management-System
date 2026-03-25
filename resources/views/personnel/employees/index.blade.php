@@ -58,12 +58,12 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label small font-bold text-gray-600">{{ __('Section') }}</label>
-                        <select name="section_id" class="form-select">
+                        <label class="form-label small font-bold text-gray-600">{{ __('Office') }}</label>
+                        <select name="office_id" class="form-select">
                             <option value="">{{ __('All') }}</option>
-                            @foreach($sections as $sec)
-                            <option value="{{ $sec->id }}" {{ request('section_id') == $sec->id ? 'selected' : '' }}>
-                                {{ $sec->name }}
+                            @foreach($offices as $office)
+                            <option value="{{ $office->id }}" {{ request('office_id') == $office->id ? 'selected' : '' }}>
+                                {{ $office->name }}
                             </option>
                             @endforeach
                         </select>

@@ -3,17 +3,17 @@
     <button class="mobile-hamburger" id="tlSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <span class="topbar-brand"><span>Team</span>&nbsp;<span>Lead</span></span>
+    <a href="{{ route('employee-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>Team</span>&nbsp;<span>Lead</span></a>
 </div>
 
 {{-- Sidebar Overlay --}}
 <div class="sidebar-overlay" id="tlSidebarOverlay"></div>
 
         <aside class="hr-sidebar" id="tlSidebar">
-            <div class="hr-logo">
+            <a href="{{ route('employee-dashboard') }}" class="hr-logo" style="text-decoration: none;">
                 <span>Team</span>
                 <span>Lead</span>
-            </div>
+            </a>
 
             <ul class="hr-sidebar-nav">
                 <li>

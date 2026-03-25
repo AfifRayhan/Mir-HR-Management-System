@@ -30,29 +30,23 @@ class EmployeeSummarySeeder extends Seeder
         $sheet = $spreadsheet->getActiveSheet();
         $rows = $sheet->toArray(null, true, true, true);
 
-        // Determine row where data begins; assume header row is first.
-        $header = null;
-
+        // Data starts at row 2; row 1 is header in EmployeeSummary_transformed.xlsx
         foreach ($rows as $rowIndex => $row) {
-            if (trim($row['A']) === 'Office' && trim($row['B']) === 'Floor') {
-                // start from next row
-                $header = $rows[$rowIndex];
+            if ($rowIndex === 1) {
                 continue;
             }
 
-            if (!$header) {
-                continue;
-            }
-
-            // Skip blank and metadata rows
-            $office = trim((string) ($row['A'] ?? ''));
+            // Columns based on transformed sheet:
+            // A=#SL, B=Office, C=Department, D=Emp Id, E=Card No, F=Name, K=Designation, L=Grade,
+            // N=Joining Date, P=Date Of Birth
+            $office = trim((string) ($row['B'] ?? ''));
             $department = trim((string) ($row['C'] ?? ''));
-            $designation = trim((string) ($row['N'] ?? ''));
-            $grade = trim((string) ($row['P'] ?? ''));
-            $name = trim((string) ($row['I'] ?? '')); // Name column
+            $designation = trim((string) ($row['K'] ?? ''));
+            $grade = trim((string) ($row['L'] ?? ''));
+            $name = trim((string) ($row['F'] ?? '')); // Name column
             $empId = trim((string) ($row['D'] ?? '')); // Emp Id column
-            $joiningDate = trim((string) ($row['R'] ?? ''));
-            $dateOfBirth = trim((string) ($row['V'] ?? ''));
+            $joiningDate = trim((string) ($row['N'] ?? ''));
+            $dateOfBirth = trim((string) ($row['P'] ?? ''));
 
             if (empty($office) || empty($department) || empty($name) || empty($empId)) {
                 continue;
