@@ -8,17 +8,17 @@ $currentRoute = request()->route()->getName() ?? '';
     <button class="mobile-hamburger" id="hrSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <span class="topbar-brand"><span>HRM</span>&nbsp;<span>System</span></span>
+    <a href="{{ route('hr-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>HRM</span>&nbsp;<span>System</span></a>
 </div>
 
 {{-- Sidebar Overlay --}}
 <div class="sidebar-overlay" id="hrSidebarOverlay"></div>
 
 <aside class="hr-sidebar" id="hrSidebar">
-    <div class="hr-logo">
+    <a href="{{ route('hr-dashboard') }}" class="hr-logo" style="text-decoration: none;">
         <span>HRM</span>
         <span>System</span>
-    </div>
+    </a>
 
     <ul class="hr-sidebar-nav">
         @foreach($sidebarItems as $item)

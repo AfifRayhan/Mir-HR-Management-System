@@ -101,7 +101,7 @@ class Employee extends Model
      * Generate next employee code based on joining date.
      * Format: YYMMXXXX (8 digits total, 4 digits YYMM + 4 digits increment)
      */
-    public static function generateEmployeeCode($joiningDate)
+    public static function generateEmployeeCode($joiningDate, $officeId = null)
     {
         if (!$joiningDate) {
             $joiningDate = now();
@@ -110,22 +110,23 @@ class Employee extends Model
         $carbonDate = \Carbon\Carbon::parse($joiningDate);
         $prefix = $carbonDate->format('ym'); // YYMM
         
-        $lastEmployee = self::where('employee_code', 'like', $prefix . '%')
-            ->orderBy('employee_code', 'desc')
-            ->first();
+        $query = self::query()
+            ->whereRaw('LENGTH(employee_code) >= 5')
+            ->whereRaw('employee_code REGEXP "^[0-9]+$"');
+
+        if ($officeId) {
+            $query->where('office_id', $officeId);
+        }
+        
+        // Find the employee with the highest sequence number
+        $lastEmployee = $query->orderByRaw('CAST(SUBSTRING(employee_code, 5) AS UNSIGNED) DESC')->first();
             
         $nextNumber = 1;
         if ($lastEmployee) {
-            // Extract the last 4 digits from the code (YYMMXXXX)
             $lastCode = $lastEmployee->employee_code;
-            if (strlen($lastCode) >= 8) {
-                $lastNumberPart = substr($lastCode, 4);
-                if (is_numeric($lastNumberPart)) {
-                    $nextNumber = (int)$lastNumberPart + 1;
-                }
-            } else if (preg_match('/(\d+)$/', $lastCode, $matches)) {
-                // Fallback for non-matching formats if any
-                $nextNumber = (int)$matches[1] + 1;
+            $sequenceStr = substr($lastCode, 4);
+            if (is_numeric($sequenceStr)) {
+                $nextNumber = (int)$sequenceStr + 1;
             }
         }
         

@@ -192,24 +192,36 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const joiningDateInput = document.querySelector('input[name="joining_date"]');
+            const officeSelect = document.querySelector('select[name="office_id"]');
             const employeeCodeInput = document.querySelector('input[name="employee_code"]');
             const isEditMode = "{{ isset($employee) ? 'true' : 'false' }}" === "true";
 
-            if (joiningDateInput && employeeCodeInput && !isEditMode) {
-                joiningDateInput.addEventListener('change', function() {
-                    const selectedDate = this.value;
-                    if (!selectedDate) return;
+            function updateEmployeeCode() {
+                if (isEditMode) return;
+                
+                const selectedDate = joiningDateInput ? joiningDateInput.value : '';
+                if (!selectedDate) return;
+                
+                const selectedOfficeId = officeSelect ? officeSelect.value : '';
 
-                    const url = `{{ route('personnel.employees.next-code') }}?date=${selectedDate}`;
-                    fetch(url)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.code) {
-                                employeeCodeInput.value = data.code;
-                            }
-                        })
-                        .catch(error => console.error('Error fetching next employee code:', error));
-                });
+                const url = `{{ route('personnel.employees.next-code') }}?date=${selectedDate}&office_id=${selectedOfficeId}`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code) {
+                            employeeCodeInput.value = data.code;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching next employee code:', error));
+            }
+
+            if (joiningDateInput && officeSelect && employeeCodeInput && !isEditMode) {
+                joiningDateInput.addEventListener('change', updateEmployeeCode);
+                officeSelect.addEventListener('change', updateEmployeeCode);
+                
+                if (officeSelect.value) {
+                    updateEmployeeCode();
+                }
             }
         });
     </script>
