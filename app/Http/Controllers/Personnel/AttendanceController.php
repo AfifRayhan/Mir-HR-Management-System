@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Personnel;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRecord;
+use App\Models\Department;
 use App\Models\Employee;
 use App\Models\ManualAttendanceAdjustment;
+use App\Models\Office;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 
@@ -25,22 +27,43 @@ class AttendanceController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employeeRecord = Employee::where('user_id', $user->id)->first();
 
-        $date = $request->input('date', now()->toDateString());
+        $date         = $request->input('date', now()->toDateString());
         $departmentId = $request->input('department_id');
+        $officeId     = $request->input('office_id');
+        $status       = $request->input('status');
+        $search       = $request->input('search');
 
-        $query = AttendanceRecord::with(['employee.department', 'employee.designation'])
+        $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
             ->where('date', $date);
 
         if ($departmentId) {
-            $query->whereHas('employee', function ($q) use ($departmentId) {
-                $q->where('department_id', $departmentId);
+            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+        }
+
+        if ($officeId) {
+            $query->whereHas('employee', fn($q) => $q->where('office_id', $officeId));
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($search) {
+            $query->whereHas('employee', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('employee_code', 'like', "%{$search}%");
             });
         }
 
-        $records = $query->get();
-        $departments = \App\Models\Department::all();
+        $records     = $query->get();
+        $departments = Department::all();
+        $offices     = Office::all();
+        $statuses    = ['present', 'late', 'absent', 'leave'];
 
-        return view('personnel.attendance.index', compact('records', 'departments', 'date', 'user', 'roleName', 'employeeRecord'));
+        return view('personnel.attendance.index', compact(
+            'records', 'departments', 'offices', 'statuses', 'date',
+            'user', 'roleName', 'employeeRecord'
+        ));
     }
 
     public function processLogs(Request $request)
