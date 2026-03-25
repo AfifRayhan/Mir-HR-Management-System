@@ -35,11 +35,26 @@
                 <!-- Filters -->
                 <div class="hr-panel mb-4">
                     <form action="{{ route('personnel.attendances.index') }}" method="GET" class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">{{ __('Date') }}</label>
                             <input type="date" name="date" class="form-control" value="{{ $date }}" onchange="this.form.submit()">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Search Employee') }}</label>
+                            <input type="text" name="search" class="form-control" placeholder="{{ __('Name or Employee Code') }}" value="{{ request('search') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">{{ __('Office') }}</label>
+                            <select name="office_id" class="form-select" onchange="this.form.submit()">
+                                <option value="">{{ __('All Offices') }}</option>
+                                @foreach($offices as $office)
+                                <option value="{{ $office->id }}" {{ request('office_id') == $office->id ? 'selected' : '' }}>
+                                    {{ $office->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label class="form-label">{{ __('Department') }}</label>
                             <select name="department_id" class="form-select" onchange="this.form.submit()">
                                 <option value="">{{ __('All Departments') }}</option>
@@ -49,6 +64,22 @@
                                 </option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">{{ __('Status') }}</label>
+                            <select name="status" class="form-select" onchange="this.form.submit()">
+                                <option value="">{{ __('All') }}</option>
+                                @foreach($statuses as $s)
+                                <option value="{{ $s }}" {{ request('status') == $s ? 'selected' : '' }}>
+                                    {{ ucfirst($s) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-search"></i>
+                            </button>
                         </div>
                     </form>
                 </div>

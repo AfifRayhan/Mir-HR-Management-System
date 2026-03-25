@@ -11,6 +11,7 @@ class AttendanceRecord extends Model
 
     protected $fillable = [
         'employee_id',
+        'machine_id',
         'date',
         'in_time',
         'out_time',

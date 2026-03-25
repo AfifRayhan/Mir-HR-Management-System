@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Employee;
-use App\Models\DeviceLog;
+use App\Models\Attendance;
 use App\Models\AttendanceRecord;
 use App\Models\ManualAttendanceAdjustment;
 use App\Models\WeeklyHoliday;
@@ -35,6 +35,8 @@ class AttendanceService
     {
         $date = Carbon::parse($date)->toDateString();
 
+        $machineId = null;
+
         // Check for manual adjustment first
         $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
             ->where('date', $date)
@@ -44,13 +46,12 @@ class AttendanceService
             $inTime = $adjustment->in_time;
             $outTime = $adjustment->out_time;
         } else {
-            // Get logs from devices for this employee
-            // We match by employee_code
+            // Get logs from synced attendances table for this employee
             if (!$employee->employee_code) {
                 return;
             }
 
-            $logs = DeviceLog::where('employee_code', $employee->employee_code)
+            $logs = Attendance::where('user_id', $employee->employee_code)
                 ->whereDate('punch_time', $date)
                 ->orderBy('punch_time', 'asc')
                 ->get();
@@ -61,16 +62,17 @@ class AttendanceService
             } else {
                 $inTime = $logs->first()->punch_time;
                 $outTime = $logs->count() > 1 ? $logs->last()->punch_time : null;
+                $machineId = $logs->first()->machine_id;
             }
         }
 
-        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime);
+        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime, $machineId);
     }
 
     /**
      * Update or create attendance record based on in/out times.
      */
-    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime)
+    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null)
     {
         $officeTime = $employee->officeTime;
 
@@ -111,12 +113,10 @@ class AttendanceService
             }
         }
 
-        // Check if date is a holiday or weekly holiday (simplified for now)
-        // In a real system, we'd check Holiday model and WeeklyHoliday model
-
         AttendanceRecord::updateOrCreate(
             ['employee_id' => $employee->id, 'date' => $date],
             [
+                'machine_id' => $machineId,
                 'in_time' => $inTime,
                 'out_time' => $outTime,
                 'working_hours' => $workingHours,
