@@ -36,10 +36,35 @@
                             <input type="text" name="employee_code" class="form-control @error('employee_code') is-invalid @enderror" value="{{ old('employee_code', $employee->employee_code ?? $autoEmployeeCode ?? '') }}" required placeholder="e.g. EMP001">
                             @error('employee_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <label class="form-label">{{ __('Full Name') }} <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $employee->name ?? '') }}" required>
                             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Personal Email') }}</label>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $employee->email ?? '') }}" placeholder="personal@example.com">
+                            @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Father Name') }}</label>
+                            <input type="text" name="father_name" class="form-control @error('father_name') is-invalid @enderror" value="{{ old('father_name', $employee->father_name ?? '') }}">
+                            @error('father_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Mother Name') }}</label>
+                            <input type="text" name="mother_name" class="form-control @error('mother_name') is-invalid @enderror" value="{{ old('mother_name', $employee->mother_name ?? '') }}">
+                            @error('mother_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Blood Group') }}</label>
+                            <select name="blood_group" class="form-select @error('blood_group') is-invalid @enderror">
+                                <option value="">{{ __('Select Group') }}</option>
+                                @foreach(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $bg)
+                                <option value="{{ $bg }}" {{ old('blood_group', $employee->blood_group ?? '') == $bg ? 'selected' : '' }}>{{ $bg }}</option>
+                                @endforeach
+                            </select>
+                            @error('blood_group') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Phone Number') }}</label>
@@ -138,6 +163,11 @@
                             </select>
                             @error('reporting_manager_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Gross Salary') }}</label>
+                            <input type="number" name="gross_salary" class="form-control @error('gross_salary') is-invalid @enderror" value="{{ old('gross_salary', $employee->gross_salary ?? '') }}" placeholder="e.g. 50000" step="0.01" min="0">
+                            @error('gross_salary') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
                     </div>
 
                     <!-- Account & Status -->
@@ -171,8 +201,16 @@
                                     <label class="form-check-label text-success font-bold" for="statusActive">{{ __('Active') }}</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusResigned" value="resigned" {{ old('status', $employee->status ?? '') === 'resigned' ? 'checked' : '' }}>
-                                    <label class="form-check-label text-danger font-bold" for="statusResigned">{{ __('Resigned') }}</label>
+                                    <input class="form-check-input" type="radio" name="status" id="statusInactive" value="inactive" {{ old('status', $employee->status ?? '') === 'inactive' ? 'checked' : '' }}>
+                                    <label class="form-check-label text-secondary font-bold" for="statusInactive">{{ __('Inactive') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusLeft" value="left" {{ old('status', $employee->status ?? '') === 'left' ? 'checked' : '' }}>
+                                    <label class="form-check-label text-danger font-bold" for="statusLeft">{{ __('Left') }}</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusHold" value="hold" {{ old('status', $employee->status ?? '') === 'hold' ? 'checked' : '' }}>
+                                    <label class="form-check-label text-warning font-bold" for="statusHold">{{ __('Hold') }}</label>
                                 </div>
                             </div>
                             @error('status') <div class="text-danger small mt-1">{{ $message }}</div> @enderror

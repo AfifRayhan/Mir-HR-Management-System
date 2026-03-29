@@ -24,8 +24,12 @@
 
                 <div class="info-grid">
                     <div class="info-box">
-                        <label>{{ __('Email Address') }}</label>
+                        <label>{{ __('Account Email') }}</label>
                         <div class="value">{{ $user->email }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Personal Email') }}</label>
+                        <div class="value">{{ $employee ? $employee->email : 'N/A' }}</div>
                     </div>
                     <div class="info-box">
                         <label>{{ __('Phone Number') }}</label>
@@ -34,6 +38,18 @@
                     <div class="info-box">
                         <label>{{ __('Department') }}</label>
                         <div class="value">{{ $employee && $employee->department ? $employee->department->name : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Blood Group') }}</label>
+                        <div class="value">{{ $employee && $employee->blood_group ? $employee->blood_group : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Father\'s Name') }}</label>
+                        <div class="value">{{ $employee && $employee->father_name ? $employee->father_name : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Mother\'s Name') }}</label>
+                        <div class="value">{{ $employee && $employee->mother_name ? $employee->mother_name : 'N/A' }}</div>
                     </div>
                     <div class="info-box">
                         <label>{{ __('Joining Date') }}</label>
@@ -48,6 +64,18 @@
                         <label>{{ __('Section') }}</label>
                         <div class="value">{{ $employee && $employee->section ? $employee->section->name : 'N/A' }}</div>
                     </div>
+                    @if(optional(auth()->user()->role)->name === 'HR Admin' || auth()->id() === $user->id)
+                    <div class="info-box">
+                        <label>{{ __('Gross Salary') }}</label>
+                        <div class="value">
+                            @if($employee && $employee->gross_salary)
+                                {{ number_format($employee->gross_salary, 2) }}
+                            @else
+                                N/A
+                            @endif
+                        </div>
+                    </div>
+                    @endif
                     <div class="info-box">
                         <label>{{ __('Designation') }}</label>
                         <div class="value">{{ $employee && $employee->designation ? $employee->designation->name : 'N/A' }}</div>

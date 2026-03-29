@@ -13,8 +13,12 @@ class Employee extends Model
         'user_id',
         'employee_code',
         'name',
+        'email',
         'phone',
         'address',
+        'blood_group',
+        'father_name',
+        'mother_name',
         'date_of_birth',
         'joining_date',
         'department_id',
@@ -25,6 +29,7 @@ class Employee extends Model
         'office_time_id',
         'reporting_manager_id',
         'status',
+        'gross_salary',
     ];
 
     public function user()

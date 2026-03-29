@@ -107,8 +107,12 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'employee_code' => 'required|string|max:50|unique:employees,employee_code',
             'name' => 'required|string|max:200',
+            'email' => 'nullable|email|max:150',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
+            'blood_group' => 'nullable|string|max:10',
+            'father_name' => 'nullable|string|max:150',
+            'mother_name' => 'nullable|string|max:150',
             'date_of_birth' => 'nullable|date',
             'joining_date' => 'required|date',
             'department_id' => 'nullable|exists:departments,id',
@@ -120,6 +124,7 @@ class EmployeeController extends Controller
             'reporting_manager_id' => 'nullable|exists:employees,id',
             'user_id' => 'nullable|exists:users,id|unique:employees,user_id',
             'status' => 'required|in:active,resigned',
+            'gross_salary' => 'nullable|numeric|min:0',
         ]);
 
         Employee::create($validated);
@@ -176,8 +181,12 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'employee_code' => 'required|string|max:50|unique:employees,employee_code,' . $employee->id,
             'name' => 'required|string|max:200',
+            'email' => 'nullable|email|max:150',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
+            'blood_group' => 'nullable|string|max:10',
+            'father_name' => 'nullable|string|max:150',
+            'mother_name' => 'nullable|string|max:150',
             'date_of_birth' => 'nullable|date',
             'joining_date' => 'required|date',
             'department_id' => 'nullable|exists:departments,id',
@@ -188,7 +197,8 @@ class EmployeeController extends Controller
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
             'user_id' => 'nullable|exists:users,id|unique:employees,user_id,' . $employee->id,
-            'status' => 'required|in:active,resigned',
+            'status' => 'required|in:active,inactive,left,hold',
+            'gross_salary' => 'nullable|numeric|min:0',
         ]);
 
         $employee->update($validated);
