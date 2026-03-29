@@ -84,7 +84,9 @@
                         <select name="status" class="form-select">
                             <option value="">{{ __('All') }}</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                            <option value="resigned" {{ request('status') == 'resigned' ? 'selected' : '' }}>{{ __('Resigned') }}</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                            <option value="left" {{ request('status') == 'left' ? 'selected' : '' }}>{{ __('Left') }}</option>
+                            <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>{{ __('Hold') }}</option>
                         </select>
                     </div>
                     <div class="col-md-1 d-flex align-items-end gap-2">
@@ -126,6 +128,8 @@
                                 <th>{{ __('Department') }}</th>
                                 <th>{{ __('Office') }}</th>
                                 <th>{{ __('Designation') }}</th>
+                                <th>{{ __('Section') }}</th>
+                                <th>{{ __('Gross Salary') }}</th>
                                 <th>
                                     <a href="{{ route('personnel.employees.index', array_merge(request()->query(), ['sort' => 'joining_date', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
                                         {{ __('Joining Date') }}
@@ -172,7 +176,16 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge {{ $emp->status === 'active' ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger' }}">
+                                    @php
+                                        $statusColors = [
+                                            'active' => 'bg-success-soft text-success',
+                                            'inactive' => 'bg-secondary-soft text-secondary',
+                                            'left' => 'bg-danger-soft text-danger',
+                                            'hold' => 'bg-warning-soft text-warning',
+                                        ];
+                                        $badgeClass = $statusColors[$emp->status] ?? 'bg-light text-dark';
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }}">
                                         {{ ucfirst($emp->status) }}
                                     </span>
                                 </td>

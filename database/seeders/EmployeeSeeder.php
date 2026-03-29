@@ -18,12 +18,12 @@ class EmployeeSeeder extends Seeder
     {
         // Core Users matching existing Employee records (Updating with office_id)
         $coreEmployees = [
-            ['email' => 'teamlead@example.com', 'code' => 'EMP001', 'first' => 'Nadia', 'last' => 'Khan', 'manager_code' => null, 'department' => 'HR Admin & Legal', 'designation' => 'Manager', 'grade' => 'Management'],
-            ['email' => 'david.chen@example.com', 'code' => 'EMP002', 'first' => 'David', 'last' => 'Chen', 'manager_code' => null, 'department' => 'Planning & Engineering', 'designation' => 'Manager', 'grade' => 'Management'],
-            ['email' => 'employee@example.com', 'code' => 'EMP003', 'first' => 'Rakib', 'last' => 'Islam', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Executive', 'grade' => 'Management'],
-            ['email' => 'amir.khan@example.com', 'code' => 'EMP004', 'first' => 'Amir', 'last' => 'Khan', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Assistant Manager', 'grade' => 'Management'],
-            ['email' => 'linda.okafor@example.com', 'code' => 'EMP005', 'first' => 'Linda', 'last' => 'Okafor', 'manager_code' => 'EMP004', 'department' => 'HR Admin & Legal', 'designation' => 'Office Assistant', 'grade' => 'Peon'],
-            ['email' => 'marco.rossi@example.com', 'code' => 'EMP006', 'first' => 'Marco', 'last' => 'Rossi', 'manager_code' => 'EMP004', 'department' => 'Restaurant - FOH', 'designation' => 'Restaurant Manager', 'grade' => 'Restaurant'],
+            ['email' => 'teamlead@example.com', 'code' => 'EMP001', 'first' => 'Nadia', 'last' => 'Khan', 'manager_code' => null, 'department' => 'HR Admin & Legal', 'designation' => 'Manager', 'grade' => 'Management', 'salary' => 85000],
+            ['email' => 'david.chen@example.com', 'code' => 'EMP002', 'first' => 'David', 'last' => 'Chen', 'manager_code' => null, 'department' => 'Planning & Engineering', 'designation' => 'Manager', 'grade' => 'Management', 'salary' => 75000],
+            ['email' => 'employee@example.com', 'code' => 'EMP003', 'first' => 'Rakib', 'last' => 'Islam', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Executive', 'grade' => 'Management', 'salary' => 45000],
+            ['email' => 'amir.khan@example.com', 'code' => 'EMP004', 'first' => 'Amir', 'last' => 'Khan', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Assistant Manager', 'grade' => 'Management', 'salary' => 55000],
+            ['email' => 'linda.okafor@example.com', 'code' => 'EMP005', 'first' => 'Linda', 'last' => 'Okafor', 'manager_code' => 'EMP004', 'department' => 'HR Admin & Legal', 'designation' => 'Office Assistant', 'grade' => 'Peon', 'salary' => 15000],
+            ['email' => 'marco.rossi@example.com', 'code' => 'EMP006', 'first' => 'Marco', 'last' => 'Rossi', 'manager_code' => 'EMP004', 'department' => 'Restaurant - FOH', 'designation' => 'Restaurant Manager', 'grade' => 'Restaurant', 'salary' => 35000],
         ];
 
 
@@ -43,11 +43,19 @@ class EmployeeSeeder extends Seeder
             $desigId = Designation::where('name', $data['designation'])->value('id') ?? Designation::firstOrCreate(['name' => $data['designation']])->id;
             $gradeId = Grade::where('name', $data['grade'])->value('id') ?? Grade::firstOrCreate(['name' => $data['grade']])->id;
 
+            $bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+            $fatherSuffixes = ['Ahmed', 'Uddin', 'Chowdhury', 'Hossain', 'Khan'];
+            $motherSuffixes = ['Begum', 'Akter', 'Khatun', 'Nahar', 'Lata'];
+
             Employee::updateOrCreate(
                 ['employee_code' => $data['code']],
                 [
                     'user_id' => $user?->id,
                     'name' => trim($data['first'] . ' ' . $data['last']),
+                    'email' => $data['email'],
+                    'blood_group' => $bloodGroups[array_rand($bloodGroups)],
+                    'father_name' => $data['last'] . ' ' . $fatherSuffixes[array_rand($fatherSuffixes)],
+                    'mother_name' => 'Mrs. ' . $motherSuffixes[array_rand($motherSuffixes)],
                     'department_id' => $deptId,
                     'designation_id' => $desigId,
                     'grade_id' => $gradeId,
@@ -56,6 +64,7 @@ class EmployeeSeeder extends Seeder
                     'reporting_manager_id' => $manager?->id,
                     'status' => 'active',
                     'joining_date' => now()->format('Y-m-d'),
+                    'gross_salary' => $data['salary'],
                 ]
             );
         }
@@ -79,16 +88,26 @@ class EmployeeSeeder extends Seeder
             }
 
             // Columns based on transformed sheet:
-            // A=#SL, B=Office, C=Department, D=Emp Id, E=Card No, F=Name, K=Designation, L=Grade,
-            // N=Joining Date, P=Date Of Birth
+            // A=#SL, B=Office, C=Department, D=Emp Id, E=Card No, F=Name
+            // G=Blood Group, H=Father Name, I=Mother Name
+            // J=Designation, K=Grade, L=Email
+            // M=Joining Date, O=Date Of Birth, P=Status
+            // Q=Section, R=Gross
             $office = trim((string) ($row['B'] ?? ''));
             $department = trim((string) ($row['C'] ?? ''));
-            $designation = trim((string) ($row['K'] ?? ''));
-            $grade = trim((string) ($row['L'] ?? ''));
+            $designation = trim((string) ($row['J'] ?? ''));
+            $grade = trim((string) ($row['K'] ?? ''));
             $name = trim((string) ($row['F'] ?? '')); // Name column
             $empId = trim((string) ($row['D'] ?? '')); // Emp Id column
-            $joiningDate = trim((string) ($row['N'] ?? ''));
-            $dateOfBirth = trim((string) ($row['P'] ?? ''));
+            $email = trim((string) ($row['L'] ?? '')); // Email column
+            $bloodGroup = trim((string) ($row['G'] ?? '')); // Blood Group
+            $fatherName = trim((string) ($row['H'] ?? '')); // Father Name
+            $motherName = trim((string) ($row['I'] ?? '')); // Mother Name
+            $joiningDate = trim((string) ($row['M'] ?? ''));
+            $dateOfBirth = trim((string) ($row['O'] ?? ''));
+            $status = trim((string) ($row['P'] ?? ''));
+            $section = trim((string) ($row['Q'] ?? ''));
+            $grossSalary = trim((string) ($row['R'] ?? ''));
 
             if (empty($office) || empty($department) || empty($name) || empty($empId)) {
                 continue;
@@ -98,34 +117,42 @@ class EmployeeSeeder extends Seeder
             $departmentModel = Department::firstOrCreate(['name' => $department]);
             $designationModel = Designation::firstOrCreate(['name' => $designation]);
             $gradeModel = Grade::firstOrCreate(['name' => $grade]);
+            
+            $sectionModel = null;
+            if (!empty($section)) {
+                $sectionModel = \App\Models\Section::firstOrCreate(
+                    ['name' => $section, 'department_id' => $departmentModel->id]
+                );
+            }
 
             $existing = Employee::where('employee_code', $empId)->first();
             if ($existing) {
                 continue;
             }
 
-            $nameParts = explode(' ', $name, 2);
-            $firstName = $nameParts[0] ?? $name;
-            $lastName = $nameParts[1] ?? '';
-
             Employee::create([
                 'employee_code' => $empId,
                 'name' => $name,
+                'email' => !empty($email) ? $email : null,
+                'blood_group' => !empty($bloodGroup) ? $bloodGroup : null,
+                'father_name' => !empty($fatherName) ? $fatherName : null,
+                'mother_name' => !empty($motherName) ? $motherName : null,
                 'date_of_birth' => !empty($dateOfBirth) ? date('Y-m-d', strtotime($dateOfBirth)) : null,
                 'phone' => null,
                 'address' => null,
                 'joining_date' => !empty($joiningDate) ? date('Y-m-d', strtotime($joiningDate)) : null,
                 'department_id' => $departmentModel->id,
-                'section_id' => null,
+                'section_id' => $sectionModel?->id,
                 'designation_id' => $designationModel->id,
                 'grade_id' => $gradeModel->id,
                 'office_id' => $officeModel->id,
                 'office_time_id' => OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null,
                 'reporting_manager_id' => null,
-                'status' => 'active',
+                'status' => strtolower($status),
+                'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,
             ]);
         }
 
-        $this->command->info('EmployeeSummarySeeder completed.');
+        $this->command->info('EmployeeSeeder completed.');
     }
 }

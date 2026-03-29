@@ -34,6 +34,9 @@ class AttendanceController extends Controller
         $search       = $request->input('search');
 
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
+            ->whereHas('employee', function ($q) {
+                $q->where('status', 'active');
+            })
             ->where('date', $date);
 
         if ($departmentId) {

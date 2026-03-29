@@ -42,14 +42,23 @@ class HrDashboardController extends Controller
         // Status Metrics for Today
         $activeEmployeesCount = Employee::where('status', 'active')->count();
         $presentToday = AttendanceRecord::whereDate('date', $today)
+            ->whereHas('employee', function($q) {
+                $q->where('status', 'active');
+            })
             ->whereIn('status', ['present', 'late'])
             ->distinct('employee_id')
             ->count();
         $lateToday = AttendanceRecord::whereDate('date', $today)
+            ->whereHas('employee', function($q) {
+                $q->where('status', 'active');
+            })
             ->where('status', 'late')
             ->distinct('employee_id')
             ->count();
         $onLeaveToday = LeaveApplication::where('status', 'approved')
+            ->whereHas('employee', function($q) {
+                $q->where('status', 'active');
+            })
             ->whereDate('from_date', '<=', $today)
             ->whereDate('to_date', '>=', $today)
             ->count();
@@ -102,7 +111,7 @@ class HrDashboardController extends Controller
             ->take(5)
             ->get();
 
-        $totalEmployees = Employee::count();
+        $totalEmployees = $activeEmployeesCount;
         $totalDepartments = Department::count();
         $totalSections = Section::count();
         $totalGrades = Grade::count();

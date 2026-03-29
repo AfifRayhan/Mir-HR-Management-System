@@ -198,7 +198,7 @@ return new class extends Migration
             $table->foreignId('grade_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('office_time_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('reporting_manager_id')->nullable()->constrained('employees')->nullOnDelete();
-            $table->enum('status', ['active', 'resigned'])->default('active');
+            $table->enum('status', ['active', 'inactive', 'left', 'hold'])->default('active');
             $table->timestamps();
         });
 
