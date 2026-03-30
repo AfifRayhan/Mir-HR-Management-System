@@ -32,7 +32,7 @@ class OfficeTimeController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'shift_name'   => 'required|string|max:100',
             'start_time'   => 'required',
             'end_time'     => 'required',
@@ -43,7 +43,57 @@ class OfficeTimeController extends Controller
             'remarks'      => 'nullable|string|max:100',
         ]);
 
-        OfficeTime::create($validated);
+        $start = $request->start_time;
+        $end = $request->end_time;
+        $isOvernight = $end < $start;
+
+        $timeFields = ['late_after', 'absent_after', 'lunch_start', 'lunch_end'];
+        $customErrors = [];
+
+        foreach ($timeFields as $field) {
+            $value = $request->$field;
+            if ($value) {
+                if (!$isOvernight) {
+                    if ($value < $start || $value > $end) {
+                        $fieldName = str_replace('_', ' ', ucfirst($field));
+                        $customErrors[$field] = ["$fieldName must be between Start Time and End Time."];
+                    }
+                } else {
+                    if ($value > $end && $value < $start) {
+                        $fieldName = str_replace('_', ' ', ucfirst($field));
+                        $customErrors[$field] = ["$fieldName must be within the shift duration (Start Time to End Time)."];
+                    }
+                }
+            }
+        }
+
+        if ($request->late_after && $request->absent_after) {
+            $isLateOvernight = $request->late_after < $start;
+            $isAbsentOvernight = $request->absent_after < $start;
+            
+            $lateValue = $isLateOvernight ? '1' . $request->late_after : '0' . $request->late_after;
+            $absentValue = $isAbsentOvernight ? '1' . $request->absent_after : '0' . $request->absent_after;
+            
+            if ($lateValue > $absentValue) {
+                $customErrors['late_after'] = ["Late After time cannot be more than Absent After time."];
+            }
+        }
+
+        if ($request->lunch_start && $request->lunch_end) {
+            $isLnStartOvernight = $request->lunch_start < $start;
+            $isLnEndOvernight = $request->lunch_end < $start;
+            $lnStartVal = $isLnStartOvernight ? '1' . $request->lunch_start : '0' . $request->lunch_start;
+            $lnEndVal = $isLnEndOvernight ? '1' . $request->lunch_end : '0' . $request->lunch_end;
+            if ($lnStartVal >= $lnEndVal) {
+                $customErrors['lunch_end'] = ["Lunch End must always be after Lunch Start."];
+            }
+        }
+
+        if (!empty($customErrors)) {
+            return redirect()->back()->withErrors($customErrors)->withInput();
+        }
+
+        OfficeTime::create($request->all());
         return redirect()->route('settings.office-times.index')->with('success', 'Office Time created successfully.');
     }
 
@@ -59,7 +109,7 @@ class OfficeTimeController extends Controller
 
     public function update(Request $request, OfficeTime $officeTime)
     {
-        $validated = $request->validate([
+        $request->validate([
             'shift_name'   => 'required|string|max:100',
             'start_time'   => 'required',
             'end_time'     => 'required',
@@ -70,7 +120,57 @@ class OfficeTimeController extends Controller
             'remarks'      => 'nullable|string|max:100',
         ]);
 
-        $officeTime->update($validated);
+        $start = $request->start_time;
+        $end = $request->end_time;
+        $isOvernight = $end < $start;
+
+        $timeFields = ['late_after', 'absent_after', 'lunch_start', 'lunch_end'];
+        $customErrors = [];
+
+        foreach ($timeFields as $field) {
+            $value = $request->$field;
+            if ($value) {
+                if (!$isOvernight) {
+                    if ($value < $start || $value > $end) {
+                        $fieldName = str_replace('_', ' ', ucfirst($field));
+                        $customErrors[$field] = ["$fieldName must be between Start Time and End Time."];
+                    }
+                } else {
+                    if ($value > $end && $value < $start) {
+                        $fieldName = str_replace('_', ' ', ucfirst($field));
+                        $customErrors[$field] = ["$fieldName must be within the shift duration (Start Time to End Time)."];
+                    }
+                }
+            }
+        }
+
+        if ($request->late_after && $request->absent_after) {
+            $isLateOvernight = $request->late_after < $start;
+            $isAbsentOvernight = $request->absent_after < $start;
+            
+            $lateValue = $isLateOvernight ? '1' . $request->late_after : '0' . $request->late_after;
+            $absentValue = $isAbsentOvernight ? '1' . $request->absent_after : '0' . $request->absent_after;
+            
+            if ($lateValue > $absentValue) {
+                $customErrors['late_after'] = ["Late After time cannot be more than Absent After time."];
+            }
+        }
+
+        if ($request->lunch_start && $request->lunch_end) {
+            $isLnStartOvernight = $request->lunch_start < $start;
+            $isLnEndOvernight = $request->lunch_end < $start;
+            $lnStartVal = $isLnStartOvernight ? '1' . $request->lunch_start : '0' . $request->lunch_start;
+            $lnEndVal = $isLnEndOvernight ? '1' . $request->lunch_end : '0' . $request->lunch_end;
+            if ($lnStartVal >= $lnEndVal) {
+                $customErrors['lunch_end'] = ["Lunch End must always be after Lunch Start."];
+            }
+        }
+
+        if (!empty($customErrors)) {
+            return redirect()->back()->withErrors($customErrors)->withInput();
+        }
+
+        $officeTime->update($request->all());
         return redirect()->route('settings.office-times.index')->with('success', 'Office Time updated successfully.');
     }
 

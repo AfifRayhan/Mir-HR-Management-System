@@ -108,6 +108,13 @@
                                     <input type="date" name="to_date" class="form-control rounded-3" required>
                                 </div>
                             </div>
+
+                            <div id="leave_days_display" class="mb-3 d-none" data-holidays="{{ json_encode($weeklyHolidayDays) }}">
+                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #e3f2fd; color: #0d47a1;">
+                                    <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
+                                    <span id="total_days_count" class="badge bg-primary rounded-pill">0</span>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Reason') }} <span class="text-danger">*</span></label>
                                 <textarea name="reason" class="form-control rounded-3" rows="3" required placeholder="{{ __('Why are you applying for leave?') }}"></textarea>
@@ -126,7 +133,31 @@
                 {{-- Applications History --}}
                 <div class="col-lg-8">
                     <div class="hr-panel">
-                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                            <form action="{{ route('team-lead.leave.index') }}" method="GET" class="d-flex gap-2">
+                                <select name="month" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Months') }}</option>
+                                    @for($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
+                                        {{ date('M', mktime(0, 0, 0, $i, 1)) }}
+                                    </option>
+                                    @endfor
+                                </select>
+                                <select name="year" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Years') }}</option>
+                                    @for($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                    <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>
+                                        {{ $i }}
+                                    </option>
+                                    @endfor
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3">{{ __('Filter') }}</button>
+                                @if(request()->hasAny(['month', 'year']))
+                                <a href="{{ route('team-lead.leave.index') }}" class="btn btn-sm btn-light rounded-3">{{ __('Clear') }}</a>
+                                @endif
+                            </form>
+                        </div>
                         <div class="table-responsive">
                             <table class="table hr-table">
                                 <thead class="bg-light">
@@ -175,4 +206,55 @@
 
         </main>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fromDateInput = document.querySelector('input[name="from_date"]');
+            const toDateInput = document.querySelector('input[name="to_date"]');
+            const daysDisplay = document.getElementById('leave_days_display');
+            const daysCount = document.getElementById('total_days_count');
+            const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
+
+            function calculateDays() {
+                const fromDate = fromDateInput.value;
+                const toDate = toDateInput.value;
+
+                if (fromDate && toDate) {
+                    const start = new Date(fromDate);
+                    const end = new Date(toDate);
+
+                    if (end >= start) {
+                        let totalDays = 0;
+                        let current = new Date(start);
+                        
+                        while (current <= end) {
+                            // Get day name in English (e.g., "Friday")
+                            const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
+                            if (!weeklyHolidays.includes(dayName)) {
+                                totalDays++;
+                            }
+                            current.setDate(current.getDate() + 1);
+                        }
+                        
+                        daysCount.textContent = totalDays;
+                        daysDisplay.classList.remove('d-none');
+                    } else {
+                        daysDisplay.classList.add('d-none');
+                    }
+                } else {
+                    daysDisplay.classList.add('d-none');
+                }
+            }
+
+            if (fromDateInput && toDateInput) {
+                fromDateInput.addEventListener('change', calculateDays);
+                toDateInput.addEventListener('change', calculateDays);
+                
+                // Also trigger if dates are already filled
+                calculateDays();
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

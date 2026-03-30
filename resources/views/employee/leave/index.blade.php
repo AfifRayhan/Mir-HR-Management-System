@@ -96,6 +96,13 @@
                                 </div>
                             </div>
 
+                            <div id="leave_days_display" class="mb-3 d-none" data-holidays="{{ json_encode($weeklyHolidayDays) }}">
+                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #e3f2fd; color: #0d47a1;">
+                                    <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
+                                    <span id="total_days_count" class="badge bg-primary rounded-pill">0</span>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Reason / Remarks') }} <span class="text-danger">*</span></label>
                                 <textarea name="reason" class="form-control rounded-3" rows="3" required placeholder="{{ __('Why are you applying for leave?') }}"></textarea>
@@ -251,4 +258,55 @@
 
         </main>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fromDateInput = document.querySelector('input[name="from_date"]');
+            const toDateInput = document.querySelector('input[name="to_date"]');
+            const daysDisplay = document.getElementById('leave_days_display');
+            const daysCount = document.getElementById('total_days_count');
+            const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
+
+            function calculateDays() {
+                const fromDate = fromDateInput.value;
+                const toDate = toDateInput.value;
+
+                if (fromDate && toDate) {
+                    const start = new Date(fromDate);
+                    const end = new Date(toDate);
+
+                    if (end >= start) {
+                        let totalDays = 0;
+                        let current = new Date(start);
+                        
+                        while (current <= end) {
+                            // Get day name in English (e.g., "Friday")
+                            const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
+                            if (!weeklyHolidays.includes(dayName)) {
+                                totalDays++;
+                            }
+                            current.setDate(current.getDate() + 1);
+                        }
+                        
+                        daysCount.textContent = totalDays;
+                        daysDisplay.classList.remove('d-none');
+                    } else {
+                        daysDisplay.classList.add('d-none');
+                    }
+                } else {
+                    daysDisplay.classList.add('d-none');
+                }
+            }
+
+            if (fromDateInput && toDateInput) {
+                fromDateInput.addEventListener('change', calculateDays);
+                toDateInput.addEventListener('change', calculateDays);
+                
+                // Also trigger if dates are already filled
+                calculateDays();
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

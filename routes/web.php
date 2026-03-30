@@ -70,7 +70,11 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::get('leave-applications', [LeaveApplicationController::class, 'indexHR'])->name('leave-applications.index');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatus'])->name('leave-applications.status');
 
+    Route::get('leave/manual', [LeaveApplicationController::class, 'manualLeave'])->name('leave.manual');
+    Route::post('leave/manual', [LeaveApplicationController::class, 'storeManual'])->name('leave.manual.store');
+
     Route::get('leave-accounts', [LeaveBalanceController::class, 'index'])->name('leave-balances.index');
+    Route::get('leave-accounts/existing', [LeaveBalanceController::class, 'existing'])->name('leave-balances.existing');
     Route::post('leave-accounts', [LeaveBalanceController::class, 'store'])->name('leave-balances.store');
 
     // Attendance routes
@@ -120,5 +124,21 @@ Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->
 
 // Device Sync API (Exempt from CSRF in bootstrap/app.php)
 Route::post('api/device/sync', [\App\Http\Controllers\Api\DeviceLogController::class, 'sync'])->name('api.device.sync');
+
+// Weekly holidays lookup for Manual Leave form (authenticated)
+Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
+    $officeId = $request->query('office_id');
+    $hasOfficeConfig = \App\Models\WeeklyHoliday::where('office_id', $officeId)->exists();
+    $days = \App\Models\WeeklyHoliday::where('is_holiday', true)
+        ->where(function ($q) use ($hasOfficeConfig, $officeId) {
+            if ($hasOfficeConfig) {
+                $q->where('office_id', $officeId);
+            } else {
+                $q->whereNull('office_id');
+            }
+        })
+        ->pluck('day_name');
+    return response()->json(['holiday_days' => $days]);
+})->middleware('auth')->name('api.weekly-holidays');
 
 require __DIR__ . '/auth.php';
