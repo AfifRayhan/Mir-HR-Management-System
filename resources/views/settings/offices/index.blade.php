@@ -43,7 +43,10 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Office Name') }} <span class="text-danger">*</span></label>
-                                <input type="text" name="name" class="form-control rounded-3" placeholder="{{ __('e.g. Head Office - Dhaka') }}" required>
+                                <input type="text" name="name" class="form-control rounded-3 @error('name') is-invalid @enderror" placeholder="{{ __('e.g. Head Office - Dhaka') }}" value="{{ old('name') }}" required>
+                                @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
@@ -68,7 +71,19 @@
 
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Phone Number') }}</label>
-                                <input type="text" name="phone" class="form-control rounded-3" placeholder="{{ __('+880...') }}">
+                                <input type="text" name="phone" id="phone" class="form-control rounded-3 @error('phone') is-invalid @enderror" placeholder="{{ __('+880...') }}" value="{{ old('phone') }}" pattern="[0-9+\- ]*">
+                                <div class="form-text extra-small" style="font-size: 0.7rem;">{{ __('Allowed: 0-9, +, -, and spaces') }}</div>
+                                @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Secondary Phone') }}</label>
+                                <input type="text" name="secondary_phone" id="secondary_phone" class="form-control rounded-3 @error('secondary_phone') is-invalid @enderror" placeholder="{{ __('+880...') }}" value="{{ old('secondary_phone') }}" pattern="[0-9+\- ]*">
+                                @error('secondary_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-4">
@@ -130,6 +145,9 @@
                                         <td>
                                             <div class="small"><i class="bi bi-envelope me-1"></i>{{ $office->email ?? '---' }}</div>
                                             <div class="small"><i class="bi bi-telephone me-1"></i>{{ $office->phone ?? '---' }}</div>
+                                            @if($office->secondary_phone)
+                                            <div class="small"><i class="bi bi-telephone-plus me-1"></i>{{ $office->secondary_phone }}</div>
+                                            @endif
                                         </td>
                                         <td class="text-end pe-4">
                                             <div class="btn-group">
@@ -163,7 +181,10 @@
                                                         <div class="row g-3">
                                                             <div class="col-md-6">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Office Name') }}</label>
-                                                                <input type="text" name="name" class="form-control rounded-3" value="{{ $office->name }}" required>
+                                                                <input type="text" name="name" class="form-control rounded-3 @error('name') is-invalid @enderror" value="{{ old('name', $office->name) }}" required>
+                                                                @error('name')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Office Type') }}</label>
@@ -183,7 +204,18 @@
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Phone Number') }}</label>
-                                                                <input type="text" name="phone" class="form-control rounded-3" value="{{ $office->phone }}">
+                                                                <input type="text" name="phone" class="form-control rounded-3 @error('phone') is-invalid @enderror" value="{{ old('phone', $office->phone) }}" pattern="[0-9+\- ]*">
+                                                                <div class="form-text extra-small" style="font-size: 0.7rem;">{{ __('Allowed: 0-9, +, -, and spaces') }}</div>
+                                                                @error('phone')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Secondary Phone') }}</label>
+                                                                <input type="text" name="secondary_phone" class="form-control rounded-3 @error('secondary_phone') is-invalid @enderror" value="{{ old('secondary_phone', $office->secondary_phone) }}" pattern="[0-9+\- ]*">
+                                                                @error('secondary_phone')
+                                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
                                                             <div class="col-12">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Address') }}</label>

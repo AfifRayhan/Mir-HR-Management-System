@@ -70,6 +70,7 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Leave Types',    'slug' => 'leave-types',        'icon' => 'bi-tag',              'route_name' => 'settings.leave-types.index',   'sort_order' => 1],
             ['name' => 'Leave Accounts', 'slug' => 'leave-accounts',     'icon' => 'bi-wallet2',          'route_name' => 'personnel.leave-balances.index', 'sort_order' => 2],
             ['name' => 'Applications',   'slug' => 'leave-applications', 'icon' => 'bi-file-earmark-text', 'route_name' => 'personnel.leave-applications.index', 'sort_order' => 3],
+            ['name' => 'Manual Leave',   'slug' => 'leave-manual',       'icon' => 'bi-pencil-square',    'route_name' => 'personnel.leave.manual',             'sort_order' => 7],
         ];
 
         foreach ($leaveChildren as $child) {
@@ -184,7 +185,7 @@ class MenuItemSeeder extends Seeder
             'employee-notifications',
             'employee-leave-self',
             'team-lead-leave-request',
-            'team-lead-leave-apps'
+            'team-lead-leave-apps',
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 

@@ -14,6 +14,7 @@ class Office extends Model
         'office_type_id',
         'address',
         'phone',
+        'secondary_phone',
         'email',
         'logo',
         'order_number',

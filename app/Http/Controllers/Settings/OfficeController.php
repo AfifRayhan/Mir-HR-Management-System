@@ -30,10 +30,14 @@ class OfficeController extends Controller
             'name' => 'required|string|max:255',
             'office_type_id' => 'required|exists:office_types,id',
             'address' => 'nullable|string',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20|regex:/^[0-9+\- ]*$/',
+            'secondary_phone' => 'nullable|string|max:20|regex:/^[0-9+\- ]*$/',
             'email' => 'nullable|email|max:255',
             'order_number' => 'required|integer',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ], [
+            'phone.regex' => 'The phone number format is invalid. Only digits, +, -, and spaces are allowed.',
+            'secondary_phone.regex' => 'The secondary phone number format is invalid. Only digits, +, -, and spaces are allowed.',
         ]);
 
         if ($request->hasFile('logo')) {
@@ -51,10 +55,14 @@ class OfficeController extends Controller
             'name' => 'required|string|max:255',
             'office_type_id' => 'required|exists:office_types,id',
             'address' => 'nullable|string',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20|regex:/^[0-9+\- ]*$/',
+            'secondary_phone' => 'nullable|string|max:20|regex:/^[0-9+\- ]*$/',
             'email' => 'nullable|email|max:255',
             'order_number' => 'required|integer',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ], [
+            'phone.regex' => 'The phone number format is invalid. Only digits, +, -, and spaces are allowed.',
+            'secondary_phone.regex' => 'The secondary phone number format is invalid. Only digits, +, -, and spaces are allowed.',
         ]);
 
         if ($request->hasFile('logo')) {

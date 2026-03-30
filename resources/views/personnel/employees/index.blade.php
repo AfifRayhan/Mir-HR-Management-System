@@ -163,6 +163,8 @@
                                 <td><span class="badge bg-light text-dark">{{ $emp->department->name ?? 'N/A' }}</span></td>
                                 <td>{{ $emp->office->name ?? 'N/A' }}</td>
                                 <td>{{ $emp->designation->name ?? 'N/A' }}</td>
+                                <td>{{ $emp->section->name ?? 'N/A' }}</td>
+                                <td>{{ number_format($emp->gross_salary, 2) }}</td>
                                 <td>{{ \Carbon\Carbon::parse($emp->joining_date)->format('d M Y') }}</td>
                                 <td>
                                     @if($emp->user)
@@ -207,7 +209,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8" class="text-center py-5">
+                                <td colspan="11" class="text-center py-5">
                                     <i class="bi bi-people text-4xl text-gray-200 d-block mb-3"></i>
                                     <span class="text-gray-500">{{ __('No employees found.') }}</span>
                                 </td>
