@@ -14,26 +14,26 @@ class SyncAttendances extends Command
      *
      * @var string
      */
-    protected $signature = 'app:sync-attendances';
+    protected $signature = 'app:sync-attendances {--sync-only : Only sync data without processing}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync attendance data from external db';
+    protected $description = 'Sync today\'s attendance data from external db and auto-process logs';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(\App\Services\AttendanceService $attendanceService)
     {
         $this->info('Starting attendance sync...');
 
         try {
             DB::connection('attendance_analysis')
                 ->table('device_attendances')
-                ->where('created_at', '>=', now()->subDays(7)) // Sync only last 7 days for efficiency
+                ->where('created_at', '>=', now()->startOfDay()) // Sync today's data only
                 ->chunkById(1000, function ($records) {
                     $insertData = [];
                     foreach ($records as $record) {
@@ -58,6 +58,13 @@ class SyncAttendances extends Command
                 });
 
             $this->info('Attendance sync completed successfully.');
+
+            if (!$this->option('sync-only')) {
+                $date = now()->toDateString();
+                $this->info("Starting attendance log processing for $date...");
+                $attendanceService->processLogsForDate($date);
+                $this->info("Attendance processing for $date completed successfully.");
+            }
         } catch (\Exception $e) {
             $this->error('Sync failed: ' . $e->getMessage());
         }

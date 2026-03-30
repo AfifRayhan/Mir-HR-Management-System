@@ -21,13 +21,13 @@
                             <a href="{{ route('personnel.attendances.adjust') }}" class="btn btn-outline-primary">
                                 <i class="bi bi-pencil-square me-2"></i>{{ __('Manual Adjustment') }}
                             </a>
-                            <form action="{{ route('personnel.attendances.process') }}" method="POST">
+                            <!--<form action="{{ route('personnel.attendances.process') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="date" value="{{ $date }}">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-arrow-repeat me-2"></i>{{ __('Process Logs') }}
                                 </button>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
                 </div>
