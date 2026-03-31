@@ -102,6 +102,16 @@ class Employee extends Model
         return $this->hasMany(ManualAttendanceAdjustment::class);
     }
 
+    public function supervisorRemarks()
+    {
+        return $this->hasMany(SupervisorRemark::class, 'employee_id');
+    }
+
+    public function activeSupervisorRemarks()
+    {
+        return $this->hasMany(SupervisorRemark::class, 'employee_id')->active();
+    }
+
     /**
      * Generate next employee code based on joining date.
      * Format: YYMMXXXX (8 digits total, 4 digits YYMM + 4 digits increment)

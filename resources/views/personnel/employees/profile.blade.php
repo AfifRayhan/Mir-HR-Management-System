@@ -17,8 +17,8 @@
                         {{ strtoupper(substr($employee ? $employee->name : $user->name, 0, 1)) }}
                     </div>
                     <div class="profile-header-info">
-                        <h1>{{ $employee ? $employee->name : $user->name }}</h1>
-                        <div class="role-badge">{{ $roleName }}</div>
+                        <h1>{{ ($employee ? $employee->name : $user->name) }}</h1>
+                        <div class="role-badge">{{ 'Employee ID: ' . ($employee ? $employee->employee_code : ($user->employee_id ?? 'N/A')) }}</div>
                     </div>
                 </div>
 
@@ -94,10 +94,6 @@
                     <div class="info-box">
                         <label>{{ __('Office Time (Shift)') }}</label>
                         <div class="value">{{ $employee && $employee->officeTime ? $employee->officeTime->shift_name . ' (' . \Carbon\Carbon::parse($employee->officeTime->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($employee->officeTime->end_time)->format('H:i') . ')' : 'N/A' }}</div>
-                    </div>
-                    <div class="info-box">
-                        <label>{{ __('Employee ID') }}</label>
-                        <div class="value">{{ $employee ? $employee->employee_code : ($user->employee_id ?? 'N/A') }}</div>
                     </div>
                     <div class="info-box">
                         <label>{{ __('Date of Birth') }}</label>

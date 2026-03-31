@@ -22,31 +22,24 @@ class LeaveTypeSeeder extends Seeder
             ],
             [
                 'name' => 'Sick Leave (SL)',
-                'total_days_per_year' => 14,
+                'total_days_per_year' => 10,
                 'max_consecutive_days' => null,
                 'carry_forward' => false,
                 'sort_order' => 2,
             ],
             [
-                'name' => 'Annual Leave (AL)',
-                'total_days_per_year' => 15,
-                'max_consecutive_days' => 10,
+                'name' => 'Earn Leave (EL)',
+                'total_days_per_year' => 20,
+                'max_consecutive_days' => 20,
                 'carry_forward' => true,
                 'sort_order' => 3,
-            ],
-            [
-                'name' => 'Parental Leave',
-                'total_days_per_year' => 120,
-                'max_consecutive_days' => null,
-                'carry_forward' => false,
-                'sort_order' => 4,
             ],
             [
                 'name' => 'Emergency Leave (EL)',
                 'total_days_per_year' => 5,
                 'max_consecutive_days' => null,
                 'carry_forward' => false,
-                'sort_order' => 5,
+                'sort_order' => 4,
             ],
         ];
 
