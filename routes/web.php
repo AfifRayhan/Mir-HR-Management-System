@@ -99,6 +99,10 @@ Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')
     Route::get('leave-applications', [LeaveApplicationController::class, 'indexTeamLead'])->name('leave-applications.index');
     Route::get('leave-applications/history', [LeaveApplicationController::class, 'historyTeamLead'])->name('leave-applications.history');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatusTeamLead'])->name('leave-applications.status');
+    Route::get('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'index'])->name('remarks.index');
+    Route::get('remarks/create', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'create'])->name('remarks.create');
+    Route::post('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'store'])->name('remarks.store');
+    Route::delete('remarks/{remark}', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'destroy'])->name('remarks.destroy');
 });
 
 // Settings management routes

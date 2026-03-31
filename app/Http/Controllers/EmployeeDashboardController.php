@@ -8,6 +8,7 @@ use App\Models\LeaveApplication;
 use App\Models\LeaveBalance;
 use App\Models\Holiday;
 use App\Models\Notice;
+use App\Models\SupervisorRemark;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -30,7 +31,7 @@ class EmployeeDashboardController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
 
         // An Employee might have an associated Employee record
-        $employee = Employee::where('user_id', $user->id)->first();
+        $employee = Employee::with(['designation', 'department'])->where('user_id', $user->id)->first();
 
         $today = Carbon::today();
         $startOfMonth = $today->copy()->startOfMonth();
@@ -115,39 +116,39 @@ class EmployeeDashboardController extends Controller
                 
             $prevAbsentDays = max(0, $prevTotalWorkingDays - $prevPresentDays - $prevLeaveDays);
 
-            // Recent attendance records (last 7 working days)
+            // Full attendance records for current month
+            $startOfMonth = $today->copy()->startOfMonth();
             $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
-                ->whereBetween('date', [$today->copy()->subDays(14), $today])
+                ->whereBetween('date', [$startOfMonth, $today])
                 ->get()
                 ->keyBy(function($item) {
                     return $item->date->format('Y-m-d');
                 });
  
-            // Fetch approved leaves for the same window
+            // Fetch approved leaves for the current month
             $approvedLeavesWindow = LeaveApplication::where('employee_id', $employee->id)
                 ->where('status', 'approved')
-                ->where(function($q) use ($today) {
-                    $startOfWindow = $today->copy()->subDays(14);
-                    $q->whereBetween('from_date', [$startOfWindow, $today])
-                      ->orWhereBetween('to_date', [$startOfWindow, $today])
-                      ->orWhere(function($sub) use ($startOfWindow, $today) {
-                          $sub->where('from_date', '<=', $startOfWindow)
+                ->where(function($q) use ($startOfMonth, $today) {
+                    $q->whereBetween('from_date', [$startOfMonth, $today])
+                      ->orWhereBetween('to_date', [$startOfMonth, $today])
+                      ->orWhere(function($sub) use ($startOfMonth, $today) {
+                          $sub->where('from_date', '<=', $startOfMonth)
                               ->where('to_date', '>=', $today);
                       });
                 })
                 ->get();
 
-            $recentAttendance = collect();
+            $fullMonthAttendance = collect();
             $checkDate = $today->copy();
-            while ($recentAttendance->count() < 7 && $checkDate->gte($today->copy()->subDays(30))) {
+            while ($checkDate->gte($startOfMonth)) {
                 $dateStr = $checkDate->toDateString();
                 if (isset($existingRecords[$dateStr])) {
-                    $recentAttendance->push($existingRecords[$dateStr]);
+                    $fullMonthAttendance->push($existingRecords[$dateStr]);
                 } elseif ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
                     $onLeave = $approvedLeavesWindow->contains(function($leave) use ($checkDate) {
                         return $checkDate->between($leave->from_date, $leave->to_date);
                     });
-                    $recentAttendance->push(new AttendanceRecord([
+                    $fullMonthAttendance->push(new AttendanceRecord([
                         'employee_id' => $employee->id,
                         'date' => $dateStr,
                         'status' => $onLeave ? 'leave' : 'absent',
@@ -168,25 +169,35 @@ class EmployeeDashboardController extends Controller
             $totalLeaveDays = $approvedLeaves + $pendingLeaves + $rejectedLeaves;
 
             // Leave Balance summary (Used vs Available)
-            $leaveBalances = LeaveBalance::where('employee_id', $employee->id)
+            $leaveBalances = LeaveBalance::with('leaveType')
+                ->where('employee_id', $employee->id)
                 ->where('year', $today->year)
                 ->get();
             
             $totalUsedLeave = $leaveBalances->sum('used_days');
             $totalAvailableLeave = $leaveBalances->sum('remaining_days');
+
+            // Fetch supervisor remarks (active only)
+            $supervisorRemarks = SupervisorRemark::active()
+                ->where('employee_id', $employee->id)
+                ->with('supervisor')
+                ->latest()
+                ->take(5)
+                ->get();
         } else {
+            $leaveBalances = collect();
+            $supervisorRemarks = collect();
             $totalUsedLeave = 0;
             $totalAvailableLeave = 0;
         }
 
-        // Active Notices & Events
-        $activeNotices = Notice::active()->orderBy('created_at', 'desc')->get();
+        // Active Notices & Events (at max 5)
+        $activeNotices = Notice::active()->orderBy('created_at', 'desc')->take(5)->get();
 
-        // Upcoming Holidays (same as HR Dashboard)
+        // Upcoming Holidays (show all upcoming)
         $upcomingHolidays = Holiday::whereDate('from_date', '>=', $today)
             ->where('is_active', true)
             ->orderBy('from_date', 'asc')
-            ->take(5)
             ->get();
 
         // Upcoming Birthdays
@@ -220,13 +231,15 @@ class EmployeeDashboardController extends Controller
             'prevLateDays',
             'prevAbsentDays',
             'prevTotalWorkingDays',
-            'recentAttendance',
+            'fullMonthAttendance',
+            'supervisorRemarks',
             'approvedLeaves',
             'pendingLeaves',
             'rejectedLeaves',
             'totalLeaveDays',
             'totalUsedLeave',
             'totalAvailableLeave',
+            'leaveBalances',
             'upcomingHolidays',
             'upcomingBirthdays',
             'activeNotices'

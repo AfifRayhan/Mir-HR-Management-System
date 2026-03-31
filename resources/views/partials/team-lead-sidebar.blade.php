@@ -66,6 +66,11 @@
                             </a>
                         </li>
                     </ul>
+                <li>
+                    <a href="{{ route('team-lead.remarks.index') }}" class="hr-sidebar-link {{ request()->routeIs('team-lead.remarks.*') ? 'active' : '' }}">
+                        <i class="bi bi-chat-left-dots"></i>
+                        <span>{{ __('Supervisor Remarks') }}</span>
+                    </a>
                 </li>
 
                 <li>
