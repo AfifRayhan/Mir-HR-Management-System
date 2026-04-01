@@ -85,8 +85,6 @@
                             <option value="">{{ __('All') }}</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                            <option value="left" {{ request('status') == 'left' ? 'selected' : '' }}>{{ __('Left') }}</option>
-                            <option value="hold" {{ request('status') == 'hold' ? 'selected' : '' }}>{{ __('Hold') }}</option>
                         </select>
                     </div>
                     <div class="col-md-1 d-flex align-items-end gap-2">
@@ -182,8 +180,6 @@
                                         $statusColors = [
                                             'active' => 'bg-success-soft text-success',
                                             'inactive' => 'bg-secondary-soft text-secondary',
-                                            'left' => 'bg-danger-soft text-danger',
-                                            'hold' => 'bg-warning-soft text-warning',
                                         ];
                                         $badgeClass = $statusColors[$emp->status] ?? 'bg-light text-dark';
                                     @endphp

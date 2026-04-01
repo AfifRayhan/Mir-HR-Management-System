@@ -7,6 +7,7 @@
 
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -42,7 +43,7 @@
 
                                 <div class="mb-4">
                                     <label class="form-label font-bold text-gray-700">{{ __('Date') }}</label>
-                                    <input type="date" name="date" class="form-control rounded-3 @error('date') is-invalid @enderror" value="{{ old('date', date('Y-m-d')) }}" required>
+                                    <input type="text" id="adj_date" name="date" class="form-control rounded-3 @error('date') is-invalid @enderror" value="{{ old('date', date('Y-m-d')) }}" placeholder="Select date" readonly required>
                                     @error('date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -51,11 +52,11 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label font-bold text-gray-700">{{ __('In Time') }}</label>
-                                        <input type="time" name="in_time" class="form-control rounded-3" required>
+                                        <input type="text" id="in_time" name="in_time" class="form-control rounded-3" placeholder="Select in time" readonly required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label font-bold text-gray-700">{{ __('Out Time') }}</label>
-                                        <input type="time" name="out_time" class="form-control rounded-3">
+                                        <input type="text" id="out_time" name="out_time" class="form-control rounded-3" placeholder="Select out time (optional)">
                                     </div>
                                 </div>
 
@@ -82,4 +83,34 @@
             </div>
         </main>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('#adj_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+
+            flatpickr('#in_time', {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: 'H:i',
+                altInput: true,
+                altFormat: 'h:i K',
+                allowInput: false,
+            });
+
+            flatpickr('#out_time', {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: 'H:i',
+                altInput: true,
+                altFormat: 'h:i K',
+                allowInput: false,
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

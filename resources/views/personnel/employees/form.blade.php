@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -73,12 +74,12 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Date of Birth') }}</label>
-                            <input type="date" name="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror" value="{{ old('date_of_birth', $employee->date_of_birth ?? '') }}">
+                            <input type="text" id="date_of_birth" name="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror" value="{{ old('date_of_birth', $employee->date_of_birth ?? '') }}" placeholder="Select date of birth">
                             @error('date_of_birth') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Joining Date') }} <span class="text-danger">*</span></label>
-                            <input type="date" name="joining_date" class="form-control @error('joining_date') is-invalid @enderror" value="{{ old('joining_date', $employee->joining_date ?? '') }}" required>
+                            <input type="text" id="joining_date" name="joining_date" class="form-control @error('joining_date') is-invalid @enderror" value="{{ old('joining_date', $employee->joining_date ?? '') }}" placeholder="Select joining date" required>
                             @error('joining_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-12">
@@ -94,6 +95,16 @@
                     </div>
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
+                            <label class="form-label">{{ __('Office') }}</label>
+                            <select name="office_id" class="form-select @error('office_id') is-invalid @enderror">
+                                <option value="">{{ __('Select Office') }}</option>
+                                @foreach($offices as $office)
+                                <option value="{{ $office->id }}" {{ old('office_id', $employee->office_id ?? '') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('office_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">{{ __('Department') }}</label>
                             <select name="department_id" class="form-select @error('department_id') is-invalid @enderror">
                                 <option value="">{{ __('Select Department') }}</option>
@@ -102,16 +113,6 @@
                                 @endforeach
                             </select>
                             @error('department_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">{{ __('Section') }}</label>
-                            <select name="section_id" class="form-select @error('section_id') is-invalid @enderror">
-                                <option value="">{{ __('Select Section') }}</option>
-                                @foreach($sections as $sec)
-                                <option value="{{ $sec->id }}" {{ old('section_id', $employee->section_id ?? '') == $sec->id ? 'selected' : '' }}>{{ $sec->name }} ({{ $sec->department->short_name ?? '' }})</option>
-                                @endforeach
-                            </select>
-                            @error('section_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Designation') }}</label>
@@ -124,6 +125,16 @@
                             @error('designation_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
+                            <label class="form-label">{{ __('Section') }}</label>
+                            <select name="section_id" class="form-select @error('section_id') is-invalid @enderror">
+                                <option value="">{{ __('Select Section') }}</option>
+                                @foreach($sections as $sec)
+                                <option value="{{ $sec->id }}" {{ old('section_id', $employee->section_id ?? '') == $sec->id ? 'selected' : '' }}>{{ $sec->name }} ({{ $sec->department->short_name ?? '' }})</option>
+                                @endforeach
+                            </select>
+                            @error('section_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">{{ __('Grade') }}</label>
                             <select name="grade_id" class="form-select @error('grade_id') is-invalid @enderror">
                                 <option value="">{{ __('Select Grade') }}</option>
@@ -134,14 +145,9 @@
                             @error('grade_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ __('Office') }}</label>
-                            <select name="office_id" class="form-select @error('office_id') is-invalid @enderror">
-                                <option value="">{{ __('Select Office') }}</option>
-                                @foreach($offices as $office)
-                                <option value="{{ $office->id }}" {{ old('office_id', $employee->office_id ?? '') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('office_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <label class="form-label">{{ __('Gross Salary') }}</label>
+                            <input type="number" name="gross_salary" class="form-control @error('gross_salary') is-invalid @enderror" value="{{ old('gross_salary', $employee->gross_salary ?? '') }}" placeholder="e.g. 50000" step="0.01" min="0">
+                            @error('gross_salary') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Office Time (Shift)') }}</label>
@@ -163,57 +169,44 @@
                             </select>
                             @error('reporting_manager_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">{{ __('Gross Salary') }}</label>
-                            <input type="number" name="gross_salary" class="form-control @error('gross_salary') is-invalid @enderror" value="{{ old('gross_salary', $employee->gross_salary ?? '') }}" placeholder="e.g. 50000" step="0.01" min="0">
-                            @error('gross_salary') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
                     </div>
 
                     <!-- Account & Status -->
                     <div class="form-section-title">
-                        <i class="bi bi-shield-lock"></i>{{ __('Account & Status') }}
+                        <i class="bi bi-shield-lock"></i>{{ __('System User Account') }}
                     </div>
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label mb-0">{{ __('System User Account') }}</label>
-                                <a href="{{ route('security.users.create') }}" target="_blank" class="btn btn-link btn-sm p-0 text-success text-decoration-none font-bold">
-                                    <i class="bi bi-plus-circle me-1"></i>{{ __('Add New User') }}
-                                </a>
+                    <div class="row g-4 mb-3">
+                        <div class="col-12 mb-2">
+                            <div class="form-text text-muted">
+                                <i class="bi bi-info-circle me-1"></i>{{ __('Fill these fields to create or update the system user account for this employee. The personal email field above will be used as the login email. To update an existing user account, its password field can be left blank.') }}
                             </div>
-                            <select name="user_id" class="form-select @error('user_id') is-invalid @enderror">
-                                <option value="">{{ __('No user linked') }}</option>
-                                @foreach($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id', $employee->user_id ?? '') == $user->id ? 'selected' : '' }}>{{ $user->name }} ({{ $user->email }})</option>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Password') }}</label>
+                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ isset($employee) && $employee->user_id ? __('Leave blank to keep existing') : __('Enter password') }}">
+                            @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Confirm Password') }}</label>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="{{ __('Confirm password') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Role') }}</label>
+                            <select name="role_id" class="form-select @error('role_id') is-invalid @enderror">
+                                <option value="">{{ __('— No Account —') }}</option>
+                                @foreach($roles as $role)
+                                <option value="{{ $role->id }}" {{ old('role_id', isset($employee) && $employee->user ? $employee->user->role_id : '') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="form-text mt-2 small text-muted">
-                                <i class="bi bi-info-circle me-1"></i>{{ __('Link this employee to a system user account for dashboard access.') }}
-                            </div>
-                            @error('user_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            @error('role_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">{{ __('Employee Status') }} <span class="text-danger">*</span></label>
-                            <div class="d-flex gap-4 mt-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusActive" value="active" {{ old('status', $employee->status ?? 'active') === 'active' ? 'checked' : '' }}>
-                                    <label class="form-check-label text-success font-bold" for="statusActive">{{ __('Active') }}</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusInactive" value="inactive" {{ old('status', $employee->status ?? '') === 'inactive' ? 'checked' : '' }}>
-                                    <label class="form-check-label text-secondary font-bold" for="statusInactive">{{ __('Inactive') }}</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusLeft" value="left" {{ old('status', $employee->status ?? '') === 'left' ? 'checked' : '' }}>
-                                    <label class="form-check-label text-danger font-bold" for="statusLeft">{{ __('Left') }}</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="status" id="statusHold" value="hold" {{ old('status', $employee->status ?? '') === 'hold' ? 'checked' : '' }}>
-                                    <label class="form-check-label text-warning font-bold" for="statusHold">{{ __('Hold') }}</label>
-                                </div>
-                            </div>
-                            @error('status') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('User Status') }}</label>
+                            <select name="user_status" class="form-select @error('user_status') is-invalid @enderror">
+                                <option value="active" {{ old('user_status', isset($employee) && $employee->user ? $employee->user->status : 'active') === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                <option value="inactive" {{ old('user_status', isset($employee) && $employee->user ? $employee->user->status : '') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                            </select>
+                            @error('user_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
                 </div>
@@ -227,22 +220,19 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const joiningDateInput = document.querySelector('input[name="joining_date"]');
             const officeSelect = document.querySelector('select[name="office_id"]');
             const employeeCodeInput = document.querySelector('input[name="employee_code"]');
             const isEditMode = "{{ isset($employee) ? 'true' : 'false' }}" === "true";
 
-            function updateEmployeeCode() {
+            function updateEmployeeCode(selectedDate) {
                 if (isEditMode) return;
-                
-                const selectedDate = joiningDateInput ? joiningDateInput.value : '';
                 if (!selectedDate) return;
-                
-                const selectedOfficeId = officeSelect ? officeSelect.value : '';
 
-                const url = `{{ route('personnel.employees.next-code') }}?date=${selectedDate}&office_id=${selectedOfficeId}`;
+                const selectedOfficeId = officeSelect ? officeSelect.value : '';
+                const url = `/personnel/employees/next-code?date=${selectedDate}&office_id=${selectedOfficeId}`;
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
@@ -253,12 +243,27 @@
                     .catch(error => console.error('Error fetching next employee code:', error));
             }
 
-            if (joiningDateInput && officeSelect && employeeCodeInput && !isEditMode) {
-                joiningDateInput.addEventListener('change', updateEmployeeCode);
-                officeSelect.addEventListener('change', updateEmployeeCode);
-                
-                if (officeSelect.value) {
-                    updateEmployeeCode();
+            const joiningPicker = flatpickr('#joining_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+                onChange: function(selectedDates, dateStr) {
+                    updateEmployeeCode(dateStr);
+                }
+            });
+
+            flatpickr('#date_of_birth', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+
+            if (officeSelect && employeeCodeInput && !isEditMode) {
+                officeSelect.addEventListener('change', function() {
+                    const dateStr = joiningPicker.selectedDates.length ? joiningPicker.input.value : '';
+                    updateEmployeeCode(dateStr);
+                });
+
+                if (officeSelect.value && joiningPicker.input.value) {
+                    updateEmployeeCode(joiningPicker.input.value);
                 }
             }
         });

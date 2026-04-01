@@ -13,7 +13,7 @@ use App\Models\Grade;
 use App\Models\Office;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class HrDashboardController extends Controller
 {
@@ -36,45 +36,95 @@ class HrDashboardController extends Controller
             abort(403, 'Unauthorized action. Only HR Admins can access this dashboard.');
         }
 
-        $employee = Employee::where('user_id', $user->id)->first();
+        $employee = Employee::query()->where('user_id', $user->id)->first();
         $today = Carbon::today();
 
-        // Status Metrics for Today
-        $activeEmployeesCount = Employee::where('status', 'active')->count();
-        $presentToday = AttendanceRecord::whereDate('date', $today)
+        // Basic Counts & Metrics
+        $activeEmployeesCount = Employee::query()->where('status', 'active')->count();
+        $pendingLeavesCount = LeaveApplication::query()->where('status', 'pending')->count();
+        
+        // Extracted Metrics & Data
+        $metrics = $this->getStatusMetrics($today, $activeEmployeesCount);
+        $activeEmployees = Employee::query()->where('status', 'active')->get();
+        $recentAttendance = $this->getRecentAttendance($today, $activeEmployees);
+        $upcomingBirthdays = $this->getUpcomingBirthdays($today);
+
+        // Core Data
+        $upcomingHolidays = Holiday::query()->whereDate('from_date', '>=', $today)
+            ->where('is_active', true)
+            ->orderBy('from_date', 'asc')
+            ->take(5)
+            ->get();
+
+        $totalEmployees = $activeEmployeesCount;
+        $totalDepartments = Department::query()->count();
+        $totalSections = Section::query()->count();
+        $totalGrades = Grade::query()->count();
+        $totalOffices = Office::query()->count();
+        $activeNotices = Notice::query()->active()->orderBy('created_at', 'desc')->get();
+
+        return view('hr-dashboard', array_merge($metrics, compact(
+            'user',
+            'roleName',
+            'employee',
+            'totalEmployees',
+            'activeEmployeesCount',
+            'totalDepartments',
+            'totalSections',
+            'totalGrades',
+            'totalOffices',
+            'pendingLeavesCount',
+            'recentAttendance',
+            'upcomingHolidays',
+            'upcomingBirthdays',
+            'activeNotices'
+        )));
+    }
+
+    /**
+     * Get status metrics for today (Present, Late, On Leave, Absent).
+     */
+    private function getStatusMetrics(Carbon $today, int $activeEmployeesCount): array
+    {
+        $presentToday = AttendanceRecord::query()->whereDate('date', $today)
             ->whereHas('employee', function($q) {
                 $q->where('status', 'active');
             })
             ->whereIn('status', ['present', 'late'])
             ->distinct('employee_id')
             ->count();
-        $lateToday = AttendanceRecord::whereDate('date', $today)
+
+        $lateToday = AttendanceRecord::query()->whereDate('date', $today)
             ->whereHas('employee', function($q) {
                 $q->where('status', 'active');
             })
             ->where('status', 'late')
             ->distinct('employee_id')
             ->count();
-        $onLeaveToday = LeaveApplication::where('status', 'approved')
+
+        $onLeaveToday = LeaveApplication::query()->where('status', 'approved')
             ->whereHas('employee', function($q) {
                 $q->where('status', 'active');
             })
             ->whereDate('from_date', '<=', $today)
             ->whereDate('to_date', '>=', $today)
             ->count();
+
         $absentToday = max(0, $activeEmployeesCount - ($presentToday + $onLeaveToday));
 
-        // Summaries
-        $pendingLeavesCount = LeaveApplication::where('status', 'pending')->count();
+        return compact('presentToday', 'lateToday', 'onLeaveToday', 'absentToday');
+    }
 
-        // Recent Attendance: Show all active employees for today
-        $activeEmployees = Employee::where('status', 'active')->get();
-        $todayAttendance = AttendanceRecord::whereDate('date', $today)
+    /**
+     * Get recent attendance for today, including synthesized absent/leave records.
+     */
+    private function getRecentAttendance(Carbon $today, $activeEmployees)
+    {
+        $todayAttendance = AttendanceRecord::query()->whereDate('date', $today)
             ->get()
             ->keyBy('employee_id');
- 
-        // Fetch approved leaves for today
-        $approvedLeavesToday = LeaveApplication::where('status', 'approved')
+
+        $approvedLeavesToday = LeaveApplication::query()->where('status', 'approved')
             ->whereDate('from_date', '<=', $today)
             ->whereDate('to_date', '>=', $today)
             ->get()
@@ -85,7 +135,6 @@ class HrDashboardController extends Controller
             if (isset($todayAttendance[$emp->id])) {
                 $recentAttendance->push($todayAttendance[$emp->id]);
             } else {
-                // Check if today is a working day for this employee
                 if ($this->attendanceService->isWorkingDay($emp, $today)) {
                     $onLeave = isset($approvedLeavesToday[$emp->id]);
                     $absentRecord = new AttendanceRecord([
@@ -100,26 +149,21 @@ class HrDashboardController extends Controller
             }
         }
 
-        // Sort by status (Present/Late first, then Absent) and take 7
-        $recentAttendance = $recentAttendance->sortBy(function ($record) {
+        return $recentAttendance->sortBy(function ($record) {
             return in_array($record->status, ['present', 'late']) ? 0 : 1;
         })->take(7);
+    }
 
-        $upcomingHolidays = Holiday::whereDate('from_date', '>=', $today)
-            ->where('is_active', true)
-            ->orderBy('from_date', 'asc')
-            ->take(5)
-            ->get();
-
-        $totalEmployees = $activeEmployeesCount;
-        $totalDepartments = Department::count();
-        $totalSections = Section::count();
-        $totalGrades = Grade::count();
-        $totalOffices = Office::count();
-
-        // Upcoming Birthdays
-        $upcomingBirthdays = Employee::whereNotNull('date_of_birth')
+    /**
+     * Get upcoming birthdays for management-grade active employees.
+     */
+    private function getUpcomingBirthdays(Carbon $today)
+    {
+        return Employee::query()->whereNotNull('date_of_birth')
             ->where('status', 'active')
+            ->whereHas('grade', function($query) {
+                $query->where('name', 'Management');
+            })
             ->get()
             ->map(function ($employee) use ($today) {
                 $birthday = Carbon::parse($employee->date_of_birth);
@@ -134,30 +178,7 @@ class HrDashboardController extends Controller
                 return $employee;
             })
             ->sortBy('days_until_birthday')
-            ->take(3);
-
-        // Active Notices & Events
-        $activeNotices = Notice::active()->orderBy('created_at', 'desc')->get();
-
-        return view('hr-dashboard', compact(
-            'user',
-            'roleName',
-            'employee',
-            'totalEmployees',
-            'activeEmployeesCount',
-            'totalDepartments',
-            'totalSections',
-            'totalGrades',
-            'totalOffices',
-            'presentToday',
-            'absentToday',
-            'lateToday',
-            'onLeaveToday',
-            'pendingLeavesCount',
-            'recentAttendance',
-            'upcomingHolidays',
-            'upcomingBirthdays',
-            'activeNotices'
-        ));
+            ->take(10);
     }
+
 }

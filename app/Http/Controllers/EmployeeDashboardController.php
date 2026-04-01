@@ -21,6 +21,7 @@ class EmployeeDashboardController extends Controller
     {
         $this->attendanceService = $attendanceService;
     }
+
     /**
      * Display the Employee dashboard.
      */
@@ -34,28 +35,30 @@ class EmployeeDashboardController extends Controller
         $employee = Employee::with(['designation', 'department'])->where('user_id', $user->id)->first();
 
         $today = Carbon::today();
-        $startOfMonth = $today->copy()->startOfMonth();
-        $endOfMonth = $today->copy()->endOfMonth();
-        $startOfYear = $today->copy()->startOfYear();
-
-        // Default values
+        
+        // Initialize all variables with default values to ensure they are always present for compact()
         $presentDays = 0;
         $lateDays = 0;
         $absentDays = 0;
         $totalWorkingDays = 0;
-        $recentAttendance = collect();
+        $fullMonthAttendance = collect();
         $approvedLeaves = 0;
         $pendingLeaves = 0;
         $rejectedLeaves = 0;
         $totalLeaveDays = 0;
+        $leaveBalances = collect();
+        $supervisorRemarks = collect();
+        $totalUsedLeave = 0;
+        $totalAvailableLeave = 0;
         
         $prevPresentDays = 0;
         $prevLateDays = 0;
         $prevAbsentDays = 0;
         $prevTotalWorkingDays = 0;
-        $prevLeaveDays = 0;
 
         if ($employee) {
+            $startOfMonth = $today->copy()->startOfMonth();
+            
             // Attendance data for current month
             $attendanceRecords = AttendanceRecord::where('employee_id', $employee->id)
                 ->whereBetween('date', [$startOfMonth, $today])
@@ -64,12 +67,10 @@ class EmployeeDashboardController extends Controller
             $presentDays = $attendanceRecords->whereIn('status', ['present', 'late'])->count();
             $lateDays = $attendanceRecords->where('status', 'late')->count();
 
-            // Calculate working days (exclude weekends - Fri/Sat for BD, or Sat/Sun)
-            $totalWorkingDays = 0;
+            // Calculate working days (using project's holiday configuration)
             $checkDate = $startOfMonth->copy();
             while ($checkDate->lte($today)) {
-                // Exclude Friday and Saturday (Bangladesh weekend)
-                if (!in_array($checkDate->dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY])) {
+                if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
                     $totalWorkingDays++;
                 }
                 $checkDate->addDay();
@@ -100,7 +101,7 @@ class EmployeeDashboardController extends Controller
             $prevTotalWorkingDays = 0;
             $checkDate = $startOfLastMonth->copy();
             while ($checkDate->lte($endOfLastMonth)) {
-                if (!in_array($checkDate->dayOfWeek, [Carbon::FRIDAY, Carbon::SATURDAY])) {
+                if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
                     $prevTotalWorkingDays++;
                 }
                 $checkDate->addDay();
@@ -117,7 +118,6 @@ class EmployeeDashboardController extends Controller
             $prevAbsentDays = max(0, $prevTotalWorkingDays - $prevPresentDays - $prevLeaveDays);
 
             // Full attendance records for current month
-            $startOfMonth = $today->copy()->startOfMonth();
             $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
                 ->whereBetween('date', [$startOfMonth, $today])
                 ->get()
@@ -125,7 +125,7 @@ class EmployeeDashboardController extends Controller
                     return $item->date->format('Y-m-d');
                 });
  
-            // Fetch approved leaves for the current month
+            // Fetch approved leaves for the current month window
             $approvedLeavesWindow = LeaveApplication::where('employee_id', $employee->id)
                 ->where('status', 'approved')
                 ->where(function($q) use ($startOfMonth, $today) {
@@ -138,7 +138,6 @@ class EmployeeDashboardController extends Controller
                 })
                 ->get();
 
-            $fullMonthAttendance = collect();
             $checkDate = $today->copy();
             while ($checkDate->gte($startOfMonth)) {
                 $dateStr = $checkDate->toDateString();
@@ -168,7 +167,7 @@ class EmployeeDashboardController extends Controller
             $rejectedLeaves = $leaveApplications->where('status', 'rejected')->sum('total_days');
             $totalLeaveDays = $approvedLeaves + $pendingLeaves + $rejectedLeaves;
 
-            // Leave Balance summary (Used vs Available)
+            // Leave Balance summary
             $leaveBalances = LeaveBalance::with('leaveType')
                 ->where('employee_id', $employee->id)
                 ->where('year', $today->year)
@@ -184,17 +183,12 @@ class EmployeeDashboardController extends Controller
                 ->latest()
                 ->take(5)
                 ->get();
-        } else {
-            $leaveBalances = collect();
-            $supervisorRemarks = collect();
-            $totalUsedLeave = 0;
-            $totalAvailableLeave = 0;
         }
 
         // Active Notices & Events (at max 5)
         $activeNotices = Notice::active()->orderBy('created_at', 'desc')->take(5)->get();
 
-        // Upcoming Holidays (show all upcoming)
+        // Upcoming Holidays
         $upcomingHolidays = Holiday::whereDate('from_date', '>=', $today)
             ->where('is_active', true)
             ->orderBy('from_date', 'asc')
@@ -255,15 +249,11 @@ class EmployeeDashboardController extends Controller
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
 
-        // Load employee with all necessary relationships for the profile view
+        // Load employee with all necessary relationships
         $employee = Employee::where('user_id', $user->id)
             ->with(['department', 'section', 'designation', 'grade', 'officeTime', 'reportingManager'])
             ->first();
 
-        return view('personnel.employees.profile', compact(
-            'user',
-            'roleName',
-            'employee'
-        ));
+        return view('personnel.employees.profile', compact('user', 'roleName', 'employee'));
     }
 }

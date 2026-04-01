@@ -19,7 +19,7 @@
                         </p>
                     </div>
                     <div class="text-end text-sm text-gray-500">
-                        <i class="bi bi-calendar-event me-2 text-primary"></i>{{ now()->format('l, d M Y') }}
+                        <i class="bi bi-calendar-event me-2 text-success"></i>{{ now()->format('l, d M Y') }}
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 <div class="col-lg-4">
                     <div class="hr-panel">
                         <div class="hr-panel-title">
-                            <i class="bi bi-plus-circle me-2 text-primary"></i>{{ __('Add New Section') }}
+                            <i class="bi bi-plus-circle me-2 text-success"></i>{{ __('Add New Section') }}
                         </div>
 
                         <form action="{{ route('personnel.sections.store') }}" method="POST">
@@ -61,7 +61,7 @@
                                 <textarea name="description" class="form-control rounded-3" rows="3" placeholder="{{ __('Brief description...') }}"></textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm">
                                 <i class="bi bi-plus-circle me-2"></i>{{ __('Save Section') }}
                             </button>
                         </form>
@@ -72,7 +72,7 @@
                 <div class="col-lg-8">
                     <div class="hr-panel">
                         <div class="hr-panel-title mb-4">
-                            <i class="bi bi-list-task me-2 text-primary"></i>{{ __('Section List') }}
+                            <i class="bi bi-list-task me-2 text-success"></i>{{ __('Section List') }}
                         </div>
 
                         <div class="table-responsive">
@@ -88,7 +88,7 @@
                                     @forelse($sections as $section)
                                     <tr>
                                         <td>
-                                            <div class="fw-bold text-primary">{{ $section->name }}</div>
+                                            <div class="fw-bold text-success">{{ $section->name }}</div>
                                             @if($section->description)
                                             <div class="small text-muted text-truncate" style="max-width: 250px;" title="{{ $section->description }}">
                                                 {{ $section->description }}
@@ -99,7 +99,7 @@
                                         <td class="text-end pe-4">
                                             @php $confirmMsg = __('Are you sure?'); @endphp
                                             <div class="btn-group">
-                                                <button class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}">
+                                                <button class="btn btn-sm btn-outline-success border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                                 <form action="{{ route('personnel.sections.destroy', $section) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
@@ -118,7 +118,7 @@
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content rounded-4 border-0 shadow">
                                                 <div class="modal-header border-0 pb-0">
-                                                    <h5 class="modal-title fw-bold text-primary">{{ __('Edit Section') }}</h5>
+                                                    <h5 class="modal-title fw-bold text-success">{{ __('Edit Section') }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <form action="{{ route('personnel.sections.update', $section) }}" method="POST">
@@ -148,7 +148,7 @@
                                                     </div>
                                                     <div class="modal-footer border-0 pt-0">
                                                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                                                        <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Update Section') }}</button>
+                                                        <button type="submit" class="btn btn-success rounded-pill px-4">{{ __('Update Section') }}</button>
                                                     </div>
                                                 </form>
                                             </div>
