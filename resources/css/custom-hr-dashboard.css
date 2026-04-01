@@ -925,3 +925,25 @@ body {
     border-bottom-right-radius: 30px !important;
     padding-right: 0.85rem;
 }
+
+/* Insert Mode Toggle Button */
+.mode-toggle-btn {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--hr-primary);
+    color: var(--hr-primary);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-weight: 600;
+}
+.mode-toggle-btn:hover {
+    background: var(--hr-primary-soft);
+}
+.mode-toggle-btn.active-insert {
+    background: var(--hr-primary);
+    color: #fff;
+    border-color: var(--hr-primary);
+}

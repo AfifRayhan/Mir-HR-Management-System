@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     @php $isTeamLead = optional(auth()->user()->role)->name === 'Team Lead'; @endphp
@@ -31,11 +32,11 @@
                 <form action="{{ route('employee.attendance.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">{{ __('From Date') }}</label>
-                        <input type="date" name="from_date" class="form-control rounded-3" value="{{ request('from_date', $fromDateStr) }}">
+                        <input type="text" id="att_from_date" name="from_date" class="form-control rounded-3" value="{{ request('from_date', $fromDateStr) }}" placeholder="Select from date" readonly>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">{{ __('To Date') }}</label>
-                        <input type="date" name="to_date" class="form-control rounded-3" value="{{ request('to_date', $toDateStr) }}">
+                        <input type="text" id="att_to_date" name="to_date" class="form-control rounded-3" value="{{ request('to_date', $toDateStr) }}" placeholder="Select to date" readonly>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">{{ __('Status') }}</label>
@@ -177,4 +178,20 @@
 
         </main>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('#att_from_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+            flatpickr('#att_to_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

@@ -7,6 +7,7 @@
 
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -18,7 +19,7 @@
                     <div class="col-12 d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">{{ __('Attendance Records') }}</h4>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('personnel.attendances.adjust') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('personnel.attendances.adjust') }}" class="btn btn-outline-success">
                                 <i class="bi bi-pencil-square me-2"></i>{{ __('Manual Adjustment') }}
                             </a>
                             <!--<form action="{{ route('personnel.attendances.process') }}" method="POST">
@@ -37,7 +38,7 @@
                     <form action="{{ route('personnel.attendances.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
                             <label class="form-label">{{ __('Date') }}</label>
-                            <input type="date" name="date" class="form-control" value="{{ $date }}" onchange="this.form.submit()">
+                            <input type="text" id="attendance_date" name="date" class="form-control" value="{{ $date }}" placeholder="Select date" readonly>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">{{ __('Search Employee') }}</label>
@@ -154,4 +155,19 @@
             </div>
         </main>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('#attendance_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+                onChange: function(selectedDates, dateStr) {
+                    document.getElementById('attendance_date').closest('form').submit();
+                }
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

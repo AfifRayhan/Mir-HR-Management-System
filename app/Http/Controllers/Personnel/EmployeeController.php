@@ -11,8 +11,10 @@ use App\Models\Grade;
 use App\Models\OfficeTime;
 use App\Models\Office;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Exports\EmployeesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -73,15 +75,14 @@ class EmployeeController extends Controller
     {
         $departments = Department::all();
         $sections = Section::all();
-        $designations = Designation::orderBy('priority', 'desc')->get();
+        $designations = Designation::orderBy('priority', 'asc')->get();
         $grades = Grade::all();
         $offices = Office::all();
         $officeTimes = OfficeTime::all();
         $managers = Employee::all();
 
-        // Users not yet linked to an employee
-        $linkedUserIds = Employee::whereNotNull('user_id')->pluck('user_id')->toArray();
-        $users = User::whereNotIn('id', $linkedUserIds)->get();
+        // Roles for new user creation
+        $roles = Role::orderBy('name')->get();
 
         // Generate auto employee code based on today as default
         $autoEmployeeCode = Employee::generateEmployeeCode(now());
@@ -94,7 +95,7 @@ class EmployeeController extends Controller
             'offices',
             'officeTimes',
             'managers',
-            'users',
+            'roles',
             'autoEmployeeCode'
         ));
     }
@@ -122,12 +123,40 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
-            'user_id' => 'nullable|exists:users,id|unique:employees,user_id',
-            'status' => 'required|in:active,resigned',
             'gross_salary' => 'nullable|numeric|min:0',
+            // User validations
+            'password' => 'nullable|string|min:8|confirmed',
+            'role_id' => 'nullable|exists:roles,id',
+            'user_status' => 'nullable|in:active,inactive',
         ]);
 
-        Employee::create($validated);
+        $userId = null;
+        if ($request->filled('password') || $request->filled('role_id')) {
+            $userEmail = $request->email;
+            if (empty($userEmail)) {
+                return back()->withErrors(['email' => 'Email is required to create a user account.'])->withInput();
+            }
+            // Manually check if valid unique user email
+            $existingUser = User::where('email', $userEmail)->first();
+            if ($existingUser) {
+                return back()->withErrors(['email' => 'This email is already taken by another user.'])->withInput();
+            }
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $userEmail,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role_id,
+                'status' => $request->user_status ?? 'active',
+            ]);
+            $userId = $user->id;
+        }
+
+        $employeeData = $request->except(['password', 'password_confirmation', 'role_id', 'user_status']);
+        $employeeData['status'] = 'active'; // Employee status removed from form
+        $employeeData['user_id'] = $userId;
+
+        Employee::create($employeeData);
 
         return redirect()->route('personnel.employees.index')->with('success', 'Employee created successfully.');
     }
@@ -147,18 +176,14 @@ class EmployeeController extends Controller
     {
         $departments = Department::all();
         $sections = Section::all();
-        $designations = Designation::orderBy('priority', 'desc')->get();
+        $designations = Designation::orderBy('priority', 'asc')->get();
         $grades = Grade::all();
         $offices = Office::all();
         $officeTimes = OfficeTime::all();
         $managers = Employee::where('id', '!=', $employee->id)->get();
 
-        // Users not yet linked to an employee, plus the currently linked user
-        $linkedUserIds = Employee::whereNotNull('user_id')
-            ->where('user_id', '!=', $employee->user_id)
-            ->pluck('user_id')
-            ->toArray();
-        $users = User::whereNotIn('id', $linkedUserIds)->get();
+        // Roles for user modification
+        $roles = Role::orderBy('name')->get();
 
         return view('personnel.employees.form', compact(
             'employee',
@@ -169,7 +194,7 @@ class EmployeeController extends Controller
             'offices',
             'officeTimes',
             'managers',
-            'users'
+            'roles'
         ));
     }
 
@@ -196,12 +221,52 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
-            'user_id' => 'nullable|exists:users,id|unique:employees,user_id,' . $employee->id,
-            'status' => 'required|in:active,inactive,left,hold',
             'gross_salary' => 'nullable|numeric|min:0',
+            // User validations
+            'password' => 'nullable|string|min:8|confirmed',
+            'role_id' => 'nullable|exists:roles,id',
+            'user_status' => 'nullable|in:active,inactive',
         ]);
 
-        $employee->update($validated);
+        if ($employee->user_id) {
+            $user = User::find($employee->user_id);
+            if ($user) {
+                if ($request->filled('email') && $user->email !== $request->email) {
+                    $existing = User::where('email', $request->email)->where('id', '!=', $user->id)->first();
+                    if ($existing) {
+                        return back()->withErrors(['email' => 'This email is already taken by another user.'])->withInput();
+                    }
+                }
+                $user->name = $request->name;
+                if ($request->filled('email')) $user->email = $request->email;
+                if ($request->filled('password')) $user->password = Hash::make($request->password);
+                $user->role_id = $request->role_id;
+                if ($request->filled('user_status')) $user->status = $request->user_status;
+                $user->save();
+            }
+        } elseif ($request->filled('password') || $request->filled('role_id') || $request->filled('user_status')) {
+            $userEmail = $request->email;
+            if (empty($userEmail)) {
+                return back()->withErrors(['email' => 'Email is required to create a user account.'])->withInput();
+            }
+            $existingUser = User::where('email', $userEmail)->first();
+            if ($existingUser) {
+                return back()->withErrors(['email' => 'This email is already taken by another user.'])->withInput();
+            }
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $userEmail,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role_id,
+                'status' => $request->user_status ?? 'active',
+            ]);
+            $employee->user_id = $user->id;
+        }
+
+        $employeeData = $request->except(['password', 'password_confirmation', 'role_id', 'user_status']);
+        
+        $employee->update($employeeData);
 
         return redirect()->route('personnel.employees.index')->with('success', 'Employee updated successfully.');
     }

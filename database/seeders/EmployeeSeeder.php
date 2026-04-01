@@ -148,7 +148,7 @@ class EmployeeSeeder extends Seeder
                 'office_id' => $officeModel->id,
                 'office_time_id' => OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null,
                 'reporting_manager_id' => null,
-                'status' => strtolower($status),
+                'status' => (strtolower($status) === 'active') ? 'active' : 'inactive',
                 'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,
             ]);
         }

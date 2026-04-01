@@ -7,6 +7,7 @@
 
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -61,7 +62,7 @@
 
                             <div class="mb-4">
                                 <label class="form-label font-bold text-gray-700">{{ __('Expiry Date') }}</label>
-                                <input type="date" name="expires_at" class="form-control rounded-3 @error('expires_at') is-invalid @enderror" value="{{ old('expires_at', $notice->expires_at ? $notice->expires_at->format('Y-m-d') : '') }}">
+                                <input type="text" id="expires_at" name="expires_at" class="form-control rounded-3 @error('expires_at') is-invalid @enderror" value="{{ old('expires_at', $notice->expires_at ? $notice->expires_at->format('Y-m-d') : '') }}" placeholder="Select expiry date (optional)">
                                 <div class="form-text small">{{ __('Leave blank for no expiry.') }}</div>
                                 @error('expires_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -86,4 +87,16 @@
             </div>
         </main>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('#expires_at', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

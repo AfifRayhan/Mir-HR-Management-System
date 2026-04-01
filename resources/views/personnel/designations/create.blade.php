@@ -44,7 +44,7 @@
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">Save Designation</button>
+                                    <button type="submit" class="btn btn-success">Save Designation</button>
                                     <a href="{{ route('personnel.designations.index') }}" class="btn btn-outline-secondary">Cancel</a>
                                 </div>
                             </form>

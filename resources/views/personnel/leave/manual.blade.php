@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -94,13 +95,13 @@
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="from_date" id="from_date" class="form-control rounded-3"
-                                           value="{{ old('from_date') }}" required>
+                                    <input type="text" name="from_date" id="from_date" class="form-control rounded-3"
+                                           value="{{ old('from_date') }}" placeholder="Select date" readonly required>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="to_date" id="to_date" class="form-control rounded-3"
-                                           value="{{ old('to_date') }}" required>
+                                    <input type="text" name="to_date" id="to_date" class="form-control rounded-3"
+                                           value="{{ old('to_date') }}" placeholder="Select date" readonly required>
                                 </div>
                             </div>
 
@@ -229,15 +230,13 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const employeeSelect = document.getElementById('employee_id');
-        const fromDateInput  = document.getElementById('from_date');
-        const toDateInput    = document.getElementById('to_date');
         const daysDisplay    = document.getElementById('leave_days_display');
         const daysCount      = document.getElementById('total_days_count');
 
-        // Weekly holiday days fetched per employee office
         let weeklyHolidays = [];
 
         function fetchHolidaysAndRecalculate() {
@@ -261,18 +260,15 @@
         }
 
         function calculateDays() {
-            const fromDate = fromDateInput.value;
-            const toDate   = toDateInput.value;
+            const fromDate = fromPicker.selectedDates[0];
+            const toDate   = toPicker.selectedDates[0];
 
             if (fromDate && toDate) {
-                const start = new Date(fromDate);
-                const end   = new Date(toDate);
-
-                if (end >= start) {
+                if (toDate >= fromDate) {
                     let totalDays = 0;
-                    let current   = new Date(start);
+                    let current   = new Date(fromDate);
 
-                    while (current <= end) {
+                    while (current <= toDate) {
                         const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
                         if (!weeklyHolidays.includes(dayName)) {
                             totalDays++;
@@ -290,11 +286,23 @@
             }
         }
 
-        employeeSelect.addEventListener('change', fetchHolidaysAndRecalculate);
-        fromDateInput.addEventListener('change', calculateDays);
-        toDateInput.addEventListener('change', calculateDays);
+        const fromPicker = flatpickr('#from_date', {
+            dateFormat: 'Y-m-d',
+            allowInput: false,
+            onChange: function() {
+                toPicker.set('minDate', fromPicker.selectedDates[0] || null);
+                calculateDays();
+            }
+        });
 
-        // Re-trigger if old values are present (validation failure redirect)
+        const toPicker = flatpickr('#to_date', {
+            dateFormat: 'Y-m-d',
+            allowInput: false,
+            onChange: calculateDays
+        });
+
+        employeeSelect.addEventListener('change', fetchHolidaysAndRecalculate);
+
         if (employeeSelect.value) {
             fetchHolidaysAndRecalculate();
         }

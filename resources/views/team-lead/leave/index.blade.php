@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .balance-card {
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -101,11 +102,11 @@
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="from_date" class="form-control rounded-3" required>
+                                    <input type="text" name="from_date" id="from_date" class="form-control rounded-3" placeholder="Select date" readonly required>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="to_date" class="form-control rounded-3" required>
+                                    <input type="text" name="to_date" id="to_date" class="form-control rounded-3" placeholder="Select date" readonly required>
                                 </div>
                             </div>
 
@@ -208,35 +209,30 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const fromDateInput = document.querySelector('input[name="from_date"]');
-            const toDateInput = document.querySelector('input[name="to_date"]');
             const daysDisplay = document.getElementById('leave_days_display');
             const daysCount = document.getElementById('total_days_count');
             const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
 
             function calculateDays() {
-                const fromDate = fromDateInput.value;
-                const toDate = toDateInput.value;
+                const fromDate = fromPicker.selectedDates[0];
+                const toDate   = toPicker.selectedDates[0];
 
                 if (fromDate && toDate) {
-                    const start = new Date(fromDate);
-                    const end = new Date(toDate);
-
-                    if (end >= start) {
+                    if (toDate >= fromDate) {
                         let totalDays = 0;
-                        let current = new Date(start);
-                        
-                        while (current <= end) {
-                            // Get day name in English (e.g., "Friday")
+                        let current = new Date(fromDate);
+
+                        while (current <= toDate) {
                             const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
                             if (!weeklyHolidays.includes(dayName)) {
                                 totalDays++;
                             }
                             current.setDate(current.getDate() + 1);
                         }
-                        
+
                         daysCount.textContent = totalDays;
                         daysDisplay.classList.remove('d-none');
                     } else {
@@ -247,13 +243,22 @@
                 }
             }
 
-            if (fromDateInput && toDateInput) {
-                fromDateInput.addEventListener('change', calculateDays);
-                toDateInput.addEventListener('change', calculateDays);
-                
-                // Also trigger if dates are already filled
-                calculateDays();
-            }
+            const fromPicker = flatpickr('#from_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+                onChange: function() {
+                    toPicker.set('minDate', fromPicker.selectedDates[0] || null);
+                    calculateDays();
+                }
+            });
+
+            const toPicker = flatpickr('#to_date', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+                onChange: calculateDays
+            });
+
+            calculateDays();
         });
     </script>
     @endpush

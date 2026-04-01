@@ -15,13 +15,13 @@ class DesignationController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = \App\Models\Employee::where('user_id', $user->id)->first();
 
-        $designations = Designation::orderBy('priority', 'desc')->get();
+        $designations = Designation::orderBy('priority', 'asc')->get();
         return view('personnel.designations.index', compact('designations', 'user', 'roleName', 'employee'));
     }
 
     public function create()
     {
-        return view('personnel.designations.create');
+        return view('personnel.designations.form');
     }
 
     public function store(Request $request)
@@ -32,13 +32,17 @@ class DesignationController extends Controller
             'priority'   => 'nullable|integer',
         ]);
 
+        if ($request->input('insert_mode') == '1' && isset($validated['priority'])) {
+            Designation::where('priority', '>=', $validated['priority'])->increment('priority');
+        }
+
         Designation::create($validated);
         return redirect()->route('personnel.designations.index')->with('success', 'Designation created successfully.');
     }
 
     public function edit(Designation $designation)
     {
-        return view('personnel.designations.edit', compact('designation'));
+        return view('personnel.designations.form', compact('designation'));
     }
 
     public function update(Request $request, Designation $designation)
@@ -55,7 +59,13 @@ class DesignationController extends Controller
 
     public function destroy(Designation $designation)
     {
+        $priority = $designation->priority;
         $designation->delete();
+
+        if ($priority !== null) {
+            Designation::where('priority', '>', $priority)->decrement('priority');
+        }
+
         return redirect()->route('personnel.designations.index')->with('success', 'Designation deleted successfully.');
     }
 }

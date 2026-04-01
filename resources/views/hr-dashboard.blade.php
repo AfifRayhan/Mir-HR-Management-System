@@ -143,9 +143,9 @@
                             <h6 class="mb-0 font-bold text-gray-800 flex-grow-1"><i class="bi bi-activity me-2 text-success"></i>{{ __('Recent Attendance Summary') }}</h6>
                             <a href="{{ route('personnel.attendances.index') }}" class="btn btn-success btn-sm text-white px-3 font-bold rounded-pill btn-pill-action flex-shrink-0">{{ __('View All') }}</a>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                             <table class="table hr-table mb-0">
-                                <thead>
+                                <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 1;">
                                     <tr>
                                         <th class="ps-4">{{ __('Employee') }}</th>
                                         <th>{{ __('In Time') }}</th>
@@ -217,48 +217,52 @@
                     <!-- Upcoming Holidays -->
                     <div class="hr-panel mb-4">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-calendar-check me-2 text-info"></i>{{ __('Upcoming Holidays') }}</h6>
-                        <ul class="hr-list px-2">
-                            @forelse($upcomingHolidays as $holiday)
-                            <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
-                                <div>
-                                    <div class="font-bold text-gray-700">{{ $holiday->title }}</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">{{ $holiday->from_date->format('d M') }} @if($holiday->total_days > 1) - {{ $holiday->to_date->format('d M') }} @endif</div>
-                                </div>
-                                <span class="badge bg-info-soft text-info align-self-center" style="font-size: 0.7rem;">{{ $holiday->total_days }} {{ __('Day(s)') }}</span>
-                            </li>
-                            @empty
-                            <li class="small text-center text-muted">{{ __('No upcoming holidays.') }}</li>
-                            @endforelse
-                        </ul>
+                        <div class="holiday-scroll-container" style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
+                            <ul class="hr-list px-2">
+                                @forelse($upcomingHolidays as $holiday)
+                                <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
+                                    <div>
+                                        <div class="font-bold text-gray-700">{{ $holiday->title }}</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">{{ $holiday->from_date->format('d M') }} @if($holiday->total_days > 1) - {{ $holiday->to_date->format('d M') }} @endif</div>
+                                    </div>
+                                    <span class="badge bg-info-soft text-info align-self-center" style="font-size: 0.7rem;">{{ $holiday->total_days }} {{ __('Day(s)') }}</span>
+                                </li>
+                                @empty
+                                <li class="small text-center text-muted">{{ __('No upcoming holidays.') }}</li>
+                                @endforelse
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- Upcoming Birthdays -->
                     <div class="hr-panel mb-4">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-gift me-2 text-danger"></i>{{ __('Upcoming Birthdays') }}</h6>
-                        <ul class="hr-list px-2">
-                            @forelse($upcomingBirthdays as $birthdayEmp)
-                            <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
-                                        {{ strtoupper(substr($birthdayEmp->name, 0, 1)) }}
+                        <div class="birthday-scroll-container" style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
+                            <ul class="hr-list px-2">
+                                @forelse($upcomingBirthdays as $birthdayEmp)
+                                <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
+                                            {{ strtoupper(substr($birthdayEmp->name, 0, 1)) }}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-700">{{ $birthdayEmp->name }}</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div class="font-bold text-gray-700">{{ $birthdayEmp->name }}</div>
-                                        <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
-                                    </div>
-                                </div>
-                                @if($birthdayEmp->days_until_birthday === 0)
-                                <span class="badge bg-danger-soft text-danger align-self-center" style="font-size: 0.7rem;">{{ __('Today!') }}</span>
-                                @elseif($birthdayEmp->days_until_birthday === 1)
-                                <span class="badge bg-warning-soft text-warning align-self-center" style="font-size: 0.7rem;">{{ __('Tomorrow') }}</span>
-                                @else
-                                <span class="badge bg-light text-dark align-self-center" style="font-size: 0.7rem;">In {{ $birthdayEmp->days_until_birthday }} days</span>
-                                @endif
-                            </li>
-                            @empty
-                            <li class="small text-center text-muted">{{ __('No upcoming birthdays.') }}</li>
-                            @endforelse
-                        </ul>
+                                    @if($birthdayEmp->days_until_birthday === 0)
+                                    <span class="badge bg-danger-soft text-danger align-self-center" style="font-size: 0.7rem;">{{ __('Today!') }}</span>
+                                    @elseif($birthdayEmp->days_until_birthday === 1)
+                                    <span class="badge bg-warning-soft text-warning align-self-center" style="font-size: 0.7rem;">{{ __('Tomorrow') }}</span>
+                                    @else
+                                    <span class="badge bg-light text-dark align-self-center" style="font-size: 0.7rem;">In {{ $birthdayEmp->days_until_birthday }} days</span>
+                                    @endif
+                                </li>
+                                @empty
+                                <li class="small text-center text-muted">{{ __('No upcoming birthdays.') }}</li>
+                                @endforelse
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- Notices & Events -->
@@ -267,26 +271,28 @@
                             <h6 class="font-bold text-gray-800 mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
                             <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm p-0 text-decoration-none small">{{ __('Manage') }}</a>
                         </div>
-                        <ul class="hr-list px-2">
-                            @forelse($activeNotices as $notice)
-                            <li class="small mb-3 border-bottom pb-2 last:border-bottom-0">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
-                                    @if($notice->type === 'event')
-                                    <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
-                                    @else
-                                    <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
-                                    @endif
-                                </div>
-                                <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ Str::limit($notice->content, 80) }}</p>
-                                <div class="text-muted" style="font-size: 0.65rem;">
-                                    <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
-                                </div>
-                            </li>
-                            @empty
-                            <li class="small text-center text-muted py-2">{{ __('No active notices.') }}</li>
-                            @endforelse
-                        </ul>
+                        <div class="notice-scroll-container" style="max-height: 250px; overflow-y: auto; overflow-x: hidden;">
+                            <ul class="hr-list px-2">
+                                @forelse($activeNotices as $notice)
+                                <li class="small mb-3 border-bottom pb-2 last:border-bottom-0">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
+                                        @if($notice->type === 'event')
+                                        <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
+                                        @else
+                                        <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ Str::limit($notice->content, 80) }}</p>
+                                    <div class="text-muted" style="font-size: 0.65rem;">
+                                        <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
+                                    </div>
+                                </li>
+                                @empty
+                                <li class="small text-center text-muted py-2">{{ __('No active notices.') }}</li>
+                                @endforelse
+                            </ul>
+                        </div>
                     </div>
 
 

@@ -51,7 +51,7 @@
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">Save Section</button>
+                                    <button type="submit" class="btn btn-success">Save Section</button>
                                     <a href="{{ route('personnel.sections.index') }}" class="btn btn-outline-secondary">Cancel</a>
                                 </div>
                             </form>

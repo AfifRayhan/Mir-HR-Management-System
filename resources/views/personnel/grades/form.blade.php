@@ -32,7 +32,7 @@
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">Save Grade</button>
+                                    <button type="submit" class="btn btn-success">Save Grade</button>
                                     <a href="{{ route('personnel.grades.index') }}" class="btn btn-outline-secondary">Cancel</a>
                                 </div>
                             </form>

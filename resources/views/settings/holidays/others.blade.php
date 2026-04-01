@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-holidays.css'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
     <div class="hr-layout">
@@ -102,11 +103,11 @@
                             <div class="row g-2 mb-3">
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="from_date" class="form-control form-control-sm rounded-3" required>
+                                    <input type="text" id="add_from_date" name="from_date" class="form-control form-control-sm rounded-3" placeholder="Select date" readonly required>
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
-                                    <input type="date" name="to_date" class="form-control form-control-sm rounded-3" required>
+                                    <input type="text" id="add_to_date" name="to_date" class="form-control form-control-sm rounded-3" placeholder="Select date" readonly required>
                                 </div>
                             </div>
 
@@ -284,11 +285,11 @@
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
-                                <input type="date" name="from_date" class="form-control form-control-sm rounded-3" value="{{ $holiday->from_date->format('Y-m-d') }}" required>
+                                <input type="text" name="from_date" id="edit_from_date_{{ $holiday->id }}" class="form-control form-control-sm rounded-3" value="{{ $holiday->from_date->format('Y-m-d') }}" placeholder="Select date" readonly required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
-                                <input type="date" name="to_date" class="form-control form-control-sm rounded-3" value="{{ $holiday->to_date->format('Y-m-d') }}" required>
+                                <input type="text" name="to_date" id="edit_to_date_{{ $holiday->id }}" class="form-control form-control-sm rounded-3" value="{{ $holiday->to_date->format('Y-m-d') }}" placeholder="Select date" readonly required>
                             </div>
                         </div>
 
@@ -319,7 +320,21 @@
     @endforeach
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+        // Init Flatpickr for the Add Holiday form
+        flatpickr('#add_from_date', { dateFormat: 'Y-m-d', allowInput: false });
+        flatpickr('#add_to_date',   { dateFormat: 'Y-m-d', allowInput: false });
+
+        // Init Flatpickr inside each edit modal when it's shown
+        document.querySelectorAll('[id^="editHolidayModal"]').forEach(function(modal) {
+            modal.addEventListener('shown.bs.modal', function() {
+                const id = modal.id.replace('editHolidayModal', '');
+                flatpickr('#edit_from_date_' + id, { dateFormat: 'Y-m-d', allowInput: false });
+                flatpickr('#edit_to_date_'   + id, { dateFormat: 'Y-m-d', allowInput: false });
+            });
+        });
+
         document.getElementById('all_office').addEventListener('change', function() {
             const row = document.getElementById('office_select_row');
             const select = row.querySelector('select');

@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
             DesignationSeeder::class,
             GradeSeeder::class,
             OfficeTimeSeeder::class,
-            UserSeeder::class,
             EmployeeSeeder::class,
+            UserSeeder::class,
             LeaveTypeSeeder::class,
             LeaveBalanceSeeder::class,
         ]);
