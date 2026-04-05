@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->string('blood_group', 10)->nullable()->after('phone');
-            $table->string('father_name', 150)->nullable()->after('blood_group');
-            $table->string('mother_name', 150)->nullable()->after('father_name');
+            $table->string('nationality', 50)->default('Bangladeshi')->after('tin');
         });
     }
 
@@ -24,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn(['blood_group', 'father_name', 'mother_name']);
+            $table->dropColumn('nationality');
         });
     }
 };

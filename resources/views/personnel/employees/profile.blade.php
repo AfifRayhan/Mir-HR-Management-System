@@ -52,8 +52,40 @@
                         <div class="value">{{ $employee && $employee->mother_name ? $employee->mother_name : 'N/A' }}</div>
                     </div>
                     <div class="info-box">
+                        <label>{{ __('Spouse Name') }}</label>
+                        <div class="value">{{ $employee && $employee->spouse_name ? $employee->spouse_name : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Gender') }}</label>
+                        <div class="value">{{ $employee && $employee->gender ? $employee->gender : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Religion') }}</label>
+                        <div class="value">{{ $employee && $employee->religion ? $employee->religion : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Marital Status') }}</label>
+                        <div class="value">{{ $employee && $employee->marital_status ? $employee->marital_status : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('National ID (NID)') }}</label>
+                        <div class="value">{{ $employee && $employee->national_id ? $employee->national_id : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('TIN') }}</label>
+                        <div class="value">{{ $employee && $employee->tin ? $employee->tin : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Nationality') }}</label>
+                        <div class="value">{{ $employee && $employee->nationality ? $employee->nationality : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
                         <label>{{ __('Joining Date') }}</label>
                         <div class="value">{{ $employee ? \Carbon\Carbon::parse($employee->joining_date)->format('d M Y') : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Discontinuation Date') }}</label>
+                        <div class="value">{{ $employee && $employee->discontinuation_date ? \Carbon\Carbon::parse($employee->discontinuation_date)->format('d M Y') : 'N/A' }}</div>
                     </div>
                 </div>
 
@@ -88,6 +120,14 @@
                         <label>{{ __('Reporting Manager') }}</label>
                         <div class="value">{{ $employee && $employee->reportingManager ? $employee->reportingManager->name : 'N/A' }}</div>
                     </div>
+                    <div class="info-box">
+                        <label>{{ __('Number of Children') }}</label>
+                        <div class="value">{{ $employee ? ($employee->no_of_children ?? 0) : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Alternate Contact') }}</label>
+                        <div class="value">{{ $employee && $employee->contact_no ? $employee->contact_no : 'N/A' }}</div>
+                    </div>
                 </div>
 
                 <div class="info-grid">
@@ -109,16 +149,48 @@
                     </div>
                 </div>
 
-                <div class="info-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="divider"></div>
+                <h3 class="mb-4 text-lg font-bold">{{ __('Emergency Contact') }}</h3>
+                <div class="info-grid">
                     <div class="info-box">
-                        <label>{{ __('Local Address') }}</label>
-                        <div class="value">{{ $employee ? $employee->address : 'N/A' }}</div>
+                        <label>{{ __('Contact Name') }}</label>
+                        <div class="value">{{ $employee && $employee->emergency_contact_name ? $employee->emergency_contact_name : 'N/A' }}</div>
                     </div>
                     <div class="info-box">
+                        <label>{{ __('Relation') }}</label>
+                        <div class="value">{{ $employee && $employee->emergency_contact_relation ? $employee->emergency_contact_relation : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Contact Number') }}</label>
+                        <div class="value">{{ $employee && $employee->emergency_contact_no ? $employee->emergency_contact_no : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box" style="grid-column: span 2;">
+                        <label>{{ __('Contact Address') }}</label>
+                        <div class="value">{{ $employee && $employee->emergency_contact_address ? $employee->emergency_contact_address : 'N/A' }}</div>
+                    </div>
+                </div>
+
+                <div class="info-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="info-box">
+                        <label>{{ __('Present Address') }}</label>
+                        <div class="value">{{ $employee && $employee->present_address ? $employee->present_address : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Permanent Address') }}</label>
+                        <div class="value">{{ $employee && $employee->permanent_address ? $employee->permanent_address : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box" style="grid-column: span 3;">
                         <label>{{ __('Office Address') }}</label>
                         <div class="value">{{ $employee && $employee->office ? $employee->office->address : 'N/A' }}</div>
                     </div>
                 </div>
+                @if($employee && $employee->discontinuation_reason)
+                <div class="divider"></div>
+                <div class="info-box">
+                    <label>{{ __('Discontinuation Reason') }}</label>
+                    <div class="value">{{ $employee->discontinuation_reason }}</div>
+                </div>
+                @endif
             </div>
         </main>
     </div>

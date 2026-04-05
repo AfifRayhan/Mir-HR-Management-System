@@ -58,6 +58,57 @@
                             @error('mother_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
+                            <label class="form-label">{{ __('Spouse Name') }}</label>
+                            <input type="text" name="spouse_name" class="form-control @error('spouse_name') is-invalid @enderror" value="{{ old('spouse_name', $employee->spouse_name ?? '') }}">
+                            @error('spouse_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Gender') }}</label>
+                            <select name="gender" class="form-select @error('gender') is-invalid @enderror">
+                                <option value="">{{ __('Select Gender') }}</option>
+                                <option value="Male" {{ old('gender', $employee->gender ?? '') == 'Male' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                                <option value="Female" {{ old('gender', $employee->gender ?? '') == 'Female' ? 'selected' : '' }}>{{ __('Female') }}</option>
+                                <option value="Other" {{ old('gender', $employee->gender ?? '') == 'Other' ? 'selected' : '' }}>{{ __('Other') }}</option>
+                            </select>
+                            @error('gender') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Religion') }}</label>
+                            <input type="text" name="religion" class="form-control @error('religion') is-invalid @enderror" value="{{ old('religion', $employee->religion ?? '') }}">
+                            @error('religion') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Marital Status') }}</label>
+                            <select name="marital_status" class="form-select @error('marital_status') is-invalid @enderror">
+                                <option value="">{{ __('Select Status') }}</option>
+                                <option value="Single" {{ old('marital_status', $employee->marital_status ?? '') == 'Single' ? 'selected' : '' }}>{{ __('Single') }}</option>
+                                <option value="Married" {{ old('marital_status', $employee->marital_status ?? '') == 'Married' ? 'selected' : '' }}>{{ __('Married') }}</option>
+                                <option value="Divorced" {{ old('marital_status', $employee->marital_status ?? '') == 'Divorced' ? 'selected' : '' }}>{{ __('Divorced') }}</option>
+                                <option value="Widowed" {{ old('marital_status', $employee->marital_status ?? '') == 'Widowed' ? 'selected' : '' }}>{{ __('Widowed') }}</option>
+                            </select>
+                            @error('marital_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('National ID (NID)') }}</label>
+                            <input type="text" name="national_id" class="form-control @error('national_id') is-invalid @enderror" value="{{ old('national_id', $employee->national_id ?? '') }}">
+                            @error('national_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('TIN') }}</label>
+                            <input type="text" name="tin" class="form-control @error('tin') is-invalid @enderror" value="{{ old('tin', $employee->tin ?? '') }}">
+                            @error('tin') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Nationality') }}</label>
+                            <input type="text" name="nationality" class="form-control @error('nationality') is-invalid @enderror" value="{{ old('nationality', $employee->nationality ?? 'Bangladeshi') }}">
+                            @error('nationality') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Number of Children') }}</label>
+                            <input type="number" name="no_of_children" class="form-control @error('no_of_children') is-invalid @enderror" value="{{ old('no_of_children', $employee->no_of_children ?? '') }}" min="0">
+                            @error('no_of_children') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">{{ __('Blood Group') }}</label>
                             <select name="blood_group" class="form-select @error('blood_group') is-invalid @enderror">
                                 <option value="">{{ __('Select Group') }}</option>
@@ -73,6 +124,11 @@
                             @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
+                            <label class="form-label">{{ __('Contact Number (Alternate)') }}</label>
+                            <input type="text" name="contact_no" class="form-control @error('contact_no') is-invalid @enderror" value="{{ old('contact_no', $employee->contact_no ?? '') }}">
+                            @error('contact_no') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">{{ __('Date of Birth') }}</label>
                             <input type="text" id="date_of_birth" name="date_of_birth" class="form-control @error('date_of_birth') is-invalid @enderror" value="{{ old('date_of_birth', $employee->date_of_birth ?? '') }}" placeholder="Select date of birth">
                             @error('date_of_birth') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -82,10 +138,52 @@
                             <input type="text" id="joining_date" name="joining_date" class="form-control @error('joining_date') is-invalid @enderror" value="{{ old('joining_date', $employee->joining_date ?? '') }}" placeholder="Select joining date" required>
                             @error('joining_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Discontinuation Date') }}</label>
+                            <input type="text" id="discontinuation_date" name="discontinuation_date" class="form-control @error('discontinuation_date') is-invalid @enderror" value="{{ old('discontinuation_date', $employee->discontinuation_date ?? '') }}" placeholder="Select discontinuation date">
+                            @error('discontinuation_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
                         <div class="col-12">
-                            <label class="form-label">{{ __('Local Address') }}</label>
-                            <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="2">{{ old('address', $employee->address ?? '') }}</textarea>
-                            @error('address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <label class="form-label">{{ __('Discontinuation Reason') }}</label>
+                            <textarea name="discontinuation_reason" class="form-control @error('discontinuation_reason') is-invalid @enderror" rows="2">{{ old('discontinuation_reason', $employee->discontinuation_reason ?? '') }}</textarea>
+                            @error('discontinuation_reason') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Present Address') }}</label>
+                            <textarea name="present_address" class="form-control @error('present_address') is-invalid @enderror" rows="2">{{ old('present_address', $employee->present_address ?? '') }}</textarea>
+                            @error('present_address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Permanent Address') }}</label>
+                            <textarea name="permanent_address" class="form-control @error('permanent_address') is-invalid @enderror" rows="2">{{ old('permanent_address', $employee->permanent_address ?? '') }}</textarea>
+                            @error('permanent_address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact Information -->
+                    <div class="form-section-title">
+                        <i class="bi bi-telephone-outbound"></i>{{ __('Emergency Contact Information') }}
+                    </div>
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Contact Name') }}</label>
+                            <input type="text" name="emergency_contact_name" class="form-control @error('emergency_contact_name') is-invalid @enderror" value="{{ old('emergency_contact_name', $employee->emergency_contact_name ?? '') }}">
+                            @error('emergency_contact_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Relation') }}</label>
+                            <input type="text" name="emergency_contact_relation" class="form-control @error('emergency_contact_relation') is-invalid @enderror" value="{{ old('emergency_contact_relation', $employee->emergency_contact_relation ?? '') }}">
+                            @error('emergency_contact_relation') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Contact Number') }}</label>
+                            <input type="text" name="emergency_contact_no" class="form-control @error('emergency_contact_no') is-invalid @enderror" value="{{ old('emergency_contact_no', $employee->emergency_contact_no ?? '') }}">
+                            @error('emergency_contact_no') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Contact Address') }}</label>
+                            <textarea name="emergency_contact_address" class="form-control @error('emergency_contact_address') is-invalid @enderror" rows="1">{{ old('emergency_contact_address', $employee->emergency_contact_address ?? '') }}</textarea>
+                            @error('emergency_contact_address') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
@@ -252,6 +350,11 @@
             });
 
             flatpickr('#date_of_birth', {
+                dateFormat: 'Y-m-d',
+                allowInput: false,
+            });
+
+            flatpickr('#discontinuation_date', {
                 dateFormat: 'Y-m-d',
                 allowInput: false,
             });

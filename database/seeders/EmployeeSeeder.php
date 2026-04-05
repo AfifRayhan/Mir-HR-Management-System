@@ -93,6 +93,12 @@ class EmployeeSeeder extends Seeder
             // J=Designation, K=Grade, L=Email
             // M=Joining Date, O=Date Of Birth, P=Status
             // Q=Section, R=Gross
+            // S=HrmEmployeeId, T=DateOfDiscontinuation,U=ReasonOfDiscontinuation
+            // V=SpouseName, W=Gender, X=Religion, Y=NationalId, Z=MaritalStatus
+            // AA=NoOfChildren, AB=ContactNo
+            // AC=EmergencyContactName, AD=EmergencyContactAddress
+            // AE=EmergencyContactNo, AF=EmergencyContactPersonRelation
+            // AG=PresentAddress, AH=PermanentAddress
             $office = trim((string) ($row['B'] ?? ''));
             $department = trim((string) ($row['C'] ?? ''));
             $designation = trim((string) ($row['J'] ?? ''));
@@ -108,6 +114,23 @@ class EmployeeSeeder extends Seeder
             $status = trim((string) ($row['P'] ?? ''));
             $section = trim((string) ($row['Q'] ?? ''));
             $grossSalary = trim((string) ($row['R'] ?? ''));
+            $discontinuationDate = trim((string) ($row['T'] ?? ''));
+            $discontinuationReason = trim((string) ($row['U'] ?? ''));
+            $spouseName = trim((string) ($row['V'] ?? ''));
+            $gender = trim((string) ($row['W'] ?? ''));
+            $religion = trim((string) ($row['X'] ?? ''));
+            $nationalId = trim((string) ($row['Y'] ?? ''));
+            $maritalStatus = trim((string) ($row['Z'] ?? ''));
+            $noOfChildren = trim((string) ($row['AA'] ?? ''));
+            $contactNo = trim((string) ($row['AB'] ?? ''));
+            $emergencyContactName = trim((string) ($row['AC'] ?? ''));
+            $emergencyContactAddress = trim((string) ($row['AD'] ?? ''));
+            $emergencyContactNo = trim((string) ($row['AE'] ?? ''));
+            $emergencyContactRelation = trim((string) ($row['AF'] ?? ''));
+            $presentAddress = trim((string) ($row['AG'] ?? ''));
+            $permanentAddress = trim((string) ($row['AH'] ?? ''));
+            $tin = trim((string) ($row['AI'] ?? '')); // Adding TIN as sequential column
+            $nationality = trim((string) ($row['AJ'] ?? '')); // Adding Nationality as sequential column
 
             if (empty($office) || empty($department) || empty($name) || empty($empId)) {
                 continue;
@@ -137,10 +160,26 @@ class EmployeeSeeder extends Seeder
                 'blood_group' => !empty($bloodGroup) ? $bloodGroup : null,
                 'father_name' => !empty($fatherName) ? $fatherName : null,
                 'mother_name' => !empty($motherName) ? $motherName : null,
+                'spouse_name' => !empty($spouseName) ? $spouseName : null,
+                'gender' => !empty($gender) ? $gender : null,
+                'religion' => !empty($religion) ? $religion : null,
+                'marital_status' => !empty($maritalStatus) ? $maritalStatus : null,
+                'national_id' => !empty($nationalId) ? $nationalId : null,
+                'tin' => !empty($tin) ? $tin : null,
+                'nationality' => !empty($nationality) ? $nationality : 'Bangladeshi',
+                'no_of_children' => !empty($noOfChildren) ? (int)$noOfChildren : null,
+                'contact_no' => !empty($contactNo) ? $contactNo : null,
+                'emergency_contact_name' => !empty($emergencyContactName) ? $emergencyContactName : null,
+                'emergency_contact_address' => !empty($emergencyContactAddress) ? $emergencyContactAddress : null,
+                'emergency_contact_no' => !empty($emergencyContactNo) ? $emergencyContactNo : null,
+                'emergency_contact_relation' => !empty($emergencyContactRelation) ? $emergencyContactRelation : null,
                 'date_of_birth' => !empty($dateOfBirth) ? date('Y-m-d', strtotime($dateOfBirth)) : null,
                 'phone' => null,
-                'address' => null,
+                'present_address' => !empty($presentAddress) ? $presentAddress : null,
+                'permanent_address' => !empty($permanentAddress) ? $permanentAddress : null,
                 'joining_date' => !empty($joiningDate) ? date('Y-m-d', strtotime($joiningDate)) : null,
+                'discontinuation_date' => !empty($discontinuationDate) ? date('Y-m-d', strtotime($discontinuationDate)) : null,
+                'discontinuation_reason' => !empty($discontinuationReason) ? $discontinuationReason : null,
                 'department_id' => $departmentModel->id,
                 'section_id' => $sectionModel?->id,
                 'designation_id' => $designationModel->id,
