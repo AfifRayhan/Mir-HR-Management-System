@@ -189,7 +189,6 @@ return new class extends Migration
             $table->string('first_name', 100);
             $table->string('last_name', 100);
             $table->string('phone', 20)->nullable();
-            $table->text('address')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->date('joining_date')->nullable();
             $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();

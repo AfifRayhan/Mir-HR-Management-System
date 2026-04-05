@@ -1,0 +1,779 @@
+﻿Id,HrmEmployeeId,AdressDetail,Flag,IsActive
+1,1,,0,1
+2,2,,0,1
+3,3,,0,1
+4,4,"House # 45, Road # 7, Banani, Dhaka",0,1
+5,5,,0,1
+6,6,"House - 755 (5th Floor), Road #23, Block # G, Bashundhara R/A, Vatara, Dhaka - 1229.",0,1
+7,7,"49/50 Hossaini Dalan, Dhaka",0,1
+8,8,"Flat # 2A, House # 273/A, Road # 05, Mohammadi Housing Society, Mohammadpur, Dhaka-1207",0,1
+9,9,"Apt-2A, H-269, R-4/A, B-F, Bashundhara R/A, Dhaka-1229",0,1
+10,10,"JMI Osman Gani Villa, Flat# 8B,Green Corner, Green Road, Kolabagan, Dhaka1205",0,1
+11,11,"House# 832, Road # 5, Baitul Aman Housing, Adabar, Mohammadpur, Dhaka",0,1
+12,12,"House # 17/4, New Baily Road, Dhaka",0,1
+13,13,"H-113, Rd-4, Mohammadi Housing Society, Adabor, Dhaka-1207",0,1
+14,14,"House - 09, Road -12, Sector - 03, Uttara, Dhaka",0,1
+15,15,"House 413 (Level 6), Road 7, Avenue 3, DOHS, Mirpur, Dhaka-1216",0,1
+16,16,"House # D-186 (3th floor, East), Road # 7, Mohanagar Housing Project, West Rampura, Dhaka 1219",0,1
+17,17,"345/1, C-1, Ahammed Nagar, Paikpara, Mirpur-1, Dhaka-1216",0,1
+18,18,"Road-7,  House-5, Block-G, Arifabad Housing, Dhaka-1215",0,1
+19,19,"36/4-A, Saheed Harez Road, Jagannathpur, Vatara, Khilkhet, Dhaka-1229.",0,1
+20,20,"Anantopur, Mullargaon,Sylhet Sadar, Sylhet.",0,1
+21,21,"House No. 402, 404 (Flat B-2), Road No. 06, Mirpur DOHS, Mirpur-12, Dhaka",0,1
+22,22,"House 30, Road 7, Block F, Banani, Dhaka-1213",0,1
+23,23,"Flat#F8, House#19, Road#7, Block#F, Banasree, Rampura, Dhaka-1219",0,1
+24,24,"Flat#6B, House#60, Road#03, Block#D, Mohanagor Project, Rampura, Dhaka.",0,1
+25,25,"House: 29/4, Block : A Kumar Para, Sylhet-3100",0,1
+26,26,"Flat#11A, Zigatola Zenith, Zigatola, Dhaka",0,1
+27,27,"Flat B4, House#15, Road#13, Sector#6, Uttara, Dhaka, 1230",0,1
+28,28,"FLAT-4B,HOUSE:2,ROAD:1/A,BLOCK:B,NOBODOY HOUSING,Mohammadpur",0,1
+29,29,"15/2, 4th floor,  Ali & Noor Real State, Mohammadpur, Dhaka-1207",0,1
+30,30,"House - C, Road - 24, Madina Nagar, Avenue: 5, Mirpur -11, Dhaka- 1216",0,1
+31,31,"111/4, 3rd Floor, PatwaryGoli, East Basaboo, Sabujbagh, Dhaka.",0,1
+32,32,"295 Maxel Zaman Apartment, Dhanmondi 15, Dhaka",0,1
+33,33,"Uttara Model Town, Dhaka",0,1
+34,34,"Village : Dogair East Para ,PO Sarulia, PS : Demra ,District : Dhaka",0,1
+35,35,"House # 6, Road # 3/1, Al Madina R/A, Shahporan, Sylhet",0,1
+36,36,"Apt. 401, House 3, Road 1, Block B, Niketon, Gulshan, Dhaka-1212",0,1
+37,37,"149/B Khilgaon Chowdhury para, Dhaka",0,1
+38,38,"Krishi Market, Mohammadpur, Dhaka -1207",0,1
+39,39,"D-2, Cha-151/152, Mohakhali, Dhaka-1213",0,1
+40,40,"Basic Zam Zam Tower, 171 Central Bashabo, Dhaka 1214",0,1
+41,41,"Holding#3/D/1, Flat#406, South Kallyanpur, Dhaka-1207",0,1
+42,42,"Flat # 3/702, 152/2/G-2, Eastern Pantha Chayya, Panthapath, Dhaka",0,1
+43,43,"45/13, Jalalabad R/A, Sylhet",0,1
+44,44,"KA-197/2, Uttarpar,Khilkhet, Dhaka",0,1
+45,45,"1st Floor 2B, Zihan House, 428/C/2, Garden View Road, South Paik Para, Mirpur, Dhaka.",0,1
+46,46,"Shapnakothir, Taraboniarachara, Kabarstan Road, Cox's Bazar",0,1
+47,47,"332/1,Shewrapar.Mirpur.Dhaka",0,1
+48,48,"Mita Manzil, 250/A, South Jatrabari, 1st Floor, Dhaka-1204",0,1
+49,49,"Flat # A7, H # 6, Level - 7, Block # H, Pallabi Extension R/A, Mirpur Dhaka - 1216.",0,1
+50,50,"H-1084/1085, R-21, Khilgaon, Tilpara, Dhaka-1230",0,1
+51,51,"House 1058, Road 7, Avenue 8, Mirpur DOHS, Mirpur 12, Dhaka 1216",0,1
+52,52,"272/3, malibagh, Dhaka",0,1
+53,53,"169/8/B West Dolaipar, (5th Floor), Panthonibash, Shampur, Dhaka-1204",0,1
+54,54,"Bondhu Nibash, House#01, Road# 04, Block # A, Nobodoy Housing, Mohammadpur, Dhaka",0,1
+55,55,"GP GA 169, 3rd Floor, Mohakhali School Road, Wireless Gate, Dhaka-1212.",0,1
+56,56,"House # 36, Road # 03, Block # C, Section # 12, Pallabi, Mirpur, Dhaka # 1216",0,1
+57,57,"Radient Darul Abrar, Flat # 4B, House # 634, Road # 5/1, Block-B, Banasree, Dhaka-1219",0,1
+58,58,"509/Cha, Chamiman Goli, Noyatola, Ambagan, Moghbazar, Dhaka",0,1
+59,59,"181/2,Noyatola,Moghbazar,Dhaka",0,1
+60,60,"Arobi Vila (2nd Floor), Sarkar Bari (Near Jame Mosjid), Vatara, Dhaka-1229",0,1
+61,61,"Road # 08, House # 15, Merul Badda DIT Project, Dhaka",0,1
+62,62,"Road # 18, House # 30, Sector 7, Uttara, Dhaka",0,1
+63,63,"Nahar Villa (L-4), House #32, Road#03, Mohanagar Project, W. Rampura, Dhaka",0,1
+64,64,"Chayatoru-30, Rahman Villa , Lamabazar, Sylhet-3100",0,1
+65,65,Ruman Villa ; House # 1 ; Road # 4 ; Shamimabad R/A ; Kanishail Rd. South Bagbari ; Sylhet,0,1
+66,66,"161/7, Baganbari, North Bashantek, Dhaka Cantonment,  Dhaka-1206",0,1
+67,67,"Faridpur, P.O: Amdabad Bazar, P.S: Kotwali, Jashore",0,1
+68,68,Village : Sabuj Bug (behind Agriculture Farm); Bogura Sadar; Bogura,0,1
+69,69,"27/1 West Dolairpar, Ali Hossain road Shaympur, Dhaka 1204",0,1
+70,70,"107-Razargoly, Dorgamoholla, Sylhet-3100",0,1
+71,71,House # 2 ; Road # 3 ; Block - C ; Shapla Bag ; Tilagor ; Sylhet,0,1
+72,72,"TA-79, Amble Rowshan, Middle Badda, Dhaka",0,1
+73,73,"House No- 271, Block-B, Khilgaon, Taltola, Dhaka",0,1
+74,74,"Adarshabag, Konapara, Jatrabari, Dhaka",0,1
+75,75,"House-4, Road-9/1, Block-E, Section-12, Mirpur, Dhaka",0,1
+76,76,"House 10, Road 1/C, Block B, Nobodoy Housing Society, Mohammadpur, Dhaka-1207",0,1
+77,77,"House-08, Road-07, Block-Kha, P C Culture Housing, Shekhertek, Adabor, Dhaka.",0,1
+78,78,"B-store, BTCL Colony, karail, Banani Road-5, Dhaka 1213",0,1
+79,79,"34/22, Pallabi, Mirpur-12, Dhaka-1216",0,1
+80,80,"House- 69/C/3, Road-6/A Dhanmondi R/A, Dhaka-1209",0,1
+81,81,"House: 291, Flat: 4A, Tali Office Road, Rayer Bazar, Dhaka-1209",0,1
+82,82,"H-97-1/B,Chairman Goli,Shankar, Dhanmondi,Dhaka",0,1
+83,83,"55,Proval Housing(3rd Floor North), Ring Road,Mohammadpur, Dhaka 1207. ",0,1
+84,84,"Thonthonia,bankpara,Nazruler Basa, 2nd Floor. Bogura",0,1
+85,85,"Holding no-54/A, Soto boyra puja khola, GPO 9000, Sonadanga Khulna",0,1
+86,86,"Ga-103, Middle Badda. Dhaka-1212",0,1
+87,87,"23/2 West Nakhal Para, Tejgaon, Dhaka-1215",0,1
+88,88,"House#57,Road-3/A,FLat#B-3,Dhanmondi,Dhaka-1209",0,1
+89,89,"1/G, Paribagh Apartments, Flat #B4, Paribagh, Shahbag, Dhaka",0,1
+90,90,"Flat # 501, H # 10, Level - 5, Block # H, Pallabi Extension R/A, Section-12, Mirpur Dhaka - 1216.",0,1
+91,91,"House no. 01, Road no. 05, Adarshabag, Farmer More, Jatrabari, Dhaka-1362.  ",0,1
+92,92,"Ground Floor,Builiding No- G-24/1, Fokirapul T&T Colony, Dhaka",0,1
+93,93,"H:64 (2nd Floor), R:07, DIT Project, Merul Badda, Dhaka-1212",0,1
+94,94,"Holding  No-1069   Block -B, PO-Merajnagor, PS-Kodomtoli, Dhaka -1362 ",0,1
+95,95,"Moyuri Aparetment, 90/1 Boro Moghbazar, Ramnha, Dhaka - 1217. ",0,1
+96,96,"House No. 18, Road No. 9-D, Sector no. 5, Uttara, Dhaka-1230",0,1
+97,97,"F-A3,H-17,R-02,Turag City, Shahali Thana, Mirpur-01, Dhaka-1216",0,1
+98,98,"Flat- A4, Shelter Heritage, Plot-2, Kallyanpur Main Road, Dhaka",0,1
+99,99,"7C/47, Hashem Bari,Indira Road,Firmgate Dhaka ",0,1
+100,100,"house: 55 , Flat : W4  , muktijoddha sarani, East Mollertek , dakkhin khan , Uttara , Dhaka ",0,1
+101,101,"20/3(2), Dilu Road,Moghbazar,Dhaka",0,1
+102,102,"18, Darussalam, Mirpur, Dhaka-1216",0,1
+103,103,"KA-49,Afsar Villa,3rd Floor,Moddhopara,Khilkhet,Dhaka-1229",0,1
+104,104,"H N - 253 (Floor 6), West Agargaon, Dhaka",0,1
+105,105,"""Flat: B-8, Benchmark Sufana,Plot: 10, Road: 1/C, Block-B,
+Nobodoy Housing, Mohammadpur""",0,1
+106,106,"Flat- 2A, 14/3, Singapore Road, East Madartek, Dhaka-1214",0,1
+107,107,"Chocklokman, Kolony, Bogra Sadar-5800",0,1
+108,108,"Faria & Tanvir Villa, 3rd floor, Khander, Bogra-5800",0,1
+109,109,"khander,Suttrapur road,Bogura-5800.",0,1
+110,110,Mannan House ; 84/A Waves ; Amberkhana ; Sylhet,0,1
+111,111,"House#21,Road#04,Sector#04,Uttara,Dhaka-1230",0,1
+112,112,"12 Kajol Shah, Block # B, Medecal Road, Sylhet",0,1
+113,113,"1/1 H, Mirbagh, Noyatola, Mogbazar, Ramna, Dhaka",0,1
+114,114,"C/O- Md. Ashraf Ali, House No: 06, Lane: 01, Road: Masjid road 04, Satarkul West Padardia. P.O: Gulshan, P.S: Badda, Dhaka-1212.",0,1
+115,115,"6/A, Shantikunjo R/A, New Eskaton,Dhaka",0,1
+116,116,"Road- 25/A, House- 91, Banani, Dhaka",0,1
+117,117,Gulshan-badda link road,0,1
+118,118,"183/1/2 Moonstone properties (Flat#c-1), Green Road, Dhanmondi, Dhaka-1205.",0,1
+119,119,"House# 294/1, Road# 8/A, Dhanmondi,Dhaka",0,1
+120,120,"West Hazinagar, Sarulia, Demra",0,1
+121,121,"1/8, Tolarbag, Mirpur-1, Dhaka-1216",0,1
+122,122,"34,35,35/1, 'Ideal Panorama', Shantinagar, Dhaka-1217",0,1
+123,123,"43, Mirpur Road, Dhanmondi, Dhaka - 1205.",0,1
+124,124,"Room No:101 R.B Hostel, Fuldighee, Colony, Bogra-5800",0,1
+125,125,"Bondhon13/C,Block-C,Akhalia,Nuapara,Sylhet",0,1
+126,126,"""Oishee Nibash, house no-179, road no-4, HolyView, shamimabad sylhet-3100.
+""",0,1
+127,127,"Basila,West Dhanmondi, Road No 9,Block-B,House no-19",0,1
+128,128,"Atim School Road, 14/3 Bagbari Sylhet-3100.",0,1
+129,129,"330/k ,East Nakhal Para, Tejgaon.",0,1
+130,130,"1/1, H, 4th Floor, Mirbaug, Noyatola, Dhaka-1217",0,1
+131,131,"Vill:- Charmarddan, P.O:- Rasunia, Thana:- Sirajdikhan, Zilla:- Munshigonj",0,1
+132,132,"JA-63,Abdul Monnaf Sarani,Middle Badda,Dhaka-1212",0,1
+133,133,"1/D Mannu Vila, Adabor-1, Dhaka-1207",0,1
+134,134,"Jha-63,Abdul Monnaf Sarani,Middle Badda,Dhaka-1212",0,1
+135,135,"House-11;Road-11,North Badda, Dhaka",0,1
+136,136,"Vill-Gobindosri,House no-8,Kusumbag,Moulvibazar-3200",0,1
+137,137,"Moroli (infront of jora mondir), Kotwali, Jashore",0,1
+138,138,"Badda, Gulshan, Dhaka",0,1
+139,139,"Moghbazar, Modhubagh",0,1
+140,140,"Badda, Gulshan, Dhaka",0,1
+141,141,"Dakatia, Nouda, Jessore",0,1
+142,142,"Malibagh, Dhaka",0,1
+143,143,"Zindabazar,Sylhet",0,1
+144,144,,0,1
+145,145,"Rampura, Banasree, E Block",0,1
+146,146,"Matarbari Project, Coxs Bazar",0,1
+147,147,"Badda, Gulshan, Dhaka",0,1
+148,148,"Tongi Bazar, Tongi Gazipur",0,1
+149,149,"Moghbazar, Malibagh, Dhaka",0,1
+150,150,"Maniknogor, Dhaka",0,1
+151,151,"C. T. College Para, Jessore",0,1
+152,152,"Badda, Gulshan, Dhaka",0,1
+153,153,,0,1
+154,154,"28/ke, Purba Noyatola, Moghbazar, Dhaka",0,1
+155,155,"Holding-Akhaliapara,Sylhet-3100",0,1
+156,156,"Vill-Poshim Dorkapon,Moulvibazar Sador-3200",0,1
+157,157,"Vill-Kayosto Gram,P.O/P.S-Fenchugonj,Sylhet-3100",0,1
+158,158,"Vill-Amboekhana,Jalalabad,Sylhet",0,1
+159,159,"Vill-Boroikandi,Sylhet",0,1
+160,160,"Vill-Bagmara,P.O/P.S-Fenchugonj,Sylhet-3100",0,1
+161,161,"28/ke, Purba Noyatola, Moghbazar, Dhaka",0,1
+162,162,"28/ke, Purba Noyatola, Moghbazar, Dhaka",0,1
+163,163,"28/ke, Purba Noyatola, Moghbazar, Dhaka",0,1
+164,164,"House#8, Road#20, Mirpur -11",0,1
+165,165,"28/ke, Purba Noyatola, Moghbazar, Dhaka",0,1
+166,166,"618/A, Middle Monipur, Mirpur, Dhaka",0,1
+167,167,"House#6, 12th floor, lane 13, Block A, Mirpur",0,1
+168,168,"House#4, Road#21, Gulshan - 1, Dhaka",0,1
+169,169,"House#4, Road#21, Gulshan 1- Dhaka",0,1
+170,170,"House#4, Road#21, Gulshan - 1, Dhaka",0,1
+171,171,"House#5, Road#21, Gulshan 1- Dhaka",0,1
+172,172,"House#4, Road#21, Gulshan - 1, Dhaka",0,1
+173,173,"Red Crescent Borak Tower -2, Level-7, 37/3/A, Eskaton Garden, Dhaka",0,1
+174,174,"Saujgari ,Bogra",0,1
+175,175,"Vill-Daudpur,P.O-Ranga Daudpur,P.S-Muglabazar,Distric-Sylhet",0,1
+176,176,"Vill-Jaingail,P.O-Tukerbazar,P.S-Jalalabad,Distric-Sylhet",0,1
+177,177,"363 Uttar Mugrakul, Jatramura, Tarabo Pourasava, Rupgonj, Narayangonj",0,1
+178,178,"10/C, Malibagh Chowdhurypara, Dhaka",0,1
+179,179,"Akupara, Ashulia, Savar, Dhaka",0,1
+180,180,"House#58/1, Lichu Bagan, Mir Akhter Store, Shawra, Lichubagan, Dhaka",0,1
+181,181,MD's House,0,1
+182,182,"House#4, road#21, Gulshan - 1, Dhaka",0,1
+183,183,"House#57/A Maniknagar, Mugda, jatrabari, Dhaka",0,1
+184,184,MD's House,0,1
+185,185,"House#13, Road#12, Dhanmondi, Dhaka",0,1
+186,186,"House#13, Road#12, Dhanmondi, Dhaka",0,1
+187,187,"House#13, Road#12, Dhanmondi, Dhaka",0,1
+188,188,"Red Crescent Borak Tower -2, Level-7, 37/3/A, Eskaton Garden, Dhaka",0,1
+189,189,"M-36, GF, Noorjahan Road, Mohammadpur, Dhaka-1207",0,1
+190,190,"House# 72, Sardar Villa, Taltola, Agargaon, Dhaka",0,1
+191,191,"House#4, Road#21, Gulshan - 1, Dhaka",0,1
+192,192,"Road#11, House#11, Baridhara, Dhaka",0,1
+193,193,"Road#11, House#11, Baridhara, Dhaka",0,1
+194,194,"Satmasjid Road, Mohammadpur, Dhaka",0,1
+195,195,"House#34A, Gulbbagh, Dhaka",0,1
+196,196,"180 Bosila, Mohammadpur",0,1
+197,197,"House#27, Middle Badda, Dhaka",0,1
+198,198,"Red Crescent Borak Tower -2, Level-7, 37/3/A, Eskaton Garden, Dhaka",0,1
+199,199,"Hatirjheel Modhubag,",0,1
+200,200,"Akupara, Ashulia, Savar, Dhaka",0,1
+201,201,"House#3/14, Block # A, Mohammadpur, Dhaka",0,1
+202,202,"Modhubagh 1 No. Lane, Moghbazar, Dhaka",0,1
+203,203,"276D, Boro Moghbazar, Dhaka",0,1
+204,204,"Addeen Hospital, Moghbazar, Dhaka",0,1
+205,205,Dhaka,0,1
+206,1,,1,1
+207,2,,1,1
+208,3,,1,1
+209,4,"House # 320, Gulbagh, Shantinagar, Dhaka.",1,1
+210,5,,1,1
+211,6,"Choto Boyra Shoshan Ghat Road, West Area, GPO 9000 P.S.#Sonadanga, Khulna",1,1
+212,7,"49/50 Hossaini Dalan, Dhaka",1,1
+213,8,"Holding # 560, Muktipara, Chuadanga",1,1
+214,9,"Apt-2A, H-269, R-4/A, B-F, Bashundhara R/A, Dhaka-1229",1,1
+215,10,"Vill+PO: Kanchpur, P.S: Sonargaon, Dist: Narayangonj",1,1
+216,11,"Rahman mension,Rahman Nagor,Bogra",1,1
+217,12,"House # 13, Road # 2, Mohishkhola, Narail",1,1
+218,13,"45/A Imamganj Bazar Lane, Lalbagh, Dhaka-1000",1,1
+219,14,"House - 09, Road - 12, Sector - 03, Uttara, Dhaka",1,1
+220,15,"House 413 (Level 6), Road 7, Avenue 3, DOHS, Mirpur, Dhaka-1216",1,1
+221,16,"Village: Gohailbari, Post Office: Nali, P.S: Shibaloya, Dist: Manikganj, Manikganj: 1850",1,1
+222,17,"Vill+Post: Horidrapota, P.S:Jhikargacha, Dist: Jessore-7432",1,1
+223,18,"Road-8, House-215, Rupnagar Tinshed, Pallabi, Dhaka-1215",1,1
+224,19,"36/4-A, Saheed Harez Road, Jagannathpur, Vatara, Khilkhet, Dhaka-1229.",1,1
+225,20,"Vill+ Post: Goal Gram, P.S: Daulatpur,District: Kushtia, Bangladesh.",1,1
+226,21,"Village: Chowrypara (Mridhabari), Union Council: Soliabakpur, PS: Banaripara, Barisal",1,1
+227,22,"House 5, Road 17, Block D, Banani, Dhaka-1213",1,1
+228,23,"C/O:Midda Bari, Vill:Noapara, P.O:Palla Bazar, P.S: Chatkhil, Dist.:Noakhali.",1,1
+229,24,"Vill: Tajnagor,P.O: Fotepur, P.S: Naogaon Sadar,District: Naogaon ",1,1
+230,25,"House: 29/4, Block : A Kumar Para, Sylhet-3100",1,1
+231,26,"Majumder Bari, Degoi, Lodhpara, Hajiganj, Chandpur",1,1
+232,27,"Mitali-19, Kharpara, Mirabazar, Sylhet - 3100",1,1
+233,28,"FLAT-4B,HOUSE:2,ROAD:1/A,BLOCK:B,NOBODOY HOUSING,Mohammadpur",1,1
+234,29,"Vill+P.O: Ullashi, P.S: Sharsha, Jeshore-7432.",1,1
+235,30,"Village - Machuakhali, P/O - Betagi, Thana - Betagi, District - Barguna",1,1
+236,31,"C/O - Md. Shahinul Islam (Chairman), Vill - Baralia, P.O: Moulovir Hat, Upazila - Patiya, Chittagong.",1,1
+237,32,"336 Promukta Ekota, Bagbari, Sylhet",1,1
+238,33,"Uttara Model Town, Dhaka",1,1
+239,34,"Village : Dogair East Para ,PO Sarulia, PS : Demra ,District : Dhaka",1,1
+240,35,"House # 6, Road # 3/1, Al Madina R/A, Shahporan, Sylhet",1,1
+241,36,"Apt. 401, House 3, Road 1, Block B, Niketon, Gulshan, Dhaka-1212",1,1
+242,37,"149/B Khilgaon Chowdhury para, Dhaka",1,1
+243,38,"Kalitolahathat, Shibbati road, Bogura -5800",1,1
+244,39,"Balitita Islampur, Lalpur, Natore",1,1
+245,40,"111/A, East Bashabo, Dhaka 1214",1,1
+246,41,"Vill: Rahimpur Post: Goyeshpur, Pabna Sadar, Pabna",1,1
+247,42,"139, Shaikh Para Main Road, Gobarchaka, Khulna",1,1
+248,43,"Purabi- 62, Hasan Nagar, Sunamganj.",1,1
+249,44,"Village: Charmetuani, P.O: Kollyanpur, P.S: Belkuchi, Dist: Sirajgonj",1,1
+250,45,"28, Gulbag, Balubagan Raod, Chapai Nawabgonj-6300.",1,1
+251,46,"Hasan Villa, Old Malaria office Road, West Tekpara, Cox’sBazar",1,1
+252,47,"332/1,Shewrapar.Mirpur.Dhaka",1,1
+253,48,"Mita Manzil, 250/A, South Jatrabari, 1st Floor, Dhaka-1204",1,1
+254,49,"C/O - Md. Abdul Latif Mondal, College Hostel Road, Thanapara, Gaibandha - 5700",1,1
+255,50,"Vill- Hazi Kandi, P/O-D M Khali, P/S- Shakhipur, Shariatpur",1,1
+256,51,"Vill-Collegepara, Post Rajibpur, Thana Rajibpur, Dist Kurigram",1,1
+257,52,"Paratongi,Muktagacha,Mymensingh",1,1
+258,53,"Vill-Gachbaria, P/O-Hadi Fakir Hat, P/S-Mirsarai, Chattogram",1,1
+259,54,"Vill # Diar shahapur, Post# Diar Shahapur, Thana# Ishwardi, District# pabna",1,1
+260,55,"Baitur Rahamat, House 54/1, Road 01, Munshipara, Madrasa Road, Rangpur-5400.",1,1
+261,56,"House # 36, Road # 03, Block # C, Section # 12, Pallabi, Mirpur, Dhaka # 1216",1,1
+262,57,"C/o, Paresh Chandra Saha, Vill: Krishnapur (Saha Para), Po: Hat Krishnapur, Ps: Sadarpur, Dist: Faridpur",1,1
+263,58,"Vill # Shohagdal, Post # Sohagdal, Thana # Swarupkathi, Dist # Pirojpur",1,1
+264,59,"Vill:+P.O:Charhazari,P.S:Companygonj, Dist:Noakhali",1,1
+265,60,"H # Aslam Moulovi Bari, Vill: Manikco Nogor, 54 No Manikco Nogor, PO: Eidgah Amin Bazar, PS: Sonaimuri, Dist: Noakhali.",1,1
+266,61,"Vill: Chhewria, P.O : Mohini Mills, P.S : Kumarkhali, Dist: Kushtia",1,1
+267,62,"60 Rayerbazar, Dhaka",1,1
+268,63,"Vill+ P.O: Jungashia, P.S.: Dighalia, Dist: Khulna",1,1
+269,64,"Vill+P.O.: Muraul, P.S.: Barlekha, Dist.: Moulvibazar-3250",1,1
+270,65,Ruman Villa ; House # 1 ; Road # 4 ; Shamimabad R/A ; Kanishail Rd. South Bagbari ; Sylhet,1,1
+271,66,"Village: Hazipur, PO: Chowmuhani, PS: Begumganj",1,1
+272,67,Same,1,1
+273,68,Village : Sabuj Bug (behind Agriculture Farm); Bogura Sadar; Bogura,1,1
+274,69,"27/1 West Dolairpar, Ali Hossain road Shaympur, Dhaka 1204",1,1
+275,70,"107-Razargoly, Dorgamoholla, Sylhet-3100",1,1
+276,71,House # 2 ; Road # 3 ; Block - C ; Shapla Bag ; Tilagor ; Sylhet,1,1
+277,72,"903/1009, Mogultooly, Agrabad, Chittagong",1,1
+278,73,"Hazrat Akbar Shah'r Bari, Dokkyn Shortha, Chikdair, Arnopurna Bari, Raozan, Chittagong",1,1
+279,74,"Adarshabag, Konapara, Jatrabari, Dhaka",1,1
+280,75,"House-4, Road-9/1, Block-E, Section-12, Mirpur, Dhaka",1,1
+281,76,"Sany Mansion, Town Kalikapur, Patuakhali",1,1
+282,77,"House-06, Lane-11, Road-02, B-Block, North Halishahar, Housing Estate, Chattogram.",1,1
+283,78,"Vill: Rahimpur, Post & Union: Goyespur,Thana & District: Pabna",1,1
+284,79,"16 Jhiltuly, Farid Shah Road, Faridpur",1,1
+285,80,"Road-17, House-13, Rupnagar R/A, Mirpur Dhaka-1216",1,1
+286,81,"House-35, Flat:3B, Mitali Road, Rayer Bazar, Dhaka-1209",1,1
+287,82,"Chaprashi Bari,Vill-Rashid Pur,P.O:Atim Khana Bazar,P.S:Dagonbhuiyan,Dist-Feni",1,1
+288,83,"Vill: West Biga(Mizi Bari),P.O: Kanchanpur,P.S: Ramgong,District: Laxmipur. ",1,1
+289,84,"Vill: Nukali,P.O: Baghabari Ghat, P.S:Shazadpur, Dis: Sirajgonj",1,1
+290,85,"Barandi para, Kotwali Jessore",1,1
+291,86,"Ga-103, Middle Badda. Dhaka 1212",1,1
+292,87,Village + Post Office : Guadanga; Thana: Phulpur; District: Mymensingh,1,1
+293,88,"House#260,North Ibrahimpur,",1,1
+294,89,"1/G, Paribagh Apartments, Flat #B4, Paribagh, Shahbag, Dhaka",1,1
+295,90,"H N: 268/A/03, Town Jainkathi, Patuakhali-8600",1,1
+296,91,DO,1,1
+297,92,"Pran Hari Das Bari, South Kattali, Chittagong",1,1
+298,93,"H:199, Mustigor, Sthapondighi, Singra, Natore-6450.",1,1
+299,94,"Holding  No-1069   Block -B, PO-Merajnagor, PS-Kodomtoli, Dhaka -1362 ",1,1
+300,95,"Moyuri Aparetment, 90/1 Boro Moghbazar, Ramnha, Dhaka - 1217. ",1,1
+301,96,"Village: Harinarayanpur, P.O. Lakhpur, P.S. Monohardi, Dist. Narsingdi.",1,1
+302,97,"F-A3,H-17,R-02,Turag City, Shahali Thana, Mirpur-01, Dhaka-1216",1,1
+303,98,"Flat- A4, Shelter Heritage, Plot-2, Kallyanpur Main Road, Dhaka",1,1
+304,99,"Vill:Chak-Nandanpur,P.O-Nandanpur,P.S-Shanthia,Dist-Pabna.",1,1
+305,100,Vill: Birpasha ; po: Birpasha ; Thana : Bauphal ; Dist:Patuakhali ,1,1
+306,101,"""67/17, KDA Outer Bypass Road,",1,1
+307,102,"18, Darussalam, Mirpur, Dhaka-1216",1,1
+308,103,"Vill+Post: Shankuchail,Thana: Burichong,Dist: Cumilla.",1,1
+309,104,"Sector 6, H N 66, N S Town, Jessore - 7401",1,1
+310,105,"""Flat: B-8, Benchmark Sufana,Plot: 10, Road: 1/C, Block-B,
+Nobodoy Housing, Mohammadpur""",1,1
+311,106,"Holding-279, Barisal Road, Goalchamot, Faridpur-7800",1,1
+312,107,"Thanapara, Road No-02/1, H.N-89, Lalmonirhat Sadar-5500",1,1
+313,108,"Village: Matiara, police station: Bazar chowara, Thana: Kwatoali, Upzilla: South Sadar, Dist: Comilla",1,1
+314,109,"ProfessorPara,ChottoBongram,Sopura, House No-157,Thana-Boyaliya, Rajshahi.",1,1
+315,110,Mannan House ; 84/A Waves ; Amberkhana ; Sylhet,1,1
+316,111,"Village:Nukali,Post:BaghabariGhat,Tana:Shahzadpur,Dist:Sirajgonj",1,1
+317,112,Vill: Rampur ; Union # 04; Thana : Chadpur ; Post: Kamranga Bazar; Chadpur,1,1
+318,113,"24/E, Shahid Kazi Salauddin Road, Charkamlapur, Faridpur Sadar, Faridpur-7800",1,1
+319,114,"C/O: Md. Abdul Malak, Village: Kaikhali, P.O: Sindhurpur, P.S: Dagonbhuiyan, District: Feni. ",1,1
+320,115,"431/2,Senpara Parbata, Mirpur, Dhaka",1,1
+321,116,"Vill: Jafrabad, P.O: Bariadhala, P.S: Mirasharai, Dist: Chittagong",1,1
+322,117,"Hosue:14, 2/2 Jamuna lane, Bangalipur Nijpara. Thana+Post: Saidpur, District: Nilphamari",1,1
+323,118,"Vill: Ramnagor, P.O: Rahamatnagor, P.S: Bauphal, Dist:Patuakhali",1,1
+324,119,"Vill+Post: Rajarampur, P.S: Nawabganj Sadar, Dist: Chapai Nawabganj",1,1
+325,120,"Soyadhangora Thana road, Nayan More, Sirajganj",1,1
+326,121,"Dishari-24, Howapara, Sylhet-3100",1,1
+327,122,"34,35,35/1, 'Ideal Panorama', Shantinagar, Dhaka-1217",1,1
+328,123,"43, Mirpur Road, Dhanmondi, Dhaka - 1205.",1,1
+329,124,"Village: Nukali, P,O: Baghabarighat, Thana: Shahzadpur, Dist: Sirajgong",1,1
+330,125,"Anwerpur,PO-Rafinagar,PS-Derai,Dis-Sunamgonj",1,1
+331,126,"C/O: Emdadul Haque, Vill+post: Dhopakhali, Dist:Chuadanga",1,1
+332,127,"South Kutubkhali,Dhaka-1236",1,1
+333,128,"Vill: Hudashurat, P.O: Baniabohu, P.S: Jhenaidah , Dist: Jhenaidash.",1,1
+334,129,Vill: Sharshatipur P.O: Mohonpur P.S: Akkelpur Dist: Joypurhat.,1,1
+335,130,"Holding NO: 80, Vill:Shuvopur, P:O: Comilla sadar, Thana: Kothoali, Dist:Comilla",1,1
+336,131,"Vill:- Charmarddan, P.O:- Rasunia, Thana:- Sirajdikhan, Zilla:- Munshigonj",1,1
+337,132,"C/O-Master Nasir Uddin Bhuiyan Bari. Vill- North Brinchi, Post- Feni.  P. S.-Feni, District- Feni. Bangladesh",1,1
+338,133,"Vill: Hariakahoun, PO:Gourigram, Thana: Sathia,Dist: Pabna",1,1
+339,134,"Holding No-1058,Madrasa Road,Mobarokghona,Mirsarai,Chattogram",1,1
+340,135,410 Moulivi bari; village-bakgram; post-alkara; Police station-Chauddagram; District-Comilla,1,1
+341,136,"Vill-Gobindosri,House no-8,Kusumbag,Moulvibazar-3200",1,1
+342,137,"Vill: Katunia Post:Pirgajan P.S:Kaligong, Dist:Satkhira",1,1
+343,138,"Boro Moulvi Bazar, Shabazpur, Sharail, Brahman Baria",1,1
+344,139,"Razapur, Jachira Bad, Laxmipur",1,1
+345,140,"Manapur, Hazipur, Chandpur",1,1
+346,141,"Dakatia, Nouda, Jessore",1,1
+347,142,"Chimary, Daulatpur, Kushtia",1,1
+348,143,"Vill-Vobanipur,P.O-Dualiabazar,P.S-Duarabazar,Distric-Sunamgonh-3080",1,1
+349,144,"Domdoma, Ullapara, Sirajgonj",1,1
+350,145,"Noapara, Pallabazar, Chatkhil, Noakhali",1,1
+351,146,"Baherchor, Baherchor Sholodaag, Veramara, Kushtia",1,1
+352,147,"Daulatpur, Dolmondal, Nasirnagar, Brahman Baria",1,1
+353,148,"Briddhigonj, Ramfia, Pirgonj, Thakurgaon",1,1
+354,149,"Chemary, Daulatpur, Kushtia",1,1
+355,150,"Katlamari, Phoolchori, Gaibandha",1,1
+356,151,"Batejar Ghat, Jhenaidah",1,1
+357,152,"B asara, Dorapukur, Chatlala, Jaipurhat",1,1
+358,153,"Koronshee, Goala Bazar, Osmaninagar, Sylhet",1,1
+359,154,"Atshottipara, Bahirchor, Veramara, Kushtia",1,1
+360,155,"Vill-Tillakandi,Shekhpara,P.O-Shorifgonj,P.S-Jokigonj,Sylhet",1,1
+361,156,"Vill-Poshim Dorkapon,Moulvibazar Sador-3200",1,1
+362,157,"Vill-Kayosto Gram,P.O/P.S-Fenchugonj,Sylhet-3100",1,1
+363,158,"Vill-Shunakandopur,9 Manikpur Union,P.O,Bramongram,P.S-Jokigong,Sylhet-3100",1,1
+364,159,"Vill-Chak Shordarpara,P.S-Usmani Nagor,P.O-Balagonj,Sylhet-3100",1,1
+365,160,"Vill-Bagmara,P.O/P.S-Fenchugonj,Sylhet-3100",1,1
+366,161,"Sometpur, Daulatpur, Manikgonj",1,1
+367,162,"Char Metuani, Kollyanpur, Belkuchi, Sirajgonj",1,1
+368,163,"Borchal, Pakhareshpur, Begatnar, Brahmanbaria",1,1
+369,164,"Jirakali, Islamabad, Potuakhali",1,1
+370,165,"Sholodaag, Bahirchor, Veramara, Kushtia",1,1
+371,166,"618/A, Middle Monipur, Mirpur, Dhaka",1,1
+372,167,"Phoolbaria, Mohesbathan, Khoksa, Kushtia",1,1
+373,168,"Shaimulia, magura",1,1
+374,169,"Dakkhinpara, Binodpur, Mohammadpur, Magura",1,1
+375,170,"Ranapasha, Nachunmohol, Nolchiti, Jhalkathi",1,1
+376,171,"Dakkhinpara, Binodpur, Mohammadpur, Magura - 7631",1,1
+377,172,"Purba Gulishakhali, Tatalbaria, Borguna.",1,1
+378,173,"Collegepara, Rajibpur, Kurigram",1,1
+379,174,"Village: Patarpara, Harail, P,O: Joypurhat-5900",1,1
+380,175,"Vill-Daudpur,P.O-Ranga Daudpur,P.S-Muglabazar,Distric-Sylhet",1,1
+381,176,"Vill-Jaingail,P.O-Tukerbazar,P.S-Jalalabad,Distric-Sylhet",1,1
+382,177,"Borocharigaon, Chander Hat, Senbagh, Noakhali",1,1
+383,178,"Dakuabari, Chowdhurir Hat, Uzirpur, Barishal",1,1
+384,179,"Akupara, Ashulia, Savar, Dhaka",1,1
+385,180,"Chandpur, Pakshirampur, Kachua, Comilla.",1,1
+386,181,"Kuti Shahondar, Kuti, Koshba, Brahman Baria",1,1
+387,182,"Gopalpur, Suktaghar, Rajapur, Jhalkathi",1,1
+388,183,"Haripur, Shipnagar, Meghna, Comilla",1,1
+389,184,"Kumarhala, Chatarbajar, Lalmohan, Bhola",1,1
+390,185,"Mohisura, Dhunot, Bogura",1,1
+391,186,"Jahanabad, Mohanpur, Rajshahi",1,1
+392,187,"Sanikadeipar Kaderpar, Babugonj, Barisal",1,1
+393,188,"Barishal Sadar, Barishal ",1,1
+394,189,"Chorgola Para, Pankharchor, Lohagora, Narail",1,1
+395,190,"Komla Pur,West Khanjapur, Gouranodi, Barishal",1,1
+396,191,"Char Shaklina, Lalmohan. Bhola",1,1
+397,192,"Kishamat, Daragochi, Ramgonj, Nilphamari",1,1
+398,193,"Pashchim Uzanchar, Sridan Datta Para, Goalondo, Rajbari",1,1
+399,194,"Ulupur, Kapasia Gajipur",1,1
+400,195,"Loshkorpur, Mugorchor, Meghna Comilla",1,1
+401,196,"Kazirabad, Debirchor, Lalmohan, Bhola",1,1
+402,197,"Husurkhal, Dighirpar, Nageswari, Kurigram",1,1
+403,198,"Bortal, Pakshalpur,Bijoynagar, Brahmanbaria",1,1
+404,199,"Gobindo Dhobol, Kirtipasha, Jhalkathi",1,1
+405,200,"Akupara, Ashulia,Savar,Dhaka",1,1
+406,201,"Kazirabad, Debirchor, Lalmohan, Bhola",1,1
+407,202,"Baghdanga, Rampur, Shashar, Jessore",1,1
+408,203,"Koyashobla, Jaforpur, Akkelpur, Joypurhat",1,1
+409,204,"Notun Hat, Gazir Dorga, Jessore, Jessore Sadar",1,1
+410,205,"Palgaon, Bejgaon, Louhojong, Munshigonj",1,1
+411,220,"H-27, Road No 22, Malibag Choudhury Para, Khilgaon, KhilgaonTSO, Khilgaon",0,1
+412,220,"Noyakandi, Vober char, Gajaria, Munshiganj.",1,1
+413,221,"Rankin street, wari, Dhaka-1203",0,1
+414,221,"Rankin street, wari, Dhaka-1203",1,1
+415,222,"Gp kha-13, South Kuril, Dhaka 1212",0,1
+416,222,"Hossainpur, Khansama, Dinajpur ",1,1
+417,223,"3/3 charakghata, Tali Office, Dhaka 1209, Hazaribag, Dhaka",0,1
+418,223,"South Ramanpur, Madaripur.",1,1
+419,224,"65, Sir Iqbal Road, Batipara, Khulna.",1,1
+420,226,"BosuBari, Gopalpur, Tangail",1,1
+421,226,"18/B Malibagh, Chowdhuripara, Dhaka",0,1
+422,227,"255/b 3rd colony, Lalkuthi, Mirpur, Mazar Road, Dhaka 1216",0,1
+423,227,"255/b 3rd colony, Lalkuthi, Mirpur, Mazar Road, Dhaka 1216",1,1
+424,228,"House no 109/ kha 5th floor
+Johar sahara bazar Road",0,1
+425,228,"Holding no 642
+P.O - KASHIPUR 
+P.S - Biman bondor , sher-e- bangla sarak",1,1
+426,229,"83/1 Buddhijibi Road, Dhaka 1207",0,1
+427,229,"Vill - Rasunia
+P.B. Rasuni
+Munshigonj",1,1
+428,230,"Dogair South-West para, Milon Road, Sharulia, Demra, Dhaka",0,1
+429,230,"Dogair South-West para, Milon Road, Sharulia, Demra, Dhaka",1,1
+430,231,"137/17 2nd colony, mirpur-1, Dhaka - 1216",0,1
+431,231,"137/17 2nd colony, mirpur-1, Dhaka - 1216",1,1
+432,232,"68/1. Water works Road, posta, lalbagh, Dhaka - 1211",0,1
+433,232,"Noyani Luxmipur, Haimchar, Chandpur",1,1
+434,233,"Kalachadpur, Nodda, Gulshan 2, Dhaka- 1212",0,1
+435,233,"H #317, Chalabond, Azampur, Dhaka 1230",1,1
+436,234,"1218 Sher-e- Bangla Road, Shahi Mosjid Goli, Katasur, Mohammadpur, Dhaka 1207",0,1
+437,234,"1218 Sher-e- Bangla Road, Shahi Mosjid Goli, Katasur, Mohammadpur, Dhaka 1207",1,1
+438,235,"Board Bazar, Gazipur. ",0,1
+439,235,"Board Bazar, Gazipur. ",1,1
+440,236,ka-55/B Ashrat Manjil,0,1
+441,236,"vill-Gaira,
+po-Jalchatra, 
+p.s- Modhupur
+Tangail",1,1
+442,237,"Atiar Colony, Saidpur, Nilphamari.",1,1
+443,237,"Abedin Villla, GA 27/4, Shahajadpur, Gulshan, Dhaka - 1212 ",0,1
+444,238,"Uttar Khan, Dhaka.",0,1
+445,238,"Uttar Khan, Dhaka.",1,1
+446,239,"Khas Gazipur, Char kumaria, Shakhipur, Shariatpur.",1,1
+447,239,"151/1 Warelessgat, Mohakhali, Dhaka - 1212",0,1
+448,240,"Tongi, Millget",0,1
+449,240,"Tongi, Millget",1,1
+450,241,"Kalachadpur, Gulshan 2, Dhaka - 1212",0,1
+451,241,"Narail, Kumari.",1,1
+452,242,k-55/1 kalachadpur Gulshan - 2 Dhaka- 1212,0,1
+453,242,"village - Mitolla
+p.o - Khinonshal Bazar
+Thana - Choddogram Bazar 
+District - Comilla ",1,1
+454,243,"20/3A west Dolaipar, Dhaka - 1204",0,1
+455,243,"20/3A west Dolaipar, Dhaka - 1204",1,1
+456,244,"H - 417 
+vill - Poradiya 
+P.O. - Kachkura - 1230
+Uttar Khan, Dhaka .",0,1
+457,244,"H - 417 
+vill - Poradiya 
+P.O. - Kachkura - 1230
+Uttar Khan, Dhaka .",1,1
+458,246,"Baroikhali rd. no. 9, 
+West dhanmondi river view model town, Hajaribagh, Dhaka. ",0,1
+459,246,"Mollah Bari, Gazipur Road, Bhola.",1,1
+460,261,"19/C, Monipuripara, Gate No-03, PS-Tejgaon, Dhaka",0,1
+461,262,"157/A, West Rampura, Dhaka",0,1
+462,263,"Alvi Villa (4th Floor), KA-112/7, South Badda, Dhaka",0,1
+463,263,"House-50, Ramkantopur (BSCIC), Rajbari Sadar, Rajbari",1,1
+464,264,"Village- Amo Tea Estate, PO- Chandpur, Dist- Hobigonj",1,1
+465,265,"Ward-8, Boiddogona, Coxs Bazar Sadar, Coxs Bazar",0,1
+466,265,"Village- Psilot Farm, Panchari, Khagrachari",1,1
+467,266,"Village-Koyashobla, PO-Jaforpur, PS-Akkelpur, District-Joypurhat",1,1
+468,267,"Flat-4/3, House-30/F, Road-4, Cantonment, Dhaka",0,1
+469,267,"Village+PO-Bonkua, PS-Bhaluka, Mymensing",1,1
+470,268,"Road-1, Block-B, House-3, Nobodoy Housing, Mohammadpur, Dhaka",0,1
+471,268,"House-732/818, Nazir Para, Chandpur-3600, Chandpur",1,1
+472,269,"Ka 26, Nadda Sharkarbari, Gulshan-2, Dhaka",0,1
+473,269,"Village-Uttor Hamshadi
+PO-Dalabazer
+PS/Dist-Luxmipur",1,1
+474,270,"10/A, Eastern Corner, Circuit House Road, Shantinagar, Dhaka",0,1
+475,270,"146/2, Shiroil, Ghoramara, Boalia, Rajshahi",1,1
+476,271,"House-46
+Road-12
+DIT Project, Merul Badda
+Dhaka",0,1
+477,271,"Natai Para, Bou Bazar, Bogura",1,1
+478,272,"House-30/21
+Rupnagar, Mirpur-2
+Dhaka",0,1
+479,272,"Mohishkhola, Narail Sadar, Narail",1,1
+480,273,"Village-Joshora
+PO-Sholla
+PS-Chatkhil
+Dist-Noakhali",1,1
+481,274,"Road-3, House-32, Nikunja-2, Khilkhet, Dhaka",0,1
+482,274,"Dariapur, PO/Upozila- Balata Bazar, Gaibandha",1,1
+483,275,"House-2, road-3, Akota R/A, Satarkul Road, North Badda, Dhaka",0,1
+484,276,"Bekinagor, Daudkandi, Gram Raipur-3519, Cumilla",1,1
+485,277,"H-12
+R-14
+B-J
+Baridhara
+Dhaka",0,1
+486,277,"Village-Baghia
+PO-Balirtek
+PS-Manikgonj Sadar
+Manikgonj",1,1
+487,278,"111/3 A, North Mugda Pra, Dhaka",0,1
+488,279,"Vill-Hogolbunia
+PO-Dakua
+PS-Galachipa
+Patuakhali",1,1
+489,280,"Village- Indurdi
+PO- Baliakindi
+PS- Baliakindi
+Rajbari",1,1
+490,250,"Village- Roghunathpur
+PO- Raoushonbag
+Upzilla- Gaibandha Sador
+Gaibandha ",1,1
+491,281,"59/1, Durga Mandir Goli, Jafrabad, Mohammadpur, Dhaka",0,1
+492,281,"Aral, Kapasia, Gazipur",1,1
+493,282,"Block-E
+Road-8
+House-13
+Mirpur-12
+Dhaka",0,1
+494,282,"Village- Kochgari, Kirtipur, Naogaon",1,1
+495,283,"Village-Bazarpara
+PO-Bazarpara
+PS-Sundorgonj
+Gaibandha",1,1
+496,283,"House-101/Pa
+Alatunnessa School Road, Middle Badda,
+Dhaka",0,1
+497,284,"Village- Nallapara
+PS- Deldvar
+Tangail",1,1
+498,284,"House-1/1
+Block-CHA
+TB Gate, Mohakhali, Dhaka",0,1
+499,285,"Vill-Chetnapara, PO-Bhendabari, PS-Pirgonj, Rangpur",1,1
+500,286,"Village-Domdoma
+PO-Bokultola Bazar-2205
+PS-Jamalpur Sodor
+Jamalpur",1,1
+501,287,"House-120 (3rd Floor), Flat-3A, Mollartek Udayan High School & College Road, Dokhenkhan, Uttara, Dhaka ",0,1
+502,288,"House-21
+Road-5
+Block-E
+College Para
+Chuadanga Sadar, Chuadanga",1,1
+503,288,"House-34
+Road-5
+Block-H
+Banasree
+Dhaka",0,1
+504,289,"GHA-1803, Mohakhali, Dhaka",0,1
+505,289,"West Sonapur, Feni Sadar, Feni",1,1
+506,290,"Horian Ruposidanga, Rajshahi Sadar Mills, Paba, Rajshahi",1,1
+507,290,"Block-F, Road-10, House-175, Bashundhara R/A, Dhaka",0,1
+508,291,"215/4/A/3, East Rampura, Dhaka",0,1
+509,291,"Village- Vogirotpur
+PO- Noapara
+PS- Narsingdi Sadar
+Narsingdi",1,1
+510,292,"6/1, West Agargaon, Sher-e-Bangla Nagar, Dhaka",0,1
+511,292,"Village-Shimulia
+PO-Holudia
+PS-Lohogonj
+Munshigonj",1,1
+512,293,"Village-Vim Shorma, PS-Rajarhat, Union-Ghorial Danga, Kurigram",1,1
+513,293,"Village-Bhimsharma
+PO-Deutir Hat
+PS-Rajarhat
+Kurigram",0,1
+514,294,"Mogbazar, Hatirjheel, Dhaka",0,1
+515,294,"Village-Boriokhali, PS-Babugonj, Union-Madhobpasta, Kurigram",1,1
+516,295,"H-7, R-9, Block-C, Sec-6, Mirpur, Dhaka",0,1
+517,295,"72, Jonaki Road, Ahmednagar, Mirpur-1, Dhaka",1,1
+518,297,"333, Nayanagar Uttar, Gulshan, Dhaka",0,1
+519,297,"Village- Rongsite
+PO- Chaita
+PS- Kolmakanda
+District- Netrokona",1,1
+520,298,"House No- KA/41/9/C, Ferdous Villa, Kala Chandpur, Nadda, Dhaka",0,1
+521,298,"Village- Gazirhat
+PO- Voronia hat
+PS- Rani sonkoil
+Dist- Thakurgao",1,1
+522,299,"Vill/PO-Tulshighat, PS-Sadar, Dist-Gaibandha",1,1
+523,300,"517, Pardogair, Natunpara (DND Road), Demra, Dhaka",0,1
+524,300,"517, Pardogair, Natunpara (DND Road), Demra, Dhaka",1,1
+525,301,"415/1, Nur-E-Modina Jame Mosjid Road, Kawlar, Dhaka",0,1
+526,301,"Village- Birtul
+PO- Ulukhola
+PS- Kaliganj
+Dist- Gazipur",1,1
+527,302,"545, North Kafrul, Dhaka",0,1
+528,302,"545, North Kafrul, Dhaka",1,1
+529,303,"Ms. Sheleya Begum
+154/5, 1st Floor, Shonkor, Mohammadpur, Dhaka ",0,1
+530,303,"Village- Gacher Diar
+PO- Junia Doho
+PS- Dowlotpur
+Kustia",1,1
+531,304,"18, Shekhertek, Road-05, Mohammadpur, Dhaka",0,1
+532,304,"House-E265, Hatem Kha Road, Rajshahi",1,1
+533,305,"Village- Jatpur, PO- Jatpur Bazar, PS- Tala, Satkhira",0,1
+534,305,"Village- Jatpur, PO- Jatpur Bazar, PS- Tala, Satkhira",1,1
+535,306,"Malgram South Para, Khandar, Ward-9, Bogura Sadar, Bogura",1,1
+536,306,"House-59, Road-3, Block-A, Aftabnagar, Dhaka",0,1
+537,307,"13, Katasur, Sher-E-Bangla Road, Mohammadpur, Dhaka",0,1
+538,307,"2353, Cinema Hall para, Hospital Road, Chuadanga",1,1
+539,308,"Vill-Charparqa, PO-Mourat, PS-Pangsha, Dist-Rajbari",1,1
+540,308,"Road-2, House-17, Sector-7, Uttara, Dhaka",0,1
+541,309,"House-435, Road-7, Block-C, Bashundhara R/A, Dhaka",0,1
+542,309,"Nukali, Baghabari Ghat, Shahzadpur, Sirajganj",1,1
+543,310,"Amkandi, Chunarughat, Habiganj",1,1
+544,310,"West Laladigirpar-65,
+Sylhet-3100",0,1
+545,311,"Village/PO-Biprobelghoria, 
+PS-Naldanga
+Dist-Natore",0,1
+546,311,"Village/PO-Biprobelghoria, 
+PS-Naldanga
+Dist-Natore",1,1
+547,312,"Village- Dhour,
+House- 76,
+Road- 9,
+Block- C,
+PS- Turag,
+PO- Nishat Nagar,
+Uttara-10, Dhaka",0,1
+548,312,"Village- Dhour,
+House- 76,
+Road- 9,
+Block- C,
+PS- Turag,
+PO- Nishat Nagar,
+Uttara-10, Dhaka",1,1
+549,313,"House-8, Road-7/A, Tanjim Building, Sejanadarbagh, Adorshonogor, Middle Badda, Dhaka",0,1
+550,313,"House-2441/A, Village-Kandra (Khaliphapara), PO- Putia-6260, Putia, Rajshahi",1,1
+551,314,"Khanpara, Ward No-4, Meherpur Sadar, Meherpur",1,1
+552,314,"House-324/2, Floor-7/A, Sornolota, Kawla, Dokkinkhan, Jamtola, Dhaka",0,1
+553,315,"Vill: Bordha, PO: Choriar bil bazar, PS: Soilokupa, Jhenidah",1,1
+554,316,"Uchitpur, Dibakorpur, Panchbibi, Joypurhat",1,1
+555,316,"House- JA-108/1, Moddha badda, Dhaka",0,1
+556,317,"Saitalia, Tengra, Sreepur, Gazipur",1,1
+557,318,"H-16/5, Modhubag, Ward-6, Ramna, Dhaka",0,1
+558,318,"Village-Rajapur, PO-Zaherabad, Lakshmipur",1,1
+559,319,"1769, East Jurain, Kadomtoli, Dhaka-1204",0,1
+560,319,"1769, East Jurain, Kadomtoli, Dhaka-1204",1,1
+561,320,"Jakir Tabok, Barguna Sadar, Barguna",1,1
+562,320,"House-21, Mina Kunjo, Boroitola Bazar, Khilbarir Tek, Vatara, Dhaka ",0,1
+563,321,"Village- Noya Tilla, PO/PS- Fenchugonj, Sylhet ",1,1
+564,321,"Village- Noya Tilla, PO/PS- Fenchugonj, Sylhet ",0,1
+565,322,"Village-Latifpur, PO-Sylhet Sadar, South Surma, Sylhet",0,1
+566,322,"Village-Latifpur, PO-Sylhet Sadar, South Surma, Sylhet",1,1
+567,324,"Nilganj Shah Para, Holding No-701, Jessore Sadar, Jessore",0,1
+568,324,"Nilganj Shah Para, Holding No-701, Jessore Sadar, Jessore",1,1
+569,325,"House-152 (6th Floor), West Nakhalpara, Tejgaon, Dhaka",0,1
+570,325,"House-6, Village-Haturia, PS-PO-Gaffargaon, Mymensingh",1,1
+571,326,"House-61, Road-3, Sector-13, Uttara, Dhaka",0,1
+572,326,"Ka-218/2, Kuril Pragati Sharani, Badda, Dhaka",1,1
+573,327,"Narina, Shahzadpur, Sirajgonj",1,1
+574,327,"Nataipara, Bow Bazar, Bogra Shodor-2, Ward no-21, Bogura",0,1
+575,328,"North Chandpur, Lemua Bazar, Feni Sadar, Feni",1,1
+576,328,"House-123/3, Matabbar Road, North Badda, Dhaka",0,1
+577,329,"177/2 Boubazar, Gulshan 1, Dhaka",0,1
+578,329,"Khirati, Kapasia, Gazipur",1,1
+579,330,"House-3, Road-3, Block-D, Dolipara, Turag, Uttara, Dhaka",0,1
+580,330,"Village-Khairona
+PO-Hat Gobindopur-2430
+Union-Kolmakanda
+Dist-Netrokona",1,1
+581,331,"Alubdi, Choto Masjid Road, Eastern housing, Pallabi 2nd phase, Mirpur, Dhaka",0,1
+582,331,"Village/PO-Sittarampur, PS-Kasiyani, Gopalganj",1,1
+583,332,"2nd Floor, Shuhel Village, Nobab Road, Sylhet",0,1
+584,332,"Shimulbag, Dokshin Narayonpur, Goniganj Bazar, Dokshin Sunamganj, Sunamganj",1,1
+585,333,"Baitul Ahabab, House-424, Bagun Bari, Shadhinata sharani Link Road, Badda, dhaka",0,1
+586,333,"Flat-5/A, House-217, Road-11, Savar DOHS, Savar Cantonment, Dhaka",1,1
+587,334,"135/18, West Nandipara, Modina Shorok, South Banasree, Titash Stand, Leguna Stand, Dhaka",0,1
+588,334,"Village-Mudafor, PO-Mohonpur, Upozila-Matlab, Chandpur",1,1
+589,335,"House-444, Mokki Mosque Road, Rampura, Dhaka",0,1
+590,335,"House-256/8, Amir Hamza Lane, Rajpara, Rajshahi",1,1
+591,336,"Aukhpara, Ashulia, Savar, Dhaka",0,1
+592,336,"Aukhpara, Ashulia, Savar, Dhaka",1,1
+593,337,"Flat-B2, House-402, Road-6, Avenue-3, Mirpur DOHS, Pallabi, Dhaka",0,1
+594,337,"a. 165, West Barandi Para, Dhaka Road, Jessore
+b. House-5, B K Roy, Cross Road, Khulna",1,1
+595,338,"House-KA-115/20, South Mohakhali, Dhaka",0,1
+596,338,"Village-Kamarhati, PO-Dhoba ghata, PS-Boalmari, Faridpur",1,1
+597,339,"Village- Goder Bazar, PO/PS- Rajbari, Rajbari",1,1
+598,339,"285/1, East Kazipara, 6th Floor, Mirpur-10, Dhaka",0,1
+599,341,"Village-Gerakhali, PO-Islamabad, Patuakhali Sadar, Patuakhali",0,1
+600,341,"Village-Gerakhali, PO-Islamabad, Patuakhali Sadar, Patuakhali",1,1
+601,340,"Gobindapur, Habiganj",0,1
+602,342,"Jibannagar, Ward-9, Chuadanga",1,1
+603,342,"House-7, Road-2, Lalkuthi Bazar, First Colony, Mirpur-1, Dhaka",0,1
+604,343,"308/2, Family Palacee, 3rd Floor, Shenpara, Porbota, Mitpur, Dhaka",0,1
+605,343,"308/2, Family Palacee, 3rd Floor, Shenpara, Porbota, Mitpur, Dhaka",1,1
+606,344,"1383/10, Natunbag, Khilgaon, dhaka",0,1
+607,344,"1383/10, Natunbag, Khilgaon, dhaka",1,1
+608,345,"House-24A, Miapara Road, West Khabaspur, Faridpur",1,1
+609,345,"House117, Khan Villa, Ananda Bazar, West Shewrapara, Mirpur, Dhaka ",0,1
+610,346,"Jamai Bazar, Korail, Banani, Dhaka",0,1
+611,346,"Bapari BAri, Khagkanda, Salimabad, Banchharampur, Brahmanbaria",1,1
+612,347,"PC culture society, Shekhertek, Road-9, House-48, Mohammadpur, Dhaka",0,1
+613,347,"Village-Hingul Kandi, PO-Patishor, PS-Atrai, District-Naogaon",1,1
+614,348,"139/9, Middle Paikpara, Mirpur-1, Dhaka",0,1
+615,348,"139/9, Middle Paikpara, Mirpur-1, Dhaka",1,1
+616,349,"House-17, Block-C, Road-2, Banasree, Rampura, Dhaka",0,1
+617,349,"North Panishail, Ward-1, Gazipur Sadar, Gazipur",1,1
+618,350,"House-Green House, Baigartek, Namapara, Shagufta, Pallabi, Dhaka",0,1
+619,350,"North Rahimabad, B Block, Bogura Cantonment, Bogura",1,1
+620,351,"1769, East Jurain, Road No-1, Kadamtali, Dhaka",0,1
+621,351,"1769, East Jurain, Road No-1, Kadamtali, Dhaka",1,1
+622,352,"67, West Nakhal Para, Tejgaon, Dhaka ",0,1
+623,352,"67, West Nakhal Para, Tejgaon, Dhaka ",1,1
+624,353,"249/A, East Nakhalpara, Tejgaon, Dhaka",0,1
+625,353,"Hassannagar, Jibongang Bazar, Bancharampur, Brahmanbaria",1,1
+626,354,"House-184, Ekrampur, Shomvopara, Sonargaon, Narayangonj",0,1
+627,354,"House-184, Ekrampur, Shomvopara, Sonargaon, Narayangonj",1,1
+628,355,"House-Dolapara, Village-Dorgapara, PO-Parbotipur-5250, Dist-Dinajpur",1,1
+629,355,"House-Dolapara, Village-Dorgapara, PO-Parbotipur-5250, Dist-Dinajpur",0,1
+630,356,"Village-Anduya, PO-Golabari, PS-Durgapur, Dist-Rajshahi",1,1
+631,356,"Janata Housing, H-121, R-7, Mirpur-2, Dhaka",0,1
+632,357,"H-20, R-1, Block-B, Banasree, Dhaka",0,1
+633,357,"Village & PO- Tushvander, PS- Kaligonj, Dist- lalmonirhat",1,1
+634,358,"63/3, Brahmanchiron, Dholpur, Dhaka",0,1
+635,358,"63/3, Brahmanchiron, Dholpur, Dhaka",1,1
+636,359,"Village- Tarafpur, PS- Mirzapur, Dist- Tangail",1,1
+637,359,"House-171 (Ahsan Heritage), Road- Bin Protik, Sayed Nagor, Vatara, Dhaka-1212",0,1
+638,360,"Village-Gerakhali, PO-Islamabad, Dist-Patuakhali",0,1
+639,360,"Village-Gerakhali, PO-Islamabad, Dist-Patuakhali",1,1
+640,362,"House-189, Mollartek, Dakhin Khan, Uttara, Dhaka",0,1
+641,362,"Village-Lohachura, PO-Raninagar, PS-Raninagar, Naogaon",1,1
+642,363,"House-059, Jomader Bari Road, Western Para, PS-Lalmohon, Bhola",1,1
+643,364,"Village-Sholodag munshi Para Dag
+PO-Bhairchor
+PS-Bheramara
+Dist-Kustia",1,1
+644,365,"Village-East Atharo Paika, PO-Hinjuli, PS-Ulipur, kurigram",1,1
+645,365,"House-10, Road-2, Adabor, Mohammadpur, Dhaka",0,1
+646,366,"Village-Shampur, PO-Charmastul, Doulatpur, Manikganj",0,1
+647,366,"Village-Shampur, PO-Charmastul, Doulatpur, Manikganj",1,1
+648,367,"House-12/5 & 12/6, Tajmahal Road, Block-C,
+Mohammadpur, Dhaka",0,1
+649,367,"House-12/5 & 12/6, Tajmahal Road, Block-C,
+Mohammadpur, Dhaka",1,1
+650,368,"House-27/1, West Dholaipar, 
+PS-Shympur, Dhaka
+",0,1
+651,368,"House-27/1, West Dholaipar, 
+PS-Shympur, Dhaka
+",1,1
+652,369,"Sumon Villa, Arju Goli, Adorsho Nogor, Uttor Badda, Dhaka",0,1
+653,369,"Village- Jora Gate Kacha Bazar, Baniya Khamar, Khulna Sodor, Khulna",1,1
+654,370,"Village- Sheker Vita, Bakultola, Jamalpur Sadar, Jamulpur",1,1
+655,370,"House-7, Road-2, Chad Uddan, Mohammadpur, Dhaka",0,1
