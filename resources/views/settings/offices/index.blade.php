@@ -24,12 +24,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="row g-4">
                 <!-- New Office Form -->
@@ -155,7 +149,7 @@
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                                 @php $statement = "Are you sure you want to delete this office?"; @endphp
-                                                <form action="{{ route('settings.offices.destroy', $office) }}" method="POST" onsubmit="return confirm('{{ $statement }}')">
+                                                <form action="{{ route('settings.offices.destroy', $office) }}" method="POST" data-confirm data-confirm-message="{{ $statement }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

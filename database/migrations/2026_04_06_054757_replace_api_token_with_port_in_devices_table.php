@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('supervisor_remarks', function (Blueprint $table) {
-            $table->dateTime('expires_at')->nullable()->after('message');
+        Schema::table('devices', function (Blueprint $table) {
+            $table->dropColumn('api_token');
+            $table->string('port', 10)->nullable()->after('ip_address');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('supervisor_remarks', function (Blueprint $table) {
-            $table->dropColumn('expires_at');
+        Schema::table('devices', function (Blueprint $table) {
+            $table->string('api_token', 80)->unique()->nullable()->after('device_uid');
+            $table->dropColumn('port');
         });
     }
 };

@@ -1,10 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
     <!-- Specific styles for this dashboard -->
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
@@ -25,7 +19,7 @@
                         </p>
                     </div>
                     <div class="text-end text-sm text-gray-500">
-                        <i class="bi bi-calendar-event me-2"></i>{{ now()->format('l, d M Y') }}
+                        <i class="bi bi-calendar-event me-2 text-success"></i>{{ now()->format('l, d M Y') }}
                     </div>
                 </div>
             </div>
@@ -269,7 +263,7 @@
                     <div class="hr-panel mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-bold text-gray-800 mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
-                            <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm p-0 text-decoration-none small">{{ __('Manage') }}</a>
+                            <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm text-decoration-none small px-3 font-bold rounded-pill btn-pill-action">{{ __('Manage') }}</a>
                         </div>
                         <div class="notice-scroll-container" style="max-height: 250px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">

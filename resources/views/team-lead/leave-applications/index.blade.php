@@ -14,18 +14,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="hr-panel p-0 overflow-hidden">
                 <div class="table-responsive">
@@ -60,7 +48,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-info text-dark rounded-pill px-3">{{ $app->leaveType->name }}</span>
+                                    <span class="badge {{ match(true) { str_contains(strtolower($app->leaveType->name), 'casual') => 'bg-primary', str_contains(strtolower($app->leaveType->name), 'sick') => 'bg-danger', str_contains(strtolower($app->leaveType->name), 'earn') => 'bg-success', str_contains(strtolower($app->leaveType->name), 'emergency') => 'bg-warning text-dark', default => 'bg-info text-dark' } }} rounded-pill px-3">{{ $app->leaveType->name }}</span>
                                 </td>
                                 <td>
                                     @php
@@ -85,7 +73,7 @@
                                 </td>
                                 <td>
                                     @if($app->supporting_document)
-                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none shadow-sm">
+                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-success text-white text-decoration-none shadow-sm">
                                         <i class="bi bi-file-earmark-medical me-1"></i>{{ __('View') }}
                                     </a>
                                     @else
@@ -112,7 +100,7 @@
                                 <td class="text-end pe-4">
                                     @if($app->status === 'pending')
                                     <div class="d-flex justify-content-end gap-2">
-                                        <form action="{{ route('team-lead.leave-applications.status', $app->id) }}" method="POST" onsubmit="return confirm('Approve this leave application?');">
+                                        <form action="{{ route('team-lead.leave-applications.status', $app->id) }}" method="POST" data-confirm data-confirm-message="Approve this leave application?" data-confirm-type="success">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="status" value="approved">

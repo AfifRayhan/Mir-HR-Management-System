@@ -37,7 +37,7 @@
                         </p>
                     </div>
                     <div class="text-end text-sm text-gray-500">
-                        <i class="bi bi-calendar-event me-2"></i>{{ now()->format('l, d M Y') }}
+                        <i class="bi bi-calendar-event me-2 text-success"></i>{{ now()->format('l, d M Y') }}
                     </div>
                 </div>
             </div>
@@ -188,6 +188,23 @@
  
                 <!-- Sidebar Column -->
                 <div class="col-lg-4">
+                    @if($isTeamLead)
+                    <!-- Pending Leave Requests (Team Lead only) -->
+                    <div class="hr-panel mb-4 shadow-sm">
+                        <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-envelope-exclamation me-2 text-warning"></i>{{ __('Pending Leave Requests') }}</h6>
+                        <div class="d-flex align-items-center justify-content-between p-3 bg-warning-soft rounded-4 border-start border-warning border-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-inboxes text-3xl text-warning me-3"></i>
+                                <div>
+                                    <div class="h4 mb-0 font-bold text-warning">{{ $pendingTeamLeavesCount }}</div>
+                                    <div class="small text-warning-emphasis">{{ __('New Applications') }}</div>
+                                </div>
+                            </div>
+                            <a href="{{ route('team-lead.leave-applications.index') }}" class="btn btn-outline-success btn-sm px-3 font-bold rounded-pill btn-pill-action">{{ __('Process') }}</a>
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Supervisor Remarks -->
                     <div class="hr-panel mb-4 shadow-sm">
                         <h6 class="font-bold text-gray-800 mb-3 small uppercase tracking-wider">

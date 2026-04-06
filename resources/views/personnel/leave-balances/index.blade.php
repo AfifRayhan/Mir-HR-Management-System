@@ -16,19 +16,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
@@ -46,7 +33,7 @@
                 <div class="col-lg-4">
                     <div class="hr-panel">
                         <div class="hr-panel-title">
-                            <i class="bi bi-person-plus me-2 text-primary"></i>{{ __('Initialize Employee Account') }}
+                            <i class="bi bi-person-plus me-2 text-success"></i>{{ __('Initialize Employee Account') }}
                         </div>
 
                         <p class="small text-muted mb-4">
@@ -87,7 +74,7 @@
                                 </label>
 
                                 <div id="leaveTypesLoading" class="text-center py-3 d-none">
-                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                    <div class="spinner-border spinner-border-sm text-success" role="status"></div>
                                     <span class="ms-2 small text-muted">{{ __('Loading…') }}</span>
                                 </div>
 
@@ -124,7 +111,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm" id="initBtn" disabled>
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm" id="initBtn" disabled>
                                 <i class="bi bi-wallet2 me-2"></i>{{ __('Initialize Selected Types') }}
                             </button>
                         </form>
@@ -136,7 +123,7 @@
                     <div class="hr-panel p-0 overflow-hidden">
                         <div class="px-4 py-3 border-bottom">
                             <h5 class="fw-bold mb-0">
-                                <i class="bi bi-list-task me-2 text-primary"></i>{{ __('Initialized Accounts') }}
+                                <i class="bi bi-list-task me-2 text-success"></i>{{ __('Initialized Accounts') }}
                                 <span class="badge bg-secondary ms-2" style="font-size:0.7rem;">{{ $currentYear }}</span>
                             </h5>
                         </div>

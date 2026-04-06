@@ -15,12 +15,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="hr-panel">
                 <div class="table-responsive">
@@ -68,10 +62,10 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <form action="{{ route('team-lead.remarks.destroy', $remark) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('team-lead.remarks.destroy', $remark) }}" method="POST" class="d-inline" data-confirm data-confirm-message="{{ __('Are you sure you want to delete this remark?') }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-link text-danger p-0 border-0 text-decoration-none" onclick="return confirm('Are you sure you want to delete this remark?')" title="{{ __('Delete') }}">
+                                        <button type="submit" class="btn btn-link text-danger p-0 border-0 text-decoration-none" title="{{ __('Delete') }}">
                                             <i class="bi bi-trash fs-6"></i>
                                         </button>
                                     </form>

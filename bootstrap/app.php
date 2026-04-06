@@ -18,6 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'api/device/sync',
         ]);
+        
+        $middleware->redirectUsersTo(function () {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if ($user && $user->role && $user->role->name === 'HR Admin') {
+                return route('hr-dashboard');
+            }
+            return route('employee-dashboard');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

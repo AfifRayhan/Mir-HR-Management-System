@@ -32,6 +32,7 @@ class LeaveTypeController extends Controller
             'max_consecutive_days' => 'nullable|integer|min:1',
             'carry_forward'       => 'boolean',
             'sort_order'          => 'required|integer|min:1',
+            'allow_past_days'     => 'required|integer|min:0',
         ]);
 
         $validated['carry_forward'] = $request->has('carry_forward');
@@ -49,6 +50,7 @@ class LeaveTypeController extends Controller
             'max_consecutive_days' => 'nullable|integer|min:1',
             'carry_forward'       => 'boolean',
             'sort_order'          => 'required|integer|min:1',
+            'allow_past_days'     => 'required|integer|min:0',
         ]);
 
         $validated['carry_forward'] = $request->has('carry_forward');

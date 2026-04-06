@@ -124,6 +124,7 @@ return new class extends Migration
             $table->string('short_name', 50)->nullable();
             $table->unsignedBigInteger('incharge_id')->nullable();
             $table->text('description')->nullable();
+            $table->integer('order_sequence')->default(0);
             $table->timestamps();
         });
 
@@ -158,6 +159,7 @@ return new class extends Migration
             $table->time('absent_after')->nullable();
             $table->time('lunch_start')->nullable();
             $table->time('lunch_end')->nullable();
+            $table->string('remarks', 100)->nullable();
             $table->timestamps();
         });
 
@@ -175,7 +177,9 @@ return new class extends Migration
             $table->foreignId('office_type_id')->constrained('office_types')->cascadeOnDelete();
             $table->text('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('secondary_phone')->nullable();
             $table->string('email')->nullable();
+            $table->string('logo')->nullable();
             $table->integer('order_number')->default(0);
             $table->timestamps();
         });
@@ -185,19 +189,46 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('employee_code', 50)->unique()->nullable();
+            $table->string('hrm_employee_id', 50)->nullable();
+            $table->string('name', 200)->nullable();
+            $table->string('email', 150)->nullable();
             $table->foreignId('office_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('first_name', 100);
-            $table->string('last_name', 100);
+            
             $table->string('phone', 20)->nullable();
+            $table->string('blood_group', 10)->nullable();
+            $table->string('emergency_contact_name', 150)->nullable();
+            
+            $table->text('present_address')->nullable();
+            $table->text('permanent_address')->nullable();
+            $table->string('father_name', 150)->nullable();
+            $table->string('mother_name', 150)->nullable();
+            $table->string('spouse_name', 150)->nullable();
+            $table->string('gender', 20)->nullable();
+            $table->string('religion', 50)->nullable();
+            $table->string('marital_status', 50)->nullable();
+            $table->string('national_id', 50)->nullable();
+            $table->string('tin', 50)->nullable();
+            $table->string('nationality', 50)->default('Bangladeshi');
+            $table->integer('no_of_children')->nullable();
+            $table->string('contact_no', 100)->nullable();
+            $table->text('emergency_contact_address')->nullable();
+            $table->string('emergency_contact_no', 100)->nullable();
+            $table->string('emergency_contact_relation', 50)->nullable();
+            
             $table->date('date_of_birth')->nullable();
             $table->date('joining_date')->nullable();
+            $table->date('discontinuation_date')->nullable();
+            $table->text('discontinuation_reason')->nullable();
+            
             $table->foreignId('department_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('section_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('designation_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('grade_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('office_time_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('reporting_manager_id')->nullable()->constrained('employees')->nullOnDelete();
+            
             $table->enum('status', ['active', 'inactive', 'left', 'hold'])->default('active');
+            $table->decimal('gross_salary', 12, 2)->nullable();
             $table->timestamps();
         });
 
@@ -209,6 +240,7 @@ return new class extends Migration
         // 5. Holidays and Leave Management
         Schema::create('weekly_holidays', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('office_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('day_name');
             $table->boolean('is_holiday')->default(false);
             $table->timestamps();
@@ -267,6 +299,86 @@ return new class extends Migration
             $table->dateTime('approved_at')->nullable();
             $table->timestamps();
         });
+
+        // 6. Attendance & Devices Tables
+        Schema::create('devices', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50);
+            $table->string('device_uid', 50)->unique()->nullable();
+            $table->string('api_token', 80)->unique()->nullable();
+            $table->text('ip_address')->nullable();
+            $table->string('location')->nullable();
+            $table->timestamp('last_sync_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('device_logs', function (Blueprint $table) {
+            $table->id();
+            $table->string('employee_code', 50);
+            $table->dateTime('punch_time');
+            $table->foreignId('device_id')->constrained('devices')->cascadeOnDelete();
+            $table->timestamp('created_at')->useCurrent();
+        });
+
+        Schema::create('attendance_records', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->integer('machine_id')->nullable();
+            $table->date('date');
+            $table->dateTime('in_time')->nullable();
+            $table->dateTime('out_time')->nullable();
+            $table->decimal('working_hours', 5, 2)->default(0);
+            $table->integer('late_seconds')->default(0);
+            $table->enum('status', ['present', 'late', 'absent', 'leave'])->default('present');
+            $table->timestamps();
+
+            $table->unique(['employee_id', 'date']);
+        });
+
+        Schema::create('manual_attendance_adjustments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->date('date');
+            $table->dateTime('in_time')->nullable();
+            $table->dateTime('out_time')->nullable();
+            $table->text('reason')->nullable();
+            $table->foreignId('adjusted_by')->constrained('users')->cascadeOnDelete();
+            $table->timestamps();
+        });
+
+        Schema::create('attendances', function (Blueprint $table) {
+            $table->id();
+            $table->string('user_id')->nullable();
+            $table->dateTime('punch_time')->nullable();
+            $table->integer('status')->nullable();
+            $table->string('device_name', 100)->nullable();
+            $table->integer('machine_id')->nullable();
+            $table->timestamps();
+
+            $table->unique(['user_id', 'punch_time', 'machine_id'], 'unique_punch');
+        });
+
+        // 7. Communication & Notices
+        Schema::create('notices', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->enum('type', ['notice', 'event'])->default('notice');
+            $table->boolean('is_active')->default(true);
+            $table->date('expires_at')->nullable();
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('supervisor_remarks', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('supervisor_id')->constrained('employees')->cascadeOnDelete();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('message');
+            $table->dateTime('expires_at')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -274,11 +386,24 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('supervisor_remarks');
+        Schema::dropIfExists('notices');
+        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('manual_attendance_adjustments');
+        Schema::dropIfExists('attendance_records');
+        Schema::dropIfExists('device_logs');
+        Schema::dropIfExists('devices');
+        
         Schema::dropIfExists('leave_applications');
         Schema::dropIfExists('leave_balances');
         Schema::dropIfExists('leave_types');
         Schema::dropIfExists('holidays');
         Schema::dropIfExists('weekly_holidays');
+        
+        Schema::table('departments', function (Blueprint $table) {
+            $table->dropForeign(['incharge_id']);
+        });
+        
         Schema::dropIfExists('employees');
         Schema::dropIfExists('offices');
         Schema::dropIfExists('office_types');
@@ -286,15 +411,15 @@ return new class extends Migration
         Schema::dropIfExists('grades');
         Schema::dropIfExists('designations');
         Schema::dropIfExists('sections');
-        Schema::table('departments', function (Blueprint $table) {
-            $table->dropForeign(['incharge_id']);
-        });
         Schema::dropIfExists('departments');
+        
         Schema::dropIfExists('role_menu_item');
         Schema::dropIfExists('menu_items');
+        
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
         });
+        
         Schema::dropIfExists('roles');
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('job_batches');

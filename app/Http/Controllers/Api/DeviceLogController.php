@@ -17,15 +17,12 @@ class DeviceLogController extends Controller
     public function sync(Request $request)
     {
         $deviceUid = $request->header('X-Device-UID');
-        $apiToken = $request->header('X-API-Token');
 
-        if (!$deviceUid || !$apiToken) {
+        if (!$deviceUid) {
             return response()->json(['message' => 'Missing credentials'], 401);
         }
 
-        $device = Device::where('device_uid', $deviceUid)
-            ->where('api_token', $apiToken)
-            ->first();
+        $device = Device::where('device_uid', $deviceUid)->first();
 
         if (!$device) {
             return response()->json(['message' => 'Invalid credentials'], 403);

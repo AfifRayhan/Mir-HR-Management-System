@@ -24,19 +24,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="row g-4">
                 <!-- New Type Form -->
@@ -99,7 +86,7 @@
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                                 @php $statement = "Are you sure? This will fail if offices are assigned to this type."; @endphp
-                                                <form action="{{ route('settings.office-types.destroy', $type) }}" method="POST" onsubmit="return confirm('{{ $statement }}')">
+                                                <form action="{{ route('settings.office-types.destroy', $type) }}" method="POST" data-confirm data-confirm-message="{{ $statement }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

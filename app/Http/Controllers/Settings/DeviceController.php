@@ -25,14 +25,10 @@ class DeviceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'device_uid' => 'nullable|string|max:50|unique:devices,device_uid',
-            'api_token' => 'nullable|string|max:80|unique:devices,api_token',
+            'port' => 'nullable|string|max:10',
             'ip_address' => 'nullable|string',
             'location' => 'nullable|string',
         ]);
-
-        if (empty($validated['api_token']) && !empty($validated['device_uid'])) {
-            $validated['api_token'] = \Illuminate\Support\Str::random(60);
-        }
 
         Device::create($validated);
         return redirect()->route('settings.devices.index')->with('success', 'Device added successfully.');
@@ -43,14 +39,10 @@ class DeviceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'device_uid' => 'nullable|string|max:50|unique:devices,device_uid,' . $device->id,
-            'api_token' => 'nullable|string|max:80|unique:devices,api_token,' . $device->id,
+            'port' => 'nullable|string|max:10',
             'ip_address' => 'nullable|string',
             'location' => 'nullable|string',
         ]);
-
-        if ($request->has('regenerate_token')) {
-            $validated['api_token'] = \Illuminate\Support\Str::random(60);
-        }
 
         $device->update($validated);
         return redirect()->route('settings.devices.index')->with('success', 'Device updated successfully.');

@@ -25,12 +25,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
 
             <div class="hr-panel p-0 overflow-hidden">
                 <div class="table-responsive">
@@ -79,7 +73,7 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             @php $confirmMsg = __('Are you sure you want to delete this notice?'); @endphp
-                                            <form action="{{ route('settings.notices.destroy', $notice) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                            <form action="{{ route('settings.notices.destroy', $notice) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

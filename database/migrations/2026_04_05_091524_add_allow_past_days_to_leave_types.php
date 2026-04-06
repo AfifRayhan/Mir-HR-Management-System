@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->decimal('gross_salary', 12, 2)->nullable()->after('status');
+        Schema::table('leave_types', function (Blueprint $table) {
+            $table->integer('allow_past_days')->default(0)->after('sort_order');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->dropColumn('gross_salary');
+        Schema::table('leave_types', function (Blueprint $table) {
+            $table->dropColumn('allow_past_days');
         });
     }
 };

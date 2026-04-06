@@ -11,24 +11,11 @@
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12">
-                    <h4 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2 text-primary"></i>{{ __('Manual Leave') }}</h4>
+                    <h4 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2 text-success"></i>{{ __('Manual Leave') }}</h4>
                     <p class="text-muted mb-0">{{ __('Manually record an approved leave for any employee') }}</p>
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
@@ -46,11 +33,11 @@
                 <div class="col-lg-5">
                     <div class="hr-panel">
                         <h5 class="fw-bold mb-4 border-bottom pb-2">
-                            <i class="bi bi-journal-plus me-2 text-primary"></i>{{ __('Record Manual Leave') }}
+                            <i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Record Manual Leave') }}
                         </h5>
 
                         <div class="alert alert-info border-0 rounded-3 small mb-4 py-2 px-3"
-                             style="background-color:#e3f2fd; color:#0d47a1;">
+                             style="background-color:#ddf1ddff; color:#007a10;">
                             <i class="bi bi-info-circle me-1"></i>
                             {{ __('Leave recorded here is immediately marked as Approved and balance is deducted.') }}
                         </div>
@@ -108,11 +95,11 @@
                             {{-- Live days counter --}}
                             <div id="leave_days_display" class="mb-3 d-none">
                                 <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0"
-                                     style="background-color:#e3f2fd; color:#0d47a1;">
-                                    <span class="small fw-bold">
+                                     style="background-color:#c8e6c9ff; color:#007a10;">
+                                    <span class="small fw-bold text-success">
                                         <i class="bi bi-calendar-event me-2"></i>{{ __('Working Days') }}:
                                     </span>
-                                    <span id="total_days_count" class="badge bg-primary rounded-pill">0</span>
+                                    <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
                                 </div>
                             </div>
 
@@ -141,7 +128,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm">
                                 <i class="bi bi-check2-circle me-2"></i>{{ __('Record & Approve Leave') }}
                             </button>
                         </form>
@@ -153,7 +140,7 @@
                     <div class="hr-panel p-0 overflow-hidden">
                         <div class="px-4 py-3 border-bottom">
                             <h5 class="fw-bold mb-0">
-                                <i class="bi bi-clock-history me-2 text-primary"></i>{{ __('Recent Manual Leaves') }}
+                                <i class="bi bi-clock-history me-2 text-success"></i>{{ __('Recent Manual Leaves') }}
                             </h5>
                         </div>
                         <div class="table-responsive">
@@ -191,7 +178,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info text-dark rounded-pill px-3">{{ $app->leaveType->name ?? '--' }}</span>
+                                            <span class="badge {{ match(true) { str_contains(strtolower($app->leaveType->name), 'casual') => 'bg-primary', str_contains(strtolower($app->leaveType->name), 'sick') => 'bg-danger', str_contains(strtolower($app->leaveType->name), 'earn') => 'bg-success', str_contains(strtolower($app->leaveType->name), 'emergency') => 'bg-warning text-dark', default => 'bg-info text-dark' } }} rounded-pill px-3">{{ $app->leaveType->name ?? '--' }}</span>
                                         </td>
                                         <td>
                                             <div class="small fw-bold text-gray-700">{{ \Carbon\Carbon::parse($app->from_date)->format('d M Y') }}</div>

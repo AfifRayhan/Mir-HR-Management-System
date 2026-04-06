@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Department;
 use App\Models\AttendanceRecord;
 use App\Models\LeaveApplication;
 use App\Models\LeaveBalance;
@@ -48,8 +49,8 @@ class EmployeeDashboardController extends Controller
         $totalLeaveDays = 0;
         $leaveBalances = collect();
         $supervisorRemarks = collect();
-        $totalUsedLeave = 0;
         $totalAvailableLeave = 0;
+        $pendingTeamLeavesCount = 0;
         
         $prevPresentDays = 0;
         $prevLateDays = 0;
@@ -183,6 +184,19 @@ class EmployeeDashboardController extends Controller
                 ->latest()
                 ->take(5)
                 ->get();
+
+            // Calculate pending team leaves for Team Leads / Department Heads
+            if ($roleName === 'Team Lead') {
+                $inchargeDeptIds = Department::where('incharge_id', $employee->id)->pluck('id');
+                $teamEmployeeIds = Employee::where('reporting_manager_id', $employee->id)
+                    ->orWhereIn('department_id', $inchargeDeptIds)
+                    ->pluck('id');
+
+                $pendingTeamLeavesCount = LeaveApplication::whereIn('employee_id', $teamEmployeeIds)
+                    ->where('employee_id', '!=', $employee->id) // Skip self
+                    ->where('status', 'pending')
+                    ->count();
+            }
         }
 
         // Active Notices & Events (at max 5)
@@ -234,6 +248,7 @@ class EmployeeDashboardController extends Controller
             'totalUsedLeave',
             'totalAvailableLeave',
             'leaveBalances',
+            'pendingTeamLeavesCount',
             'upcomingHolidays',
             'upcomingBirthdays',
             'activeNotices'

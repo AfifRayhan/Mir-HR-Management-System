@@ -24,12 +24,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="row g-4">
                 <!-- New Grade Form -->
@@ -80,7 +74,7 @@
                                                 <button class="btn btn-sm btn-outline-success border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $grade->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <form action="{{ route('personnel.grades.destroy', $grade) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                                <form action="{{ route('personnel.grades.destroy', $grade) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

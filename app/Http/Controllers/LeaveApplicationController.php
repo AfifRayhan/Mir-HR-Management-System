@@ -7,7 +7,7 @@ use App\Models\LeaveApplication;
 use App\Models\LeaveType;
 use App\Models\LeaveBalance;
 use App\Models\Employee;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\WeeklyHoliday;
 
@@ -150,7 +150,7 @@ class LeaveApplicationController extends Controller
             'supporting_document'  => $documentPath,
             'status'               => 'approved',
             'approved_by'          => Auth::id(),
-            'approved_at'          => now(),
+            'approved_at'          => Carbon::now(),
         ]);
 
         // Deduct balance
@@ -170,7 +170,7 @@ class LeaveApplicationController extends Controller
 
         $leaveApplication->status = $request->status;
         $leaveApplication->approved_by = Auth::id();
-        $leaveApplication->approved_at = now();
+        $leaveApplication->approved_at = Carbon::now();
  
         if ($request->status === 'approved') {
             // Deduct from balance
@@ -203,8 +203,13 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'No employee record found for your account.');
         }
 
-        // Get IDs of all direct reports
-        $directReportIds = Employee::where('reporting_manager_id', $employee->id)->pluck('id');
+        // Get departments where this employee is the incharge
+        $inchargeDeptIds = \App\Models\Department::where('incharge_id', $employee->id)->pluck('id');
+
+        // Get IDs of all direct reports or employees in those departments
+        $teamEmployeeIds = Employee::where('reporting_manager_id', $employee->id)
+            ->orWhereIn('department_id', $inchargeDeptIds)
+            ->pluck('id');
 
         $applications = LeaveApplication::with([
             'employee.user', 
@@ -214,7 +219,7 @@ class LeaveApplicationController extends Controller
                 $query->where('year', date('Y'));
             }
         ])
-            ->whereIn('employee_id', $directReportIds)
+            ->whereIn('employee_id', $teamEmployeeIds)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -232,8 +237,12 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'No employee record found for your account.');
         }
 
-        $directReportIds = Employee::where('reporting_manager_id', $employee->id)->pluck('id');
-        $teamEmployees = Employee::whereIn('id', $directReportIds)->orderBy('name')->get();
+        $inchargeDeptIds = \App\Models\Department::where('incharge_id', $employee->id)->pluck('id');
+        $teamEmployeeIds = Employee::where('reporting_manager_id', $employee->id)
+            ->orWhereIn('department_id', $inchargeDeptIds)
+            ->pluck('id');
+        
+        $teamEmployees = Employee::whereIn('id', $teamEmployeeIds)->orderBy('name')->get();
 
         $month = $request->input('month');
         $year = $request->has('year') ? $request->input('year') : date('Y');
@@ -249,7 +258,7 @@ class LeaveApplicationController extends Controller
                 $q->where('year', $year ?: date('Y'));
             }
         ])
-            ->whereIn('employee_id', $directReportIds);
+            ->whereIn('employee_id', $teamEmployeeIds);
 
         if ($month) {
             $query->whereMonth('from_date', $month);
@@ -338,12 +347,17 @@ class LeaveApplicationController extends Controller
         $user = Auth::user();
         $teamLeadEmployee = Employee::where('user_id', $user->id)->first();
 
-        // Security: ensure this applicant is actually a direct report of this team lead
-        $isDirectReport = Employee::where('id', $leaveApplication->employee_id)
-            ->where('reporting_manager_id', $teamLeadEmployee?->id)
+        // Security: ensure this applicant is either a direct report OR in a department this user manages
+        $inchargeDeptIds = \App\Models\Department::where('incharge_id', $teamLeadEmployee?->id)->pluck('id');
+        
+        $isAuthorized = Employee::where('id', $leaveApplication->employee_id)
+            ->where(function($query) use ($teamLeadEmployee, $inchargeDeptIds) {
+                $query->where('reporting_manager_id', $teamLeadEmployee?->id)
+                      ->orWhereIn('department_id', $inchargeDeptIds);
+            })
             ->exists();
 
-        if (!$isDirectReport) {
+        if (!$isAuthorized) {
             return redirect()->back()->with('error', 'You are not authorized to manage this application.');
         }
 
@@ -352,7 +366,7 @@ class LeaveApplicationController extends Controller
             $leaveApplication->remarks = $request->remarks;
         }
         $leaveApplication->approved_by = $user->id;
-        $leaveApplication->approved_at = now();
+        $leaveApplication->approved_at = Carbon::now();
         if ($request->status === 'approved') {
 
             $balance = LeaveBalance::where('employee_id', $leaveApplication->employee_id)

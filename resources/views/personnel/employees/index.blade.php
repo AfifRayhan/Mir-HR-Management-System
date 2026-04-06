@@ -27,12 +27,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <!-- Filter Bar -->
             <div class="filter-bar">
@@ -193,7 +187,7 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                         @php $confirmMsg = __('Are you sure you want to delete this employee?'); @endphp
-                                        <form action="{{ route('personnel.employees.destroy', $emp->id) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}');">
+                                        <form action="{{ route('personnel.employees.destroy', $emp->id) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
