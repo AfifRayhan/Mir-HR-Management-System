@@ -81,6 +81,9 @@ class EmployeeSeeder extends Seeder
         $sheet = $spreadsheet->getActiveSheet();
         $rows = $sheet->toArray(null, true, true, true);
 
+        // Map of employee_code => manager_hrmId, resolved after all rows are inserted
+        $managerMap = [];
+
         // Data starts at row 2; row 1 is header in EmployeeSummary_transformed.xlsx
         foreach ($rows as $rowIndex => $row) {
             if ($rowIndex === 1) {
@@ -99,21 +102,23 @@ class EmployeeSeeder extends Seeder
             // AC=EmergencyContactName, AD=EmergencyContactAddress
             // AE=EmergencyContactNo, AF=EmergencyContactPersonRelation
             // AG=PresentAddress, AH=PermanentAddress
+            // AI=Manager_id
             $office = trim((string) ($row['B'] ?? ''));
             $department = trim((string) ($row['C'] ?? ''));
             $designation = trim((string) ($row['J'] ?? ''));
             $grade = trim((string) ($row['K'] ?? ''));
-            $name = trim((string) ($row['F'] ?? '')); // Name column
-            $empId = trim((string) ($row['D'] ?? '')); // Emp Id column
-            $email = trim((string) ($row['L'] ?? '')); // Email column
-            $bloodGroup = trim((string) ($row['G'] ?? '')); // Blood Group
-            $fatherName = trim((string) ($row['H'] ?? '')); // Father Name
-            $motherName = trim((string) ($row['I'] ?? '')); // Mother Name
+            $name = trim((string) ($row['F'] ?? ''));
+            $empId = trim((string) ($row['D'] ?? ''));
+            $email = trim((string) ($row['L'] ?? ''));
+            $bloodGroup = trim((string) ($row['G'] ?? ''));
+            $fatherName = trim((string) ($row['H'] ?? ''));
+            $motherName = trim((string) ($row['I'] ?? ''));
             $joiningDate = trim((string) ($row['M'] ?? ''));
             $dateOfBirth = trim((string) ($row['O'] ?? ''));
             $status = trim((string) ($row['P'] ?? ''));
             $section = trim((string) ($row['Q'] ?? ''));
             $grossSalary = trim((string) ($row['R'] ?? ''));
+            $hrmEmployeeId = trim((string) ($row['S'] ?? ''));
             $discontinuationDate = trim((string) ($row['T'] ?? ''));
             $discontinuationReason = trim((string) ($row['U'] ?? ''));
             $spouseName = trim((string) ($row['V'] ?? ''));
@@ -129,8 +134,9 @@ class EmployeeSeeder extends Seeder
             $emergencyContactRelation = trim((string) ($row['AF'] ?? ''));
             $presentAddress = trim((string) ($row['AG'] ?? ''));
             $permanentAddress = trim((string) ($row['AH'] ?? ''));
-            $tin = trim((string) ($row['AI'] ?? '')); // Adding TIN as sequential column
-            $nationality = trim((string) ($row['AJ'] ?? '')); // Adding Nationality as sequential column
+            $managerCode = trim((string) ($row['AI'] ?? '')); 
+            $tin = trim((string) ($row['AJ'] ?? ''));
+            $nationality = trim((string) ($row['AK'] ?? ''));
 
             if (empty($office) || empty($department) || empty($name) || empty($empId)) {
                 continue;
@@ -155,6 +161,7 @@ class EmployeeSeeder extends Seeder
 
             Employee::create([
                 'employee_code' => $empId,
+                'hrm_employee_id' => !empty($hrmEmployeeId) ? $hrmEmployeeId : null,
                 'name' => $name,
                 'email' => !empty($email) ? $email : null,
                 'blood_group' => !empty($bloodGroup) ? $bloodGroup : null,
@@ -186,10 +193,25 @@ class EmployeeSeeder extends Seeder
                 'grade_id' => $gradeModel->id,
                 'office_id' => $officeModel->id,
                 'office_time_id' => OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null,
-                'reporting_manager_id' => null,
+                'reporting_manager_id' => null, // resolved in second pass below
                 'status' => (strtolower($status) === 'active') ? 'active' : 'inactive',
                 'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,
             ]);
+
+            // Store manager mapping (empCode => managerHrmId) for second pass
+            if (!empty($managerCode)) {
+                $managerMap[$empId] = $managerCode;
+            }
+        }
+
+        // Second pass: resolve reporting_manager_id using hrm_employee_id directly from the database
+        foreach ($managerMap as $empCode => $managerHrmId) {
+            $employee = Employee::where('employee_code', $empCode)->first();
+            $manager  = Employee::where('hrm_employee_id', $managerHrmId)->first();
+            
+            if ($employee && $manager) {
+                $employee->update(['reporting_manager_id' => $manager->id]);
+            }
         }
 
         $this->command->info('EmployeeSeeder completed.');

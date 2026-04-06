@@ -16,7 +16,7 @@
 
             <div class="hr-panel p-0 overflow-hidden mb-4">
                 <div class="d-flex justify-content-between align-items-center border-bottom p-3">
-                    <h6 class="fw-bold mb-0 text-nowrap me-3"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('Applications History') }}</h6>
+                    <h6 class="fw-bold mb-0 text-nowrap me-3"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('Applications History') }}</h6>
                     <form action="{{ route('team-lead.leave-applications.history') }}" method="GET">
                         <div class="d-flex flex-wrap gap-2 mb-2 justify-content-end">
                             <select name="month" class="form-select form-select-sm rounded-3 w-auto">
@@ -96,7 +96,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-info text-dark rounded-pill">{{ $app->leaveType->name }}</span></td>
+                                <td><span class="badge {{ match(true) { str_contains(strtolower($app->leaveType->name), 'casual') => 'bg-primary', str_contains(strtolower($app->leaveType->name), 'sick') => 'bg-danger', str_contains(strtolower($app->leaveType->name), 'earn') => 'bg-success', str_contains(strtolower($app->leaveType->name), 'emergency') => 'bg-warning text-dark', default => 'bg-info text-dark' } }} rounded-pill px-2">{{ $app->leaveType->name }}</span></td>
                                 <td>
                                     @php
                                         $balance = $app->employee->leaveBalances->where('leave_type_id', $app->leave_type_id)->first();
@@ -116,7 +116,7 @@
                                 </td>
                                 <td>
                                     @if($app->supporting_document)
-                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none">
+                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-success text-white text-decoration-none">
                                         <i class="bi bi-file-earmark-medical me-1"></i>{{ __('Doc') }}
                                     </a>
                                     @else

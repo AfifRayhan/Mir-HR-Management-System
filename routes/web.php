@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('/auth/login');
-});
+})->middleware('guest');
 
 Route::get('/hr-dashboard', [HrDashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])

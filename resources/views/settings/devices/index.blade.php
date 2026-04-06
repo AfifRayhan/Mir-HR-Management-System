@@ -23,12 +23,6 @@
                     </div>
                 </div>
 
-                @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                @endif
 
                 <div class="hr-panel">
                     <div class="table-responsive">
@@ -38,7 +32,7 @@
                                     <th>{{ __('ID') }}</th>
                                     <th>{{ __('Name') }}</th>
                                     <th>{{ __('Device UID') }}</th>
-                                    <th>{{ __('API Token') }}</th>
+                                    <th>{{ __('Port') }}</th>
                                     <th>{{ __('Last Sync') }}</th>
                                     <th class="text-end pe-4">{{ __('Actions') }}</th>
                                 </tr>
@@ -54,11 +48,8 @@
                                     </td>
                                     <td><code>{{ $device->device_uid ?? __('N/A') }}</code></td>
                                     <td>
-                                        @if($device->api_token)
-                                        <div class="input-group input-group-sm" style="max-width: 200px;">
-                                            <input type="password" class="form-control" value="{{ $device->api_token }}" readonly>
-                                            <button class="btn btn-outline-secondary" type="button" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"><i class="bi bi-eye"></i></button>
-                                        </div>
+                                        @if($device->port)
+                                        <span class="badge bg-info text-dark">{{ $device->port }}</span>
                                         @else
                                         {{ __('N/A') }}
                                         @endif
@@ -79,7 +70,7 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             @php $confirmMsg = __('Are you sure you want to delete this device?'); @endphp
-                                            <form action="{{ route('settings.devices.destroy', $device) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                            <form action="{{ route('settings.devices.destroy', $device) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
@@ -119,14 +110,10 @@
                                                         <label class="form-label">{{ __('Location') }}</label>
                                                         <input type="text" name="location" class="form-control" value="{{ $device->location }}" placeholder="e.g. Main Gate">
                                                     </div>
-                                                    @if($device->device_uid)
-                                                    <div class="form-check mb-3">
-                                                        <input class="form-check-input" type="checkbox" name="regenerate_token" id="regToken{{ $device->id }}">
-                                                        <label class="form-check-label text-danger" for="regToken{{ $device->id }}">
-                                                            {{ __('Regenerate API Token') }}
-                                                        </label>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">{{ __('Port') }}</label>
+                                                        <input type="text" name="port" class="form-control" value="{{ $device->port }}" placeholder="e.g. 4370">
                                                     </div>
-                                                    @endif
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
@@ -166,12 +153,15 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">{{ __('Device UID (Unique ID)') }}</label>
-                            <input type="text" name="device_uid" class="form-control" placeholder="e.g. H94139">
-                            <small class="text-muted">{{ __('Assigning a UID will automatically generate an API token.') }}</small>
+                            <input type="text" name="device_uid" class="form-control" placeholder="e.g. 1">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">{{ __('IP Address') }}</label>
                             <input type="text" name="ip_address" class="form-control" placeholder="e.g. 192.168.1.10">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Port') }}</label>
+                            <input type="text" name="port" class="form-control" placeholder="e.g. 4370">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">{{ __('Location') }}</label>

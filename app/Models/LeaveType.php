@@ -18,6 +18,7 @@ class LeaveType extends Model
         'max_consecutive_days',
         'carry_forward',
         'sort_order',
+        'allow_past_days',
     ];
 
     public function office()

@@ -16,19 +16,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
@@ -73,17 +60,17 @@
                 <!-- Apply Leave Form -->
                 <div class="col-lg-4">
                     <div class="emp-panel">
-                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-primary"></i>{{ __('Apply for Leave') }}</h5>
+                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Apply for Leave') }}</h5>
                         <form action="{{ route('employee.leave.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Leave Type') }} <span class="text-danger">*</span></label>
-                                <select name="leave_type_id" class="form-select rounded-3" required>
-                                    <option value="">{{ __('Select Type') }}</option>
-                                    @foreach($leaveTypes as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }} ({{ $type->total_days_per_year }} days/yr)</option>
-                                    @endforeach
-                                </select>
+                                    <select name="leave_type_id" id="leave_type_select" class="form-select rounded-3" required>
+                                        <option value="">{{ __('Select Type') }}</option>
+                                        @foreach($leaveTypes as $type)
+                                        <option value="{{ $type->id }}" data-past-days="{{ $type->allow_past_days }}">{{ $type->name }} ({{ $type->total_days_per_year }} days/yr)</option>
+                                        @endforeach
+                                    </select>
                             </div>
 
                             <div class="row g-2 mb-3">
@@ -98,9 +85,9 @@
                             </div>
 
                             <div id="leave_days_display" class="mb-3 d-none" data-holidays="{{ json_encode($weeklyHolidayDays) }}">
-                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #e3f2fd; color: #0d47a1;">
-                                    <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
-                                    <span id="total_days_count" class="badge bg-primary rounded-pill">0</span>
+                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
+                                    <span class="small fw-bold text-success"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
+                                    <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
                                 </div>
                             </div>
 
@@ -122,7 +109,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm">
                                 <i class="bi bi-send-check me-2"></i>{{ __('Submit Application') }}
                             </button>
                         </form>
@@ -133,7 +120,7 @@
                 <div class="col-lg-8">
                     <div class="emp-panel">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
-                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('My Applications History') }}</h5>
                             <form action="{{ route('employee.leave.index') }}" method="GET" class="d-flex gap-2">
                                 <select name="month" class="form-select form-select-sm rounded-3">
                                     <option value="">{{ __('All Months') }}</option>
@@ -151,7 +138,7 @@
                                     </option>
                                     @endfor
                                 </select>
-                                <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3">{{ __('Filter') }}</button>
+                                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">{{ __('Filter') }}</button>
                                 @if(request()->hasAny(['month', 'year']))
                                 <a href="{{ route('employee.leave.index') }}" class="btn btn-sm btn-light rounded-3">{{ __('Clear') }}</a>
                                 @endif
@@ -175,7 +162,7 @@
                                 <tbody>
                                     @forelse($applications as $app)
                                     <tr>
-                                        <td><span class="badge bg-info text-dark rounded-pill">{{ $app->leaveType->name }}</span></td>
+                                        <td><span class="badge {{ match(true) { str_contains(strtolower($app->leaveType->name), 'casual') => 'bg-primary', str_contains(strtolower($app->leaveType->name), 'sick') => 'bg-danger', str_contains(strtolower($app->leaveType->name), 'earn') => 'bg-success', str_contains(strtolower($app->leaveType->name), 'emergency') => 'bg-warning text-dark', default => 'bg-info text-dark' } }} rounded-pill px-2">{{ $app->leaveType->name }}</span></td>
                                         <td>
                                             <div class="small fw-bold">{{ \Carbon\Carbon::parse($app->from_date)->format('d M') }} - {{ \Carbon\Carbon::parse($app->to_date)->format('d M Y') }}</div>
                                             <div class="small text-muted border-top pt-1 mt-1">Applied: {{ $app->created_at->format('d M') }}</div>
@@ -189,7 +176,7 @@
                                         </td>
                                         <td>
                                             @if($app->supporting_document)
-                                            <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-primary text-white text-decoration-none">
+                                            <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-success text-white text-decoration-none">
                                                 <i class="bi bi-file-earmark-medical me-1"></i>{{ __('Doc') }}
                                             </a>
                                             @else
@@ -295,22 +282,63 @@
                 }
             }
 
-            const fromPicker = flatpickr('#from_date', {
-                dateFormat: 'Y-m-d',
-                allowInput: false,
-                onChange: function() {
-                    toPicker.set('minDate', fromPicker.selectedDates[0] || null);
-                    calculateDays();
-                }
-            });
-
-            const toPicker = flatpickr('#to_date', {
-                dateFormat: 'Y-m-d',
-                allowInput: false,
-                onChange: calculateDays
-            });
-
-            calculateDays();
+            const leaveTypeSelect = document.getElementById('leave_type_select');
+ 
+             function updateMinDate() {
+                 const selectedOption = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
+                 if (selectedOption && selectedOption.value) {
+                     const pastDays = parseInt(selectedOption.dataset.pastDays) || 0;
+                     const minDate = new Date();
+                     minDate.setDate(minDate.getDate() - pastDays);
+                     
+                     fromPicker.set('minDate', minDate);
+                     toPicker.set('minDate', minDate);
+                 } else {
+                     // Default to today if no type selected
+                     const today = new Date();
+                     fromPicker.set('minDate', today);
+                     toPicker.set('minDate', today);
+                 }
+                 
+                 // Reset selections if they are now invalid
+                 if (fromPicker.selectedDates[0] && fromPicker.selectedDates[0] < fromPicker.config.minDate) {
+                     fromPicker.clear();
+                 }
+                 if (toPicker.selectedDates[0] && toPicker.selectedDates[0] < toPicker.config.minDate) {
+                     toPicker.clear();
+                 }
+                 
+                 calculateDays();
+             }
+ 
+             const fromPicker = flatpickr('#from_date', {
+                 dateFormat: 'Y-m-d',
+                 allowInput: false,
+                 onChange: function() {
+                     const fromDate = fromPicker.selectedDates[0];
+                     const selectedOption = leaveTypeSelect.options[leaveTypeSelect.selectedIndex];
+                     const pastDays = selectedOption ? (parseInt(selectedOption.dataset.pastDays) || 0) : 0;
+                     const minDate = new Date();
+                     minDate.setDate(minDate.getDate() - pastDays);
+ 
+                     // The end date should not be earlier than the start date or the calculated minDate
+                     const effectiveMinDateForTo = fromDate && fromDate > minDate ? fromDate : minDate;
+                     toPicker.set('minDate', effectiveMinDateForTo);
+                     
+                     calculateDays();
+                 }
+             });
+ 
+             const toPicker = flatpickr('#to_date', {
+                 dateFormat: 'Y-m-d',
+                 allowInput: false,
+                 onChange: calculateDays
+             });
+ 
+             leaveTypeSelect.addEventListener('change', updateMinDate);
+ 
+             // Initialize with current selection
+             updateMinDate();
         });
     </script>
     @endpush

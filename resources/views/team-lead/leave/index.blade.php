@@ -30,19 +30,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show rounded-4 px-4 py-3 small shadow-sm mb-4" role="alert">
@@ -87,7 +74,7 @@
                 {{-- Apply Leave Form --}}
                 <div class="col-lg-4">
                     <div class="hr-panel">
-                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-primary"></i>{{ __('Apply for Leave') }}</h5>
+                        <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Apply for Leave') }}</h5>
                         <form action="{{ route('team-lead.leave.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
@@ -111,9 +98,9 @@
                             </div>
 
                             <div id="leave_days_display" class="mb-3 d-none" data-holidays="{{ json_encode($weeklyHolidayDays) }}">
-                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #e3f2fd; color: #0d47a1;">
+                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
                                     <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
-                                    <span id="total_days_count" class="badge bg-primary rounded-pill">0</span>
+                                    <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -124,7 +111,7 @@
                                 <label class="form-label small fw-bold text-muted">{{ __('Emergency Contact / Leave Address') }}</label>
                                 <textarea name="leave_address" class="form-control rounded-3" rows="2" placeholder="{{ __('Optional...') }}"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm">
                                 <i class="bi bi-send-check me-2"></i>{{ __('Submit Application') }}
                             </button>
                         </form>
@@ -135,7 +122,7 @@
                 <div class="col-lg-8">
                     <div class="hr-panel">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
-                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>{{ __('My Applications History') }}</h5>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('My Applications History') }}</h5>
                             <form action="{{ route('team-lead.leave.index') }}" method="GET" class="d-flex gap-2">
                                 <select name="month" class="form-select form-select-sm rounded-3">
                                     <option value="">{{ __('All Months') }}</option>
@@ -153,7 +140,7 @@
                                     </option>
                                     @endfor
                                 </select>
-                                <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3">{{ __('Filter') }}</button>
+                                <button type="submit" class="btn btn-sm btn-success rounded-3 px-3">{{ __('Filter') }}</button>
                                 @if(request()->hasAny(['month', 'year']))
                                 <a href="{{ route('team-lead.leave.index') }}" class="btn btn-sm btn-light rounded-3">{{ __('Clear') }}</a>
                                 @endif
@@ -173,7 +160,7 @@
                                 <tbody>
                                     @forelse($applications as $app)
                                     <tr>
-                                        <td><span class="badge bg-info text-dark rounded-pill">{{ $app->leaveType->name }}</span></td>
+                                        <td><span class="badge {{ match(true) { str_contains(strtolower($app->leaveType->name), 'casual') => 'bg-primary', str_contains(strtolower($app->leaveType->name), 'sick') => 'bg-danger', str_contains(strtolower($app->leaveType->name), 'earn') => 'bg-success', str_contains(strtolower($app->leaveType->name), 'emergency') => 'bg-warning text-dark', default => 'bg-info text-dark' } }} rounded-pill px-2">{{ $app->leaveType->name }}</span></td>
                                         <td>
                                             <div class="small fw-bold">{{ \Carbon\Carbon::parse($app->from_date)->format('d M') }} - {{ \Carbon\Carbon::parse($app->to_date)->format('d M Y') }}</div>
                                             <div class="small text-muted">Applied: {{ $app->created_at->format('d M') }}</div>

@@ -24,12 +24,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-pill px-4 py-2 small shadow-sm mb-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            @endif
 
             <div class="row g-4">
                 <!-- New Section Form -->
@@ -75,11 +69,45 @@
                             <i class="bi bi-list-task me-2 text-success"></i>{{ __('Section List') }}
                         </div>
 
+                        <!-- Filter & Search Form -->
+                        <form action="{{ route('personnel.sections.index') }}" method="GET" class="mb-4">
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <input type="text" name="search" class="form-control rounded-pill" placeholder="{{ __('Search sections...') }}" value="{{ request('search') }}">
+                                </div>
+                                <div class="col-md-5">
+                                    <select name="department_id" class="form-select rounded-pill">
+                                        <option value="">{{ __('All Departments') }}</option>
+                                        @foreach($departments as $dept)
+                                        <option value="{{ $dept->id }}" {{ request('department_id') == $dept->id ? 'selected' : '' }}>
+                                            {{ $dept->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-outline-success w-100 rounded-pill">
+                                        <i class="bi bi-filter me-1"></i>{{ __('Filter') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="hr-table">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>{{ __('Section Name') }}</th>
+                                        <th class="ps-4" style="width: 50px;">#</th>
+                                        <th>
+                                            <a href="{{ route('personnel.sections.index', array_merge(request()->query(), ['sort' => 'name', 'direction' => request('direction') == 'asc' ? 'desc' : 'asc'])) }}" class="text-decoration-none text-dark d-inline-flex align-items-center">
+                                                {{ __('Section Name') }}
+                                                @if(request('sort') == 'name')
+                                                    <i class="bi bi-sort-alpha-{{ request('direction') == 'asc' ? 'down' : 'up' }} ms-1"></i>
+                                                @else
+                                                    <i class="bi bi-arrow-down-up ms-1 text-muted" style="font-size: 0.8rem; opacity: 0.5;"></i>
+                                                @endif
+                                            </a>
+                                        </th>
                                         <th>{{ __('Department') }}</th>
                                         <th class="text-end pe-4">{{ __('Actions') }}</th>
                                     </tr>
@@ -87,6 +115,7 @@
                                 <tbody>
                                     @forelse($sections as $section)
                                     <tr>
+                                        <td class="ps-4 text-muted fw-bold">{{ $loop->iteration }}</td>
                                         <td>
                                             <div class="fw-bold text-success">{{ $section->name }}</div>
                                             @if($section->description)
@@ -102,7 +131,7 @@
                                                 <button class="btn btn-sm btn-outline-success border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editModal{{ $section->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <form action="{{ route('personnel.sections.destroy', $section) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                                <form action="{{ route('personnel.sections.destroy', $section) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
@@ -156,10 +185,15 @@
                                     </div>
                                     @empty
                                     <tr>
-                                        <td colspan="3" class="text-center py-5">
+                                        <td colspan="4" class="text-center py-5">
                                             <div class="text-muted">
                                                 <i class="bi bi-layers d-block mb-3 fs-1 opacity-50"></i>
                                                 {{ __('No sections found.') }}
+                                                @if(request('search') || request('department_id'))
+                                                    <div class="mt-2 text-sm">
+                                                        <a href="{{ route('personnel.sections.index') }}" class="text-decoration-none">{{ __('Clear Filters') }}</a>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

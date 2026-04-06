@@ -9,14 +9,35 @@ use Illuminate\Http\Request;
 
 class SectionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = \App\Models\Employee::where('user_id', $user->id)->first();
 
-        $sections = Section::with('department')->get();
+        $query = Section::with('department');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->input('department_id'));
+        }
+
+        if ($request->input('sort') === 'name') {
+            $direction = $request->input('direction', 'asc') === 'desc' ? 'desc' : 'asc';
+            $query->orderBy('name', $direction);
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        $sections = $query->get();
         $departments = Department::all();
         return view('personnel.sections.index', compact('sections', 'departments', 'user', 'roleName', 'employee'));
     }

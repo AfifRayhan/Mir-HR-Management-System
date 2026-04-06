@@ -19,18 +19,6 @@
                 </div>
             </div>
 
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
 
             <div class="hr-panel">
                 <div class="table-responsive">
@@ -57,7 +45,7 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                         @php $confirmMsg = __('Are you sure you want to delete this role?'); @endphp
-                                        <form action="{{ route('security.roles.destroy', $role) }}" method="POST" onsubmit="return confirm('{{ $confirmMsg }}')">
+                                        <form action="{{ route('security.roles.destroy', $role) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

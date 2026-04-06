@@ -7,12 +7,6 @@
         @include('partials.hr-sidebar')
 
         <main class="hr-main">
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle me-1"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
 
             <div class="rp-container">
                 <div class="rp-header">
