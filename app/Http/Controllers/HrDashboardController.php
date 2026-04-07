@@ -214,20 +214,23 @@ class HrDashboardController extends Controller
             }
             $oId = $emp->office_id;
             
+            $hasAttended = false;
             if (isset($todayAttendance[$emp->id])) {
                 $status = strtolower($todayAttendance[$emp->id]->status);
                 if ($status === 'late') {
                     $officeData[$oId]['late']++;
+                    $hasAttended = true;
                 } else if ($status === 'present') {
                     $officeData[$oId]['present']++;
+                    $hasAttended = true;
                 }
-            } else {
-                if ($this->attendanceService->isWorkingDay($emp, $today)) {
-                    if (isset($approvedLeavesToday[$emp->id])) {
-                        $officeData[$oId]['leave']++;
-                    } else {
-                        $officeData[$oId]['absent']++;
-                    }
+            }
+            
+            if (!$hasAttended) {
+                if (isset($approvedLeavesToday[$emp->id])) {
+                    $officeData[$oId]['leave']++;
+                } else if ($this->attendanceService->isWorkingDay($emp, $today)) {
+                    $officeData[$oId]['absent']++;
                 }
             }
         }

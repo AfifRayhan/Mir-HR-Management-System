@@ -121,27 +121,58 @@
                 <!-- Existing Balances List -->
                 <div class="col-lg-8">
                     <div class="hr-panel p-0 overflow-hidden">
-                        <div class="px-4 py-3 border-bottom">
+                        <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-list-task me-2 text-success"></i>{{ __('Initialized Accounts') }}
                                 <span class="badge bg-secondary ms-2" style="font-size:0.7rem;">{{ $currentYear }}</span>
                             </h5>
+                            
+                            <!-- Search Form -->
+                            <form action="{{ route('personnel.leave-balances.index') }}" method="GET" class="d-flex gap-2">
+                                <div class="input-group input-group-sm" style="width: 250px;">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                    <input type="text" name="search" class="form-control border-start-0 ps-0" 
+                                           placeholder="{{ __('Search employee…') }}" value="{{ $search }}">
+                                </div>
+                                <button type="submit" class="btn btn-success btn-sm px-3 rounded-pill">{{ __('Search') }}</button>
+                                @if($search)
+                                    <a href="{{ route('personnel.leave-balances.index') }}" class="btn btn-light btn-sm px-3 rounded-pill">{{ __('Clear') }}</a>
+                                @endif
+                            </form>
                         </div>
 
                         <div class="table-responsive">
                             <table class="table hr-table mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th class="ps-4">{{ __('Employee') }}</th>
-                                        <th>{{ __('Department / Role') }}</th>
+                                        <th class="ps-4">
+                                            <a href="{{ route('personnel.leave-balances.index', array_merge(request()->query(), ['sort' => 'name', 'direction' => $sort === 'name' && $direction === 'asc' ? 'desc' : 'asc'])) }}" class="text-decoration-none text-dark d-flex align-items-center">
+                                                {{ __('Employee') }}
+                                                @if($sort === 'name')
+                                                    <i class="bi bi-sort-alpha-{{ $direction === 'asc' ? 'down' : 'up' }} ms-1 text-success"></i>
+                                                @else
+                                                    <i class="bi bi-arrow-down-up ms-1 text-muted small" style="font-size: 0.7rem;"></i>
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a href="{{ route('personnel.leave-balances.index', array_merge(request()->query(), ['sort' => 'department_id', 'direction' => $sort === 'department_id' && $direction === 'asc' ? 'desc' : 'asc'])) }}" class="text-decoration-none text-dark d-flex align-items-center">
+                                                {{ __('Department / Role') }}
+                                                @if($sort === 'department_id')
+                                                    <i class="bi bi-sort-numeric-{{ $direction === 'asc' ? 'down' : 'up' }} ms-1 text-success"></i>
+                                                @else
+                                                    <i class="bi bi-arrow-down-up ms-1 text-muted small" style="font-size: 0.7rem;"></i>
+                                                @endif
+                                            </a>
+                                        </th>
                                         <th>{{ __('Leave Types Allocated') }}</th>
                                         <th class="pe-4">{{ __('Total Allocation') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($balances as $employeeId => $employeeBalances)
+                                    @forelse($paginatedEmployees as $emp)
                                     @php
-                                        $emp       = $employeeBalances->first()->employee;
+                                        $employeeBalances = $balances->get($emp->id, collect());
                                         $totalDays = $employeeBalances->sum('opening_balance');
                                     @endphp
                                     <tr>
@@ -162,31 +193,41 @@
                                         </td>
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
-                                                @foreach($employeeBalances as $bal)
-                                                <span class="badge rounded-pill px-2 py-1"
-                                                      style="font-size:0.65rem; background:#e0f2fe; color:#0369a1;"
-                                                      title="{{ $bal->remaining_days }} / {{ $bal->opening_balance }} remaining">
-                                                    {{ $bal->leaveType->name ?? '—' }}
-                                                    <span class="opacity-75">({{ $bal->remaining_days }}/{{ $bal->opening_balance }})</span>
-                                                </span>
-                                                @endforeach
+                                                @if($employeeBalances->isEmpty())
+                                                    <span class="text-muted small italic">{{ __('Not initialized') }}</span>
+                                                @else
+                                                    @foreach($employeeBalances as $bal)
+                                                    <span class="badge rounded-pill px-2 py-1"
+                                                          style="font-size:0.65rem; background:#e0f2fe; color:#0369a1;"
+                                                          title="{{ $bal->remaining_days }} / {{ $bal->opening_balance }} remaining">
+                                                        {{ $bal->leaveType->name ?? '—' }}
+                                                        <span class="opacity-75">({{ $bal->remaining_days }}/{{ $bal->opening_balance }})</span>
+                                                    </span>
+                                                    @endforeach
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="pe-4">
-                                            <span class="badge bg-secondary rounded-pill">{{ $totalDays }} days</span>
+                                            <span class="badge @if($totalDays > 0) bg-secondary @else bg-light text-muted @endif rounded-pill">{{ $totalDays }} days</span>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
                                         <td colspan="4" class="text-center py-5">
                                             <i class="bi bi-wallet2 d-block mb-3 fs-1 opacity-25"></i>
-                                            <span class="text-muted small">{{ __('No leave accounts initialized for') }} {{ $currentYear }}.</span>
+                                            <span class="text-muted small">{{ __('No employees found.') }}</span>
                                         </td>
                                     </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
+                        
+                        @if($paginatedEmployees->hasPages())
+                        <div class="px-4 py-3 border-top bg-light">
+                            {{ $paginatedEmployees->links() }}
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
