@@ -8,5 +8,5 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::job(new \App\Jobs\SyncAttendancesJob)->everyMinute();
+Schedule::command('app:sync-attendances')->everyMinute();
 Schedule::job(new \App\Jobs\UpdateProbationStatusJob)->daily();

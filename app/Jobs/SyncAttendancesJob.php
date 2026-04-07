@@ -26,11 +26,13 @@ class SyncAttendancesJob implements ShouldQueue
      */
     public function handle(\App\Services\AttendanceService $attendanceService): void
     {
+        Log::info('SyncAttendancesJob: Starting attendance sync...');
         try {
+            $count = 0;
             DB::connection('attendance_analysis')
                 ->table('device_attendances')
                 ->where('created_at', '>=', now()->startOfDay()) // Sync today's data only
-                ->chunkById(1000, function ($records) {
+                ->chunkById(1000, function ($records) use (&$count) {
                     $insertData = [];
                     foreach ($records as $record) {
                         $insertData[] = [
@@ -50,14 +52,20 @@ class SyncAttendancesJob implements ShouldQueue
                             ['user_id', 'punch_time', 'machine_id'],
                             ['status', 'device_name', 'updated_at', 'created_at']
                         );
+                        $count += count($insertData);
                     }
                 });
 
+            Log::info("SyncAttendancesJob: Synced $count records from external DB.");
+
             $date = now()->toDateString();
+            Log::info("SyncAttendancesJob: Processing logs for date: $date");
             $attendanceService->processLogsForDate($date);
+            Log::info('SyncAttendancesJob: Completed successfully.');
             
         } catch (\Exception $e) {
-            Log::error('Attendance Sync Job failed: ' . $e->getMessage());
+            Log::error('SyncAttendancesJob FAILED: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
         }
     }
 }

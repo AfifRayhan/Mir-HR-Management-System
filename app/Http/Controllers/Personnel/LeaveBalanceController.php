@@ -11,26 +11,55 @@ use Carbon\Carbon;
 
 class LeaveBalanceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = Employee::where('user_id', $user->id)->first();
 
-        $employees  = Employee::with('department', 'designation')->where('status', 'active')->orderBy('name')->get();
+        // For initialization form (full list of active employees)
+        $employees = Employee::where('status', 'active')->orderBy('name')->get();
         $leaveTypes = LeaveType::orderBy('sort_order')->get();
-
         $currentYear = date('Y');
 
-        // Eager load balances for the current year to show in the list
+        // Base query for the paginated list
+        $query = Employee::with('department', 'designation')->where('status', 'active');
+
+        // Search functionality
+        $search = $request->get('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('employee_code', 'like', "%{$search}%");
+            });
+        }
+
+        // Sorting functionality
+        $sort = $request->get('sort', 'name');
+        $direction = $request->get('direction', 'asc');
+        
+        $allowedSorts = ['name', 'employee_code', 'department_id'];
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->orderBy('name', 'asc');
+        }
+
+        // Pagination
+        $paginatedEmployees = $query->paginate(10)->withQueryString();
+        $employeeIds = $paginatedEmployees->pluck('id');
+
+        // Eager load balances for the current year for visible employees
         $balances = LeaveBalance::with(['employee', 'leaveType'])
             ->where('year', $currentYear)
+            ->whereIn('employee_id', $employeeIds)
             ->get()
             ->groupBy('employee_id');
 
         return view('personnel.leave-balances.index', compact(
-            'employees', 'balances', 'leaveTypes', 'currentYear', 'user', 'roleName', 'employee'
+            'employees', 'paginatedEmployees', 'balances', 'leaveTypes', 'currentYear', 
+            'user', 'roleName', 'employee', 'search', 'sort', 'direction'
         ));
     }
 
