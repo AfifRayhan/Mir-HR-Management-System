@@ -128,6 +128,20 @@
                 </div>
             </div>
 
+            <!-- Office Attendance Chart -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="hr-panel p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h6 class="mb-0 font-bold text-gray-800"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>{{ __('Office Attendance Overview') }}</h6>
+                        </div>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="officeAttendanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Content Panels -->
             <div class="row g-4 mb-4">
                 <!-- Recent Attendance Summary -->
@@ -294,4 +308,85 @@
             </div>
         </main>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script id="office-attendance-data" type="application/json">
+        {!! json_encode($officeAttendanceData) !!}
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const rawData = document.getElementById('office-attendance-data').textContent;
+            const officeData = JSON.parse(rawData);
+
+            if (!document.getElementById('officeAttendanceChart')) return;
+
+            const labels = officeData.map(data => data.name);
+            const presentData = officeData.map(data => data.present);
+            const absentData = officeData.map(data => data.absent);
+            const lateData = officeData.map(data => data.late);
+            const leaveData = officeData.map(data => data.leave);
+
+            const ctx = document.getElementById('officeAttendanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '{{ __("Present") }}',
+                            data: presentData,
+                            backgroundColor: '#10b981', // Green
+                            borderRadius: 4,
+                        },
+                        {
+                            label: '{{ __("Absent") }}',
+                            data: absentData,
+                            backgroundColor: '#ef4444', // Red
+                            borderRadius: 4,
+                        },
+                        {
+                            label: '{{ __("Late") }}',
+                            data: lateData,
+                            backgroundColor: '#f59e0b', // Yellow
+                            borderRadius: 4,
+                        },
+                        {
+                            label: '{{ __("On Leave") }}',
+                            data: leaveData,
+                            backgroundColor: '#3b82f6', // Blue
+                            borderRadius: 4,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

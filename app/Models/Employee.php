@@ -46,8 +46,18 @@ class Employee extends Model
         'office_time_id',
         'reporting_manager_id',
         'status',
+        'employee_type',
+        'probation_duration',
+        'probation_start_date',
+        'probation_end_date',
         'gross_salary',
     ];
+
+    public function scopeProbationEnded($query)
+    {
+        return $query->where('employee_type', 'Probation')
+            ->whereDate('probation_end_date', '<=', now());
+    }
 
     public function user()
     {
@@ -127,6 +137,11 @@ class Employee extends Model
     public function activeSupervisorRemarks()
     {
         return $this->hasMany(SupervisorRemark::class, 'employee_id')->active();
+    }
+
+    public function salaryHistories()
+    {
+        return $this->hasMany(EmployeeSalaryHistory::class);
     }
 
     /**

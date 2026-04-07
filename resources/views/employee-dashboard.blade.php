@@ -10,16 +10,20 @@
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
     @endpush
 
-    @php $isTeamLead = optional(auth()->user()->role)->name === 'Team Lead'; @endphp
+    @php 
+        $isTeamLeadRole = optional(auth()->user()->role)->name === 'Team Lead';
+        $isReportingManager = $isReportingManager ?? false;
+        $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager;
+    @endphp
 
-    <div class="{{ $isTeamLead ? 'hr-layout' : 'emp-layout' }}">
-        @if($isTeamLead)
+    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+        @if($isTeamLeadLayout)
         @include('partials.team-lead-sidebar')
         @else
         @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $isTeamLead ? 'hr-main' : 'emp-main' }}">
+        <main class="{{ $isTeamLeadLayout ? 'hr-main' : 'emp-main' }}">
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -188,8 +192,8 @@
  
                 <!-- Sidebar Column -->
                 <div class="col-lg-4">
-                    @if($isTeamLead)
-                    <!-- Pending Leave Requests (Team Lead only) -->
+                    @if($isTeamLeadLayout)
+                    <!-- Pending Leave Requests (Team Lead & Reporting Managers) -->
                     <div class="hr-panel mb-4 shadow-sm">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-envelope-exclamation me-2 text-warning"></i>{{ __('Pending Leave Requests') }}</h6>
                         <div class="d-flex align-items-center justify-content-between p-3 bg-warning-soft rounded-4 border-start border-warning border-4">

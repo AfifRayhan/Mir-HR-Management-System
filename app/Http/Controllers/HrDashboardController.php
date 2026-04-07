@@ -62,6 +62,8 @@ class HrDashboardController extends Controller
         $totalGrades = Grade::query()->count();
         $totalOffices = Office::query()->count();
         $activeNotices = Notice::query()->active()->orderBy('created_at', 'desc')->get();
+        // Office chart data
+        $officeAttendanceData = $this->getOfficeAttendanceData($today, $activeEmployees);
 
         return view('hr-dashboard', array_merge($metrics, compact(
             'user',
@@ -77,7 +79,8 @@ class HrDashboardController extends Controller
             'recentAttendance',
             'upcomingHolidays',
             'upcomingBirthdays',
-            'activeNotices'
+            'activeNotices',
+            'officeAttendanceData'
         )));
     }
 
@@ -179,6 +182,57 @@ class HrDashboardController extends Controller
             })
             ->sortBy('days_until_birthday')
             ->take(10);
+    }
+
+    /**
+     * Get attendance data separated by office for charting.
+     */
+    private function getOfficeAttendanceData(Carbon $today, $activeEmployees)
+    {
+        $offices = Office::all()->keyBy('id');
+        $officeData = [];
+        
+        foreach ($offices as $office) {
+            $officeData[$office->id] = [
+                'name' => $office->name,
+                'present' => 0,
+                'late' => 0,
+                'leave' => 0,
+                'absent' => 0,
+            ];
+        }
+        
+        $todayAttendance = AttendanceRecord::query()->whereDate('date', $today)->get()->keyBy('employee_id');
+        $approvedLeavesToday = LeaveApplication::query()->where('status', 'approved')
+            ->whereDate('from_date', '<=', $today)
+            ->whereDate('to_date', '>=', $today)
+            ->get()->keyBy('employee_id');
+            
+        foreach ($activeEmployees as $emp) {
+            if (!$emp->office_id || !isset($officeData[$emp->office_id])) {
+                continue;
+            }
+            $oId = $emp->office_id;
+            
+            if (isset($todayAttendance[$emp->id])) {
+                $status = strtolower($todayAttendance[$emp->id]->status);
+                if ($status === 'late') {
+                    $officeData[$oId]['late']++;
+                } else if ($status === 'present') {
+                    $officeData[$oId]['present']++;
+                }
+            } else {
+                if ($this->attendanceService->isWorkingDay($emp, $today)) {
+                    if (isset($approvedLeavesToday[$emp->id])) {
+                        $officeData[$oId]['leave']++;
+                    } else {
+                        $officeData[$oId]['absent']++;
+                    }
+                }
+            }
+        }
+        
+        return array_values($officeData);
     }
 
 }

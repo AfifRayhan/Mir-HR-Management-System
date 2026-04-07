@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <form action="{{ isset($employee) ? route('personnel.employees.update', $employee->id) : route('personnel.employees.store') }}" method="POST">
+            <form id="employee-form" action="{{ isset($employee) ? route('personnel.employees.update', $employee->id) : route('personnel.employees.store') }}" method="POST">
                 @csrf
                 @if(isset($employee))
                 @method('PUT')
@@ -244,7 +244,8 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Gross Salary') }}</label>
-                            <input type="number" name="gross_salary" class="form-control @error('gross_salary') is-invalid @enderror" value="{{ old('gross_salary', $employee->gross_salary ?? '') }}" placeholder="e.g. 50000" step="0.01" min="0">
+                            <input type="number" id="gross_salary" name="gross_salary" class="form-control @error('gross_salary') is-invalid @enderror" value="{{ old('gross_salary', $employee->gross_salary ?? '') }}" placeholder="e.g. 50000" step="0.01" min="0" data-initial="{{ $employee->gross_salary ?? '' }}">
+                            <input type="hidden" id="salary_change_reason" name="salary_change_reason" value="">
                             @error('gross_salary') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
@@ -266,6 +267,38 @@
                                 @endforeach
                             </select>
                             @error('reporting_manager_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Employee Type') }} <span class="text-danger">*</span></label>
+                            <select id="employee_type" name="employee_type" class="form-select @error('employee_type') is-invalid @enderror" required>
+                                <option value="Regular" {{ old('employee_type', $employee->employee_type ?? 'Regular') == 'Regular' ? 'selected' : '' }}>{{ __('Regular') }}</option>
+                                <option value="Probation" {{ old('employee_type', $employee->employee_type ?? '') == 'Probation' ? 'selected' : '' }}>{{ __('Probation') }}</option>
+                            </select>
+                            @error('employee_type') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
+                    <!-- Probation Information -->
+                    <div id="probation-section" class="row g-4 mb-5" style="display: {{ old('employee_type', $employee->employee_type ?? '') == 'Probation' ? 'flex' : 'none' }};">
+                        <div class="col-12">
+                            <div class="form-section-title mt-0">
+                                <i class="bi bi-clock-history"></i>{{ __('Probation Information') }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Duration (In months)') }}</label>
+                            <input type="number" id="probation_duration" name="probation_duration" class="form-control @error('probation_duration') is-invalid @enderror" value="{{ old('probation_duration', $employee->probation_duration ?? '') }}" min="1">
+                            @error('probation_duration') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Probation Start Date') }}</label>
+                            <input type="text" id="probation_start_date" name="probation_start_date" class="form-control @error('probation_start_date') is-invalid @enderror" value="{{ old('probation_start_date', $employee->probation_start_date ?? '') }}" placeholder="Same as joining date" readonly>
+                            @error('probation_start_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Probation End Date') }}</label>
+                            <input type="text" id="probation_end_date" name="probation_end_date" class="form-control @error('probation_end_date') is-invalid @enderror" value="{{ old('probation_end_date', $employee->probation_end_date ?? '') }}" placeholder="Auto calculated" readonly>
+                            @error('probation_end_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
@@ -368,6 +401,97 @@
                 if (officeSelect.value && joiningPicker.input.value) {
                     updateEmployeeCode(joiningPicker.input.value);
                 }
+            }
+
+            // Intercept form submission if gross salary changed
+            const employeeForm = document.getElementById('employee-form');
+            const grossSalaryInput = document.getElementById('gross_salary');
+            const salaryReasonInput = document.getElementById('salary_change_reason');
+
+            if (employeeForm && grossSalaryInput && isEditMode) {
+                employeeForm.addEventListener('submit', function(e) {
+                    const initialSalary = parseFloat(grossSalaryInput.getAttribute('data-initial')) || 0;
+                    const currentSalary = parseFloat(grossSalaryInput.value) || 0;
+
+                    if (initialSalary !== currentSalary && initialSalary > 0) {
+                        e.preventDefault(); // Stop normal submission
+
+                        const isIncrement = currentSalary > initialSalary;
+                        const actionText = isIncrement ? 'increment' : 'pay cut';
+                        const titleText = isIncrement ? 'Salary Increment' : 'Salary Pay Cut';
+                        const confirmColor = isIncrement ? '#10b981' : '#ef4444';
+
+                        Swal.fire({
+                            title: titleText,
+                            html: `You are about to issue a <b>${actionText}</b> from <b>${initialSalary.toFixed(2)}</b> to <b>${currentSalary.toFixed(2)}</b>.<br><br>Please provide an optional reason for this change:`,
+                            icon: 'warning',
+                            input: 'text',
+                            inputPlaceholder: 'Reason for salary change (optional)',
+                            showCancelButton: true,
+                            confirmButtonColor: confirmColor,
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Yes, proceed',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                salaryReasonInput.value = result.value || '';
+                                employeeForm.submit(); // Submit programmatically
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Probation Logic
+            const employeeTypeSelect = document.getElementById('employee_type');
+            const probationSection = document.getElementById('probation-section');
+            const probationDurationInput = document.getElementById('probation_duration');
+            const probationStartDateInput = document.getElementById('probation_start_date');
+            const probationEndDateInput = document.getElementById('probation_end_date');
+            const joiningDateInput = document.getElementById('joining_date');
+
+            function calculateProbationEndDate() {
+                const startDateStr = probationStartDateInput.value;
+                const durationMonths = parseInt(probationDurationInput.value);
+
+                if (startDateStr && !isNaN(durationMonths)) {
+                    const startDate = new Date(startDateStr);
+                    const endDate = new Date(startDate);
+                    endDate.setMonth(startDate.getMonth() + durationMonths);
+                    
+                    // Format back to YYYY-MM-DD
+                    const yyyy = endDate.getFullYear();
+                    const mm = String(endDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(endDate.getDate()).padStart(2, '0');
+                    probationEndDateInput.value = `${yyyy}-${mm}-${dd}`;
+                } else {
+                    probationEndDateInput.value = '';
+                }
+            }
+
+            if (employeeTypeSelect) {
+                employeeTypeSelect.addEventListener('change', function() {
+                    if (this.value === 'Probation') {
+                        probationSection.style.display = 'flex';
+                        probationStartDateInput.value = joiningDateInput.value;
+                        calculateProbationEndDate();
+                    } else {
+                        probationSection.style.display = 'none';
+                    }
+                });
+            }
+
+            if (joiningDateInput) {
+                joiningDateInput.addEventListener('change', function() {
+                    if (employeeTypeSelect.value === 'Probation') {
+                        probationStartDateInput.value = this.value;
+                        calculateProbationEndDate();
+                    }
+                });
+            }
+
+            if (probationDurationInput) {
+                probationDurationInput.addEventListener('input', calculateProbationEndDate);
             }
         });
     </script>

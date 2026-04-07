@@ -122,6 +122,7 @@ class MenuItemSeeder extends Seeder
         $attendanceChildren = [
             ['name' => 'Daily Attendance', 'slug' => 'attendance-daily', 'icon' => 'bi-calendar-check', 'route_name' => 'personnel.attendances.index', 'sort_order' => 1],
             ['name' => 'Adjustment',       'slug' => 'attendance-adjust', 'icon' => 'bi-pencil-square',  'route_name' => 'personnel.attendances.adjust', 'sort_order' => 2],
+            ['name' => 'Approvals',        'slug' => 'attendance-approvals', 'icon' => 'bi-check2-all',  'route_name' => 'personnel.attendances.approvals', 'sort_order' => 3],
         ];
 
         foreach ($attendanceChildren as $child) {

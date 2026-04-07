@@ -4,16 +4,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    @php $isTeamLead = optional(auth()->user()->role)->name === 'Team Lead'; @endphp
+    @php 
+        $isTeamLeadRole = optional(auth()->user()->role)->name === 'Team Lead'; 
+        // Need to fetch employee context since it isn't explicitly passed to this blade variable list, but let's check auth user
+        $employeeRecord = \App\Models\Employee::where('user_id', auth()->id())->first();
+        $isReportingManager = \App\Models\Employee::where('reporting_manager_id', $employeeRecord?->id ?? 0)->exists();
+        $isDeptHead = \App\Models\Department::where('incharge_id', $employeeRecord?->id ?? 0)->exists();
+        $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager || $isDeptHead;
+    @endphp
 
-    <div class="{{ $isTeamLead ? 'hr-layout' : 'emp-layout' }}">
-        @if($isTeamLead)
+    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+        @if($isTeamLeadLayout)
             @include('partials.team-lead-sidebar')
         @else
             @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $isTeamLead ? 'hr-main' : 'emp-main' }}">
+        <main class="{{ $isTeamLeadLayout ? 'hr-main' : 'emp-main' }}">
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -126,7 +133,8 @@
                                 <th>Out Time</th>
                                 <th>Working Hours</th>
                                 <th>Late (H:M:S)</th>
-                                <th class="pe-4 text-end">Status</th>
+                                <th class="text-end">Status</th>
+                                <th class="pe-4 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,7 +150,7 @@
                                             {{ $record->late_timing }}
                                         </span>
                                     </td>
-                                    <td class="pe-4 text-end">
+                                    <td class="text-end">
                                         @if(strtolower($record->status) == 'present')
                                             <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Present</span>
                                         @elseif(strtolower($record->status) == 'late')
@@ -153,6 +161,37 @@
                                             <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">On Leave</span>
                                         @else
                                             <span class="badge bg-secondary text-white" style="font-size: 0.7rem;">{{ ucfirst($record->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="pe-4 text-center">
+                                        @php
+                                            $recordDateStr = \Carbon\Carbon::parse($record->date)->format('Y-m-d');
+                                            $pendingAdj = $pendingAdjustments[$recordDateStr] ?? null;
+                                        @endphp
+
+                                        @if($pendingAdj)
+                                            @if($pendingAdj->status === 'pending')
+                                                <span class="badge bg-warning text-dark cursor-pointer shadow-sm" style="font-size: 0.7rem;" 
+                                                      onclick="showAdjustmentReason('Pending Request', '{{ addslashes($pendingAdj->reason) }}', null, '{{ $recordDateStr }}')">
+                                                    <i class="bi bi-hourglass-split me-1"></i>Pending
+                                                </span>
+                                            @elseif($pendingAdj->status === 'rejected')
+                                                <span class="badge bg-danger text-white cursor-pointer shadow-sm" style="font-size: 0.7rem;"
+                                                      onclick="showAdjustmentReason('Request Rejected', '{{ addslashes($pendingAdj->reason) }}', '{{ addslashes($pendingAdj->reject_reason) }}', '{{ $recordDateStr }}')">
+                                                    <i class="bi bi-x-circle me-1"></i>Rejected
+                                                </span>
+                                            @elseif($pendingAdj->status === 'approved')
+                                                <span class="badge bg-success text-white cursor-pointer shadow-sm" style="font-size: 0.7rem;"
+                                                      onclick="showAdjustmentReason('Request Approved', '{{ addslashes($pendingAdj->reason) }}', null, '{{ $recordDateStr }}')">
+                                                    <i class="bi bi-check-circle me-1"></i>Approved
+                                                </span>
+                                            @endif
+                                        @elseif(strtolower($record->status) == 'absent')
+                                            <a href="{{ route('employee.attendance.adjust', ['date' => $recordDateStr]) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        @else
+                                            <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -192,6 +231,60 @@
                 allowInput: false,
             });
         });
+
+        function showAdjustmentReason(title, reason, rejectReason, date) {
+            let html = `
+                <div class="text-start">
+                    <div class="mb-3">
+                        <label class="fw-bold small text-muted text-uppercase d-block mb-1">Your Reason:</label>
+                        <div class="p-3 bg-light rounded border small text-gray-700">${reason}</div>
+                    </div>`;
+            
+            if (rejectReason) {
+                html += `
+                    <div class="mb-0">
+                        <label class="fw-bold small text-muted text-uppercase text-danger d-block mb-1">Rejection Reason:</label>
+                        <div class="p-3 bg-danger-soft text-danger rounded border border-danger-subtle small">${rejectReason}</div>
+                    </div>`;
+            }
+            
+            html += `</div>`;
+
+            Swal.fire({
+                title: `<span class="fw-bold">${title}</span>`,
+                html: html,
+                icon: rejectReason ? 'error' : (title.includes('Approved') ? 'success' : 'info'),
+                showDenyButton: !!rejectReason,
+                confirmButtonText: 'Close',
+                denyButtonText: 'Apply Again',
+                customClass: {
+                    actions: 'd-flex gap-2',
+                    confirmButton: 'btn btn-primary rounded-pill px-4',
+                    denyButton: 'btn btn-outline-primary rounded-pill px-4'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isDenied && date) {
+                    window.location.href = `{{ route('employee.attendance.adjust') }}?date=${date}`;
+                }
+            });
+        }
     </script>
+    <style>
+        .cursor-pointer { cursor: pointer; }
+        .bg-danger-soft { background-color: #fee2e2; }
+        .swal2-actions { 
+            display: flex !important; 
+            flex-direction: row-reverse !important; 
+            gap: 15px !important; 
+            justify-content: center !important; 
+            margin-top: 25px !important;
+            border-top: none !important;
+        }
+        .swal2-confirm, .swal2-deny {
+            min-width: 110px !important;
+            padding: 10px 24px !important;
+        }
+    </style>
     @endpush
 </x-app-layout>
