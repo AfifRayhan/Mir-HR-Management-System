@@ -185,8 +185,10 @@ class EmployeeDashboardController extends Controller
                 ->take(5)
                 ->get();
 
-            // Calculate pending team leaves for Team Leads / Department Heads
-            if ($roleName === 'Team Lead') {
+            // Calculate pending team leaves for Team Leads / Department Heads / Reporting Managers
+            $isReportingManager = Employee::where('reporting_manager_id', $employee->id)->exists();
+
+            if ($roleName === 'Team Lead' || $isReportingManager) {
                 $inchargeDeptIds = Department::where('incharge_id', $employee->id)->pluck('id');
                 $teamEmployeeIds = Employee::where('reporting_manager_id', $employee->id)
                     ->orWhereIn('department_id', $inchargeDeptIds)
@@ -251,7 +253,8 @@ class EmployeeDashboardController extends Controller
             'pendingTeamLeavesCount',
             'upcomingHolidays',
             'upcomingBirthdays',
-            'activeNotices'
+            'activeNotices',
+            'isReportingManager'
         ));
     }
 

@@ -3,8 +3,14 @@
     @vite(['resources/css/custom-employee-dashboard.css'])
     @endpush
 
-    <div class="emp-layout">
-        @if(optional(auth()->user()->role)->name === 'Team Lead')
+    @php 
+        $isTeamLeadRole = optional(auth()->user()->role)->name === 'Team Lead';
+        $isReportingManager = \App\Models\Employee::where('reporting_manager_id', $employee?->id ?? 0)->exists();
+        $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager;
+    @endphp
+
+    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+        @if($isTeamLeadLayout)
         @include('partials.team-lead-sidebar')
         @else
         @include('partials.employee-sidebar')

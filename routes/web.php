@@ -82,11 +82,16 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::post('attendances/process', [AttendanceController::class, 'processLogs'])->name('attendances.process');
     Route::get('attendances/adjust', [AttendanceController::class, 'adjust'])->name('attendances.adjust');
     Route::post('attendances/adjust', [AttendanceController::class, 'storeAdjustment'])->name('attendances.store-adjustment');
+    Route::get('attendances/approvals', [AttendanceController::class, 'approvals'])->name('attendances.approvals');
+    Route::post('attendances/approvals/{id}/approve', [AttendanceController::class, 'approveAdjustment'])->name('attendances.approve-adjustment');
+    Route::post('attendances/approvals/{id}/reject', [AttendanceController::class, 'rejectAdjustment'])->name('attendances.reject-adjustment');
 });
 
 // Employee specific routes
 Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->group(function () {
     Route::get('attendance', [EmployeeAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('attendance/adjust', [EmployeeAttendanceController::class, 'adjust'])->name('attendance.adjust');
+    Route::post('attendance/adjust', [EmployeeAttendanceController::class, 'storeAdjustment'])->name('attendance.store-adjustment');
     Route::get('leave', [LeaveApplicationController::class, 'indexEmployee'])->name('leave.index');
     Route::post('leave', [LeaveApplicationController::class, 'store'])->name('leave.store');
 });
@@ -99,6 +104,11 @@ Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')
     Route::get('leave-applications', [LeaveApplicationController::class, 'indexTeamLead'])->name('leave-applications.index');
     Route::get('leave-applications/history', [LeaveApplicationController::class, 'historyTeamLead'])->name('leave-applications.history');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatusTeamLead'])->name('leave-applications.status');
+
+    Route::get('attendances/approvals', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'index'])->name('attendances.approvals');
+    Route::post('attendances/approvals/{id}/approve', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'approve'])->name('attendances.approve');
+    Route::post('attendances/approvals/{id}/reject', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'reject'])->name('attendances.reject');
+    
     Route::get('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'index'])->name('remarks.index');
     Route::get('remarks/create', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'create'])->name('remarks.create');
     Route::post('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'store'])->name('remarks.store');

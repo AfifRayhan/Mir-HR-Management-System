@@ -15,6 +15,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Exports\EmployeesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -139,6 +140,10 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
+            'employee_type' => 'required|in:Regular,Probation',
+            'probation_duration' => 'nullable|required_if:employee_type,Probation|integer|min:1',
+            'probation_start_date' => 'nullable|required_if:employee_type,Probation|date',
+            'probation_end_date' => 'nullable|required_if:employee_type,Probation|date|after_or_equal:probation_start_date',
             'gross_salary' => 'nullable|numeric|min:0',
             // User validations
             'password' => 'nullable|string|min:8|confirmed',
@@ -172,7 +177,20 @@ class EmployeeController extends Controller
         $employeeData['status'] = 'active'; // Employee status removed from form
         $employeeData['user_id'] = $userId;
 
-        Employee::create($employeeData);
+        $employee = Employee::create($employeeData);
+
+        if ($employee->gross_salary > 0) {
+            \App\Models\EmployeeSalaryHistory::create([
+                'employee_id' => $employee->id,
+                'old_salary' => null,
+                'new_salary' => $employee->gross_salary,
+                'difference' => null,
+                'type' => 'initial',
+                'reason' => 'Initial Salary',
+                'changed_by' => Auth::id(),
+                'effective_date' => now(),
+            ]);
+        }
 
         return redirect()->route('personnel.employees.index')->with('success', 'Employee created successfully.');
     }
@@ -253,6 +271,10 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
+            'employee_type' => 'required|in:Regular,Probation',
+            'probation_duration' => 'nullable|required_if:employee_type,Probation|integer|min:1',
+            'probation_start_date' => 'nullable|required_if:employee_type,Probation|date',
+            'probation_end_date' => 'nullable|required_if:employee_type,Probation|date|after_or_equal:probation_start_date',
             'gross_salary' => 'nullable|numeric|min:0',
             // User validations
             'password' => 'nullable|string|min:8|confirmed',
@@ -298,6 +320,25 @@ class EmployeeController extends Controller
 
         $employeeData = $request->except(['password', 'password_confirmation', 'role_id', 'user_status']);
         
+        // Handle Salary History
+        if (isset($employeeData['gross_salary'])) {
+            $oldSalary = $employee->gross_salary;
+            $newSalary = $employeeData['gross_salary'];
+            
+            if ($oldSalary != $newSalary && $oldSalary > 0) {
+                \App\Models\EmployeeSalaryHistory::create([
+                    'employee_id' => $employee->id,
+                    'old_salary' => $oldSalary,
+                    'new_salary' => $newSalary,
+                    'difference' => $newSalary - $oldSalary,
+                    'type' => $newSalary > $oldSalary ? 'increment' : 'decrement',
+                    'reason' => $request->input('salary_change_reason'),
+                    'changed_by' => Auth::id(),
+                    'effective_date' => now(),
+                ]);
+            }
+        }
+        
         $employee->update($employeeData);
 
         return redirect()->route('personnel.employees.index')->with('success', 'Employee updated successfully.');
@@ -308,8 +349,14 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
+        $userId = $employee->user_id;
         $employee->delete();
-        return redirect()->route('personnel.employees.index')->with('success', 'Employee deleted successfully.');
+        
+        if ($userId) {
+            User::find($userId)?->delete();
+        }
+        
+        return redirect()->route('personnel.employees.index')->with('success', 'Employee and associated user account deleted successfully.');
     }
 
     public function exportExcel(Request $request)

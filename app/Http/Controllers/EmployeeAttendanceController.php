@@ -130,9 +130,72 @@ class EmployeeAttendanceController extends Controller
         $totalAbsent = $mergedRecords->where('status', 'absent')->count();
         $totalRecords = $mergedRecords->count();
 
+        // 7. Pending Adjustments
+        $pendingAdjustments = \App\Models\ManualAttendanceAdjustment::where('employee_id', $employee->id)
+            ->whereBetween('date', [$fromDateStr, $toDateStr])
+            ->whereIn('status', ['pending', 'approved', 'rejected'])
+            ->get()
+            ->keyBy(function($item) {
+                return $item->date->format('Y-m-d');
+            });
+
         return view('employee.attendance.index', compact(
             'records', 'fromDateStr', 'toDateStr', 'status', 'user', 'roleName',
-            'totalPresent', 'totalLate', 'totalAbsent', 'totalRecords', 'employee'
+            'totalPresent', 'totalLate', 'totalAbsent', 'totalRecords', 'employee', 'pendingAdjustments'
         ));
+    }
+
+    public function adjust(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) abort(403);
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+
+        $employee = Employee::where('user_id', $user->id)->first();
+        if (!$employee) abort(403, 'No employee record linked to your account.');
+
+        $date = $request->input('date', date('Y-m-d'));
+
+        return view('employee.attendance.adjust', compact('user', 'roleName', 'employee', 'date'));
+    }
+
+    public function storeAdjustment(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) abort(403);
+
+        $employee = Employee::where('user_id', $user->id)->first();
+        if (!$employee) abort(403, 'No employee record linked to your account.');
+
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'in_time' => 'required|date_format:H:i',
+            'out_time' => 'nullable|date_format:H:i',
+            'reason' => 'required|string|max:50',
+        ]);
+
+        $date = $validated['date'];
+        
+        $validated['in_time'] = $date . ' ' . $validated['in_time'];
+        if ($validated['out_time']) {
+            $validated['out_time'] = $date . ' ' . $validated['out_time'];
+            if (strtotime($validated['out_time']) < strtotime($validated['in_time'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['out_time' => 'The out time must be after or equal to in time.']);
+            }
+        }
+
+        $validated['employee_id'] = $employee->id;
+        $validated['adjusted_by'] = $user->id;
+        $validated['status'] = 'pending';
+
+        \App\Models\ManualAttendanceAdjustment::updateOrCreate(
+            ['employee_id' => $validated['employee_id'], 'date' => $validated['date']],
+            $validated
+        );
+
+        return redirect()->route('employee.attendance.index', ['from_date' => $validated['date'], 'to_date' => $validated['date']])
+            ->with('success', 'Attendance adjustment requested successfully. Please wait for approval.');
     }
 }

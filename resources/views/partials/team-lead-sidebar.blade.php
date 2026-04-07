@@ -29,11 +29,26 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('employee.attendance.index') }}" class="hr-sidebar-link {{ request()->routeIs('employee.attendance.*') ? 'active' : '' }}">
+                    <a href="{{ route('employee.attendance.index') }}" class="hr-sidebar-link {{ request()->routeIs('employee.attendance.index') ? 'active' : '' }}">
                         <i class="bi bi-clock"></i>
                         <span>{{ __('Attendances') }}</span>
                     </a>
                 </li>
+
+                @php
+                    $tlEmployeeRecord = \App\Models\Employee::where('user_id', auth()->id())->first();
+                    $isReportingMgrSidebar = $tlEmployeeRecord
+                        ? \App\Models\Employee::where('reporting_manager_id', $tlEmployeeRecord->id)->exists()
+                        : false;
+                @endphp
+                @if($isReportingMgrSidebar)
+                <li>
+                    <a href="{{ route('team-lead.attendances.approvals') }}" class="hr-sidebar-link {{ request()->routeIs('team-lead.attendances.approvals') ? 'active' : '' }}">
+                        <i class="bi bi-check2-all"></i>
+                        <span>{{ __('Attendance Approvals') }}</span>
+                    </a>
+                </li>
+                @endif
 
                 {{-- Leave dropdown --}}
                 @php $leaveActive = request()->routeIs('team-lead.leave.*') || request()->routeIs('team-lead.leave-applications.*'); @endphp

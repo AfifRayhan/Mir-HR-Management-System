@@ -96,7 +96,7 @@ class AttendanceController extends Controller
             'date' => 'required|date',
             'in_time' => 'required|date_format:H:i',
             'out_time' => 'nullable|date_format:H:i',
-            'reason' => 'required|string',
+            'reason' => 'required|string|max:50',
         ]);
 
         $date = $validated['date'];
@@ -115,6 +115,8 @@ class AttendanceController extends Controller
         }
 
         $validated['adjusted_by'] = \Illuminate\Support\Facades\Auth::id();
+        $validated['status'] = 'approved';
+        $validated['approved_by'] = \Illuminate\Support\Facades\Auth::id();
 
         ManualAttendanceAdjustment::updateOrCreate(
             ['employee_id' => $validated['employee_id'], 'date' => $validated['date']],
@@ -127,5 +129,47 @@ class AttendanceController extends Controller
 
         return redirect()->route('personnel.attendances.index', ['date' => $validated['date']])
             ->with('success', 'Manual adjustment saved and attendance recalculated.');
+    }
+
+    public function approvals(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employeeRecord = Employee::where('user_id', $user->id)->first();
+
+        // Get all pending requests
+        $adjustments = ManualAttendanceAdjustment::with(['employee.department', 'employee.designation'])
+            ->where('status', 'pending')
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('personnel.attendance.approvals', compact('adjustments', 'user', 'roleName', 'employeeRecord'));
+    }
+
+    public function approveAdjustment(Request $request, $id)
+    {
+        $adjustment = ManualAttendanceAdjustment::findOrFail($id);
+        
+        $adjustment->status = 'approved';
+        $adjustment->approved_by = \Illuminate\Support\Facades\Auth::id();
+        $adjustment->save();
+
+        $this->attendanceService->processEmployeeAttendance($adjustment->employee, \Carbon\Carbon::parse($adjustment->date)->format('Y-m-d'));
+
+        return redirect()->back()->with('success', 'Adjustment approved and attendance recalculated.');
+    }
+
+    public function rejectAdjustment(Request $request, $id)
+    {
+        $request->validate(['reject_reason' => 'required|string|max:50']);
+        $adjustment = ManualAttendanceAdjustment::findOrFail($id);
+        
+        $adjustment->status = 'rejected';
+        $adjustment->reject_reason = $request->reject_reason;
+        $adjustment->approved_by = \Illuminate\Support\Facades\Auth::id();
+        $adjustment->save();
+
+        return redirect()->back()->with('success', 'Adjustment request rejected.');
     }
 }

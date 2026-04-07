@@ -16,6 +16,9 @@ class ManualAttendanceAdjustment extends Model
         'out_time',
         'reason',
         'adjusted_by',
+        'status',
+        'reject_reason',
+        'approved_by',
     ];
 
     protected $casts = [
@@ -32,5 +35,10 @@ class ManualAttendanceAdjustment extends Model
     public function adjustedBy()
     {
         return $this->belongsTo(User::class, 'adjusted_by');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }
