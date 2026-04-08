@@ -9,4 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('app:sync-attendances')->everyMinute();
-Schedule::job(new \App\Jobs\UpdateProbationStatusJob)->daily();
+Schedule::command('app:update-probation-status')->daily();
