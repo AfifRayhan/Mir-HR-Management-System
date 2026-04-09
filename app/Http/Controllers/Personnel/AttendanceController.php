@@ -172,4 +172,114 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('success', 'Adjustment request rejected.');
     }
+    public function records(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employeeRecord = Employee::where('user_id', $user->id)->first();
+
+        // 1. Get List of Employees for Search
+        $employees = Employee::where('status', 'active')
+            ->orderBy('name')
+            ->get(['id', 'name', 'employee_code']);
+
+        // 2. Process Filters
+        $targetEmployeeId = $request->input('employee_id');
+        $fromDateStr = $request->input('from_date', \Carbon\Carbon::now()->startOfMonth()->toDateString());
+        $toDateStr   = $request->input('to_date', \Carbon\Carbon::now()->toDateString());
+        $status      = $request->input('status');
+
+        $selectedEmployee = null;
+        $records = collect();
+        $stats = [
+            'totalPresent' => 0,
+            'totalLate'    => 0,
+            'totalAbsent'  => 0,
+            'totalRecords' => 0
+        ];
+
+        if ($targetEmployeeId) {
+            $selectedEmployee = Employee::with(['department', 'designation'])->find($targetEmployeeId);
+
+            if ($selectedEmployee) {
+                $fromDate = \Carbon\Carbon::parse($fromDateStr)->startOfDay();
+                $toDate   = \Carbon\Carbon::parse($toDateStr)->endOfDay();
+
+                // 3. Generate Date Sequence and Merge with Records (Detail logic from EmployeeAttendanceController)
+                $allWorkingDates = [];
+                $checkDate = $fromDate->copy();
+                
+                while ($checkDate->lte($toDate)) {
+                    if ($this->attendanceService->isWorkingDay($selectedEmployee, $checkDate)) {
+                        $allWorkingDates[] = $checkDate->toDateString();
+                    }
+                    $checkDate->addDay();
+                }
+
+                // Fetch approved leaves
+                $approvedLeaves = \App\Models\LeaveApplication::where('employee_id', $selectedEmployee->id)
+                    ->where('status', 'approved')
+                    ->where(function($q) use ($fromDateStr, $toDateStr) {
+                        $q->whereBetween('from_date', [$fromDateStr, $toDateStr])
+                          ->orWhereBetween('to_date', [$fromDateStr, $toDateStr]);
+                    })
+                    ->get();
+
+                // Fetch existing records
+                $existingRecords = AttendanceRecord::where('employee_id', $selectedEmployee->id)
+                    ->whereBetween('date', [$fromDateStr, $toDateStr])
+                    ->get()
+                    ->keyBy(function($item) {
+                        return $item->date->format('Y-m-d');
+                    });
+
+                // Merge
+                foreach (array_reverse($allWorkingDates) as $dateStr) {
+                    if (isset($existingRecords[$dateStr])) {
+                        $record = $existingRecords[$dateStr];
+                    } else {
+                        $carbonDate = \Carbon\Carbon::parse($dateStr);
+                        $onLeave = $approvedLeaves->contains(function($leave) use ($carbonDate) {
+                            return $carbonDate->between($leave->from_date, $leave->to_date);
+                        });
+
+                        $record = new AttendanceRecord([
+                            'employee_id' => $selectedEmployee->id,
+                            'date' => $dateStr,
+                            'status' => $onLeave ? 'leave' : 'absent',
+                            'late_seconds' => 0
+                        ]);
+                    }
+                    
+                    if (empty($status) || strtolower($record->status) == strtolower($status)) {
+                        $records->push($record);
+                    }
+                }
+
+                // Stats
+                $stats['totalPresent'] = $records->whereIn('status', ['present', 'late'])->count();
+                $stats['totalLate']    = $records->where('status', 'late')->count();
+                $stats['totalAbsent']  = $records->where('status', 'absent')->count();
+                $stats['totalRecords'] = $records->count();
+
+                // Pagination (Simplified for now, can be manual as in EmployeeAttendanceController)
+                $perPage = 15;
+                $page = $request->input('page', 1);
+                $records = new \Illuminate\Pagination\LengthAwarePaginator(
+                    $records->forPage($page, $perPage),
+                    $records->count(),
+                    $perPage,
+                    $page,
+                    ['path' => $request->url(), 'query' => $request->query()]
+                );
+            }
+        }
+
+        return view('personnel.attendance.records', compact(
+            'employees', 'selectedEmployee', 'records', 
+            'fromDateStr', 'toDateStr', 'status', 'stats',
+            'user', 'roleName', 'employeeRecord'
+        ));
+    }
 }

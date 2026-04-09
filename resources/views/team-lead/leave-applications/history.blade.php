@@ -57,11 +57,9 @@
                             </select>
                         </div>
                         
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button type="submit" class="btn btn-sm btn-success rounded-3 px-3 fw-bold">{{ __('Filter') }}</button>
-                            @if(request()->hasAny(['month', 'year', 'employee_id', 'leave_type_id', 'status']))
-                            <a href="{{ route('team-lead.leave-applications.history') }}" class="btn btn-sm btn-light rounded-3 px-3 fw-bold">{{ __('Clear') }}</a>
-                            @endif
+                        <div class="d-flex gap-2 justify-content-end pb-2">
+                            <button type="submit" class="btn btn-hr-search">{{ __('Search') }}</button>
+                            <a href="{{ route('team-lead.leave-applications.history') }}" class="btn btn-hr-clear">{{ __('Clear') }}</a>
                         </div>
                     </form>
                 </div>

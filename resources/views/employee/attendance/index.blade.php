@@ -56,12 +56,8 @@
                         </select>
                     </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            <i class="bi bi-funnel me-1"></i>{{ __('Filter') }}
-                        </button>
-                        <a href="{{ route('employee.attendance.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
-                            <i class="bi bi-arrow-counterclockwise"></i>
-                        </a>
+                        <button type="submit" class="btn btn-hr-search">{{ __('Search') }}</button>
+                        <a href="{{ route('employee.attendance.index') }}" class="btn btn-hr-clear">{{ __('Clear') }}</a>
                     </div>
                 </form>
             </div>

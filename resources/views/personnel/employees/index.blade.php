@@ -31,7 +31,7 @@
             <!-- Filter Bar -->
             <div class="filter-bar">
                 <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Search') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-gray-400">
@@ -51,9 +51,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <label class="form-label small font-bold text-gray-600">{{ __('Office') }}</label>
-                        <select name="office_id" class="form-select">
+                        <select name="office_id" class="form-select text-xs px-1">
                             <option value="">{{ __('All') }}</option>
                             @foreach($offices as $office)
                             <option value="{{ $office->id }}" {{ request('office_id') == $office->id ? 'selected' : '' }}>
@@ -81,13 +81,9 @@
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
                         </select>
                     </div>
-                    <div class="col-md-1 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-outline-secondary px-2" title="{{ __('Filter') }}">
-                            <i class="bi bi-funnel"></i>
-                        </button>
-                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-link text-gray-500 p-0 mb-1" title="{{ __('Clear') }}">
-                            <i class="bi bi-x-circle text-xl"></i>
-                        </a>
+                    <div class="col-md-3 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
+                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
                     </div>
                 </form>
             </div>
@@ -148,7 +144,7 @@
                                         </div>
                                         <div style="min-width: 150px;">
                                             <div class="fw-bold mb-0 text-gray-800 text-nowrap">{{ $emp->name }}</div>
-                                            <div class="small text-muted text-nowrap">{{ $emp->phone ?? 'No phone' }}</div>
+                                            <div class="small text-muted text-nowrap">{{ $emp->contact_no ?? 'No phone' }}</div>
                                         </div>
                                     </div>
                                 </td>

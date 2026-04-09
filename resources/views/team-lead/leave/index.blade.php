@@ -82,7 +82,7 @@
                                 <select name="leave_type_id" class="form-select rounded-3" required>
                                     <option value="">{{ __('Select Type') }}</option>
                                     @foreach($leaveTypes as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }} ({{ $type->total_days_per_year }} days/yr)</option>
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -97,7 +97,9 @@
                                 </div>
                             </div>
 
-                            <div id="leave_days_display" class="mb-3 d-none" data-holidays="{{ json_encode($weeklyHolidayDays) }}">
+                            <div id="leave_days_display" class="mb-3 d-none" 
+                                 data-holidays="{{ json_encode($weeklyHolidayDays) }}"
+                                 data-national-holidays="{{ json_encode($nationalHolidayDates) }}">
                                 <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
                                     <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
                                     <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
@@ -202,6 +204,7 @@
             const daysDisplay = document.getElementById('leave_days_display');
             const daysCount = document.getElementById('total_days_count');
             const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
+            const nationalHolidays = JSON.parse(daysDisplay.dataset.nationalHolidays || '[]');
 
             function calculateDays() {
                 const fromDate = fromPicker.selectedDates[0];
@@ -214,7 +217,11 @@
 
                         while (current <= toDate) {
                             const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-                            if (!weeklyHolidays.includes(dayName)) {
+                            const dateStr = current.getFullYear() + '-' + 
+                                            String(current.getMonth() + 1).padStart(2, '0') + '-' + 
+                                            String(current.getDate()).padStart(2, '0');
+
+                            if (!weeklyHolidays.includes(dayName) && !nationalHolidays.includes(dateStr)) {
                                 totalDays++;
                             }
                             current.setDate(current.getDate() + 1);

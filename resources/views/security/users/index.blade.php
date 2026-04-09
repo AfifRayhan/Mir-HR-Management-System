@@ -7,140 +7,230 @@
         @include('partials.hr-sidebar')
 
         <main class="hr-main">
-            <div class="row mb-3">
+            <!-- Header -->
+            <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1">{{ __('User Management') }}</h5>
+                        <h4 class="fw-bold mb-1">{{ __('User Management') }}</h4>
                         <p class="mb-0 small text-muted">{{ __('Create, edit and manage system users') }}</p>
                     </div>
-                    <a href="{{ route('security.users.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-1"></i> {{ __('Add User') }}
-                    </a>
                 </div>
             </div>
 
-
-            <!-- Filter Bar -->
-            <div class="filter-bar mb-4">
-                <form action="{{ route('security.users.index') }}" method="GET" class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label small font-bold text-gray-600">{{ __('Search') }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0 text-gray-400">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or Email..." value="{{ request('search') }}">
+            <div class="row g-4">
+                <!-- Add User Form -->
+                <div class="col-lg-4">
+                    <div class="hr-panel">
+                        <div class="hr-panel-title mb-4">
+                            <i class="bi bi-person-plus me-2 text-success"></i>{{ __('Add New User') }}
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small font-bold text-gray-600">{{ __('Role') }}</label>
-                        <select name="role_id" class="form-select">
-                            <option value="">{{ __('All Roles') }}</option>
-                            @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>
-                                {{ $role->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small font-bold text-gray-600">{{ __('Status') }}</label>
-                        <select name="status" class="form-select">
-                            <option value="">{{ __('All Status') }}</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-outline-secondary w-100 me-2">
-                            {{ __('Filter') }}
-                        </button>
-                        <a href="{{ route('security.users.index') }}" class="btn btn-link text-gray-500 p-0 mb-1">
-                            <i class="bi bi-x-circle text-xl"></i>
-                        </a>
-                    </div>
-                </form>
-            </div>
 
-            <div class="hr-panel p-0 overflow-hidden">
-                <div class="table-responsive">
-                    <table class="table hr-table mb-0">
-                        <thead>
-                            <tr>
-                                <th class="ps-4">
-                                    <a href="{{ route('security.users.index', array_merge(request()->query(), ['sort' => 'name', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
-                                        {{ __('Name') }}
-                                        @if(request('sort', 'name') === 'name')
-                                        <i class="bi bi-sort-{{ request('direction', 'asc') === 'asc' ? 'down' : 'up' }} sort-icon text-success"></i>
-                                        @else
-                                        <i class="bi bi-sort-down sort-icon"></i>
-                                        @endif
-                                    </a>
-                                </th>
-                                <th>
-                                    <a href="{{ route('security.users.index', array_merge(request()->query(), ['sort' => 'email', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
-                                        {{ __('Email') }}
-                                        @if(request('sort') === 'email')
-                                        <i class="bi bi-sort-{{ request('direction') === 'asc' ? 'down' : 'up' }} sort-icon text-success"></i>
-                                        @else
-                                        <i class="bi bi-sort-down sort-icon"></i>
-                                        @endif
-                                    </a>
-                                </th>
-                                <th>{{ __('Role') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th class="text-end pe-4">{{ __('Actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($users as $u)
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="hr-avatar-sm">{{ strtoupper(substr($u->name, 0, 1)) }}</div>
-                                        <span class="font-bold text-gray-700">{{ $u->name }}</span>
-                                    </div>
-                                </td>
-                                <td>{{ $u->email }}</td>
-                                <td>
-                                    <span class="badge bg-light text-dark">{{ $u->role->name ?? '—' }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge {{ $u->status === 'active' ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger' }}">
-                                        {{ ucfirst($u->status ?? 'active') }}
-                                    </span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    <div class="btn-group">
-                                        <a href="{{ route('security.users.edit', $u) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        @php $confirmMsg = __('Are you sure you want to delete this user?'); @endphp
-                                        <form action="{{ route('security.users.destroy', $u) }}" method="POST" data-confirm data-confirm-message="{{ $confirmMsg }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <i class="bi bi-people text-4xl text-gray-200 d-block mb-3"></i>
-                                    <span class="text-gray-500">{{ __('No users found.') }}</span>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                        <form action="{{ route('security.users.store') }}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Full Name') }} <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control rounded-3" value="{{ old('name') }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Email Address') }} <span class="text-danger">*</span></label>
+                                <input type="email" name="email" class="form-control rounded-3" value="{{ old('email') }}" required>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-muted">{{ __('Password') }} <span class="text-danger">*</span></label>
+                                    <input type="password" name="password" class="form-control rounded-3" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-muted">{{ __('Confirm') }} <span class="text-danger">*</span></label>
+                                    <input type="password" name="password_confirmation" class="form-control rounded-3" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Role') }}</label>
+                                <select name="role_id" class="form-select rounded-3">
+                                    <option value="">{{ __('— No Role —') }}</option>
+                                    @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">{{ __('Status') }}</label>
+                                <select name="status" class="form-select rounded-3" required>
+                                    <option value="active" {{ old('status', 'active') === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                    <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-person-check me-2"></i>{{ __('Create User') }}
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mt-4">
-                {{ $users->links() }}
+                <!-- User List -->
+                <div class="col-lg-8">
+                    <div class="hr-panel p-0 overflow-hidden">
+                        <!-- Filter/Search Bar -->
+                        <div class="p-4 border-bottom bg-light bg-opacity-10">
+                            <form action="{{ route('security.users.index') }}" method="GET" class="row g-2 align-items-center">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search name or email..." value="{{ request('search') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="role_id" class="form-select">
+                                        <option value="">{{ __('All Roles') }}</option>
+                                        @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" {{ request('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="status" class="form-select">
+                                        <option value="">{{ __('All Status') }}</option>
+                                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex gap-2">
+                                    <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
+                                    <a href="{{ route('security.users.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table hr-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4">{{ __('User') }}</th>
+                                        <th>{{ __('Role') }}</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th class="text-end pe-4">{{ __('Actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($users as $u)
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="hr-avatar-sm flex-shrink-0" style="background-color: var(--hr-primary-soft); color: var(--hr-primary); font-weight: 700;">
+                                                    {{ strtoupper(substr($u->name, 0, 1)) }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-gray-800">{{ $u->name }}</div>
+                                                    <div class="text-muted small">{{ $u->email }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-light text-muted border">{{ $u->role->name ?? '—' }}</span></td>
+                                        <td>
+                                            <span class="badge {{ $u->status === 'active' ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger' }}">
+                                                {{ ucfirst($u->status ?? 'active') }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $u->id }}">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                                <form action="{{ route('security.users.destroy', $u) }}" method="POST" data-confirm data-confirm-message="{{ __('Are you sure you want to delete this user?') }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Edit User Modal -->
+                                    <div class="modal fade" id="editUserModal{{ $u->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content rounded-4 border-0 shadow">
+                                                <div class="modal-header border-0 pb-0 px-4 pt-4">
+                                                    <h5 class="modal-title fw-bold text-primary">{{ __('Edit User') }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('security.users.update', $u) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-body p-4">
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-bold text-muted">{{ __('Full Name') }} <span class="text-danger">*</span></label>
+                                                            <input type="text" name="name" class="form-control rounded-3" value="{{ old('name', $u->name) }}" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-bold text-muted">{{ __('Email') }} <span class="text-danger">*</span></label>
+                                                            <input type="email" name="email" class="form-control rounded-3" value="{{ old('email', $u->email) }}" required>
+                                                        </div>
+                                                        <div class="row g-2 mb-3">
+                                                            <div class="col-6">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('New Password') }}</label>
+                                                                <input type="password" name="password" class="form-control rounded-3" placeholder="Leave blank">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Confirm') }}</label>
+                                                                <input type="password" name="password_confirmation" class="form-control rounded-3" placeholder="Leave blank">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row g-2">
+                                                            <div class="col-6">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Role') }}</label>
+                                                                <select name="role_id" class="form-select rounded-3">
+                                                                    <option value="">{{ __('— No Role —') }}</option>
+                                                                    @foreach($roles as $role)
+                                                                    <option value="{{ $role->id }}" {{ old('role_id', $u->role_id) == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Status') }}</label>
+                                                                <select name="status" class="form-select rounded-3" required>
+                                                                    <option value="active" {{ old('status', $u->status) === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                                                                    <option value="inactive" {{ old('status', $u->status) === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-0 p-4 pt-0">
+                                                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                                                        <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Update User') }}</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted">
+                                            <i class="bi bi-people fs-1 d-block mb-2 opacity-25"></i>
+                                            {{ __('No users found.') }}
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if($users->hasPages())
+                            <div class="px-4 py-3 border-top bg-light">
+                                {{ $users->links() }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </main>
     </div>

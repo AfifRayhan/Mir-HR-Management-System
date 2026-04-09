@@ -4,6 +4,18 @@
         <i class="bi bi-list"></i>
     </button>
     <a href="{{ route('employee-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
+
+    {{-- Notification Mobile Bell --}}
+    @auth
+    <a href="{{ route('notifications.index') }}" class="ms-auto position-relative text-dark me-3" style="font-size: 1.15rem; display: flex; align-items: center; text-decoration: none;">
+        <i class="bi bi-bell-fill"></i>
+        @if(($unreadNotificationCount ?? 0) > 0)
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; padding: 0.25em 0.4em;">
+                {{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}
+            </span>
+        @endif
+    </a>
+    @endauth
 </div>
 
 {{-- Sidebar Overlay --}}
@@ -37,6 +49,20 @@
                         </li>
                     @endif
                 @endforeach
+
+                {{-- Notifications Link --}}
+                <li>
+                    <a href="{{ route('notifications.index') }}" 
+                       class="emp-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                        <i class="bi bi-bell"></i>
+                        <span class="d-flex w-100 align-items-center justify-content-between">
+                            {{ __('Notifications') }}
+                            @if(($unreadNotificationCount ?? 0) > 0)
+                                <span class="badge bg-danger rounded-pill">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
+                            @endif
+                        </span>
+                    </a>
+                </li>
             </ul>
 
             <form method="POST" action="{{ route('logout') }}" class="mt-4">

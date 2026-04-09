@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\AttendanceRecord;
 use App\Services\AttendanceService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -193,6 +194,16 @@ class EmployeeAttendanceController extends Controller
         \App\Models\ManualAttendanceAdjustment::updateOrCreate(
             ['employee_id' => $validated['employee_id'], 'date' => $validated['date']],
             $validated
+        );
+
+        // Notify reporting manager, dept head, and HR admins
+        NotificationService::notifyManagers(
+            $employee,
+            'attendance_request',
+            'Attendance Adjustment Request: ' . $employee->name,
+            $employee->name . ' has submitted an attendance adjustment request for ' .
+                Carbon::parse($validated['date'])->format('d M Y') . '.',
+            route('team-lead.attendances.approvals')
         );
 
         return redirect()->route('employee.attendance.index', ['from_date' => $validated['date'], 'to_date' => $validated['date']])

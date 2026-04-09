@@ -42,12 +42,6 @@ class UserController extends Controller
         return view('security.users.index', compact('users', 'roles'));
     }
 
-    public function create()
-    {
-        $roles = Role::orderBy('name')->get();
-
-        return view('security.users.create', compact('roles'));
-    }
 
     public function store(Request $request)
     {
@@ -67,12 +61,6 @@ class UserController extends Controller
             ->with('success', 'User created successfully.');
     }
 
-    public function edit(User $user)
-    {
-        $roles = Role::orderBy('name')->get();
-
-        return view('security.users.edit', compact('user', 'roles'));
-    }
 
     public function update(Request $request, User $user)
     {

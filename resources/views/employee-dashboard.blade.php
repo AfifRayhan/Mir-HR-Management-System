@@ -264,7 +264,7 @@
                     </div>
  
                     <!-- Notices & Events -->
-                    <div class="hr-panel mb-4 shadow-sm">
+                    <div class="hr-panel mb-4 shadow-sm" id="notices-events">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-megaphone me-2 text-success"></i>{{ __('Notices & Events') }}</h6>
                         <div class="notice-scroll-container" style="max-height: 250px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">

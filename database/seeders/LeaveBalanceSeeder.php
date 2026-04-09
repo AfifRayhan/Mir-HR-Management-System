@@ -31,22 +31,54 @@ class LeaveBalanceSeeder extends Seeder
 
         foreach ($employees as $employee) {
             foreach ($leaveTypes as $type) {
+                $openingBalance = $this->getAllocatedDays($employee, $type);
+
                 // Initialize leave balance for each type for the current year
-                LeaveBalance::firstOrCreate(
+                LeaveBalance::updateOrCreate(
                     [
                         'employee_id' => $employee->id,
                         'leave_type_id' => $type->id,
                         'year' => $currentYear,
                     ],
                     [
-                        'opening_balance' => $type->total_days_per_year,
+                        'opening_balance' => $openingBalance,
                         'used_days' => 0,
-                        'remaining_days' => $type->total_days_per_year,
+                        'remaining_days' => $openingBalance,
                     ]
                 );
             }
         }
 
         $this->command->info('Leave balances initialized for all employees.');
+    }
+
+    private function getAllocatedDays($employee, $leaveType)
+    {
+        $nameStr = strtolower($leaveType->name);
+
+        if ($employee->employee_type === 'Probation') {
+            if (str_contains($nameStr, 'casual')) {
+                return 4;
+            } elseif (str_contains($nameStr, 'sick')) {
+                return 4;
+            } elseif (str_contains($nameStr, 'emergency')) {
+                return 2;
+            } elseif (str_contains($nameStr, 'earn')) {
+                return 0;
+            }
+        } else {
+            if (str_contains($nameStr, 'earn')) {
+                if ($employee->joining_date) {
+                    $joinDate = \Carbon\Carbon::parse($employee->joining_date);
+                    $daysSinceJoin = $joinDate->diffInDays(now());
+                    $earnLeave = floor($daysSinceJoin / 18);
+                    return min(30, max(0, $earnLeave));
+                } else {
+                    return 0;
+                }
+            }
+        }
+        
+        return $leaveType->total_days_per_year;
     }
 }
