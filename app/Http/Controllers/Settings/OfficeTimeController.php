@@ -20,15 +20,6 @@ class OfficeTimeController extends Controller
         return view('settings.office-times.index', compact('officeTimes', 'user', 'roleName', 'employee'));
     }
 
-    public function create()
-    {
-        /** @var \App\Models\User $user */
-        $user = \Illuminate\Support\Facades\Auth::user();
-        $roleName = optional($user->role)->name ?? 'Unassigned';
-        $employee = Employee::where('user_id', $user->id)->first();
-
-        return view('settings.office-times.create', compact('user', 'roleName', 'employee'));
-    }
 
     public function store(Request $request)
     {
@@ -97,15 +88,6 @@ class OfficeTimeController extends Controller
         return redirect()->route('settings.office-times.index')->with('success', 'Office Time created successfully.');
     }
 
-    public function edit(OfficeTime $officeTime)
-    {
-        /** @var \App\Models\User $user */
-        $user = \Illuminate\Support\Facades\Auth::user();
-        $roleName = optional($user->role)->name ?? 'Unassigned';
-        $employee = Employee::where('user_id', $user->id)->first();
-
-        return view('settings.office-times.edit', compact('officeTime', 'user', 'roleName', 'employee'));
-    }
 
     public function update(Request $request, OfficeTime $officeTime)
     {

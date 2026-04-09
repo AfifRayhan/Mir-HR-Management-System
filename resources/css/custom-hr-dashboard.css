@@ -18,6 +18,8 @@
     --hr-warning-soft: #FEF3C7;
     --hr-info: #3B82F6;
     --hr-info-soft: #DBEAFE;
+    --hr-danger: #EF4444;
+    --hr-danger-soft: #FEE2E2;
 }
 
 body {
@@ -279,6 +281,14 @@ body {
 
 .text-warning {
     color: var(--hr-warning);
+}
+
+.bg-danger-soft {
+    background-color: var(--hr-danger-soft);
+}
+
+.text-danger {
+    color: var(--hr-danger) !important;
 }
 
 .bg-info-soft {
@@ -569,7 +579,7 @@ body {
 }
 
 .hr-sidebar-parent.open>.hr-sidebar-submenu {
-    max-height: 300px;
+    max-height: 500px;
 }
 
 .hr-sidebar-submenu .hr-sidebar-link {
@@ -779,6 +789,53 @@ body {
     color: #fff;
 }
 
+.btn-hr-search {
+    background-color: var(--hr-primary);
+    border: 1.5px solid var(--hr-primary);
+    color: #fff;
+    border-radius: 30px !important;
+    padding: 0 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.btn-hr-search:hover {
+    background-color: var(--hr-primary-hover);
+    border-color: var(--hr-primary-hover);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.btn-hr-clear {
+    background-color: transparent;
+    border: 1.5px solid var(--hr-primary);
+    color: var(--hr-primary);
+    border-radius: 30px !important;
+    padding: 0 1.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.btn-hr-clear:hover {
+    background-color: var(--hr-primary-soft);
+    color: var(--hr-primary-hover);
+    border-color: var(--hr-primary-hover);
+    transform: translateY(-1px);
+}
+
 /* Employee List Filters & Table Extras */
 .filter-bar {
     background: #f8fafc;
@@ -870,6 +927,17 @@ body {
     box-shadow: none;
 }
 
+/* Custom Form Check Colors */
+.form-check-input:checked {
+    background-color: var(--hr-primary);
+    border-color: var(--hr-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--hr-primary);
+    box-shadow: 0 0 0 0.25rem rgba(0, 122, 16, 0.1);
+}
+
 /* ======== Pagination Overrides ======== */
 .page-link {
     color: var(--hr-primary-dark);
@@ -946,4 +1014,8 @@ body {
     background: var(--hr-primary);
     color: #fff;
     border-color: var(--hr-primary);
+}
+
+.back-to-list-link:hover {
+    color: white !important;
 }

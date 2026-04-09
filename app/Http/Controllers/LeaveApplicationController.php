@@ -10,9 +10,18 @@ use App\Models\Employee;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\WeeklyHoliday;
+use App\Models\Holiday;
+use App\Services\NotificationService;
+use App\Services\AttendanceService;
 
 class LeaveApplicationController extends Controller
 {
+    protected $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
+    {
+        $this->attendanceService = $attendanceService;
+    }
     // --- HR methods ---
     public function indexHR()
     {
@@ -79,24 +88,11 @@ class LeaveApplicationController extends Controller
                 Carbon::parse($overlappingLeave->to_date)->format('d M Y') . ').');
         }
 
-        // Fetch weekly holidays for this employee's office
-        $hasOfficeConfig = WeeklyHoliday::where('office_id', $targetEmployee->office_id)->exists();
-        $weeklyHolidayDays = WeeklyHoliday::where('is_holiday', true)
-            ->where(function ($q) use ($hasOfficeConfig, $targetEmployee) {
-                if ($hasOfficeConfig) {
-                    $q->where('office_id', $targetEmployee->office_id);
-                } else {
-                    $q->whereNull('office_id');
-                }
-            })
-            ->pluck('day_name')
-            ->toArray();
-
         // Count working days
         $totalDays = 0;
         $current = $fromDate->copy();
         while ($current->lte($toDate)) {
-            if (!in_array($current->format('l'), $weeklyHolidayDays)) {
+            if ($this->attendanceService->isWorkingDay($targetEmployee, $current)) {
                 $totalDays++;
             }
             $current->addDay();
@@ -187,6 +183,22 @@ class LeaveApplicationController extends Controller
         }
 
         $leaveApplication->save();
+
+        // Notify the employee
+        $applicantEmployee = $leaveApplication->employee;
+        if ($applicantEmployee) {
+            $statusLabel = ucfirst($request->status);
+            NotificationService::notifyEmployee(
+                $applicantEmployee,
+                'leave_decision',
+                'Leave Application ' . $statusLabel,
+                'Your leave application from ' .
+                    Carbon::parse($leaveApplication->from_date)->format('d M Y') . ' to ' .
+                    Carbon::parse($leaveApplication->to_date)->format('d M Y') .
+                    ' has been ' . $request->status . ' by HR.',
+                route('employee.leave.index')
+            );
+        }
 
         return redirect()->back()->with('success', 'Leave application status updated.');
     }
@@ -333,7 +345,9 @@ class LeaveApplicationController extends Controller
             ->pluck('day_name')
             ->toArray();
 
-        return view('team-lead.leave.index', compact('applications', 'leaveTypes', 'balances', 'user', 'roleName', 'employee', 'weeklyHolidayDays', 'month', 'year'));
+        $nationalHolidayDates = $this->getNationalHolidayDates($employee);
+
+        return view('team-lead.leave.index', compact('applications', 'leaveTypes', 'balances', 'user', 'roleName', 'employee', 'weeklyHolidayDays', 'month', 'year', 'nationalHolidayDates'));
     }
 
     public function updateStatusTeamLead(Request $request, LeaveApplication $leaveApplication)
@@ -382,6 +396,24 @@ class LeaveApplicationController extends Controller
         }
 
         $leaveApplication->save();
+
+        // Notify the employee
+        $applicantEmployee = $leaveApplication->employee;
+        if ($applicantEmployee) {
+            $statusLabel = ucfirst($request->status);
+            // Determine which leave page is appropriate for this employee's role
+            $leaveUrl = route('employee.leave.index');
+            NotificationService::notifyEmployee(
+                $applicantEmployee,
+                'leave_decision',
+                'Leave Application ' . $statusLabel,
+                'Your leave application from ' .
+                    Carbon::parse($leaveApplication->from_date)->format('d M Y') . ' to ' .
+                    Carbon::parse($leaveApplication->to_date)->format('d M Y') .
+                    ' has been ' . $request->status . '.',
+                $leaveUrl
+            );
+        }
 
         return redirect()->back()->with('success', 'Leave application status updated.');
     }
@@ -435,7 +467,9 @@ class LeaveApplicationController extends Controller
             ->pluck('day_name')
             ->toArray();
 
-        return view('employee.leave.index', compact('applications', 'leaveTypes', 'balances', 'user', 'roleName', 'employee', 'month', 'year', 'weeklyHolidayDays'));
+        $nationalHolidayDates = $this->getNationalHolidayDates($employee);
+
+        return view('employee.leave.index', compact('applications', 'leaveTypes', 'balances', 'user', 'roleName', 'employee', 'month', 'year', 'weeklyHolidayDays', 'nationalHolidayDates'));
     }
 
     public function store(Request $request)
@@ -477,25 +511,11 @@ class LeaveApplicationController extends Controller
             return redirect()->back()->with('error', 'You already have a ' . $overlappingLeave->status . ' leave application during this period (from ' . Carbon::parse($overlappingLeave->from_date)->format('d M Y') . ' to ' . Carbon::parse($overlappingLeave->to_date)->format('d M Y') . ').');
         }
 
-        // Fetch which days of the week are weekly holidays for this employee's office
-        $hasOfficeConfig = \App\Models\WeeklyHoliday::where('office_id', $employee->office_id)->exists();
-        
-        $weeklyHolidayDays = \App\Models\WeeklyHoliday::where('is_holiday', true)
-            ->where(function ($q) use ($hasOfficeConfig, $employee) {
-                if ($hasOfficeConfig) {
-                    $q->where('office_id', $employee->office_id);
-                } else {
-                    $q->whereNull('office_id');
-                }
-            })
-            ->pluck('day_name')
-            ->toArray();
-
-        // Count only working days (skip weekly holidays)
+        // Count only working days (skip weekly holidays and national holidays)
         $totalDays = 0;
         $current = $fromDate->copy();
         while ($current->lte($toDate)) {
-            if (!in_array($current->format('l'), $weeklyHolidayDays)) {
+            if ($this->attendanceService->isWorkingDay($employee, $current)) {
                 $totalDays++;
             }
             $current->addDay();
@@ -547,6 +567,41 @@ class LeaveApplicationController extends Controller
             'status' => 'pending',
         ]);
 
+        // Notify reporting manager, dept head, and HR admins
+        NotificationService::notifyManagers(
+            $employee,
+            'leave_request',
+            'New Leave Request: ' . $employee->name,
+            $employee->name . ' has submitted a leave application for ' . $totalDays . ' day(s) from ' .
+                Carbon::parse($request->from_date)->format('d M Y') . ' to ' .
+                Carbon::parse($request->to_date)->format('d M Y') . '.',
+            route('team-lead.leave-applications.index')
+        );
+
         return redirect()->back()->with('success', 'Leave application submitted successfully.');
+    }
+
+    /**
+     * Helper to get all national holiday dates for an employee's office.
+     */
+    private function getNationalHolidayDates(Employee $employee)
+    {
+        $holidays = Holiday::where('is_active', true)
+            ->where(function ($q) use ($employee) {
+                $q->where('all_office', true)
+                    ->orWhere('office_id', $employee->office_id);
+            })
+            ->get();
+
+        $dates = [];
+        foreach ($holidays as $h) {
+            $curr = Carbon::parse($h->from_date);
+            $end = Carbon::parse($h->to_date);
+            while ($curr->lte($end)) {
+                $dates[] = $curr->toDateString();
+                $curr->addDay();
+            }
+        }
+        return array_unique($dates);
     }
 }

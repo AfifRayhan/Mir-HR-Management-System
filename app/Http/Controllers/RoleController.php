@@ -14,10 +14,6 @@ class RoleController extends Controller
         return view('security.roles.index', compact('roles'));
     }
 
-    public function create()
-    {
-        return view('security.roles.create');
-    }
 
     public function store(Request $request)
     {
@@ -35,10 +31,6 @@ class RoleController extends Controller
             ->with('success', 'Role created successfully.');
     }
 
-    public function edit(Role $role)
-    {
-        return view('security.roles.edit', compact('role'));
-    }
 
     public function update(Request $request, Role $role)
     {

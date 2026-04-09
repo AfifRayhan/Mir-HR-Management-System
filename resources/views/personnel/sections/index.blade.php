@@ -72,10 +72,10 @@
                         <!-- Filter & Search Form -->
                         <form action="{{ route('personnel.sections.index') }}" method="GET" class="mb-4">
                             <div class="row g-2">
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <input type="text" name="search" class="form-control rounded-pill" placeholder="{{ __('Search sections...') }}" value="{{ request('search') }}">
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <select name="department_id" class="form-select rounded-pill">
                                         <option value="">{{ __('All Departments') }}</option>
                                         @foreach($departments as $dept)
@@ -85,10 +85,9 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-outline-success w-100 rounded-pill">
-                                        <i class="bi bi-filter me-1"></i>{{ __('Filter') }}
-                                    </button>
+                                <div class="col-md-4 d-flex gap-2">
+                                    <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
+                                    <a href="{{ route('personnel.sections.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
                                 </div>
                             </div>
                         </form>

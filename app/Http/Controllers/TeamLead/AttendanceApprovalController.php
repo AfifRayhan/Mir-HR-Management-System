@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ManualAttendanceAdjustment;
 use App\Models\Employee;
 use App\Services\AttendanceService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -67,6 +68,20 @@ class AttendanceApprovalController extends Controller
 
         $this->attendanceService->processEmployeeAttendance($adjustment->employee, \Carbon\Carbon::parse($adjustment->date)->format('Y-m-d'));
 
+        // Notify the employee
+        $employee = $adjustment->employee;
+        if ($employee) {
+            NotificationService::notifyEmployee(
+                $employee,
+                'attendance_decision',
+                'Attendance Adjustment Approved',
+                'Your attendance adjustment request for ' .
+                    \Carbon\Carbon::parse($adjustment->date)->format('d M Y') .
+                    ' has been approved.',
+                route('employee.attendance.index')
+            );
+        }
+
         return redirect()->back()->with('success', 'Adjustment approved and attendance recalculated.');
     }
 
@@ -91,6 +106,20 @@ class AttendanceApprovalController extends Controller
         $adjustment->reject_reason = $request->reject_reason;
         $adjustment->approved_by = $user->id;
         $adjustment->save();
+
+        // Notify the employee
+        $employee = $adjustment->employee;
+        if ($employee) {
+            NotificationService::notifyEmployee(
+                $employee,
+                'attendance_decision',
+                'Attendance Adjustment Rejected',
+                'Your attendance adjustment request for ' .
+                    \Carbon\Carbon::parse($adjustment->date)->format('d M Y') .
+                    ' has been rejected. Reason: ' . $request->reject_reason,
+                route('employee.attendance.index')
+            );
+        }
 
         return redirect()->back()->with('success', 'Adjustment request rejected.');
     }

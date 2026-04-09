@@ -66,11 +66,26 @@ class User extends Authenticatable
             return false;
         }
 
+        // HR Admin always has full access
+        if ($role->name === 'HR Admin') {
+            return true;
+        }
+
         return $role->menuItems()->where('slug', $slug)->exists();
     }
 
     public function approvedLeaveApplications()
     {
         return $this->hasMany(LeaveApplication::class, 'approved_by');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->whereNull('read_at')->count();
     }
 }

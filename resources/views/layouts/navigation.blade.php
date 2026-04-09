@@ -18,8 +18,26 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <!-- Right side: Bell + Settings Dropdown -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-2">
+
+                {{-- Notification Bell --}}
+                @auth
+                <a href="{{ route('notifications.index') }}"
+                   id="nav-notification-bell"
+                   class="relative inline-flex items-center p-2 rounded-full text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 transition duration-150 ease-in-out"
+                   title="Notifications">
+                    <i class="bi bi-bell-fill text-lg leading-none"></i>
+                    @if(($unreadNotificationCount ?? 0) > 0)
+                        <span id="nav-notification-badge"
+                              class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold leading-none text-white bg-red-500 rounded-full ring-2 ring-white">
+                            {{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}
+                        </span>
+                    @endif
+                </a>
+                @endauth
+
+                <!-- Settings Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -54,6 +72,20 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
+                {{-- Mobile Bell --}}
+                @auth
+                <a href="{{ route('notifications.index') }}"
+                   class="relative inline-flex items-center p-2 me-1 rounded-full text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 transition"
+                   title="Notifications">
+                    <i class="bi bi-bell-fill text-lg leading-none"></i>
+                    @if(($unreadNotificationCount ?? 0) > 0)
+                        <span class="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[16px] h-[16px] px-0.5 text-[9px] font-bold leading-none text-white bg-red-500 rounded-full ring-2 ring-white">
+                            {{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}
+                        </span>
+                    @endif
+                </a>
+                @endauth
+
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -98,3 +130,4 @@
         </div>
     </div>
 </nav>
+

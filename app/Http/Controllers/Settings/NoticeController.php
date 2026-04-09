@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,10 +16,6 @@ class NoticeController extends Controller
         return view('settings.notices.index', compact('notices'));
     }
 
-    public function create()
-    {
-        return view('settings.notices.create');
-    }
 
     public function store(Request $request)
     {
@@ -32,16 +29,21 @@ class NoticeController extends Controller
         $validated['created_by'] = Auth::id();
         $validated['is_active'] = $request->has('is_active');
 
-        Notice::create($validated);
+        $notice = Notice::create($validated);
+
+        // Notify all active employees about the new notice/event
+        $typeLabel = ucfirst($validated['type']);
+        NotificationService::notifyAllEmployees(
+            'notice',
+            'New ' . $typeLabel . ': ' . $notice->title,
+            \Illuminate\Support\Str::limit($notice->content, 120),
+            route('employee-dashboard')
+        );
 
         return redirect()->route('settings.notices.index')
             ->with('success', 'Notice/Event created successfully.');
     }
 
-    public function edit(Notice $notice)
-    {
-        return view('settings.notices.edit', compact('notice'));
-    }
 
     public function update(Request $request, Notice $notice)
     {

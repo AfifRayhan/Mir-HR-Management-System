@@ -24,105 +24,65 @@
                 </div>
             </div>
 
-            <!-- Status Today Metrics -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
+            <!-- Status and HR Metrics -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-4 mb-4">
+                <div class="col">
+                    <div class="hr-metric-card px-3 py-4 gap-3">
+                        <div class="metric-icon bg-primary-soft text-primary">
+                            <i class="bi bi-people-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">{{ __('Total Staff') }}</div>
+                            <div class="metric-value">{{ $totalEmployees }}</div>
+                            <div class="metric-sub">{{ __('Registered') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="hr-metric-card px-3 py-4 gap-3">
                         <div class="metric-icon bg-success-soft text-success">
                             <i class="bi bi-person-check-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">{{ __('Present Today') }}</div>
                             <div class="metric-value">{{ $presentToday }}</div>
-                            <div class="metric-sub">{{ __('Clocked-in employees') }}</div>
+                            <div class="metric-sub">{{ __('Clocked-in') }}</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
+                <div class="col">
+                    <div class="hr-metric-card px-3 py-4 gap-3">
                         <div class="metric-icon bg-danger-soft text-danger">
                             <i class="bi bi-person-x-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">{{ __('Absent Today') }}</div>
                             <div class="metric-value">{{ $absentToday }}</div>
-                            <div class="metric-sub">{{ __('Not yet in office') }}</div>
+                            <div class="metric-sub">{{ __('Not in office') }}</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
+                <div class="col">
+                    <div class="hr-metric-card px-3 py-4 gap-3">
                         <div class="metric-icon bg-warning-soft text-warning">
                             <i class="bi bi-clock-history text-2xl"></i>
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">{{ __('Late Today') }}</div>
                             <div class="metric-value">{{ $lateToday }}</div>
-                            <div class="metric-sub">{{ __('After late threshold') }}</div>
+                            <div class="metric-sub">{{ __('After threshold') }}</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
+                <div class="col">
+                    <div class="hr-metric-card px-3 py-4 gap-3">
                         <div class="metric-icon bg-info-soft text-info">
                             <i class="bi bi-calendar2-range text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('On Leave Today') }}</div>
+                            <div class="metric-label">{{ __('On Leave') }}</div>
                             <div class="metric-value">{{ $onLeaveToday }}</div>
-                            <div class="metric-sub">{{ __('Approved leaves') }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- General HR Metrics -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-primary-soft text-primary">
-                            <i class="bi bi-people-fill text-2xl"></i>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Employee') }}</div>
-                            <div class="metric-value">{{ $totalEmployees }}</div>
-                            <div class="metric-sub">{{ __('Registered staff') }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-info-soft text-info">
-                            <i class="bi bi-building-fill text-2xl"></i>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Dept.') }}</div>
-                            <div class="metric-value">{{ $totalDepartments }}</div>
-                            <div class="metric-sub">{{ __('Active Dept.') }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-success-soft text-success">
-                            <i class="bi bi-award-fill text-2xl"></i>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Grade') }}</div>
-                            <div class="metric-value">{{ $totalGrades }}</div>
-                            <div class="metric-sub">{{ __('Pay grade levels') }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-warning-soft text-warning">
-                            <i class="bi bi-geo-alt-fill text-2xl"></i>
-                        </div>
-                        <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Office') }}</div>
-                            <div class="metric-value">{{ $totalOffices }}</div>
-                            <div class="metric-sub">{{ __('Work locations') }}</div>
+                            <div class="metric-sub">{{ __('Approved') }}</div>
                         </div>
                     </div>
                 </div>
@@ -274,7 +234,7 @@
                     </div>
 
                     <!-- Notices & Events -->
-                    <div class="hr-panel mb-4">
+                    <div class="hr-panel mb-4" id="notices-events">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-bold text-gray-800 mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
                             <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm text-decoration-none small px-3 font-bold rounded-pill btn-pill-action">{{ __('Manage') }}</a>

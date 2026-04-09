@@ -45,12 +45,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
 // Security management routes (protected by menu-based permission check)
 Route::middleware(['auth', 'permission:security'])->prefix('security')->name('security.')->group(function () {
-    Route::resource('users', UserController::class)->except(['show']);
-    Route::resource('roles', RoleController::class)->except(['show']);
+    Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
+    Route::resource('roles', RoleController::class)->except(['show', 'create', 'edit']);
 
     Route::get('role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
     Route::put('role-permissions', [RolePermissionController::class, 'update'])->name('role-permissions.update');
@@ -76,9 +81,11 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::get('leave-accounts', [LeaveBalanceController::class, 'index'])->name('leave-balances.index');
     Route::get('leave-accounts/existing', [LeaveBalanceController::class, 'existing'])->name('leave-balances.existing');
     Route::post('leave-accounts', [LeaveBalanceController::class, 'store'])->name('leave-balances.store');
+    Route::post('leave-accounts/update-bulk', [LeaveBalanceController::class, 'updateBulk'])->name('leave-balances.update-bulk');
 
     // Attendance routes
     Route::get('attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('attendances/records', [AttendanceController::class, 'records'])->name('attendances.records');
     Route::post('attendances/process', [AttendanceController::class, 'processLogs'])->name('attendances.process');
     Route::get('attendances/adjust', [AttendanceController::class, 'adjust'])->name('attendances.adjust');
     Route::post('attendances/adjust', [AttendanceController::class, 'storeAdjustment'])->name('attendances.store-adjustment');
@@ -116,13 +123,13 @@ Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')
 });
 
 // Settings management routes
-Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->group(function () {
+Route::middleware(['auth', 'verified', 'permission:settings'])->prefix('settings')->name('settings.')->group(function () {
     Route::resource('office-types', OfficeTypeController::class);
     Route::resource('offices', OfficeController::class);
-    Route::resource('office-times', OfficeTimeController::class);
+    Route::resource('office-times', OfficeTimeController::class)->except(['create', 'edit', 'show']);
     Route::resource('devices', DeviceController::class);
     Route::resource('leave-types', LeaveTypeController::class)->except(['show', 'create', 'edit']);
-    Route::resource('notices', NoticeController::class);
+    Route::resource('notices', NoticeController::class)->except(['create', 'edit']);
 
     // Holiday configuration routes
     Route::prefix('holidays')->name('holidays.')->group(function () {
@@ -139,11 +146,13 @@ Route::middleware(['auth', 'verified'])->prefix('settings')->name('settings.')->
 // Device Sync API (Exempt from CSRF in bootstrap/app.php)
 Route::post('api/device/sync', [\App\Http\Controllers\Api\DeviceLogController::class, 'sync'])->name('api.device.sync');
 
-// Weekly holidays lookup for Manual Leave form (authenticated)
+// Weekly and National holidays lookup for Manual Leave form (authenticated)
 Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
     $officeId = $request->query('office_id');
     $hasOfficeConfig = \App\Models\WeeklyHoliday::where('office_id', $officeId)->exists();
-    $days = \App\Models\WeeklyHoliday::where('is_holiday', true)
+    
+    // 1. Weekly Holidays
+    $weeklyDays = \App\Models\WeeklyHoliday::where('is_holiday', true)
         ->where(function ($q) use ($hasOfficeConfig, $officeId) {
             if ($hasOfficeConfig) {
                 $q->where('office_id', $officeId);
@@ -152,7 +161,29 @@ Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
             }
         })
         ->pluck('day_name');
-    return response()->json(['holiday_days' => $days]);
+
+    // 2. National/Other Holidays (expanded to dates)
+    $holidaysInRange = \App\Models\Holiday::where('is_active', true)
+        ->where(function ($q) use ($officeId) {
+            $q->where('all_office', true)
+                ->orWhere('office_id', $officeId);
+        })
+        ->get();
+
+    $holidayDates = [];
+    foreach ($holidaysInRange as $h) {
+        $curr = \Illuminate\Support\Carbon::parse($h->from_date);
+        $end = \Illuminate\Support\Carbon::parse($h->to_date);
+        while ($curr->lte($end)) {
+            $holidayDates[] = $curr->toDateString();
+            $curr->addDay();
+        }
+    }
+
+    return response()->json([
+        'holiday_days' => $weeklyDays,
+        'national_holidays' => array_unique($holidayDates)
+    ]);
 })->middleware('auth')->name('api.weekly-holidays');
 
 require __DIR__ . '/auth.php';

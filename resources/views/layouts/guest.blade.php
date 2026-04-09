@@ -20,11 +20,6 @@
 
             <div class="auth-page-inner container">
                 <div class="row justify-content-center">
-                    <div class="col-12 text-center mb-4">
-                        <a href="/" class="text-decoration-none d-inline-block">
-                            <x-application-logo class="w-20 h-20 fill-current text-muted" />
-                        </a>
-                    </div>
 
                     <div class="col-lg-6 col-md-8">
                         {{ $slot }}

@@ -72,7 +72,7 @@
                                     <option value="">{{ __('Select Type') }}</option>
                                     @foreach($leaveTypes as $type)
                                     <option value="{{ $type->id }}" {{ old('leave_type_id') == $type->id ? 'selected' : '' }}>
-                                        {{ $type->name }} ({{ $type->total_days_per_year }} days/yr)
+                                        {{ $type->name }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -225,11 +225,13 @@
         const daysCount      = document.getElementById('total_days_count');
 
         let weeklyHolidays = [];
+        let nationalHolidays = [];
 
         function fetchHolidaysAndRecalculate() {
             const officeId = employeeSelect.options[employeeSelect.selectedIndex]?.dataset?.office;
             if (!officeId) {
                 weeklyHolidays = [];
+                nationalHolidays = [];
                 calculateDays();
                 return;
             }
@@ -238,10 +240,12 @@
                 .then(r => r.json())
                 .then(data => {
                     weeklyHolidays = data.holiday_days || [];
+                    nationalHolidays = data.national_holidays || [];
                     calculateDays();
                 })
                 .catch(() => {
                     weeklyHolidays = [];
+                    nationalHolidays = [];
                     calculateDays();
                 });
         }
@@ -257,7 +261,11 @@
 
                     while (current <= toDate) {
                         const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-                        if (!weeklyHolidays.includes(dayName)) {
+                        const dateStr = current.getFullYear() + '-' + 
+                                        String(current.getMonth() + 1).padStart(2, '0') + '-' + 
+                                        String(current.getDate()).padStart(2, '0');
+
+                        if (!weeklyHolidays.includes(dayName) && !nationalHolidays.includes(dateStr)) {
                             totalDays++;
                         }
                         current.setDate(current.getDate() + 1);

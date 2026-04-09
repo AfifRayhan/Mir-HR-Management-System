@@ -5,6 +5,7 @@ namespace App\Http\Controllers\TeamLead;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\SupervisorRemark;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -71,10 +72,23 @@ class SupervisorRemarkController extends Controller
                 'message' => $request->message,
                 'expires_at' => $request->expires_at,
             ]);
+
+            // Notify the target employee
+            $targetEmployee = Employee::find($employeeId);
+            if ($targetEmployee) {
+                NotificationService::notifyEmployee(
+                    $targetEmployee,
+                    'supervisor_remark',
+                    'New Remark from your Supervisor: ' . $request->title,
+                    $supervisor->name . ' has posted a remark: "' . \Illuminate\Support\Str::limit($request->message, 80) . '"',
+                    route('employee-dashboard') . '#supervisor-remarks'
+                );
+            }
         }
 
         return redirect()->route('team-lead.remarks.index')
             ->with('success', 'Remarks sent successfully to selected employees.');
+
     }
 
     /**

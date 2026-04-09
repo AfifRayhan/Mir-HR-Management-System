@@ -167,6 +167,7 @@
                                         </th>
                                         <th>{{ __('Leave Types Allocated') }}</th>
                                         <th class="pe-4">{{ __('Total Allocation') }}</th>
+                                        <th class="pe-4 text-end">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -210,7 +211,20 @@
                                         <td class="pe-4">
                                             <span class="badge @if($totalDays > 0) bg-secondary @else bg-light text-muted @endif rounded-pill">{{ $totalDays }} days</span>
                                         </td>
+                                        <td class="pe-4 text-end">
+                                            @if($employeeBalances->isNotEmpty())
+                                            <button type="button" class="btn btn-sm btn-outline-success border-0" title="{{ __('Edit Balances') }}" data-bs-toggle="modal" data-bs-target="#editBalanceModal{{ $emp->id }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            @else
+                                            <button type="button" class="btn btn-sm btn-outline-secondary border-0" disabled title="{{ __('Not initialized') }}">
+                                                <i class="bi bi-pencil-square opacity-50"></i>
+                                            </button>
+                                            @endif
+                                        </td>
                                     </tr>
+
+ 
                                     @empty
                                     <tr>
                                         <td colspan="4" class="text-center py-5">
@@ -231,6 +245,67 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Edit Balance Modals -->
+            @foreach($paginatedEmployees as $emp)
+                @php
+                    $employeeBalances = $balances->get($emp->id, collect());
+                @endphp
+                @if($employeeBalances->isNotEmpty())
+                <div class="modal fade" id="editBalanceModal{{ $emp->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content rounded-4 border-0 shadow">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title fw-bold text-success">{{ __('Edit Leave Balances for') }} {{ $emp->name }} ({{ $currentYear }})</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('personnel.leave-balances.update-bulk') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="employee_id" value="{{ $emp->id }}">
+                                <input type="hidden" name="year" value="{{ $currentYear }}">
+                                <div class="modal-body py-4">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm align-middle hr-table mb-0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>{{ __('Leave Type') }}</th>
+                                                    <th style="width: 120px;">{{ __('Opening') }}</th>
+                                                    <th style="width: 120px;">{{ __('Used') }}</th>
+                                                    <th style="width: 120px;">{{ __('Remaining') }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($employeeBalances as $bal)
+                                                <tr>
+                                                    <td class="fw-bold">{{ $bal->leaveType->name ?? 'Unknown' }}</td>
+                                                    <td>
+                                                        <input type="number" step="0.5" class="form-control form-control-sm rounded-3" name="balances[{{ $bal->id }}][opening_balance]" value="{{ $bal->opening_balance }}" required min="0">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" step="0.5" class="form-control form-control-sm rounded-3" name="balances[{{ $bal->id }}][used_days]" value="{{ $bal->used_days }}" required min="0">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" step="0.5" class="form-control form-control-sm rounded-3" name="balances[{{ $bal->id }}][remaining_days]" value="{{ $bal->remaining_days }}" required min="0">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="alert alert-info py-2 small mb-0 mt-3 rounded-3 border-0 bg-info-soft text-info">
+                                        <i class="bi bi-info-circle me-1"></i> {{ __('Make sure Remaining = Opening - Used for consistency.') }}
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                                    <button type="submit" class="btn btn-success rounded-pill px-4">{{ __('Save Changes') }}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            @endforeach
         </main>
     </div>
 
@@ -276,14 +351,27 @@
             .then(r => r.json())
             .then(data => {
                 const initialized = data.initialized || [];
+                const allocations = data.allocations || {};
 
                 checkboxContainer.querySelectorAll('.leave-type-item').forEach(function (item) {
                     const id        = parseInt(item.dataset.id);
                     const checkbox  = item.querySelector('.leave-type-checkbox');
                     const alreadyBadge = item.querySelector('.lt-already-set');
+                    const badgeSpan = item.querySelector('.badge.bg-secondary');
+                    
                     const isInit    = initialized.includes(id);
+                    const allowedDays = allocations[id] !== undefined ? allocations[id] : 'N/A';
 
-                    if (isInit) {
+                    if (badgeSpan) {
+                        badgeSpan.textContent = allowedDays + ' days/yr';
+                    }
+
+                    if (allowedDays === 0) {
+                        checkbox.checked = false;
+                        checkbox.disabled = true;
+                        item.style.opacity = '0.55';
+                        alreadyBadge.classList.add('d-none');
+                    } else if (isInit) {
                         checkbox.checked  = false;
                         checkbox.disabled = true;
                         item.style.opacity = '0.55';

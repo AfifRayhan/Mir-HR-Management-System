@@ -36,7 +36,7 @@
                 <!-- Filters -->
                 <div class="hr-panel mb-4">
                     <form action="{{ route('personnel.attendances.index') }}" method="GET" class="row g-3">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label">{{ __('Date') }}</label>
                             <input type="text" id="attendance_date" name="date" class="form-control" value="{{ $date }}" placeholder="Select date" readonly>
                         </div>
@@ -77,10 +77,9 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-outline-secondary w-100">
-                                <i class="bi bi-search"></i>
-                            </button>
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
+                            <a href="{{ route('personnel.attendances.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
                         </div>
                     </form>
                 </div>

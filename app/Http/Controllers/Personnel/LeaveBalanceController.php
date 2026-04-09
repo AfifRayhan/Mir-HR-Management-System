@@ -73,11 +73,22 @@ class LeaveBalanceController extends Controller
             'year'        => 'required|integer|min:2020|max:2050',
         ]);
 
+        $employee = Employee::findOrFail($request->employee_id);
+
         $initialized = LeaveBalance::where('employee_id', $request->employee_id)
             ->where('year', $request->year)
             ->pluck('leave_type_id');
 
-        return response()->json(['initialized' => $initialized]);
+        $leaveTypes = LeaveType::all();
+        $allocations = [];
+        foreach ($leaveTypes as $type) {
+            $allocations[$type->id] = $this->getAllocatedDays($employee, $type);
+        }
+
+        return response()->json([
+            'initialized' => $initialized,
+            'allocations' => $allocations,
+        ]);
     }
 
     public function store(Request $request)
@@ -102,13 +113,26 @@ class LeaveBalanceController extends Controller
                 ->exists();
 
             if (!$exists) {
+                $openingBalance = $this->getAllocatedDays($employee, $type);
+
+                if ($type->carry_forward) {
+                    $previousBalance = LeaveBalance::where('employee_id', $employee->id)
+                        ->where('leave_type_id', $type->id)
+                        ->where('year', $request->year - 1)
+                        ->first();
+
+                    if ($previousBalance && $previousBalance->remaining_days > 0) {
+                        $openingBalance += $previousBalance->remaining_days;
+                    }
+                }
+
                 LeaveBalance::create([
                     'employee_id'     => $employee->id,
                     'leave_type_id'   => $type->id,
                     'year'            => $request->year,
-                    'opening_balance' => $type->total_days_per_year,
+                    'opening_balance' => $openingBalance,
                     'used_days'       => 0,
-                    'remaining_days'  => $type->total_days_per_year,
+                    'remaining_days'  => $openingBalance,
                 ]);
                 $initializedCount++;
             } else {
@@ -125,5 +149,62 @@ class LeaveBalanceController extends Controller
         }
 
         return redirect()->back()->with('error', "All selected leave types for {$employee->name} ({$request->year}) were already initialized.");
+    }
+
+    private function getAllocatedDays($employee, $leaveType)
+    {
+        $nameStr = strtolower($leaveType->name);
+
+        if ($employee->employee_type === 'Probation') {
+            if (str_contains($nameStr, 'casual')) {
+                return 4;
+            } elseif (str_contains($nameStr, 'sick')) {
+                return 4;
+            } elseif (str_contains($nameStr, 'emergency')) {
+                return 2;
+            } elseif (str_contains($nameStr, 'earn')) {
+                return 0;
+            }
+        } else {
+            if (str_contains($nameStr, 'earn')) {
+                if ($employee->joining_date) {
+                    $joinDate = \Carbon\Carbon::parse($employee->joining_date);
+                    $daysSinceJoin = $joinDate->diffInDays(now());
+                    $earnLeave = floor($daysSinceJoin / 18);
+                    return min(30, max(0, $earnLeave));
+                } else {
+                    return 0;
+                }
+            }
+        }
+        
+        return $leaveType->total_days_per_year;
+    }
+    public function updateBulk(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'year' => 'required|integer',
+            'balances' => 'required|array',
+            'balances.*.opening_balance' => 'required|numeric|min:0',
+            'balances.*.used_days' => 'required|numeric|min:0',
+            'balances.*.remaining_days' => 'required|numeric|min:0',
+        ]);
+
+        foreach ($request->balances as $balanceId => $data) {
+            $balance = LeaveBalance::where('id', $balanceId)
+                ->where('employee_id', $request->employee_id)
+                ->where('year', $request->year)
+                ->first();
+            
+            if ($balance) {
+                $balance->opening_balance = $data['opening_balance'];
+                $balance->used_days = $data['used_days'];
+                $balance->remaining_days = $data['remaining_days'];
+                $balance->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Leave balances updated successfully.');
     }
 }
