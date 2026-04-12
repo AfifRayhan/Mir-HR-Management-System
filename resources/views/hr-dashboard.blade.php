@@ -88,24 +88,20 @@
                 </div>
             </div>
 
-            <!-- Office Attendance Chart -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="hr-panel p-4">
+            <!-- Main Content Panels -->
+            <div class="row g-4 mb-4">
+                <!-- Recent Attendance Summary & Chart -->
+                <div class="col-lg-8">
+                    <!-- Office Attendance Chart -->
+                    <div class="hr-panel p-4 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h6 class="mb-0 font-bold text-gray-800"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>{{ __('Office Attendance Overview') }}</h6>
+                            <h6 class="mb-0 font-bold text-gray-800"><i class="bi bi-bar-chart-fill me-2 text-success"></i>{{ __('Office Attendance Overview') }}</h6>
                         </div>
-                        <div style="height: 300px; position: relative;">
+                        <div style="height: 250px; position: relative;">
                             <canvas id="officeAttendanceChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Main Content Panels -->
-            <div class="row g-4 mb-4">
-                <!-- Recent Attendance Summary -->
-                <div class="col-lg-8">
                     <div class="hr-panel p-0 overflow-hidden">
                         <div class="p-4 border-bottom d-flex align-items-center">
                             <h6 class="mb-0 font-bold text-gray-800 flex-grow-1"><i class="bi bi-activity me-2 text-success"></i>{{ __('Recent Attendance Summary') }}</h6>
@@ -281,7 +277,14 @@
 
             if (!document.getElementById('officeAttendanceChart')) return;
 
-            const labels = officeData.map(data => data.name);
+            const labels = officeData.map(data => {
+                let name = data.name;
+                if (name === 'Mir Telecom Ltd.') return 'Mir Telecom Ltd.';
+                if (name === 'Bangla Telecom Ltd.') return 'Bangla Telecom Ltd.';
+                if (name === 'Coloasia Ltd.') return 'Coloasia Ltd.';
+                if (name.includes('BTS')) return 'BTS Communications';
+                return name;
+            });
             const presentData = officeData.map(data => data.present);
             const absentData = officeData.map(data => data.absent);
             const lateData = officeData.map(data => data.late);
