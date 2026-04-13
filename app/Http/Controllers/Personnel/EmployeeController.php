@@ -12,6 +12,8 @@ use App\Models\OfficeTime;
 use App\Models\Office;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\EmployeeExperience;
+use App\Models\EmployeeQualification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -46,6 +48,9 @@ class EmployeeController extends Controller
         if ($request->designation_id) {
             $query->where('designation_id', $request->designation_id);
         }
+        if ($request->section_id) {
+            $query->where('section_id', $request->section_id);
+        }
         if ($request->status) {
             $query->where('status', $request->status);
         }
@@ -63,10 +68,11 @@ class EmployeeController extends Controller
  
         $employees = $query->paginate(10)->withQueryString();
         $departments = Department::all();
+        $sections = Section::all();
         $offices = Office::all();
         $designations = Designation::all();
  
-        return view('personnel.employees.index', compact('employees', 'departments', 'offices', 'designations'));
+        return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'offices', 'designations'));
     }
 
     /**
@@ -190,6 +196,24 @@ class EmployeeController extends Controller
                 'changed_by' => Auth::id(),
                 'effective_date' => now(),
             ]);
+        }
+
+        // Save Experiences
+        if ($request->filled('experiences')) {
+            foreach ($request->experiences as $exp) {
+                if (!empty($exp['organization']) || !empty($exp['designation'])) {
+                    $employee->experiences()->create($exp);
+                }
+            }
+        }
+
+        // Save Qualifications
+        if ($request->filled('qualifications')) {
+            foreach ($request->qualifications as $qual) {
+                if (!empty($qual['qualification'])) {
+                    $employee->qualifications()->create($qual);
+                }
+            }
         }
 
         return redirect()->route('personnel.employees.index')->with('success', 'Employee created successfully.');
@@ -341,6 +365,26 @@ class EmployeeController extends Controller
         
         $employee->update($employeeData);
 
+        // Sync Experiences (Delete existing and recreate)
+        $employee->experiences()->delete();
+        if ($request->filled('experiences')) {
+            foreach ($request->experiences as $exp) {
+                if (!empty($exp['organization']) || !empty($exp['designation'])) {
+                    $employee->experiences()->create($exp);
+                }
+            }
+        }
+
+        // Sync Qualifications (Delete existing and recreate)
+        $employee->qualifications()->delete();
+        if ($request->filled('qualifications')) {
+            foreach ($request->qualifications as $qual) {
+                if (!empty($qual['qualification'])) {
+                    $employee->qualifications()->create($qual);
+                }
+            }
+        }
+
         return redirect()->route('personnel.employees.index')->with('success', 'Employee updated successfully.');
     }
 
@@ -378,5 +422,27 @@ class EmployeeController extends Controller
         $officeId = $request->office_id;
         $code = Employee::generateEmployeeCode($date, $officeId);
         return response()->json(['code' => $code]);
+    }
+
+    //Delete Experience
+    public function destroyExperience(EmployeeExperience $experience)
+    {
+        try {
+            $experience->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false], 500);
+        }
+    }
+
+    //Delete Qualification
+    public function destroyQualification(\App\Models\EmployeeQualification $qualification)
+    {
+        try {
+            $qualification->delete();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false], 500);
+        }
     }
 }

@@ -66,6 +66,8 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
     Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
     Route::get('employees/next-code', [EmployeeController::class, 'getNextCode'])->name('employees.next-code');
+    Route::delete('employees/experience/{experience}', [EmployeeController::class, 'destroyExperience'])->name('employees.delete-experience');
+    Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
     Route::resource('employees', EmployeeController::class);
     Route::resource('departments', DepartmentController::class);
     Route::resource('sections', SectionController::class);

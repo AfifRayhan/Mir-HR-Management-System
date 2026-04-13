@@ -51,7 +51,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
+                        <label class="form-label small font-bold text-gray-600">{{ __('Section') }}</label>
+                        <select name="section_id" class="form-select text-xs px-1">
+                            <option value="">{{ __('All') }}</option>
+                            @foreach($sections as $sec)
+                            <option value="{{ $sec->id }}" {{ request('section_id') == $sec->id ? 'selected' : '' }}>
+                                {{ $sec->name }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Office') }}</label>
                         <select name="office_id" class="form-select text-xs px-1">
                             <option value="">{{ __('All') }}</option>
@@ -73,9 +84,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <label class="form-label small font-bold text-gray-600">{{ __('Status') }}</label>
-                        <select name="status" class="form-select">
+                        <select name="status" class="form-select text-xs px-1">
                             <option value="">{{ __('All') }}</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>

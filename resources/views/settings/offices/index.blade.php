@@ -123,8 +123,8 @@
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
                                                 <div class="office-logo-container rounded border d-flex align-items-center justify-content-center bg-light" style="width: 45px; height: 45px; flex-shrink: 0; overflow: hidden;">
-                                                    @if($office->logo)
-                                                    <img src="{{ asset('storage/'.$office->logo) }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                                                     @if($office->logo)
+                                                    <img src="{{ Str::startsWith($office->logo, 'images/') ? asset($office->logo) : asset('storage/'.$office->logo) }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
                                                     @else
                                                     <i class="bi bi-building fs-4 text-muted"></i>
                                                     @endif
@@ -220,7 +220,7 @@
                                                                 <div class="d-flex align-items-start gap-3">
                                                                     @if($office->logo)
                                                                     <div class="rounded border p-1 bg-light" style="width: 80px; height: 80px;">
-                                                                        <img src="{{ asset('storage/'.$office->logo) }}" alt="Logo" class="w-100 h-100 object-fit-contain">
+                                                                        <img src="{{ Str::startsWith($office->logo, 'images/') ? asset($office->logo) : asset('storage/'.$office->logo) }}" alt="Logo" class="w-100 h-100 object-fit-contain">
                                                                     </div>
                                                                     @endif
                                                                     <div class="flex-grow-1">
