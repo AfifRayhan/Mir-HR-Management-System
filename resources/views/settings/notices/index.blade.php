@@ -36,13 +36,13 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Title') }} <span class="text-danger">*</span></label>
-                                <input type="text" name="title" class="form-control rounded-3 @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Enter title" required>
+                                <input type="text" name="title" class="form-control rounded-3 @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Enter title" maxlength="255" required>
                                 @error('title') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Content') }} <span class="text-danger">*</span></label>
-                                <textarea name="content" rows="4" class="form-control rounded-3 @error('content') is-invalid @enderror" placeholder="Write notice content here..." required>{{ old('content') }}</textarea>
+                                <textarea name="content" rows="4" class="form-control rounded-3 @error('content') is-invalid @enderror" placeholder="Write notice content here..." maxlength="1000" required>{{ old('content') }}</textarea>
                                 @error('content') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
 
@@ -95,8 +95,8 @@
                                     @forelse($notices as $notice)
                                         <tr>
                                             <td class="ps-4">
-                                                <div class="fw-bold text-gray-800">{{ $notice->title }}</div>
-                                                <div class="text-muted small text-truncate" style="max-width: 200px;">{{ Str::limit($notice->content, 50) }}</div>
+                                                <div class="fw-bold text-gray-800 text-truncate" style="max-width: 250px;">{{ Str::limit($notice->title, 50) }}</div>
+                                                <div class="text-muted small text-truncate" style="max-width: 250px;">{{ Str::limit($notice->content, 50) }}</div>
                                             </td>
                                             <td>
                                                 @if($notice->type === 'notice')
@@ -147,11 +147,11 @@
                                                                 <div class="col-md-8">
                                                                     <div class="mb-3">
                                                                         <label class="form-label small fw-bold text-muted">{{ __('Title') }}</label>
-                                                                        <input type="text" name="title" class="form-control rounded-3" value="{{ old('title', $notice->title) }}" required>
+                                                                        <input type="text" name="title" class="form-control rounded-3" value="{{ old('title', $notice->title) }}" maxlength="255" required>
                                                                     </div>
                                                                     <div class="mb-0">
                                                                         <label class="form-label small fw-bold text-muted">{{ __('Content') }}</label>
-                                                                        <textarea name="content" rows="6" class="form-control rounded-3" required>{{ old('content', $notice->content) }}</textarea>
+                                                                        <textarea name="content" rows="6" class="form-control rounded-3" maxlength="1000" required>{{ old('content', $notice->content) }}</textarea>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">

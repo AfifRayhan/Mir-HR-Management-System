@@ -7,6 +7,7 @@ use App\Models\Notification;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Department;
+use Illuminate\Database\Eloquent\Model;
 
 class NotificationService
 {
@@ -104,12 +105,14 @@ class NotificationService
     /**
      * Notify ALL active employees who have a linked user account.
      * Used for company-wide notices and events.
+     * Optionally pass a $source model to allow cleanup on delete.
      */
     public static function notifyAllEmployees(
         string $type,
         string $title,
         string $message,
-        string $url
+        string $url,
+        ?Model $source = null
     ): void {
         $userIds = Employee::where('status', 'active')
             ->whereNotNull('user_id')
@@ -117,11 +120,13 @@ class NotificationService
 
         foreach ($userIds as $userId) {
             Notification::create([
-                'user_id' => $userId,
-                'type'    => $type,
-                'title'   => $title,
-                'message' => $message,
-                'url'     => $url,
+                'user_id'     => $userId,
+                'type'        => $type,
+                'title'       => $title,
+                'message'     => $message,
+                'url'         => $url,
+                'source_id'   => $source?->id,
+                'source_type' => $source ? get_class($source) : null,
             ]);
         }
     }

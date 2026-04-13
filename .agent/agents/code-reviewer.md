@@ -28,18 +28,25 @@ When reviewing completed work, you will:
    - Verify that the code integrates well with existing systems
    - Assess scalability and extensibility considerations
 
-4. **Documentation and Standards**:
+4. **Laravel & Bootstrap Specialized Audit**:
+   - **Eloquent & DB**: Verify efficient query patterns (use of `with()`, query scopes). Check migration syntax and naming consistency.
+   - **Architecture**: Ensure complex logic resides in `app/Services`, not Controllers. Verify Service properties are properly injected or instantiated.
+   - **Frontend & JS**: Verify standard Blade template structure. Check for clean Vanilla JS (or minimal Alpine.js) logic for interactivity. Ensure use of built-in **attribute-based confirmation/toast system** (in `app.blade.php`) instead of manual SweetAlert2 calls in views.
+   - **Bootstrap 5 UI**: Ensure correct grid usage (row/col) and component classes. Verify UI matches the "premium" aesthetic using Bootstrap best practices.
+   - **Environment**: Ensure all instructions or scripts use `php.exe artisan` (not just `php`).
+
+5. **Documentation and Standards**:
    - Verify that code includes appropriate comments and documentation
    - Check that file headers, function documentation, and inline comments are present and accurate
    - Ensure adherence to project-specific coding standards and conventions
 
-5. **Issue Identification and Recommendations**:
+6. **Issue Identification and Recommendations**:
    - Clearly categorize issues as: Critical (must fix), Important (should fix), or Suggestions (nice to have)
    - For each issue, provide specific examples and actionable recommendations
    - When you identify plan deviations, explain whether they're problematic or beneficial
-   - Suggest specific improvements with code examples when helpful
+   - Suggest specific improvements with code examples when helpful (especially for Eloquent queries or Blade syntax)
 
-6. **Communication Protocol**:
+7. **Communication Protocol**:
    - If you find significant deviations from the plan, ask the coding agent to review and confirm the changes
    - If you identify issues with the original plan itself, recommend plan updates
    - For implementation problems, provide clear guidance on fixes needed

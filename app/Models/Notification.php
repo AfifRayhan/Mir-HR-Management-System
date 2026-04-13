@@ -16,6 +16,8 @@ class Notification extends Model
         'message',
         'url',
         'read_at',
+        'source_id',
+        'source_type',
     ];
 
     protected $casts = [
@@ -44,6 +46,14 @@ class Notification extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * The source model that generated this notification (e.g. Notice).
+     */
+    public function source()
+    {
+        return $this->morphTo();
     }
 
     /**

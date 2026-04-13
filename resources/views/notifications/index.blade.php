@@ -229,9 +229,9 @@
 
                             {{-- Body --}}
                             <div class="notif-body">
-                                <p class="notif-title">{{ $notif->title }}</p>
+                                <p class="notif-title" title="{{ $notif->title }}">{{ Str::limit($notif->title, 80) }}</p>
                                 @if($notif->message)
-                                    <p class="notif-msg">{{ $notif->message }}</p>
+                                    <p class="notif-msg" title="{{ $notif->message }}">{{ Str::limit($notif->message, 120) }}</p>
                                 @endif
                                 <span class="notif-time">
                                     <i class="bi bi-clock me-1"></i>{{ $notif->created_at->diffForHumans() }}

@@ -8,6 +8,16 @@
     <!-- Specific styles for this dashboard -->
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
+    <style>
+        @keyframes highlightFade {
+            0% { background-color: #fef3c7; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+            100% { background-color: transparent; box-shadow: none; }
+        }
+        .highlight-section {
+            animation: highlightFade 4s ease-out forwards;
+            border-radius: 1rem;
+        }
+    </style>
     @endpush
 
     @php 
@@ -210,7 +220,7 @@
                     @endif
 
                     <!-- Supervisor Remarks -->
-                    <div class="hr-panel mb-4 shadow-sm">
+                    <div class="hr-panel mb-4 shadow-sm" id="supervisor-remarks">
                         <h6 class="font-bold text-gray-800 mb-3 small uppercase tracking-wider">
                             <i class="bi bi-chat-left-text me-2 text-warning"></i>{{ __('Supervisor Remarks') }}
                         </h6>
@@ -226,7 +236,7 @@
                                        data-date="{{ $remark->created_at->format('d M Y, h:i A') }}"
                                        data-supervisor="{{ $remark->supervisor->name }}">
                                         <div class="d-flex justify-content-between align-items-center mb-0">
-                                            <span class="fw-bold text-gray-700 text-success" style="max-width: 180px;">{{ $remark->title }}</span>
+                                            <span class="fw-bold text-gray-700 text-success text-truncate" style="max-width: 220px;">{{ Str::limit($remark->title, 40) }}</span>
                                             <i class="bi bi-chevron-right text-muted" style="font-size: 0.7rem;"></i>
                                         </div>
                                         <div class="text-muted d-flex align-items-center" style="font-size: 0.7rem;">
@@ -270,18 +280,29 @@
                             <ul class="hr-list px-2">
                                 @forelse($activeNotices as $notice)
                                 <li class="small mb-3 border-bottom-0 pb-2">
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
-                                        @if($notice->type === 'event')
-                                            <span class="badge bg-success-soft text-success" style="font-size: 0.65rem;">{{ __('Event') }}</span>
-                                        @else
-                                            <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ $notice->content }}</p>
-                                    <div class="text-muted" style="font-size: 0.65rem;">
-                                        <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
-                                    </div>
+                                    <a href="#" class="text-decoration-none d-block notice-item" 
+                                       data-bs-toggle="modal" 
+                                       data-bs-target="#noticeModal" 
+                                       data-title="{{ $notice->title }}" 
+                                       data-content="{{ $notice->content }}"
+                                       data-type="{{ ucfirst($notice->type) }}"
+                                       data-date="{{ $notice->created_at->format('d M Y, h:i A') }}">
+                                        <div class="d-flex justify-content-between align-items-center mb-0">
+                                            <span class="fw-bold text-gray-800 text-success text-truncate" style="max-width: 220px;">{{ Str::limit($notice->title, 40) }}</span>
+                                            <i class="bi bi-chevron-right text-muted" style="font-size: 0.7rem;"></i>
+                                        </div>
+                                        <p class="text-muted mb-1 text-truncate" style="font-size: 0.75rem; line-height: 1.4; max-width: 250px;">{{ Str::limit($notice->content, 70) }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                                <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
+                                            </div>
+                                            @if($notice->type === 'event')
+                                                <span class="badge bg-success-soft text-success" style="font-size: 0.6rem;">{{ __('Event') }}</span>
+                                            @else
+                                                <span class="badge bg-info-soft text-info" style="font-size: 0.6rem;">{{ __('Notice') }}</span>
+                                            @endif
+                                        </div>
+                                    </a>
                                 </li>
                                 @empty
                                 <li class="small text-center text-muted py-2">{{ __('No active notices.') }}</li>
@@ -304,7 +325,7 @@
                 <div class="modal-body p-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="flex-grow-1">
-                            <h5 id="modalRemarkTitle" class="fw-bold mb-0 text-success"></h5>
+                            <h5 id="modalRemarkTitle" class="fw-bold mb-0 text-success" style="overflow-wrap: anywhere;"></h5>
                             <div class="text-muted small mt-1">
                                 <span id="modalRemarkSupervisor" class="fw-bold text-dark"></span>
                                 <span class="mx-1">•</span>
@@ -313,7 +334,36 @@
                         </div>
                     </div>
                     <hr class="my-3 opacity-10">
-                    <div id="modalRemarkMessage" class="text-gray-700 font-medium" style="line-height: 1.6; white-space: pre-wrap;"></div>
+                    <div id="modalRemarkMessage" class="text-gray-700 font-medium" style="line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere;"></div>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notice & Event Modal -->
+    <div class="modal fade" id="noticeModal" tabindex="-1" aria-labelledby="noticeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light border-0">
+                    <h5 class="modal-title fw-bold" id="noticeModalLabel">{{ __('Notice & Event Detail') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-grow-1">
+                            <h5 id="modalNoticeTitle" class="fw-bold mb-0 text-success" style="overflow-wrap: anywhere;"></h5>
+                            <div class="text-muted small mt-2">
+                                <span id="modalNoticeType" class="badge bg-success-soft text-success"></span>
+                                <span class="mx-1">•</span>
+                                <span id="modalNoticeDate" class="text-muted"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-3 opacity-10">
+                    <div id="modalNoticeContent" class="text-gray-700 font-medium" style="line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere;"></div>
                 </div>
                 <div class="modal-footer border-0 p-3 bg-light">
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Close') }}</button>
@@ -325,6 +375,19 @@
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Generic highlight logic for deep-linked sections (e.g., #supervisor-remarks, #notices-events)
+            const hash = window.location.hash;
+            if (hash) {
+                const targetSection = document.querySelector(hash);
+                if (targetSection) {
+                    targetSection.classList.add('highlight-section');
+                    // Smooth scroll to the section
+                    setTimeout(() => {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                }
+            }
+
             const remarkModal = document.getElementById('remarkModal');
             if (remarkModal) {
                 remarkModal.addEventListener('show.bs.modal', function (event) {
@@ -338,6 +401,17 @@
                     document.getElementById('modalRemarkMessage').textContent = message;
                     document.getElementById('modalRemarkDate').textContent = date;
                     document.getElementById('modalRemarkSupervisor').textContent = supervisor;
+                });
+            }
+
+            const noticeModal = document.getElementById('noticeModal');
+            if (noticeModal) {
+                noticeModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    document.getElementById('modalNoticeTitle').textContent = button.getAttribute('data-title');
+                    document.getElementById('modalNoticeContent').textContent = button.getAttribute('data-content');
+                    document.getElementById('modalNoticeDate').textContent = button.getAttribute('data-date');
+                    document.getElementById('modalNoticeType').textContent = button.getAttribute('data-type');
                 });
             }
         });
