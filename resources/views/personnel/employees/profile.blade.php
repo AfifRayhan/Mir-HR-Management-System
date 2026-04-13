@@ -197,6 +197,59 @@
                     <div class="value">{{ $employee->discontinuation_reason }}</div>
                 </div>
                 @endif
+
+                @if($employee && $employee->experiences->count() > 0)
+                <div class="divider"></div>
+                <h3 class="mb-4 text-lg font-bold">{{ __('Work Experience') }}</h3>
+                <div class="experience-list">
+                    @foreach($employee->experiences as $exp)
+                    <div class="experience-item mb-4 p-3 border rounded">
+                        <div class="d-flex justify-content-between">
+                            <h4 class="text-md font-bold">{{ $exp->organization }}</h4>
+                            <span class="text-sm text-gray-500">{{ $exp->date_from }} - {{ $exp->date_to }}</span>
+                        </div>
+                        <div class="text-sm font-semibold text-primary">{{ $exp->designation }} @if($exp->department) | {{ $exp->department }} @endif</div>
+                        @if($exp->responsibilities)
+                        <div class="mt-2 text-sm text-gray-600">
+                            <strong>{{ __('Responsibilities:') }}</strong>
+                            <p class="mb-0">{{ $exp->responsibilities }}</p>
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+
+                @if($employee && $employee->qualifications->count() > 0)
+                <div class="divider"></div>
+                <h3 class="mb-4 text-lg font-bold">{{ __('Academic Qualifications') }}</h3>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>{{ __('Qualification') }}</th>
+                                <th>{{ __('Institution') }}</th>
+                                <th>{{ __('Level') }}</th>
+                                <th>{{ __('Major/Group') }}</th>
+                                <th>{{ __('Year') }}</th>
+                                <th>{{ __('Result') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($employee->qualifications as $qual)
+                            <tr>
+                                <td>{{ $qual->qualification }}</td>
+                                <td>{{ $qual->institution ?? ($qual->board_university ?? 'N/A') }}</td>
+                                <td>{{ $qual->level ?? 'N/A' }}</td>
+                                <td>{{ $qual->group_major ?? 'N/A' }}</td>
+                                <td>{{ $qual->passing_year ?? 'N/A' }}</td>
+                                <td>{{ $qual->result ?? 'N/A' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                @endif
             </div>
         </main>
     </div>

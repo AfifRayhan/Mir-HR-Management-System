@@ -14,7 +14,7 @@
                         <h5 class="mb-1 text-2xl font-bold">{{ isset($employee) ? __('Edit Employee') : __('Add New Employee') }}</h5>
                         <p class="mb-0 text-gray-500">{{ isset($employee) ? __('Update employee profile and associations') : __('Create a new employee profile in the system') }}</p>
                     </div>
-                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-secondary d-flex align-items-center">
+                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-secondary rounded-pill d-flex align-items-center">
                         <i class="bi bi-arrow-left me-2"></i>{{ __('Back to List') }}
                     </a>
                 </div>
@@ -279,7 +279,7 @@
                     </div>
 
                     <!-- Probation Information -->
-                    <div id="probation-section" class="row g-4 mb-5" style="display: {{ old('employee_type', $employee->employee_type ?? '') == 'Probation' ? 'flex' : 'none' }};">
+                    <div id="probation-section" class="row g-4 mb-5" @style(['display' => old('employee_type', $employee->employee_type ?? '') == 'Probation' ? 'flex' : 'none'])>
                         <div class="col-12">
                             <div class="form-section-title mt-0">
                                 <i class="bi bi-clock-history"></i>{{ __('Probation Information') }}
@@ -342,9 +342,219 @@
                     </div>
                 </div>
 
+                <!-- Experience Information -->
+                <div class="form-card mb-5">
+                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-briefcase"></i>{{ __('Work Experience') }}</span>
+                        <button type="button" id="add-experience" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add More Experience') }}
+                        </button>
+                    </div>
+                    
+                    <div id="experience-container">
+                        @php
+                            $experiences = old('experiences', (isset($employee) ? $employee->experiences : []));
+                        @endphp
+                        
+                        @forelse($experiences as $index => $exp)
+                            <div class="experience-row border rounded p-3 mb-3 bg-light/30">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    @php $expId = is_array($exp) ? ($exp['id'] ?? null) : ($exp->id ?? null); @endphp
+                                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                        onclick="handleExperienceDelete(this, '{{ $expId }}')"
+                                        style="min-width: 40px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    @if($expId)
+                                        <input type="hidden" name="experiences[{{ $index }}][id]" value="{{ $expId }}">
+                                    @endif
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Organization') }}</label>
+                                        <input type="text" name="experiences[{{ $index }}][organization]" class="form-control form-control-sm" value="{{ is_array($exp) ? ($exp['organization'] ?? '') : ($exp->organization ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Designation') }}</label>
+                                        <input type="text" name="experiences[{{ $index }}][designation]" class="form-control form-control-sm" value="{{ is_array($exp) ? ($exp['designation'] ?? '') : ($exp->designation ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Department') }}</label>
+                                        <input type="text" name="experiences[{{ $index }}][department]" class="form-control form-control-sm" value="{{ is_array($exp) ? ($exp['department'] ?? '') : ($exp->department ?? '') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label text-xs uppercase">{{ __('Date From') }}</label>
+                                        <input type="text" name="experiences[{{ $index }}][date_from]" class="form-control form-control-sm experience-date" value="{{ is_array($exp) ? ($exp['date_from'] ?? '') : ($exp->date_from ?? '') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label text-xs uppercase">{{ __('Date To') }}</label>
+                                        <input type="text" name="experiences[{{ $index }}][date_to]" class="form-control form-control-sm experience-date" value="{{ is_array($exp) ? ($exp['date_to'] ?? '') : ($exp->date_to ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-xs uppercase">{{ __('Responsibilities') }}</label>
+                                        <textarea name="experiences[{{ $index }}][responsibilities]" class="form-control form-control-sm" rows="1">{{ is_array($exp) ? ($exp['responsibilities'] ?? '') : ($exp->responsibilities ?? '') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div id="no-experience-msg" class="text-center py-4 text-gray-400">
+                                <i class="bi bi-info-circle me-1"></i>{{ __('No experience records added yet.') }}
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <template id="experience-template">
+                    <div class="experience-row border rounded p-3 mb-3 bg-light/30">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 text-sm font-bold text-gray-600">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
+                            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                onclick="handleExperienceDelete(this, null)"
+                                style="min-width: 40px;">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Organization') }}</label>
+                                <input type="text" name="experiences[__INDEX__][organization]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Designation') }}</label>
+                                <input type="text" name="experiences[__INDEX__][designation]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Department') }}</label>
+                                <input type="text" name="experiences[__INDEX__][department]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-xs uppercase">{{ __('Date From') }}</label>
+                                <input type="text" name="experiences[__INDEX__][date_from]" class="form-control form-control-sm experience-date">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-xs uppercase">{{ __('Date To') }}</label>
+                                <input type="text" name="experiences[__INDEX__][date_to]" class="form-control form-control-sm experience-date">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-xs uppercase">{{ __('Responsibilities') }}</label>
+                                <textarea name="experiences[__INDEX__][responsibilities]" class="form-control form-control-sm" rows="1"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Qualification Information -->
+                <div class="form-card mb-5">
+                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-mortarboard"></i>{{ __('Academic Qualifications') }}</span>
+                        <button type="button" id="add-qualification" class="btn btn-sm btn-outline-success rounded-pill px-3">
+                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add More Qualification') }}
+                        </button>
+                    </div>
+                    
+                    <div id="qualification-container">
+                        @php
+                            $qualifications = old('qualifications', (isset($employee) ? $employee->qualifications : []));
+                        @endphp
+                        
+                        @forelse($qualifications as $index => $qual)
+                            <div class="qualification-row border rounded p-3 mb-3 bg-light/30">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    @php $qualId = is_array($qual) ? ($qual['id'] ?? null) : ($qual->id ?? null); @endphp
+                                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                        onclick="handleQualificationDelete(this, '{{ $qualId }}')"
+                                        style="min-width: 40px;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    @if($qualId)
+                                        <input type="hidden" name="qualifications[{{ $index }}][id]" value="{{ $qualId }}">
+                                    @endif
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Qualification') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][qualification]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['qualification'] ?? '') : ($qual->qualification ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Level') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][level]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['level'] ?? '') : ($qual->level ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Institution') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][institution]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['institution'] ?? '') : ($qual->institution ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Board/University') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][board_university]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['board_university'] ?? '') : ($qual->board_university ?? '') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label text-xs uppercase">{{ __('Passing Year') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][passing_year]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['passing_year'] ?? '') : ($qual->passing_year ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-xs uppercase">{{ __('Group/Major') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][group_major]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['group_major'] ?? '') : ($qual->group_major ?? '') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label text-xs uppercase">{{ __('Result') }}</label>
+                                        <input type="text" name="qualifications[{{ $index }}][result]" class="form-control form-control-sm" value="{{ is_array($qual) ? ($qual['result'] ?? '') : ($qual->result ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div id="no-qualification-msg" class="text-center py-4 text-gray-400">
+                                <i class="bi bi-info-circle me-1"></i>{{ __('No qualification records added yet.') }}
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <template id="qualification-template">
+                    <div class="qualification-row border rounded p-3 mb-3 bg-light/30">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 text-sm font-bold text-gray-600">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
+                            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                onclick="handleQualificationDelete(this, null)"
+                                style="min-width: 40px;">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Qualification') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][qualification]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Level') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][level]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Institution') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][institution]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Board/University') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][board_university]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-xs uppercase">{{ __('Passing Year') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][passing_year]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-xs uppercase">{{ __('Group/Major') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][group_major]" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-xs uppercase">{{ __('Result') }}</label>
+                                <input type="text" name="qualifications[__INDEX__][result]" class="form-control form-control-sm">
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
                 <div class="d-flex justify-content-end gap-3 mb-5">
-                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-light bg-white border px-4 py-2 font-bold">{{ __('Cancel') }}</a>
-                    <button type="submit" class="btn btn-primary bg-success border-success px-5 py-2 font-bold">{{ isset($employee) ? __('Update Employee') : __('Create Employee') }}</button>
+                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-light bg-white border rounded-pill px-4 py-2 font-bold">{{ __('Cancel') }}</a>
+                    <button type="submit" class="btn btn-primary bg-success border-success rounded-pill px-5 py-2 font-bold">{{ isset($employee) ? __('Update Employee') : __('Create Employee') }}</button>
                 </div>
             </form>
         </main>
@@ -493,6 +703,217 @@
             if (probationDurationInput) {
                 probationDurationInput.addEventListener('input', calculateProbationEndDate);
             }
+
+            // Experience Repeater Logic
+            const experienceContainer = document.getElementById('experience-container');
+            const addExperienceBtn = document.getElementById('add-experience');
+            const noExpMsg = document.getElementById('no-experience-msg');
+            const expTemplate = document.getElementById('experience-template');
+            
+            let expCount = document.querySelectorAll('.experience-row').length;
+
+            function initDatePickers(container = document) {
+                container.querySelectorAll('.experience-date').forEach(el => {
+                    if (!el._flatpickr) {
+                        flatpickr(el, {
+                            dateFormat: 'Y-m-d',
+                            allowInput: false,
+                        });
+                    }
+                });
+            }
+
+            // Initialize existing datepickers
+            initDatePickers();
+
+            if (addExperienceBtn) {
+                addExperienceBtn.addEventListener('click', function() {
+                    if (noExpMsg) noExpMsg.style.display = 'none';
+                    
+                    const index = expCount;
+                    let html = expTemplate.innerHTML;
+                    html = html.replace(/__INDEX__/g, index);
+                    html = html.replace(/__ITERATION__/g, expCount + 1);
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html;
+                    const newRow = wrapper.firstElementChild;
+                    
+                    experienceContainer.appendChild(newRow);
+                    initDatePickers(newRow);
+                    expCount++;
+                });
+            }
+
+            // Handle Experience Deletion with SweetAlert2
+            window.handleExperienceDelete = function(btn, id) {
+                Swal.fire({
+                    title: 'Delete Experience?',
+                    text: 'Are you sure you want to remove this experience record?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const row = btn.closest('.experience-row');
+                        
+                        if (id) {
+                            // Perform backend deletion
+                            fetch(`/personnel/employees/experience/${id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    row.remove();
+                                    reorderExperiences();
+                                    Swal.fire('Deleted!', 'The record has been deleted.', 'success');
+                                } else {
+                                    Swal.fire('Error', 'Failed to delete record from server.', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire('Error', 'An error occurred while deleting the record.', 'error');
+                            });
+                        } else {
+                            // Just remove from UI for unsaved records
+                            row.remove();
+                            reorderExperiences();
+                        }
+                    }
+                });
+            };
+
+            // Reorder function moved to global scope within the script
+            window.reorderExperiences = function() {
+                const container = document.getElementById('experience-container');
+                const noMsg = document.getElementById('no-experience-msg');
+                const rows = container.querySelectorAll('.experience-row');
+                
+                if (rows.length === 0) {
+                    if (noMsg) noMsg.style.display = 'block';
+                } else {
+                    if (noMsg) noMsg.style.display = 'none';
+                }
+                
+                rows.forEach((row, idx) => {
+                    const rowNum = row.querySelector('.row-number');
+                    if (rowNum) rowNum.textContent = idx + 1;
+                    
+                    row.querySelectorAll('input, textarea').forEach(field => {
+                        const name = field.getAttribute('name');
+                        if (name && name.includes('experiences[')) {
+                            field.setAttribute('name', name.replace(/experiences\[\d+\]/, `experiences[${idx}]`));
+                        }
+                    });
+                });
+            };
+
+            // Qualification Repeater Logic
+            const qualificationContainer = document.getElementById('qualification-container');
+            const addQualificationBtn = document.getElementById('add-qualification');
+            const noQualMsg = document.getElementById('no-qualification-msg');
+            const qualTemplate = document.getElementById('qualification-template');
+            
+            let qualCount = document.querySelectorAll('.qualification-row').length;
+
+            if (addQualificationBtn) {
+                addQualificationBtn.addEventListener('click', function() {
+                    if (noQualMsg) noQualMsg.style.display = 'none';
+                    
+                    const index = qualCount;
+                    let html = qualTemplate.innerHTML;
+                    html = html.replace(/__INDEX__/g, index);
+                    html = html.replace(/__ITERATION__/g, qualCount + 1);
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = html;
+                    const newRow = wrapper.firstElementChild;
+                    
+                    qualificationContainer.appendChild(newRow);
+                    qualCount++;
+                });
+            }
+
+            // Handle Qualification Deletion with SweetAlert2
+            window.handleQualificationDelete = function(btn, id) {
+                Swal.fire({
+                    title: 'Delete Qualification?',
+                    text: 'Are you sure you want to remove this academic record?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const row = btn.closest('.qualification-row');
+                        
+                        if (id) {
+                            // Perform backend deletion
+                            fetch(`/personnel/employees/qualification/${id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Accept': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    row.remove();
+                                    reorderQualifications();
+                                    Swal.fire('Deleted!', 'The record has been deleted.', 'success');
+                                } else {
+                                    Swal.fire('Error', 'Failed to delete record from server.', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire('Error', 'An error occurred while deleting the record.', 'error');
+                            });
+                        } else {
+                            // Just remove from UI for unsaved records
+                            row.remove();
+                            reorderQualifications();
+                        }
+                    }
+                });
+            };
+
+            // Reorder function for Qualifications
+            window.reorderQualifications = function() {
+                const container = document.getElementById('qualification-container');
+                const noMsg = document.getElementById('no-qualification-msg');
+                const rows = container.querySelectorAll('.qualification-row');
+                
+                if (rows.length === 0) {
+                    if (noMsg) noMsg.style.display = 'block';
+                } else {
+                    if (noMsg) noMsg.style.display = 'none';
+                }
+                
+                rows.forEach((row, idx) => {
+                    const rowNum = row.querySelector('.row-number');
+                    if (rowNum) rowNum.textContent = idx + 1;
+                    
+                    row.querySelectorAll('input').forEach(field => {
+                        const name = field.getAttribute('name');
+                        if (name && name.includes('qualifications[')) {
+                            field.setAttribute('name', name.replace(/qualifications\[\d+\]/, `qualifications[${idx}]`));
+                        }
+                    });
+                });
+            };
         });
     </script>
     @endpush

@@ -1,0 +1,122 @@
+﻿Id,HrmEmployeeId,Qualification,Level,Institution,BoardOrUniversity,,HrmPassingYear,GroupName,Result
+1,220,SSC,NULL,Bhoverchar Wazir Ali High School,NULL,,2001,Business Studies ,3.39 out of 5
+2,220,HSC,NULL,Kilomulla Govt. Degree College ,NULL,,2003,Business Studies ,3.25
+3,220,BACHELOR,NULL,NULL,Deffodil International University ,,2009,Business Administration ,3.14
+4,221,SSC,NULL,St. Gregory High School,NULL,,2002,Business Study ,4.13
+5,221,HSC,NULL,Dhaka Commerce College ,NULL,,2004,Business Studies ,4.2
+6,221,BACHELOR,NULL,NULL,North South University ,,2014,Business Administration ,NULL
+7,221,Post Graduate Diploma,NULL,International Supply Chain Education Alliance,NULL,,2016,supply Chain management,NULL
+8,222,HSC,NULL,Sekandari A. M. High School,NULL,,2004,Business Studies ,3.56
+9,223,SSC,NULL,Rayer Bazar High School,NULL,,2013,Business Studies,4.44
+10,223,HSC,NULL,Bir Shrashta Munshi Abdur Rouf Public College,NULL,,2015,Business Studies,3.58
+11,223,BACHELOR,NULL,NULL,New Model Degree College,,0,Marketing,NULL
+12,226,JSC,NULL,NULL,NULL,,2000,NULL,NULL
+13,227,SSC,NULL,Bangladesh Open University,NULL,,2013,NULL,3.25
+14,227,HSC,NULL,Bangladesh Open University,NULL,,2016,Commerce ,2.1
+15,227,Diploma,NULL,NULL,Bangladesh open University,,2020,Commerce ,NULL
+16,228,HSC,NULL,BAF Shaheen College ,NULL,,2011,Humanities ,3.7
+17,228,SSC,NULL,"Balughat High School, Dhaka",NULL,,2009,Humanities ,3.69
+18,229,Diploma,NULL,Al-Haj Mokbul Hossain Degree College ,NULL,,0,civil,NULL
+19,229,SSC,NULL,West Dhanmondi Yusuf High School ,NULL,,0,Business Studies ,3.56
+20,230,HSC,NULL,Govt. Science College ,NULL,,2015,Science ,4.33
+21,230,SSC,NULL,Shamsul Haq Khan School And College ,NULL,,2013,Science ,5
+22,231,SSC,NULL,Mirpur Siddhanta High School,NULL,,2011,Business Studies ,3.63
+23,231,HSC,NULL,BCIC College,NULL,,2013,Business Studies ,3.5
+24,231,BACHELOR,NULL,NULL,IUBAT ,,2018,Tourism & Hospitality Management ,Appeared 
+25,232,SSC,NULL,Bajapti R.M High School,NULL,,2008,Business Studies ,3.13
+26,232,HSC,NULL,Haimchar Govt. Degree College,NULL,,2010,Business Studies ,3.2
+27,233,SSC,NULL,Rajapur High School,NULL,,2015,Science,4.5
+28,233,HSC,NULL,Martin Luther Collage ,NULL,,2017,Science ,4.25
+29,233,BACHELOR,NULL,NULL,K.K.M. Rahamatullah College & University ,,0,Political Science ,NULL
+30,234,SSC,NULL,Premhar High School ,NULL,,2016,Business Studies ,4.67
+31,234,HSC,NULL,Firoza Bashar Ideal College ,NULL,,2018,Business Studies ,3.25
+32,234,BACHELOR,NULL,NULL,"Tejgoan College, Dhaka",,0,Tourism & Hospitality Management ,NULL
+33,235,HSC,NULL,Safiuddin Sarker Academy School and College,NULL,,2019,Science ,3.94
+34,235,SSC,NULL,Khailkur Badsha Miah Agrani Biddalaya ,NULL,,2016,Science ,4.83
+35,236,SSC,NULL,Corpus Christy High School,Dhaka Board ,,2013,Business studies ,3.5
+36,236,Diploma,Diploma in Engineering ,MAWTSinstitute of Technology ,NULL,,2017,Electronics Technology ,3.28
+37,237,HSC,NULL,SonapukurShurovi College,NULL,,2016,Science ,3.2
+38,237,SSC,NULL,"Kayanizpara High School, Saidpur.",NULL,,2011,Science ,3.38
+39,238,SSC,NULL,NULL,BBM High School,,2016,Business Studies ,4.5
+40,239,SSC,NULL,Mohammadpur Model School and College,NULL,,2014,Science ,4.38
+41,239,HSC,NULL,Lalmatia Mohila College ,NULL,,2017,Business Studies ,3.75
+42,239,BACHELOR,NULL,Daffodil Institute of IT ,NULL,,0,BBA,NULL
+43,240,SSC,NULL,Mehernigar School,Dhaka,,2010,Commerce ,3.5
+44,240,HSC,NULL,Mehernigar School and college ,NULL,,2012,Commerce,3.2
+45,241,SSC,NULL,K.T.M Secondary School,NULL,,2013,NULL,3.25
+46,242,SSC,NULL,Kalachandpur High School,NULL,,2013,Humanities ,3.69
+47,242,HSC,NULL,NULL,National College ,,2015,Business Studies ,4.08
+48,242,BACHELOR,NULL,NULL,A.K.M Rahmatullah University ,,0,Accounting ,NULL
+49,243,SSC,NULL,Jatrabari Ideal High School,NULL,,2009,NULL,4.31
+50,243,HSC,NULL,Tejgaon College ,NULL,,2011,NULL,4.2
+51,243,BACHELOR,NULL,NULL,"Linclon College, Malaysia ",,2015,NULL,NULL
+52,245,JSC,NULL,NULL,NULL,,2016,NULL,NULL
+53,246,SSC,NULL,Bhola Govt. High School ,NULL,,2013,Science ,4.94
+54,246,HSC,NULL,Bhola Govt. College ,NULL,,2015,Commerce ,4.5
+55,246,BACHELOR,NULL,NULL,Stamford University Bangladesh ,,0,Marketing ,3.14
+56,261,SSC,NULL,Sarishabari RDM Pilot High School ,Dhaka,,2011,NULL,5 out of 5
+57,261,HSC,NULL,Shahid Sayed Nazrul Islam College,Dhaka,,2013,NULL,4.71 out of 5
+58,261,BACHELOR,NULL,Daffodil International University,NULL,,2018,NULL,3.41 out of 4
+59,262,SSC,NULL,Al-amin Academy School & College,Comilla,,2014,NULL,5
+60,262,HSC,NULL,Al-Amin Academy School & College ,Comilla,,2016,NULL,NULL
+61,262,BACHELOR,NULL,American International University Bangladesh,NULL,,2021,NULL,3.41
+62,263,SSC,NULL,"Matipara Kazi Samir Uddin High School, Rajbari",Dhaka,,1997,NULL,Second
+63,263,HSC,NULL,Rajbari Govy. Colleg,Dhaka,,1999,NULL,Second
+64,263,BACHELOR,NULL,Rajbari Govt. College,National University,,2002,Accounting,Second
+65,263,MASTERS,NULL,Rajbari Govt. University,National University,,2003,Accounting,Second
+66,264,BACHELOR,B.Sc,"Metropolitan University, sylhet",NULL,,2021,Computer Science & technology,3.16
+67,264,HSC,NULL,"Scholarshome, Sylhet",Sylhet,,2014,Science,4.3
+68,264,SSC,NULL,Razar Bazar Govt. High School,Sylhet,,2012,Science,4.88
+69,268,MASTERS,NULL,NULL,United International University,,2016,HRM,3.33
+70,269,SSC,Kalachandpur High School & College,NULL,Dhaka,,2012,Business Studies,4.25
+71,269,HSC,NULL,Kalachadpur High School & College,Dhaka,,2017,Business Studies,3.8
+72,270,SSC,NULL,Rajshahi Collegiate School,Rajshahi,,2006,science,4.75
+73,270,HSC,NULL,Rajshahi City College,Rajshahi,,2008,Science,3.6
+74,270,BACHELOR,B.Sc,Stamford University,NULL,,2015,EEE,3.25
+75,271,SSC,NULL,Bogra Govt Girls High School,Rajshahi,,2011,Science,5
+76,271,HSC,NULL,"Govt Azizul Haque College, Bogra",Rajshahi,,2013,Science,5
+77,271,BACHELOR,NULL,NULL,AIUB,,2018,Computer Engineering,3.36
+78,272,SSC,NULL,Narail Govt High School,Jessore,,2010,Business studies,3.75
+79,272,HSC,NULL,Narail Govt High School,Jessore,,2012,Business studies,2.6
+80,272,BACHELOR,NULL,NULL,BUBT,,2017,LL.B,2.36
+81,273,SSC,SSC,Kamalpur M.H. Hih School,Cumilla,,2013,Science,4.69
+82,273,Diploma,HSC,Feni Polytechnicial Instituate,BTEB,,2017,Science,3.57
+83,273,BACHELOR,B.Sc,Northern University BD,UGC,,2021,Computer Science,3.19
+84,274,BACHELOR,B.Sc,AIUB,NULL,,2021,CSE,3.38
+85,281,BACHELOR,NULL,National University,NULL,,2018,B.Sc in ECE,3.2
+86,282,BACHELOR,B.Sc,NULL,Atish Diponkar University,,2013,Computer Science,3.12
+87,284,MBA,NULL,NULL,National University,,2018,Finance & Banking,3.17
+88,287,BACHELOR,BSc,NULL,Bangladesh University,,2014,Computer Science & Engineering,3.1
+89,289,BACHELOR,NULL,NULL,Northern University,,2022,CSE,2.97 out of 4
+90,290,BACHELOR,NULL,Varendra University,Varendra University,,2020,CSE,2.97
+91,301,MBA,NULL,NULL,AIUB,,2021,Management Information System,3.73
+92,303,HSC,NULL,Bheramara College,Jessore,,2020,Humanities,3.08
+93,308,BACHELOR,NULL,NULL,Uttara University,,2020,CSE,3.24
+94,309,BACHELOR,NULL,NULL,AIUB,,2023,Computer Science & Engineering,3.84
+95,310,BACHELOR,NULL,NULL,Leading University,,2021,EEE,3.48
+96,311,HSC,NULL,NULL,Natore Technical School & College,,2012,HSC (Vocational),4.37
+97,312,BACHELOR,NULL,NULL,AIUB,,2019,CSE,2.92
+98,313,BACHELOR,NULL,NULL,AIUB,,2021,CSE,3.35
+99,320,BACHELOR,B.Sc,NULL,Independent University,,2022,EEE,3.63
+100,333,BACHELOR,BBA,NULL,Army Ins. of Business Administration,,2021,BBA,2.9
+101,334,BACHELOR,NULL,NULL,Ahsanullah University of Science & Technology,,2024,EEE,2.78
+102,335,BACHELOR,B.Sc.,NULL,East West University,,2023,EEE,3.28
+103,338,BACHELOR,B.Sc,NULL,AIUB,,2021,CSE,3.48 out of 4
+104,339,MASTERS,NULL,NULL,"National University, Gazipur",,2014,Management,First
+105,343,BACHELOR,NULL,NULL,North South University,,2023,Marketing,2.94
+106,344,BACHELOR,NULL,NULL,AIUB,,2021,EEE,3.46
+107,345,BACHELOR,B.Sc,NULL,Ahsanullah University of Science  & Technology,,2023,EEE,3.88
+108,348,BACHELOR,NULL,NULL,IUB,,2024,International Business,3.10 out of 4
+109,349,BACHELOR,NULL,NULL,East West University ,,2023,EEE,3.17 out of 4
+110,350,BACHELOR,BBA,NULL,Southeast University,,2024,Marketing,3.85 out of 4
+111,351,MASTERS,MA (Takmil),NULL,Makkinagar Madrasha (Al-Haiatul Ulga),,2023,NULL,3rd Div
+112,352,BACHELOR,BSC ,NULL,Daffodil International University,,2021,ETE,2.96 (out of 4)
+113,353,BACHELOR,BS.c,NULL,AIUB,,2022,EEE,3.63 out of 4
+114,354,BACHELOR,B.Sc,NULL,East West University,,2024,EEE,3.06 (out of 4)
+115,355,BACHELOR,NULL,NULL,Northern University,,2025,CSC,NULL
+116,356,BACHELOR,NULL,NULL,Eastern University,,2023,CSE,3.30 (out of 4)
+117,357,BACHELOR,NULL,NULL,Ahsanullah Unioversity of Science & Technology,,2022,EEE,3.711 (out of 4)
+118,358,BACHELOR,NULL,NULL,East West University,,2024,EEE,2.41 (out of 4)
+119,359,BACHELOR,NULL,NULL,Stamford University Bangladesh,,2020,EEE,3.47 (out of 4)
+120,367,BACHELOR,NULL,NULL,BRAC University,,2025,CSE,3.82 (out of 4)
+121,368,MBA,NULL,NULL,Dhaka City College (National University),,2017,NULL,3.33
