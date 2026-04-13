@@ -575,7 +575,8 @@ class LeaveApplicationController extends Controller
             $employee->name . ' has submitted a leave application for ' . $totalDays . ' day(s) from ' .
                 Carbon::parse($request->from_date)->format('d M Y') . ' to ' .
                 Carbon::parse($request->to_date)->format('d M Y') . '.',
-            route('team-lead.leave-applications.index')
+            route('team-lead.leave-applications.index'),
+            route('personnel.leave-applications.index')
         );
 
         return redirect()->back()->with('success', 'Leave application submitted successfully.');

@@ -47,12 +47,26 @@ class NotificationController extends Controller
         // Redirect logic
         $target = $notification->url ?: route('notifications.index');
 
-        // Smart redirection for notices
+        // Smart redirection for notices, attendance, and leave requests
+        $roleName = optional($user->role)->name;
+
         if ($notification->type === 'notice') {
-            if (optional($user->role)->name === 'HR Admin') {
+            if ($roleName === 'HR Admin') {
                 $target = route('settings.notices.index');
             } else {
                 $target = route('employee-dashboard') . '#notices-events';
+            }
+        } elseif ($notification->type === 'attendance_request') {
+            if ($roleName === 'HR Admin') {
+                $target = route('personnel.attendances.approvals');
+            } else {
+                $target = route('team-lead.attendances.approvals');
+            }
+        } elseif ($notification->type === 'leave_request') {
+            if ($roleName === 'HR Admin') {
+                $target = route('personnel.leave-applications.index');
+            } else {
+                $target = route('team-lead.leave-applications.index');
             }
         }
 
