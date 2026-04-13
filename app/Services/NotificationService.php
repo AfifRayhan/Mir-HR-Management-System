@@ -19,7 +19,8 @@ class NotificationService
         string   $type,
         string   $title,
         string   $message,
-        string   $url
+        string   $url,
+        string   $hrUrl = null
     ): void {
         $recipientUserIds = collect();
 
@@ -57,12 +58,22 @@ class NotificationService
         }
 
         foreach ($recipientUserIds->unique() as $userId) {
+            $finalUrl = $url;
+
+            // If an HR URL was provided, check if the recipient is an HR Admin
+            if ($hrUrl && $hrRole) {
+                $user = User::find($userId);
+                if ($user && $user->role_id === $hrRole->id) {
+                    $finalUrl = $hrUrl;
+                }
+            }
+
             Notification::create([
                 'user_id' => $userId,
                 'type'    => $type,
                 'title'   => $title,
                 'message' => $message,
-                'url'     => $url,
+                'url'     => $finalUrl,
             ]);
         }
     }

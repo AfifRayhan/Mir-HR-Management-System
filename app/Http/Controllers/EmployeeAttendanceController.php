@@ -203,7 +203,8 @@ class EmployeeAttendanceController extends Controller
             'Attendance Adjustment Request: ' . $employee->name,
             $employee->name . ' has submitted an attendance adjustment request for ' .
                 Carbon::parse($validated['date'])->format('d M Y') . '.',
-            route('team-lead.attendances.approvals')
+            route('team-lead.attendances.approvals'),
+            route('personnel.attendances.approvals')
         );
 
         return redirect()->route('employee.attendance.index', ['from_date' => $validated['date'], 'to_date' => $validated['date']])

@@ -344,10 +344,10 @@
 
                 <!-- Experience Information -->
                 <div class="form-card mb-5">
-                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                    <div class="form-section-title position-relative d-flex align-items-center mb-4">
                         <span><i class="bi bi-briefcase"></i>{{ __('Work Experience') }}</span>
-                        <button type="button" id="add-experience" class="btn btn-sm btn-outline-success rounded-pill px-3">
-                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add More Experience') }}
+                        <button type="button" id="add-experience" class="btn btn-outline-success rounded-pill font-bold transition-all hover:bg-success hover:text-white position-absolute" style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add Experience') }}
                         </button>
                     </div>
                     
@@ -357,13 +357,14 @@
                         @endphp
                         
                         @forelse($experiences as $index => $exp)
+                            @php $expId = is_array($exp) ? ($exp['id'] ?? null) : ($exp->id ?? null); @endphp
                             <div class="experience-row border rounded p-3 mb-3 bg-light/30">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    @php $expId = is_array($exp) ? ($exp['id'] ?? null) : ($exp->id ?? null); @endphp
-                                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                <div class="position-relative d-flex align-items-center mb-3">
+                                    <h6 class="mb-0 text-xs font-bold text-gray-500">{{ __('Record #') }}<span class="row-number">{{ $index + 1 }}</span></h6>
+                                    <button type="button" class="btn btn-outline-danger rounded-pill font-bold transition-all hover:bg-danger hover:text-white position-absolute" 
                                         onclick="handleExperienceDelete(this, '{{ $expId }}')"
-                                        style="min-width: 40px;">
-                                        <i class="bi bi-trash"></i>
+                                        style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                                        <i class="bi bi-trash me-1"></i>{{ __('Remove') }}
                                     </button>
                                     @if($expId)
                                         <input type="hidden" name="experiences[{{ $index }}][id]" value="{{ $expId }}">
@@ -406,12 +407,12 @@
 
                 <template id="experience-template">
                     <div class="experience-row border rounded p-3 mb-3 bg-light/30">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0 text-sm font-bold text-gray-600">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
-                            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                        <div class="position-relative d-flex align-items-center mb-3">
+                            <h6 class="mb-0 text-xs font-bold text-gray-500">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
+                            <button type="button" class="btn btn-outline-danger rounded-pill font-bold transition-all hover:bg-danger hover:text-white position-absolute" 
                                 onclick="handleExperienceDelete(this, null)"
-                                style="min-width: 40px;">
-                                <i class="bi bi-trash"></i>
+                                style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                                <i class="bi bi-trash me-1"></i>{{ __('Remove') }}
                             </button>
                         </div>
                         <div class="row g-3">
@@ -445,10 +446,10 @@
 
                 <!-- Qualification Information -->
                 <div class="form-card mb-5">
-                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                    <div class="form-section-title position-relative d-flex align-items-center mb-4">
                         <span><i class="bi bi-mortarboard"></i>{{ __('Academic Qualifications') }}</span>
-                        <button type="button" id="add-qualification" class="btn btn-sm btn-outline-success rounded-pill px-3">
-                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add More Qualification') }}
+                        <button type="button" id="add-qualification" class="btn btn-outline-success rounded-pill font-bold transition-all hover:bg-success hover:text-white position-absolute" style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                            <i class="bi bi-plus-lg me-1"></i>{{ __('Add Qualification') }}
                         </button>
                     </div>
                     
@@ -458,13 +459,14 @@
                         @endphp
                         
                         @forelse($qualifications as $index => $qual)
+                            @php $qualId = is_array($qual) ? ($qual['id'] ?? null) : ($qual->id ?? null); @endphp
                             <div class="qualification-row border rounded p-3 mb-3 bg-light/30">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    @php $qualId = is_array($qual) ? ($qual['id'] ?? null) : ($qual->id ?? null); @endphp
-                                    <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                                <div class="position-relative d-flex align-items-center mb-3">
+                                    <h6 class="mb-0 text-xs font-bold text-gray-500">{{ __('Record #') }}<span class="row-number">{{ $index + 1 }}</span></h6>
+                                    <button type="button" class="btn btn-outline-danger rounded-pill font-bold transition-all hover:bg-danger hover:text-white position-absolute" 
                                         onclick="handleQualificationDelete(this, '{{ $qualId }}')"
-                                        style="min-width: 40px;">
-                                        <i class="bi bi-trash"></i>
+                                        style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                                        <i class="bi bi-trash me-1"></i>{{ __('Remove') }}
                                     </button>
                                     @if($qualId)
                                         <input type="hidden" name="qualifications[{{ $index }}][id]" value="{{ $qualId }}">
@@ -511,12 +513,12 @@
 
                 <template id="qualification-template">
                     <div class="qualification-row border rounded p-3 mb-3 bg-light/30">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="mb-0 text-sm font-bold text-gray-600">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
-                            <button type="button" class="btn btn-danger btn-sm rounded-pill px-2 py-1" 
+                        <div class="position-relative d-flex align-items-center mb-3">
+                            <h6 class="mb-0 text-xs font-bold text-gray-500">{{ __('Record #') }}<span class="row-number">__ITERATION__</span></h6>
+                            <button type="button" class="btn btn-outline-danger rounded-pill font-bold transition-all hover:bg-danger hover:text-white position-absolute" 
                                 onclick="handleQualificationDelete(this, null)"
-                                style="min-width: 40px;">
-                                <i class="bi bi-trash"></i>
+                                style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
+                                <i class="bi bi-trash me-1"></i>{{ __('Remove') }}
                             </button>
                         </div>
                         <div class="row g-3">
