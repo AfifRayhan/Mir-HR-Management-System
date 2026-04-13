@@ -68,6 +68,8 @@ class NotificationController extends Controller
             } else {
                 $target = route('team-lead.leave-applications.index');
             }
+        } elseif ($notification->type === 'supervisor_remark') {
+            $target = route('employee-dashboard') . '#supervisor-remarks';
         }
 
         return redirect($target);

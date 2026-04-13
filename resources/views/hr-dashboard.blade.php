@@ -2,6 +2,16 @@
     <!-- Specific styles for this dashboard -->
     @push('styles')
     @vite(['resources/css/custom-hr-dashboard.css'])
+    <style>
+        @keyframes highlightFade {
+            0% { background-color: #fef3c7; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+            100% { background-color: transparent; box-shadow: none; }
+        }
+        .highlight-section {
+            animation: highlightFade 4s ease-out forwards;
+            border-radius: 1rem;
+        }
+    </style>
     @endpush
 
     <div class="hr-layout">
@@ -239,18 +249,29 @@
                             <ul class="hr-list px-2">
                                 @forelse($activeNotices as $notice)
                                 <li class="small mb-3 border-bottom pb-2 last:border-bottom-0">
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="fw-bold text-gray-800">{{ $notice->title }}</span>
-                                        @if($notice->type === 'event')
-                                        <span class="badge bg-primary-soft text-primary" style="font-size: 0.65rem;">{{ __('Event') }}</span>
-                                        @else
-                                        <span class="badge bg-info-soft text-info" style="font-size: 0.65rem;">{{ __('Notice') }}</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-muted mb-1" style="font-size: 0.75rem; line-height: 1.4;">{{ Str::limit($notice->content, 80) }}</p>
-                                    <div class="text-muted" style="font-size: 0.65rem;">
-                                        <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
-                                    </div>
+                                    <a href="#" class="text-decoration-none d-block notice-item"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#hrNoticeModal"
+                                       data-title="{{ $notice->title }}"
+                                       data-content="{{ $notice->content }}"
+                                       data-type="{{ ucfirst($notice->type) }}"
+                                       data-date="{{ $notice->created_at->format('d M Y, h:i A') }}">
+                                        <div class="d-flex justify-content-between align-items-center mb-0">
+                                            <span class="fw-bold text-gray-800 text-truncate" style="max-width: 180px;">{{ Str::limit($notice->title, 35) }}</span>
+                                            <i class="bi bi-chevron-right text-muted" style="font-size: 0.7rem;"></i>
+                                        </div>
+                                        <p class="text-muted mb-1 text-truncate" style="font-size: 0.75rem; line-height: 1.4; max-width: 210px;">{{ Str::limit($notice->content, 70) }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-muted" style="font-size: 0.65rem;">
+                                                <i class="bi bi-clock me-1"></i>{{ $notice->created_at->diffForHumans() }}
+                                            </div>
+                                            @if($notice->type === 'event')
+                                                <span class="badge bg-primary-soft text-primary" style="font-size: 0.6rem;">{{ __('Event') }}</span>
+                                            @else
+                                                <span class="badge bg-info-soft text-info" style="font-size: 0.6rem;">{{ __('Notice') }}</span>
+                                            @endif
+                                        </div>
+                                    </a>
                                 </li>
                                 @empty
                                 <li class="small text-center text-muted py-2">{{ __('No active notices.') }}</li>
@@ -265,6 +286,35 @@
         </main>
     </div>
 
+    <!-- HR Notice & Event Modal -->
+    <div class="modal fade" id="hrNoticeModal" tabindex="-1" aria-labelledby="hrNoticeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-light border-0">
+                    <h5 class="modal-title fw-bold" id="hrNoticeModalLabel">{{ __('Notice & Event Detail') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-grow-1">
+                            <h5 id="hrModalNoticeTitle" class="fw-bold mb-0 text-primary" style="overflow-wrap: anywhere;"></h5>
+                            <div class="text-muted small mt-2">
+                                <span id="hrModalNoticeType" class="badge bg-info-soft text-info"></span>
+                                <span class="mx-1">•</span>
+                                <span id="hrModalNoticeDate" class="text-muted"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-3 opacity-10">
+                    <div id="hrModalNoticeContent" class="text-gray-700 font-medium" style="line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere;"></div>
+                </div>
+                <div class="modal-footer border-0 p-3 bg-light">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="office-attendance-data" type="application/json">
@@ -272,6 +322,28 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Generic highlight for deep-linked sections
+            const hash = window.location.hash;
+            if (hash) {
+                const target = document.querySelector(hash);
+                if (target) {
+                    target.classList.add('highlight-section');
+                    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                }
+            }
+
+            // HR Notice modal population
+            const hrNoticeModal = document.getElementById('hrNoticeModal');
+            if (hrNoticeModal) {
+                hrNoticeModal.addEventListener('show.bs.modal', function (event) {
+                    const btn = event.relatedTarget;
+                    document.getElementById('hrModalNoticeTitle').textContent  = btn.getAttribute('data-title');
+                    document.getElementById('hrModalNoticeContent').textContent = btn.getAttribute('data-content');
+                    document.getElementById('hrModalNoticeDate').textContent    = btn.getAttribute('data-date');
+                    document.getElementById('hrModalNoticeType').textContent    = btn.getAttribute('data-type');
+                });
+            }
+
             const rawData = document.getElementById('office-attendance-data').textContent;
             const officeData = JSON.parse(rawData);
 

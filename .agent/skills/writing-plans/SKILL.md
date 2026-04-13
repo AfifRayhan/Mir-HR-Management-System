@@ -9,7 +9,9 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+Assume they are a skilled developer, but know almost nothing about our toolset (Laravel, Bootstrap 5, PHP) or problem domain (HRMS). Assume they don't know good test design very well.
+
+**Environment Requirement**: Always specify `php.exe` for artisan and vendor/bin commands.
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
@@ -50,39 +52,47 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 ### Task N: [Component Name]
 
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+- `[ ]` Create Service class `app/Services/ExampleService.php` (if logic is complex)
+- `[ ]` Create Controller `app/Http/Controllers/ExampleController.php`
+- `[ ]` Register Routes in `routes/web.php`
+- `[ ]` Add Navigation Link in `resources/views/layouts/navigation.blade.php`
+- `[ ]` Create Blade template `resources/views/example/index.blade.php`
+- `[ ]` Add custom JS/CSS in `resources/` (loaded via `@push`)
 
 **Step 1: Write the failing test**
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+```php
+public function test_specific_behavior()
+{
+    $response = $this->get('/example');
+    $response->assertStatus(200);
+}
 ```
 
 **Step 2: Run test to verify it fails**
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+Run: `php.exe artisan test --filter test_specific_behavior`
+Expected: FAIL with "Route [example] not defined"
 
 **Step 3: Write minimal implementation**
 
-```python
-def function(input):
-    return expected
+```php
+// app/Http/Controllers/ExampleController.php
+public function index()
+{
+    return view('example.index');
+}
 ```
 
 **Step 4: Run test to verify it passes**
 
-Run: `pytest tests/path/test.py::test_name -v`
+Run: `php.exe artisan test --filter test_specific_behavior`
 Expected: PASS
 
 **Step 5: Commit**
 
 ```bash
-git add tests/path/test.py src/path/file.py
+git add app/Http/Controllers/ExampleController.php tests/Feature/ExampleTest.php
 git commit -m "feat: add specific feature"
 ```
 ````
