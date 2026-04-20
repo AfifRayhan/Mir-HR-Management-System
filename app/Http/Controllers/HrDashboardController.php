@@ -113,7 +113,22 @@ class HrDashboardController extends Controller
             ->whereDate('to_date', '>=', $today)
             ->count();
 
-        $absentToday = max(0, $activeEmployeesCount - ($presentToday + $onLeaveToday));
+        // Accurately calculate absent count by checking who SHOULD have worked today
+        $absentToday = 0;
+        $activeEmployees = Employee::where('status', 'active')->get();
+        $todayAttendance = AttendanceRecord::whereDate('date', $today)->pluck('employee_id')->toArray();
+        $todayLeaves = LeaveApplication::where('status', 'approved')
+            ->whereDate('from_date', '<=', $today)
+            ->whereDate('to_date', '>=', $today)
+            ->pluck('employee_id')->toArray();
+
+        foreach ($activeEmployees as $emp) {
+            if (!in_array($emp->id, $todayAttendance) && !in_array($emp->id, $todayLeaves)) {
+                if ($this->attendanceService->isWorkingDay($emp, $today)) {
+                    $absentToday++;
+                }
+            }
+        }
 
         return compact('presentToday', 'lateToday', 'onLeaveToday', 'absentToday');
     }

@@ -140,7 +140,7 @@ class EmployeeSeeder extends Seeder
             $tin = trim((string) ($row['AK'] ?? ''));
             $nationality = trim((string) ($row['AL'] ?? ''));
 
-            if (empty($office) || empty($department) || empty($name) || empty($empId)) {
+            if (empty($office) || empty($department) || empty($name) || empty($empId) || $empId === '0123456') {
                 continue;
             }
 

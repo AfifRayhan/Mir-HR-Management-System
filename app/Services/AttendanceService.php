@@ -8,11 +8,24 @@ use App\Models\AttendanceRecord;
 use App\Models\ManualAttendanceAdjustment;
 use App\Models\WeeklyHoliday;
 use App\Models\Holiday;
+use App\Models\RosterSchedule;
+use App\Models\RosterTime;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AttendanceService
 {
+    /**
+     * Map roster_group labels to group_slugs used in roster_times table.
+     */
+    const ROSTER_GROUP_SLUG_MAP = [
+        'NOC (Borak)'           => 'noc-borak',
+        'NOC (Sylhet)'          => 'noc-sylhet',
+        'Technician (Gulshan)'  => 'tech-gulshan',
+        'Technician (Borak)'    => 'tech-borak',
+        'Technician (Jessore)'  => 'tech-jessore',
+        'Technician (Sylhet)'   => 'tech-sylhet',
+    ];
     /**
      * Process logs for a specific date and update attendance records.
      */
@@ -35,8 +48,18 @@ class AttendanceService
     {
         $date = Carbon::parse($date)->toDateString();
 
-        $machineId = null;
+        // Skip processing for roster off-days or unscheduled roster days
+        $officeTime = $employee->officeTime;
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            if (!$rosterShift || $rosterShift->is_off_day) {
+                return;
+            }
+        } else {
+            $rosterShift = null;
+        }
 
+        $machineId = null;
         $isManual = false;
 
         // Check for manual adjustment first
@@ -77,13 +100,13 @@ class AttendanceService
             }
         }
 
-        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime, $machineId, $isManual);
+        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime, $machineId, $isManual, $rosterShift);
     }
 
     /**
      * Update or create attendance record based on in/out times.
      */
-    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null, $isManual = false)
+    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null, $isManual = false, ?RosterTime $rosterShift = null)
     {
         $officeTime = $employee->officeTime;
 
@@ -98,7 +121,17 @@ class AttendanceService
 
             $status = 'present';
 
-            if ($officeTime && $officeTime->late_after) {
+            if ($rosterShift && $rosterShift->start_time && !$rosterShift->is_off_day) {
+                // Roster employee: late = start_time + 1 hour
+                $shiftStart = Carbon::parse($date . ' ' . $rosterShift->start_time);
+                $lateAfter = $shiftStart->copy()->addHour();
+
+                if ($inTime->greaterThan($shiftStart) && $inTime->greaterThan($lateAfter)) {
+                    $status = 'late';
+                    $lateSeconds = abs($inTime->diffInSeconds($lateAfter));
+                }
+            } elseif ($officeTime && $officeTime->late_after) {
+                // Non-roster employee: use existing OfficeTime logic
                 $startTime = Carbon::parse($date . ' ' . $officeTime->start_time);
                 $lateAfter = Carbon::parse($date . ' ' . $officeTime->late_after);
 
@@ -136,6 +169,41 @@ class AttendanceService
                 'is_manual' => $isManual,
             ]
         );
+    }
+
+    /**
+     * Get the RosterTime config for an employee on a given date.
+     * Returns null if the employee is not a roster employee or has no schedule.
+     */
+    public function getRosterShiftForDate(Employee $employee, $date): ?RosterTime
+    {
+        $date = Carbon::parse($date)->toDateString();
+
+        // Check if this employee is on a Roster shift
+        $officeTime = $employee->officeTime;
+        if (!$officeTime || $officeTime->shift_name !== 'Roster') {
+            return null;
+        }
+
+        // Look up their schedule for this date
+        $schedule = RosterSchedule::where('employee_id', $employee->id)
+            ->where('date', $date)
+            ->first();
+
+        if (!$schedule || !$schedule->shift_type) {
+            return null;
+        }
+
+        // Resolve group_slug from employee's roster_group
+        $groupSlug = self::ROSTER_GROUP_SLUG_MAP[$employee->roster_group] ?? null;
+        if (!$groupSlug) {
+            return null;
+        }
+
+        // Look up the shift timing
+        return RosterTime::where('group_slug', $groupSlug)
+            ->where('shift_key', $schedule->shift_type)
+            ->first();
     }
 
     /**
@@ -180,6 +248,16 @@ class AttendanceService
 
         if ($isHoliday) {
             return false;
+        }
+
+        // 3. Check Roster Off-Days
+        $officeTime = $employee->officeTime;
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            // If no roster schedule is set or it's an off day, it's not a working day
+            if (!$rosterShift || $rosterShift->is_off_day) {
+                return false;
+            }
         }
 
         return true;
