@@ -34,8 +34,12 @@
                         <div class="value">{{ $user->email }}</div>
                     </div>
                     <div class="info-box">
-                        <label>{{ __('Personal Email') }}</label>
+                        <label>{{ __('Corporate Email') }}</label>
                         <div class="value">{{ $employee ? $employee->email : 'N/A' }}</div>
+                    </div>
+                    <div class="info-box">
+                        <label>{{ __('Personal Email') }}</label>
+                        <div class="value">{{ $employee ? $employee->personal_email : 'N/A' }}</div>
                     </div>
                     <div class="info-box">
                         <label>{{ __('Phone Number') }}</label>

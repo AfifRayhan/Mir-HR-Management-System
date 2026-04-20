@@ -53,6 +53,7 @@ class EmployeeSeeder extends Seeder
                     'user_id' => $user?->id,
                     'name' => trim($data['first'] . ' ' . $data['last']),
                     'email' => $data['email'],
+                    'personal_email' => $data['email'],
                     'blood_group' => $bloodGroups[array_rand($bloodGroups)],
                     'father_name' => $data['last'] . ' ' . $fatherSuffixes[array_rand($fatherSuffixes)],
                     'mother_name' => 'Mrs. ' . $motherSuffixes[array_rand($motherSuffixes)],
@@ -102,7 +103,7 @@ class EmployeeSeeder extends Seeder
             // AC=EmergencyContactName, AD=EmergencyContactAddress
             // AE=EmergencyContactNo, AF=EmergencyContactPersonRelation
             // AG=PresentAddress, AH=PermanentAddress
-            // AI=Manager_id
+            // AI=Manager_id, AJ = Personal_Email
             $office = trim((string) ($row['B'] ?? ''));
             $department = trim((string) ($row['C'] ?? ''));
             $designation = trim((string) ($row['J'] ?? ''));
@@ -110,6 +111,7 @@ class EmployeeSeeder extends Seeder
             $name = trim((string) ($row['F'] ?? ''));
             $empId = trim((string) ($row['D'] ?? ''));
             $email = trim((string) ($row['L'] ?? ''));
+            $personalEmail = trim((string) ($row['AJ'] ?? ''));
             $bloodGroup = trim((string) ($row['G'] ?? ''));
             $fatherName = trim((string) ($row['H'] ?? ''));
             $motherName = trim((string) ($row['I'] ?? ''));
@@ -135,8 +137,8 @@ class EmployeeSeeder extends Seeder
             $presentAddress = trim((string) ($row['AG'] ?? ''));
             $permanentAddress = trim((string) ($row['AH'] ?? ''));
             $managerCode = trim((string) ($row['AI'] ?? '')); 
-            $tin = trim((string) ($row['AJ'] ?? ''));
-            $nationality = trim((string) ($row['AK'] ?? ''));
+            $tin = trim((string) ($row['AK'] ?? ''));
+            $nationality = trim((string) ($row['AL'] ?? ''));
 
             if (empty($office) || empty($department) || empty($name) || empty($empId)) {
                 continue;
@@ -164,6 +166,7 @@ class EmployeeSeeder extends Seeder
                 'hrm_employee_id' => !empty($hrmEmployeeId) ? $hrmEmployeeId : null,
                 'name' => $name,
                 'email' => !empty($email) ? $email : null,
+                'personal_email' => !empty($personalEmail) ? $personalEmail : null,
                 'blood_group' => !empty($bloodGroup) ? $bloodGroup : null,
                 'father_name' => !empty($fatherName) ? $fatherName : null,
                 'mother_name' => !empty($motherName) ? $motherName : null,
@@ -172,7 +175,7 @@ class EmployeeSeeder extends Seeder
                 'religion' => !empty($religion) ? $religion : null,
                 'marital_status' => !empty($maritalStatus) ? $maritalStatus : null,
                 'national_id' => !empty($nationalId) ? $nationalId : null,
-                'tin' => !empty($tin) ? $tin : null,
+                'tin' => null, // TIN previously mapped to AJ, but AJ is now personal_email
                 'nationality' => !empty($nationality) ? $nationality : 'Bangladeshi',
                 'no_of_children' => !empty($noOfChildren) ? (int)$noOfChildren : null,
                 'contact_no' => !empty($contactNo) ? $contactNo : null,
@@ -192,7 +195,7 @@ class EmployeeSeeder extends Seeder
                 'designation_id' => $designationModel->id,
                 'grade_id' => $gradeModel->id,
                 'office_id' => $officeModel->id,
-                'office_time_id' => OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null,
+                'office_time_id' => $defaultTime,
                 'reporting_manager_id' => null, // resolved in second pass below
                 'status' => (strtolower($status) === 'active') ? 'active' : 'inactive',
                 'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,

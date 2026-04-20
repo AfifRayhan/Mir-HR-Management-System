@@ -175,7 +175,12 @@
                                     @forelse($fullMonthAttendance as $record)
                                     <tr>
                                         <td class="ps-4 small">{{ $record->date->format('d M Y') }}</td>
-                                        <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '--' }}</td>
+                                        <td class="small">
+                                            {{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '--' }}
+                                            @if($record->is_manual)
+                                            <span class="badge bg-secondary-soft text-secondary ms-1 shadow-sm" style="font-size: 0.65rem;">{{ __('Manual') }}</span>
+                                            @endif
+                                        </td>
                                         <td class="small">{{ $record->out_time ? \Carbon\Carbon::parse($record->out_time)->format('h:i A') : '--' }}</td>
                                         <td class="pe-4 text-end">
                                             @if($record->status === 'absent')

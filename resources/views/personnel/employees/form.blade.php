@@ -43,9 +43,14 @@
                             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ __('Personal Email') }}</label>
-                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $employee->email ?? '') }}" placeholder="personal@example.com">
+                            <label class="form-label">{{ __('Corporate Email') }}</label>
+                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $employee->email ?? '') }}" placeholder="corporate@example.com">
                             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Personal Email') }}</label>
+                            <input type="email" name="personal_email" class="form-control @error('personal_email') is-invalid @enderror" value="{{ old('personal_email', $employee->personal_email ?? '') }}" placeholder="personal@example.com">
+                            @error('personal_email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Father Name') }}</label>
@@ -250,13 +255,23 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Office Time (Shift)') }}</label>
-                            <select name="office_time_id" class="form-select @error('office_time_id') is-invalid @enderror">
+                            <select id="office_time_id" name="office_time_id" class="form-select @error('office_time_id') is-invalid @enderror">
                                 <option value="">{{ __('Select Shift') }}</option>
                                 @foreach($officeTimes as $time)
                                 <option value="{{ $time->id }}" {{ old('office_time_id', $employee->office_time_id ?? '') == $time->id ? 'selected' : '' }}>{{ $time->shift_name }} ({{ \Carbon\Carbon::parse($time->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($time->end_time)->format('H:i') }})</option>
                                 @endforeach
                             </select>
                             @error('office_time_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                        <div class="col-md-4" id="rosterGroupWrapper" data-roster-shift-id="{{ \App\Models\OfficeTime::where('shift_name', 'Roster')->value('id') }}" style="display: none;">
+                            <label class="form-label">{{ __('Roster Group') }}</label>
+                            <select name="roster_group" class="form-select @error('roster_group') is-invalid @enderror">
+                                <option value="">{{ __('None') }}</option>
+                                @foreach(['All', 'NOC (Borak)', 'NOC (Sylhet)', 'Technician (Gulshan)', 'Technician (Borak)', 'Technician (Jessore)', 'Technician (Sylhet)'] as $rg)
+                                <option value="{{ $rg }}" {{ old('roster_group', $employee->roster_group ?? 'All') == $rg ? 'selected' : '' }}>{{ $rg }}</option>
+                                @endforeach
+                            </select>
+                            @error('roster_group') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Reporting Manager') }}</label>
@@ -309,7 +324,7 @@
                     <div class="row g-4 mb-3">
                         <div class="col-12 mb-2">
                             <div class="form-text text-muted">
-                                <i class="bi bi-info-circle me-1"></i>{{ __('Fill these fields to create or update the system user account for this employee. The personal email field above will be used as the login email. To update an existing user account, its password field can be left blank.') }}
+                                <i class="bi bi-info-circle me-1"></i>{{ __('Fill these fields to create or update the system user account for this employee. The corporate email field above will be used as the login email. To update an existing user account, its password field can be left blank.') }}
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -916,6 +931,26 @@
                     });
                 });
             };
+
+            // Roster Group Toggle Logic
+            const officeTimeSelect = document.getElementById('office_time_id');
+            const rosterWrapper = document.getElementById('rosterGroupWrapper');
+            const rosterShiftId = rosterWrapper && rosterWrapper.dataset.rosterShiftId ? parseInt(rosterWrapper.dataset.rosterShiftId) : null;
+            
+            function toggleRosterGroup() {
+                if (officeTimeSelect && rosterWrapper && rosterShiftId) {
+                    if (parseInt(officeTimeSelect.value) === rosterShiftId) {
+                        rosterWrapper.style.display = 'block';
+                    } else {
+                        rosterWrapper.style.display = 'none';
+                    }
+                }
+            }
+
+            if (officeTimeSelect) {
+                officeTimeSelect.addEventListener('change', toggleRosterGroup);
+                toggleRosterGroup();
+            }
         });
     </script>
     @endpush

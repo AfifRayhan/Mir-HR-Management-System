@@ -138,7 +138,12 @@
                                                 <span class="small font-bold">{{ $record->employee->name }}</span>
                                             </div>
                                         </td>
-                                        <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}</td>
+                                        <td class="small">
+                                            {{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}
+                                            @if($record->is_manual)
+                                            <span class="badge bg-secondary-soft text-secondary ms-1 shadow-sm" style="font-size: 0.65rem;">{{ __('Manual') }}</span>
+                                            @endif
+                                        </td>
                                         <td class="small">
                                             @if($record->status == 'absent')
                                             <span class="text-danger"><i class="bi bi-x-circle me-1"></i>{{ __('Absent') }}</span>

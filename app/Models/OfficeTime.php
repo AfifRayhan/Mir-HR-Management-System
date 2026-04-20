@@ -13,6 +13,7 @@ class OfficeTime extends Model
 
     protected $fillable = [
         'shift_name',
+        'short_name',
         'start_time',
         'end_time',
         'late_after',

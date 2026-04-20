@@ -27,7 +27,7 @@ class LeaveBalanceController extends Controller
         $query = Employee::with('department', 'designation')->where('status', 'active');
 
         // Search functionality
-        $search = $request->get('search');
+        $search = $request->input('search');
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -36,8 +36,8 @@ class LeaveBalanceController extends Controller
         }
 
         // Sorting functionality
-        $sort = $request->get('sort', 'name');
-        $direction = $request->get('direction', 'asc');
+        $sort = $request->input('sort', 'name');
+        $direction = $request->input('direction', 'asc');
         
         $allowedSorts = ['name', 'employee_code', 'department_id'];
         if (in_array($sort, $allowedSorts)) {
@@ -168,7 +168,7 @@ class LeaveBalanceController extends Controller
         } else {
             if (str_contains($nameStr, 'earn')) {
                 if ($employee->joining_date) {
-                    $joinDate = \Carbon\Carbon::parse($employee->joining_date);
+                    $joinDate = Carbon::parse($employee->joining_date);
                     $daysSinceJoin = $joinDate->diffInDays(now());
                     $earnLeave = floor($daysSinceJoin / 18);
                     return min(30, max(0, $earnLeave));

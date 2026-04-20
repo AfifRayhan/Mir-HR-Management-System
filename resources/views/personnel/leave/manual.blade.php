@@ -93,12 +93,11 @@
                             </div>
 
                             {{-- Live days counter --}}
-                            <div id="leave_days_display" class="mb-3 d-none">
-                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0"
-                                     style="background-color:#c8e6c9ff; color:#007a10;">
-                                    <span class="small fw-bold text-success">
-                                        <i class="bi bi-calendar-event me-2"></i>{{ __('Working Days') }}:
-                                    </span>
+                            <div id="leave_days_display" class="mb-3 d-none" 
+                                 data-holidays="{{ json_encode($weeklyHolidayDays) }}"
+                                 data-national-holidays="{{ json_encode($nationalHolidayDates) }}">
+                                <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
+                                    <span class="small fw-bold text-success"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
                                     <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
                                 </div>
                             </div>
@@ -224,8 +223,8 @@
         const daysDisplay    = document.getElementById('leave_days_display');
         const daysCount      = document.getElementById('total_days_count');
 
-        let weeklyHolidays = [];
-        let nationalHolidays = [];
+        let weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays || '[]');
+        let nationalHolidays = JSON.parse(daysDisplay.dataset.nationalHolidays || '[]');
 
         function fetchHolidaysAndRecalculate() {
             const officeId = employeeSelect.options[employeeSelect.selectedIndex]?.dataset?.office;

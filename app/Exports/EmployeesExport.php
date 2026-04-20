@@ -58,7 +58,8 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping
         return [
             'Employee Code',
             'Full Name',
-            'Email',
+            'Corporate Email',
+            'Personal Email',
             'Phone',
             'Blood Group',
             'Father Name',
@@ -101,7 +102,8 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping
         return [
             $employee->employee_code,
             $employee->name,
-            $employee->user->email ?? 'N/A',
+            $employee->email,
+            $employee->personal_email,
             $employee->phone,
             $employee->blood_group,
             $employee->father_name,

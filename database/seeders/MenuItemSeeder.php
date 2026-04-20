@@ -22,7 +22,7 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 4],
             ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 5],
             ['name' => 'Attendances', 'slug' => 'attendances',        'icon' => 'bi-clock-history',  'route_name' => null,                 'sort_order' => 6],
-            ['name' => 'Payroll',     'slug' => 'payroll',            'icon' => 'bi-cash-stack',     'route_name' => null,                 'sort_order' => 7],
+            ['name' => 'Roster',     'slug' => 'roster',            'icon' => 'bi-calendar3',      'route_name' => 'roster.index',      'sort_order' => 7],
         ];
 
         $menuModels = [];
@@ -133,14 +133,26 @@ class MenuItemSeeder extends Seeder
             );
         }
 
+        // Define child menu items under Roster
+        $rosterChildren = [
+            ['name' => 'Manage Roster', 'slug' => 'roster-index', 'icon' => 'bi-calendar3', 'route_name' => 'roster.index', 'sort_order' => 1],
+            ['name' => 'Roster Times',  'slug' => 'roster-times', 'icon' => 'bi-clock',     'route_name' => 'roster.times.index', 'sort_order' => 2],
+        ];
+
+        foreach ($rosterChildren as $child) {
+            $child['parent_id'] = $menuModels['roster']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
         // Define child menu items under Employee Dashboard
         $employeeDashboardChildren = [
             ['name' => 'Dashboard',       'slug' => 'employee-dashboard-main', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
             ['name' => 'My Profile',      'slug' => 'employee-profile',       'icon' => 'bi-person-vcard',   'route_name' => 'employee-profile',   'sort_order' => 2],
             ['name' => 'Attendances',     'slug' => 'employee-attendance',    'icon' => 'bi-clock',          'route_name' => 'employee.attendance.index', 'sort_order' => 3],
             ['name' => 'Leave Requests',  'slug' => 'employee-leave',         'icon' => 'bi-calendar2-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4],
-            ['name' => 'Payslips',        'slug' => 'employee-payslips',      'icon' => 'bi-envelope-paper', 'route_name' => null,                 'sort_order' => 5],
-            ['name' => 'Notifications',   'slug' => 'employee-notifications', 'icon' => 'bi-bell',           'route_name' => null,                 'sort_order' => 6],
         ];
 
         foreach ($employeeDashboardChildren as $child) {
@@ -183,7 +195,6 @@ class MenuItemSeeder extends Seeder
             'employee-attendance',
             'employee-leave',
             'employee-payslips',
-            'employee-notifications',
             'employee-leave-self',
             'team-lead-leave-request',
             'team-lead-leave-apps',

@@ -159,6 +159,7 @@ return new class extends Migration
             $table->time('absent_after')->nullable();
             $table->time('lunch_start')->nullable();
             $table->time('lunch_end')->nullable();
+            $table->string('short_name', 50)->nullable();
             $table->string('remarks', 100)->nullable();
             $table->timestamps();
         });
@@ -192,6 +193,7 @@ return new class extends Migration
             $table->string('hrm_employee_id', 50)->nullable();
             $table->string('name', 200)->nullable();
             $table->string('email', 150)->nullable();
+            $table->string('personal_email', 150)->nullable();
             $table->foreignId('office_id')->nullable()->constrained()->nullOnDelete();
             
             $table->string('phone', 20)->nullable();
@@ -228,6 +230,12 @@ return new class extends Migration
             $table->foreignId('reporting_manager_id')->nullable()->constrained('employees')->nullOnDelete();
             
             $table->enum('status', ['active', 'inactive', 'left', 'hold'])->default('active');
+            $table->enum('employee_type', ['Regular', 'Probation'])->default('Regular');
+            $table->integer('probation_duration')->nullable();
+            $table->date('probation_start_date')->nullable();
+            $table->date('probation_end_date')->nullable();
+            $table->string('roster_group', 50)->nullable();
+            
             $table->decimal('gross_salary', 12, 2)->nullable();
             $table->timestamps();
         });
@@ -268,6 +276,7 @@ return new class extends Migration
             $table->integer('total_days_per_year');
             $table->unsignedInteger('max_consecutive_days')->nullable()->comment('Max consecutive days allowed per request (null = unlimited)');
             $table->boolean('carry_forward')->default(false);
+            $table->boolean('allow_past_days')->default(0);
             $table->unsignedInteger('sort_order')->default(99)->comment('Priority order: lower number = higher priority');
             $table->timestamps();
         });
@@ -305,8 +314,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('device_uid', 50)->unique()->nullable();
-            $table->string('api_token', 80)->unique()->nullable();
-            $table->text('ip_address')->nullable();
+            $table->string('ip_address')->nullable();
+            $table->string('port', 10)->nullable();
             $table->string('location')->nullable();
             $table->timestamp('last_sync_at')->nullable();
             $table->timestamps();
@@ -330,6 +339,7 @@ return new class extends Migration
             $table->decimal('working_hours', 5, 2)->default(0);
             $table->integer('late_seconds')->default(0);
             $table->enum('status', ['present', 'late', 'absent', 'leave'])->default('present');
+            $table->boolean('is_manual')->default(false);
             $table->timestamps();
 
             $table->unique(['employee_id', 'date']);
@@ -342,6 +352,9 @@ return new class extends Migration
             $table->dateTime('in_time')->nullable();
             $table->dateTime('out_time')->nullable();
             $table->text('reason')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->dateTime('approved_at')->nullable();
             $table->foreignId('adjusted_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
@@ -370,6 +383,21 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('type');
+            $table->string('title');
+            $table->text('message');
+            $table->string('url')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->string('source_type')->nullable();
+            $table->unsignedBigInteger('source_id')->nullable();
+            $table->timestamps();
+            
+            $table->index(['source_type', 'source_id']);
+        });
+
         Schema::create('supervisor_remarks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supervisor_id')->constrained('employees')->cascadeOnDelete();
@@ -379,6 +407,56 @@ return new class extends Migration
             $table->dateTime('expires_at')->nullable();
             $table->timestamps();
         });
+
+        // 8. Specialized Modules
+        Schema::create('employee_salary_histories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->decimal('old_salary', 12, 2);
+            $table->decimal('new_salary', 12, 2);
+            $table->date('effective_date');
+            $table->string('change_type')->default('increment');
+            $table->text('reason')->nullable();
+            $table->foreignId('created_by')->constrained('users');
+            $table->timestamps();
+        });
+
+        Schema::create('employee_experiences', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->string('organization')->nullable();
+            $table->string('designation')->nullable();
+            $table->string('department')->nullable();
+            $table->date('date_from')->nullable();
+            $table->date('date_to')->nullable();
+            $table->text('responsibilities')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('employee_qualifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->string('qualification')->nullable();
+            $table->string('level')->nullable();
+            $table->string('institution')->nullable();
+            $table->string('board_university')->nullable();
+            $table->string('passing_year')->nullable();
+            $table->string('group_major')->nullable();
+            $table->string('result')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('roster_schedules', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
+            $table->date('date');
+            $table->foreignId('office_time_id')->constrained('office_times')->cascadeOnDelete();
+            $table->string('roster_group')->nullable();
+            $table->string('remarks')->nullable();
+            $table->timestamps();
+
+            $table->unique(['employee_id', 'date']);
+        });
     }
 
     /**
@@ -386,7 +464,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('roster_schedules');
+        Schema::dropIfExists('employee_qualifications');
+        Schema::dropIfExists('employee_experiences');
+        Schema::dropIfExists('employee_salary_histories');
         Schema::dropIfExists('supervisor_remarks');
+        Schema::dropIfExists('notifications');
         Schema::dropIfExists('notices');
         Schema::dropIfExists('attendances');
         Schema::dropIfExists('manual_attendance_adjustments');

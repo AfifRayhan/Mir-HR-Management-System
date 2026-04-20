@@ -191,7 +191,7 @@ class EmployeeAttendanceController extends Controller
         $validated['adjusted_by'] = $user->id;
         $validated['status'] = 'pending';
 
-        \App\Models\ManualAttendanceAdjustment::updateOrCreate(
+        $adjustment = \App\Models\ManualAttendanceAdjustment::updateOrCreate(
             ['employee_id' => $validated['employee_id'], 'date' => $validated['date']],
             $validated
         );
@@ -204,7 +204,8 @@ class EmployeeAttendanceController extends Controller
             $employee->name . ' has submitted an attendance adjustment request for ' .
                 Carbon::parse($validated['date'])->format('d M Y') . '.',
             route('team-lead.attendances.approvals'),
-            route('personnel.attendances.approvals')
+            route('personnel.attendances.approvals'),
+            $adjustment
         );
 
         return redirect()->route('employee.attendance.index', ['from_date' => $validated['date'], 'to_date' => $validated['date']])

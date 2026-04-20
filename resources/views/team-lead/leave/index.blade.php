@@ -101,7 +101,7 @@
                                  data-holidays="{{ json_encode($weeklyHolidayDays) }}"
                                  data-national-holidays="{{ json_encode($nationalHolidayDates) }}">
                                 <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
-                                    <span class="small fw-bold"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
+                                    <span class="small fw-bold text-success"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
                                     <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
                                 </div>
                             </div>

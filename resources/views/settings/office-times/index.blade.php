@@ -36,9 +36,13 @@
                         <form action="{{ route('settings.office-times.store') }}" method="POST" class="shift-form" id="createShiftForm">
                             @csrf
                             <div class="row g-3">
-                                <div class="col-12">
+                                <div class="col-8">
                                     <label class="form-label small fw-bold text-muted">{{ __('Shift Name') }} <span class="text-danger">*</span></label>
                                     <input type="text" name="shift_name" class="form-control rounded-3" placeholder="{{ __('e.g. Regular Day Shift') }}" value="{{ old('shift_name') }}" required>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small fw-bold text-muted">{{ __('Short Name') }}</label>
+                                    <input type="text" name="short_name" class="form-control rounded-3" placeholder="{{ __('e.g. GS') }}" value="{{ old('short_name') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small fw-bold text-muted">{{ __('Start Time') }} <span class="text-danger">*</span></label>
@@ -112,7 +116,12 @@
                                     @forelse($officeTimes as $time)
                                     <tr>
                                         <td class="ps-4">
-                                            <div class="fw-bold text-primary">{{ $time->shift_name }}</div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="fw-bold text-primary">{{ $time->shift_name }}</div>
+                                                @if($time->short_name)
+                                                    <span class="badge bg-primary-soft text-primary rounded-pill border border-primary-subtle" style="font-size: 0.7rem;">{{ $time->short_name }}</span>
+                                                @endif
+                                            </div>
                                             @if($time->remarks)
                                                 <div class="small text-muted text-truncate" style="max-width: 150px;">{{ $time->remarks }}</div>
                                             @endif
@@ -167,9 +176,13 @@
                                                     @method('PUT')
                                                     <div class="modal-body p-4">
                                                         <div class="row g-3">
-                                                            <div class="col-12">
+                                                            <div class="col-8">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Shift Name') }} <span class="text-danger">*</span></label>
                                                                 <input type="text" name="shift_name" class="form-control rounded-3" value="{{ old('shift_name', $time->shift_name) }}" required>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Short Name') }}</label>
+                                                                <input type="text" name="short_name" class="form-control rounded-3" value="{{ old('short_name', $time->short_name) }}">
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('Start Time') }} <span class="text-danger">*</span></label>

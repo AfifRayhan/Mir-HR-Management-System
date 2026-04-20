@@ -68,7 +68,7 @@ class EmployeeController extends Controller
  
         $employees = $query->paginate(10)->withQueryString();
         $departments = Department::all();
-        $sections = Section::all();
+        $sections = Section::with('department')->get();
         $offices = Office::all();
         $designations = Designation::all();
  
@@ -116,6 +116,7 @@ class EmployeeController extends Controller
             'employee_code' => 'required|string|max:50|unique:employees,employee_code',
             'name' => 'required|string|max:200',
             'email' => 'nullable|email|max:150',
+            'personal_email' => 'nullable|email|max:150',
             'phone' => 'nullable|string|max:20',
             'blood_group' => 'nullable|string|max:10',
             'father_name' => 'nullable|string|max:150',
@@ -146,6 +147,7 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
+            'roster_group' => 'nullable|string|in:All,NOC (Borak),NOC (Sylhet),Technician (Gulshan),Technician (Borak),Technician (Jessore),Technician (Sylhet)',
             'employee_type' => 'required|in:Regular,Probation',
             'probation_duration' => 'nullable|required_if:employee_type,Probation|integer|min:1',
             'probation_start_date' => 'nullable|required_if:employee_type,Probation|date',
@@ -265,6 +267,7 @@ class EmployeeController extends Controller
             'employee_code' => 'required|string|max:50|unique:employees,employee_code,' . $employee->id,
             'name' => 'required|string|max:200',
             'email' => 'nullable|email|max:150',
+            'personal_email' => 'nullable|email|max:150',
             'phone' => 'nullable|string|max:100',
             'blood_group' => 'nullable|string|max:10',
             'father_name' => 'nullable|string|max:150',
@@ -295,6 +298,7 @@ class EmployeeController extends Controller
             'office_id' => 'nullable|exists:offices,id',
             'office_time_id' => 'nullable|exists:office_times,id',
             'reporting_manager_id' => 'nullable|exists:employees,id',
+            'roster_group' => 'nullable|string|in:All,NOC (Borak),NOC (Sylhet),Technician (Gulshan),Technician (Borak),Technician (Jessore),Technician (Sylhet)',
             'employee_type' => 'required|in:Regular,Probation',
             'probation_duration' => 'nullable|required_if:employee_type,Probation|integer|min:1',
             'probation_start_date' => 'nullable|required_if:employee_type,Probation|date',

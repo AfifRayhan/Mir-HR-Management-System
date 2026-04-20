@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\ManualAttendanceAdjustment;
 use App\Models\Office;
 use App\Services\AttendanceService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -155,6 +156,8 @@ class AttendanceController extends Controller
         $adjustment->approved_by = \Illuminate\Support\Facades\Auth::id();
         $adjustment->save();
 
+        NotificationService::clearNotificationsForSource($adjustment);
+
         $this->attendanceService->processEmployeeAttendance($adjustment->employee, \Carbon\Carbon::parse($adjustment->date)->format('Y-m-d'));
 
         return redirect()->back()->with('success', 'Adjustment approved and attendance recalculated.');
@@ -169,6 +172,8 @@ class AttendanceController extends Controller
         $adjustment->reject_reason = $request->reject_reason;
         $adjustment->approved_by = \Illuminate\Support\Facades\Auth::id();
         $adjustment->save();
+
+        NotificationService::clearNotificationsForSource($adjustment);
 
         return redirect()->back()->with('success', 'Adjustment request rejected.');
     }

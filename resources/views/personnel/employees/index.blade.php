@@ -57,7 +57,7 @@
                             <option value="">{{ __('All') }}</option>
                             @foreach($sections as $sec)
                             <option value="{{ $sec->id }}" {{ request('section_id') == $sec->id ? 'selected' : '' }}>
-                                {{ $sec->name }}
+                                {{ $sec->name }} ({{ $sec->department->name ?? 'N/A' }})
                             </option>
                             @endforeach
                         </select>

@@ -114,7 +114,12 @@
                                         <div class="small">{{ $record->employee->department->name ?? 'N/A' }}</div>
                                         <div class="small text-muted">{{ $record->employee->designation->name ?? 'N/A' }}</div>
                                     </td>
-                                    <td>{{ $record->in_time ? $record->in_time->format('H:i') : '-' }}</td>
+                                    <td>
+                                        {{ $record->in_time ? $record->in_time->format('H:i') : '-' }}
+                                        @if($record->is_manual)
+                                            <span class="badge bg-secondary-soft text-secondary ms-1 shadow-sm" style="font-size: 0.65rem;">{{ __('Manual') }}</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $record->out_time ? $record->out_time->format('H:i') : '-' }}</td>
                                     <td>{{ $record->working_hours }}h</td>
                                     <td>

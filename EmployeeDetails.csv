@@ -1,4 +1,4 @@
-﻿Id,HrmEmployeeId,FatherName,MotherName,SpouseName,DateOfBirth,Gender,Religion,Nationality,NationalId,TIN,BloodGroup,MaritalStatus,NoOfChildren,ContactNo,Email,Height,EmergencyContactName,EmergencyContactAddress,EmergencyContactNo,EmergencyContactPersonRelation
+﻿Id,HrmEmployeeId,FatherName,MotherName,SpouseName,DateOfBirth,Gender,Religion,Nationality,NationalId,TIN,BloodGroup,MaritalStatus,NoOfChildren,ContactNo,Personal_Email,Height,EmergencyContactName,EmergencyContactAddress,EmergencyContactNo,EmergencyContactPersonRelation
 1,1,,,NULL,NULL,Male,,NULL,NULL,NULL,,,NULL,,,NULL,,NULL,,NULL
 2,2,Mir Nasir Hossain,Mahabuba Nasir,NULL,00:00.0,Male,Islam,NULL,5500150817,NULL,O+,Married,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
 3,3,Mir Nasir Hossain,Mahabuba Nasir,NULL,00:00.0,Female,Islam,NULL,5066237420,NULL,O+,Married,NULL,1713039383,NULL,NULL,NULL,NULL,NULL,NULL

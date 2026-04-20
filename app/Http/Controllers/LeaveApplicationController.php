@@ -47,8 +47,10 @@ class LeaveApplicationController extends Controller
 
         $employees = Employee::orderBy('name')->get();
         $leaveTypes = LeaveType::orderBy('sort_order')->get();
+        $weeklyHolidayDays = [];
+        $nationalHolidayDates = [];
 
-        return view('personnel.leave.manual', compact('user', 'roleName', 'employee', 'employees', 'leaveTypes'));
+        return view('personnel.leave.manual', compact('user', 'roleName', 'employee', 'employees', 'leaveTypes', 'weeklyHolidayDays', 'nationalHolidayDates'));
     }
 
     public function storeManual(Request $request)
@@ -183,6 +185,8 @@ class LeaveApplicationController extends Controller
         }
 
         $leaveApplication->save();
+
+        NotificationService::clearNotificationsForSource($leaveApplication);
 
         // Notify the employee
         $applicantEmployee = $leaveApplication->employee;
@@ -397,6 +401,8 @@ class LeaveApplicationController extends Controller
 
         $leaveApplication->save();
 
+        NotificationService::clearNotificationsForSource($leaveApplication);
+
         // Notify the employee
         $applicantEmployee = $leaveApplication->employee;
         if ($applicantEmployee) {
@@ -555,7 +561,7 @@ class LeaveApplicationController extends Controller
             $documentPath = $file->storeAs('supporting_documents', $fileName, 'public');
         }
 
-        LeaveApplication::create([
+        $application = LeaveApplication::create([
             'employee_id' => $employee->id,
             'leave_type_id' => $request->leave_type_id,
             'from_date' => $request->from_date,
@@ -576,7 +582,8 @@ class LeaveApplicationController extends Controller
                 Carbon::parse($request->from_date)->format('d M Y') . ' to ' .
                 Carbon::parse($request->to_date)->format('d M Y') . '.',
             route('team-lead.leave-applications.index'),
-            route('personnel.leave-applications.index')
+            route('personnel.leave-applications.index'),
+            $application
         );
 
         return redirect()->back()->with('success', 'Leave application submitted successfully.');
