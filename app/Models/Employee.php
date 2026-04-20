@@ -15,6 +15,7 @@ class Employee extends Model
         'hrm_employee_id',
         'name',
         'email',
+        'personal_email',
         'phone',
         'blood_group',
         'father_name',
@@ -44,6 +45,7 @@ class Employee extends Model
         'grade_id',
         'office_id',
         'office_time_id',
+        'roster_group',
         'reporting_manager_id',
         'status',
         'employee_type',
@@ -137,6 +139,11 @@ class Employee extends Model
     public function activeSupervisorRemarks()
     {
         return $this->hasMany(SupervisorRemark::class, 'employee_id')->active();
+    }
+
+    public function rosterSchedules()
+    {
+        return $this->hasMany(RosterSchedule::class);
     }
 
     public function salaryHistories()

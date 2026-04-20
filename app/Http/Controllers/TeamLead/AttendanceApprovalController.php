@@ -66,6 +66,8 @@ class AttendanceApprovalController extends Controller
         $adjustment->approved_by = $user->id;
         $adjustment->save();
 
+        NotificationService::clearNotificationsForSource($adjustment);
+
         $this->attendanceService->processEmployeeAttendance($adjustment->employee, \Carbon\Carbon::parse($adjustment->date)->format('Y-m-d'));
 
         // Notify the employee
@@ -106,6 +108,8 @@ class AttendanceApprovalController extends Controller
         $adjustment->reject_reason = $request->reject_reason;
         $adjustment->approved_by = $user->id;
         $adjustment->save();
+
+        NotificationService::clearNotificationsForSource($adjustment);
 
         // Notify the employee
         $employee = $adjustment->employee;

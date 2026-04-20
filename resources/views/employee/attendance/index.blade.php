@@ -138,7 +138,12 @@
                                 <tr>
                                     <td class="ps-4 fw-bold small">{{ \Carbon\Carbon::parse($record->date)->format('d M Y') }}</td>
                                     <td class="small text-muted">{{ \Carbon\Carbon::parse($record->date)->format('l') }}</td>
-                                    <td class="small">{{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}</td>
+                                    <td class="small">
+                                        {{ $record->in_time ? \Carbon\Carbon::parse($record->in_time)->format('h:i A') : '-' }}
+                                        @if($record->is_manual)
+                                            <span class="badge bg-secondary-soft text-secondary ms-1 shadow-sm" style="font-size: 0.65rem;">{{ __('Manual') }}</span>
+                                        @endif
+                                    </td>
                                     <td class="small">{{ $record->out_time ? \Carbon\Carbon::parse($record->out_time)->format('h:i A') : '-' }}</td>
                                     <td class="small">{{ $record->working_hours ? number_format($record->working_hours, 2) . 'h' : '0.00h' }}</td>
                                     <td class="small">

@@ -25,6 +25,7 @@ class OfficeTimeController extends Controller
     {
         $request->validate([
             'shift_name'   => 'required|string|max:100',
+            'short_name'   => 'nullable|string|max:50',
             'start_time'   => 'required',
             'end_time'     => 'required',
             'late_after'   => 'nullable',
@@ -93,6 +94,7 @@ class OfficeTimeController extends Controller
     {
         $request->validate([
             'shift_name'   => 'required|string|max:100',
+            'short_name'   => 'nullable|string|max:50',
             'start_time'   => 'required',
             'end_time'     => 'required',
             'late_after'   => 'nullable',

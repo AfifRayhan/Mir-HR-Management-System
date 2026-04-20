@@ -24,6 +24,7 @@ use App\Http\Controllers\Settings\NoticeController;
 use App\Http\Controllers\Settings\DeviceController;
 use App\Http\Controllers\EmployeeAttendanceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RosterController;
 
 Route::get('/', function () {
     return view('/auth/login');
@@ -143,6 +144,18 @@ Route::middleware(['auth', 'verified', 'permission:settings'])->prefix('settings
         Route::put('others/{holiday}', [HolidayController::class, 'update'])->name('others.update');
         Route::delete('others/{holiday}', [HolidayController::class, 'destroy'])->name('others.destroy');
     });
+});
+
+// Roster management routes (HR Admin only)
+Route::middleware(['auth', 'verified'])->prefix('roster')->name('roster.')->group(function () {
+    Route::get('/', [RosterController::class, 'index'])->name('index');
+    Route::post('/save', [RosterController::class, 'save'])->name('save');
+    Route::get('/import-previous', [RosterController::class, 'importPrevious'])->name('import-previous');
+    Route::get('/employees', [RosterController::class, 'employees'])->name('employees');
+    Route::get('/export', [RosterController::class, 'export'])->name('export');
+
+    // Roster Times Management
+    Route::resource('times', \App\Http\Controllers\Roster\RosterTimeController::class);
 });
 
 // Device Sync API (Exempt from CSRF in bootstrap/app.php)

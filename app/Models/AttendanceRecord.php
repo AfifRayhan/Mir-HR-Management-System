@@ -18,6 +18,7 @@ class AttendanceRecord extends Model
         'working_hours',
         'late_seconds',
         'status',
+        'is_manual',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class AttendanceRecord extends Model
         'in_time' => 'datetime',
         'out_time' => 'datetime',
         'working_hours' => 'decimal:2',
+        'is_manual' => 'boolean',
     ];
 
     public function employee()

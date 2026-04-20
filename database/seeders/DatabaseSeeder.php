@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             LeaveTypeSeeder::class,
             LeaveBalanceSeeder::class,
+            QualificationSeeder::class,
+            ExperienceSeeder::class,
+            RosterGroupSeeder::class,
         ]);
     }
 }

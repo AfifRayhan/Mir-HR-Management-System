@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label font-bold text-gray-700">{{ __('Reason') }}</label>
+                                <label class="form-label font-bold text-gray-700">{{ __('Reason') }} <span class="text-danger">*</span></label>
                                 <textarea name="reason" class="form-control rounded-3 @error('reason') is-invalid @enderror" rows="3" required placeholder="Provide a justification for the adjustment..." maxlength="50">{{ old('reason') }}</textarea>
                                 @error('reason')
                                     <div class="invalid-feedback">{{ $message }}</div>

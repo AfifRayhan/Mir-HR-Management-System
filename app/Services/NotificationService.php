@@ -21,7 +21,8 @@ class NotificationService
         string   $title,
         string   $message,
         string   $url,
-        string   $hrUrl = null
+        string   $hrUrl = null,
+        ?Model   $source = null
     ): void {
         $recipientUserIds = collect();
 
@@ -70,11 +71,13 @@ class NotificationService
             }
 
             Notification::create([
-                'user_id' => $userId,
-                'type'    => $type,
-                'title'   => $title,
-                'message' => $message,
-                'url'     => $finalUrl,
+                'user_id'     => $userId,
+                'type'        => $type,
+                'title'       => $title,
+                'message'     => $message,
+                'url'         => $finalUrl,
+                'source_id'   => $source?->id,
+                'source_type' => $source ? get_class($source) : null,
             ]);
         }
     }
@@ -129,5 +132,15 @@ class NotificationService
                 'source_type' => $source ? get_class($source) : null,
             ]);
         }
+    }
+
+    /**
+     * Clear all notifications referencing a specific source model by marking them as read.
+     */
+    public static function clearNotificationsForSource(Model $source): void
+    {
+        Notification::where('source_type', get_class($source))
+            ->where('source_id', $source->id)
+            ->update(['read_at' => now()]);
     }
 }

@@ -37,14 +37,25 @@ class AttendanceService
 
         $machineId = null;
 
+        $isManual = false;
+
         // Check for manual adjustment first
         $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
             ->where('date', $date)
+            ->where('status', 'approved')
             ->first();
 
-        if ($adjustment) {
+        if (!$adjustment) {
+            // Fallback for older records where status might not be approved or we just check if it exists
+            $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
+                ->where('date', $date)
+                ->first();
+        }
+
+        if ($adjustment && (!isset($adjustment->status) || $adjustment->status === 'approved')) {
             $inTime = $adjustment->in_time;
             $outTime = $adjustment->out_time;
+            $isManual = true;
         } else {
             // Get logs from synced attendances table for this employee
             if (!$employee->employee_code) {
@@ -66,13 +77,13 @@ class AttendanceService
             }
         }
 
-        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime, $machineId);
+        $this->updateOrCreateRecord($employee, $date, $inTime, $outTime, $machineId, $isManual);
     }
 
     /**
      * Update or create attendance record based on in/out times.
      */
-    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null)
+    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null, $isManual = false)
     {
         $officeTime = $employee->officeTime;
 
@@ -122,6 +133,7 @@ class AttendanceService
                 'working_hours' => $workingHours,
                 'late_seconds' => $lateSeconds,
                 'status' => $status,
+                'is_manual' => $isManual,
             ]
         );
     }

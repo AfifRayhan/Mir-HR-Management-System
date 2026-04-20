@@ -31,231 +31,203 @@ class EmployeeDashboardController extends Controller
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
-
-        // An Employee might have an associated Employee record
         $employee = Employee::with(['designation', 'department'])->where('user_id', $user->id)->first();
-
         $today = Carbon::today();
-        
-        // Initialize all variables with default values to ensure they are always present for compact()
-        $presentDays = 0;
-        $lateDays = 0;
-        $absentDays = 0;
-        $totalWorkingDays = 0;
-        $fullMonthAttendance = collect();
-        $approvedLeaves = 0;
-        $pendingLeaves = 0;
-        $rejectedLeaves = 0;
-        $totalLeaveDays = 0;
-        $leaveBalances = collect();
-        $supervisorRemarks = collect();
-        $totalAvailableLeave = 0;
-        $pendingTeamLeavesCount = 0;
-        
-        $prevPresentDays = 0;
-        $prevLateDays = 0;
-        $prevAbsentDays = 0;
-        $prevTotalWorkingDays = 0;
+
+        // Default empty variables for guests/unassigned users
+        $data = [
+            'user' => $user,
+            'roleName' => $roleName,
+            'employee' => $employee,
+            'presentDays' => 0, 'lateDays' => 0, 'absentDays' => 0, 'totalWorkingDays' => 0,
+            'prevPresentDays' => 0, 'prevLateDays' => 0, 'prevAbsentDays' => 0, 'prevTotalWorkingDays' => 0,
+            'fullMonthAttendance' => collect(),
+            'supervisorRemarks' => collect(),
+            'approvedLeaves' => 0, 'pendingLeaves' => 0, 'rejectedLeaves' => 0, 'totalLeaveDays' => 0,
+            'totalUsedLeave' => 0, 'totalAvailableLeave' => 0,
+            'leaveBalances' => collect(),
+            'pendingTeamLeavesCount' => 0,
+            'isReportingManager' => false
+        ];
 
         if ($employee) {
-            $startOfMonth = $today->copy()->startOfMonth();
+            $data = array_merge($data, $this->getAttendanceMetrics($employee, $today));
+            $data = array_merge($data, $this->getPreviousMonthMetrics($employee, $today));
+            $data['fullMonthAttendance'] = $this->getAttendanceHistory($employee, $today);
+            $data = array_merge($data, $this->getLeaveSummary($employee, $today));
             
-            // Attendance data for current month
-            $attendanceRecords = AttendanceRecord::where('employee_id', $employee->id)
-                ->whereBetween('date', [$startOfMonth, $today])
-                ->get();
-
-            $presentDays = $attendanceRecords->whereIn('status', ['present', 'late'])->count();
-            $lateDays = $attendanceRecords->where('status', 'late')->count();
-
-            // Calculate working days (using project's holiday configuration)
-            $checkDate = $startOfMonth->copy();
-            while ($checkDate->lte($today)) {
-                if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
-                    $totalWorkingDays++;
-                }
-                $checkDate->addDay();
-            }
-
-            // Approved leaves this month
-            $leaveDaysThisMonth = LeaveApplication::where('employee_id', $employee->id)
-                ->where('status', 'approved')
-                ->where(function ($q) use ($startOfMonth, $today) {
-                    $q->whereBetween('from_date', [$startOfMonth, $today])
-                      ->orWhereBetween('to_date', [$startOfMonth, $today]);
-                })
-                ->sum('total_days');
-
-            $absentDays = max(0, $totalWorkingDays - $presentDays - $leaveDaysThisMonth);
-
-            // Previous month attendance breakdown
-            $startOfLastMonth = $today->copy()->subMonth()->startOfMonth();
-            $endOfLastMonth = $today->copy()->subMonth()->endOfMonth();
-            
-            $prevAttendanceRecords = AttendanceRecord::where('employee_id', $employee->id)
-                ->whereBetween('date', [$startOfLastMonth, $endOfLastMonth])
-                ->get();
-                
-            $prevPresentDays = $prevAttendanceRecords->whereIn('status', ['present', 'late'])->count();
-            $prevLateDays = $prevAttendanceRecords->where('status', 'late')->count();
-            
-            $prevTotalWorkingDays = 0;
-            $checkDate = $startOfLastMonth->copy();
-            while ($checkDate->lte($endOfLastMonth)) {
-                if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
-                    $prevTotalWorkingDays++;
-                }
-                $checkDate->addDay();
-            }
-            
-            $prevLeaveDays = LeaveApplication::where('employee_id', $employee->id)
-                ->where('status', 'approved')
-                ->where(function ($q) use ($startOfLastMonth, $endOfLastMonth) {
-                    $q->whereBetween('from_date', [$startOfLastMonth, $endOfLastMonth])
-                      ->orWhereBetween('to_date', [$startOfLastMonth, $endOfLastMonth]);
-                })
-                ->sum('total_days');
-                
-            $prevAbsentDays = max(0, $prevTotalWorkingDays - $prevPresentDays - $prevLeaveDays);
-
-            // Full attendance records for current month
-            $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
-                ->whereBetween('date', [$startOfMonth, $today])
-                ->get()
-                ->keyBy(function($item) {
-                    return $item->date->format('Y-m-d');
-                });
- 
-            // Fetch approved leaves for the current month window
-            $approvedLeavesWindow = LeaveApplication::where('employee_id', $employee->id)
-                ->where('status', 'approved')
-                ->where(function($q) use ($startOfMonth, $today) {
-                    $q->whereBetween('from_date', [$startOfMonth, $today])
-                      ->orWhereBetween('to_date', [$startOfMonth, $today])
-                      ->orWhere(function($sub) use ($startOfMonth, $today) {
-                          $sub->where('from_date', '<=', $startOfMonth)
-                              ->where('to_date', '>=', $today);
-                      });
-                })
-                ->get();
-
-            $checkDate = $today->copy();
-            while ($checkDate->gte($startOfMonth)) {
-                $dateStr = $checkDate->toDateString();
-                if (isset($existingRecords[$dateStr])) {
-                    $fullMonthAttendance->push($existingRecords[$dateStr]);
-                } elseif ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
-                    $onLeave = $approvedLeavesWindow->contains(function($leave) use ($checkDate) {
-                        return $checkDate->between($leave->from_date, $leave->to_date);
-                    });
-                    $fullMonthAttendance->push(new AttendanceRecord([
-                        'employee_id' => $employee->id,
-                        'date' => $dateStr,
-                        'status' => $onLeave ? 'leave' : 'absent',
-                        'late_seconds' => 0
-                    ]));
-                }
-                $checkDate->subDay();
-            }
-
-            // Leave data for current year
-            $leaveApplications = LeaveApplication::where('employee_id', $employee->id)
-                ->whereYear('from_date', $today->year)
-                ->get();
-
-            $approvedLeaves = $leaveApplications->where('status', 'approved')->sum('total_days');
-            $pendingLeaves = $leaveApplications->where('status', 'pending')->sum('total_days');
-            $rejectedLeaves = $leaveApplications->where('status', 'rejected')->sum('total_days');
-            $totalLeaveDays = $approvedLeaves + $pendingLeaves + $rejectedLeaves;
-
-            // Leave Balance summary
-            $leaveBalances = LeaveBalance::with('leaveType')
-                ->where('employee_id', $employee->id)
-                ->where('year', $today->year)
-                ->get();
-            
-            $totalUsedLeave = $leaveBalances->sum('used_days');
-            $totalAvailableLeave = $leaveBalances->sum('remaining_days');
-
-            // Fetch supervisor remarks (active only)
-            $supervisorRemarks = SupervisorRemark::active()
+            $data['supervisorRemarks'] = SupervisorRemark::active()
                 ->where('employee_id', $employee->id)
                 ->with('supervisor')
-                ->latest()
-                ->take(5)
-                ->get();
+                ->latest()->take(5)->get();
 
-            // Calculate pending team leaves for Team Leads / Department Heads / Reporting Managers
-            $isReportingManager = Employee::where('reporting_manager_id', $employee->id)->exists();
-
-            if ($roleName === 'Team Lead' || $isReportingManager) {
-                $inchargeDeptIds = Department::where('incharge_id', $employee->id)->pluck('id');
-                $teamEmployeeIds = Employee::where('reporting_manager_id', $employee->id)
-                    ->orWhereIn('department_id', $inchargeDeptIds)
-                    ->pluck('id');
-
-                $pendingTeamLeavesCount = LeaveApplication::whereIn('employee_id', $teamEmployeeIds)
-                    ->where('employee_id', '!=', $employee->id) // Skip self
-                    ->where('status', 'pending')
-                    ->count();
-            }
+            $data = array_merge($data, $this->getTeamManagementMetrics($employee, $roleName));
         }
 
-        // Active Notices & Events (at max 5)
-        $activeNotices = Notice::active()->orderBy('created_at', 'desc')->take(5)->get();
+        $data = array_merge($data, $this->getDashboardCommonData($today, $employee));
 
-        // Upcoming Holidays
-        $upcomingHolidays = Holiday::whereDate('from_date', '>=', $today)
-            ->where('is_active', true)
-            ->orderBy('from_date', 'asc')
+        return view('employee-dashboard', $data);
+    }
+
+    private function getAttendanceMetrics(Employee $employee, Carbon $today): array
+    {
+        $startOfMonth = $today->copy()->startOfMonth();
+        $records = AttendanceRecord::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startOfMonth, $today])
             ->get();
 
-        // Upcoming Birthdays
-        $upcomingBirthdays = Employee::whereNotNull('date_of_birth')
-            ->where('status', 'active')
-            ->get()
-            ->map(function ($employee) use ($today) {
-                $birthday = Carbon::parse($employee->date_of_birth);
-                $birthdayThisYear = $birthday->copy()->year($today->year);
-                
-                if ($birthdayThisYear->isBefore($today) && !$birthdayThisYear->isSameDay($today)) {
-                    $birthdayThisYear->addYear();
-                }
-                
-                $employee->days_until_birthday = $today->diffInDays($birthdayThisYear);
-                $employee->next_birthday = $birthdayThisYear;
-                return $employee;
-            })
-            ->sortBy('days_until_birthday')
-            ->take(3);
+        $presentDays = $records->whereIn('status', ['present', 'late'])->count();
+        $lateDays = $records->where('status', 'late')->count();
+        $totalWorkingDays = 0;
 
-        return view('employee-dashboard', compact(
-            'user',
-            'roleName',
-            'employee',
-            'presentDays',
-            'lateDays',
-            'absentDays',
-            'totalWorkingDays',
-            'prevPresentDays',
-            'prevLateDays',
-            'prevAbsentDays',
-            'prevTotalWorkingDays',
-            'fullMonthAttendance',
-            'supervisorRemarks',
-            'approvedLeaves',
-            'pendingLeaves',
-            'rejectedLeaves',
-            'totalLeaveDays',
-            'totalUsedLeave',
-            'totalAvailableLeave',
-            'leaveBalances',
-            'pendingTeamLeavesCount',
-            'upcomingHolidays',
-            'upcomingBirthdays',
-            'activeNotices',
-            'isReportingManager'
-        ));
+        $checkDate = $startOfMonth->copy();
+        while ($checkDate->lte($today)) {
+            if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
+                $totalWorkingDays++;
+            }
+            $checkDate->addDay();
+        }
+
+        $leaveDays = LeaveApplication::where('employee_id', $employee->id)
+            ->where('status', 'approved')
+            ->where(function ($q) use ($startOfMonth, $today) {
+                $q->whereBetween('from_date', [$startOfMonth, $today])
+                  ->orWhereBetween('to_date', [$startOfMonth, $today]);
+            })->sum('total_days');
+
+        return [
+            'presentDays' => $presentDays,
+            'lateDays' => $lateDays,
+            'totalWorkingDays' => $totalWorkingDays,
+            'absentDays' => max(0, $totalWorkingDays - $presentDays - $leaveDays)
+        ];
+    }
+
+    private function getPreviousMonthMetrics(Employee $employee, Carbon $today): array
+    {
+        $startOfLastMonth = $today->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth = $today->copy()->subMonth()->endOfMonth();
+        
+        $records = AttendanceRecord::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startOfLastMonth, $endOfLastMonth])
+            ->get();
+            
+        $present = $records->whereIn('status', ['present', 'late'])->count();
+        $workingDays = 0;
+
+        $checkDate = $startOfLastMonth->copy();
+        while ($checkDate->lte($endOfLastMonth)) {
+            if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
+                $workingDays++;
+            }
+            $checkDate->addDay();
+        }
+        
+        $leaveDays = LeaveApplication::where('employee_id', $employee->id)
+            ->where('status', 'approved')
+            ->where(function ($q) use ($startOfLastMonth, $endOfLastMonth) {
+                $q->whereBetween('from_date', [$startOfLastMonth, $endOfLastMonth])
+                  ->orWhereBetween('to_date', [$startOfLastMonth, $endOfLastMonth]);
+            })->sum('total_days');
+
+        return [
+            'prevPresentDays' => $present,
+            'prevLateDays' => $records->where('status', 'late')->count(),
+            'prevTotalWorkingDays' => $workingDays,
+            'prevAbsentDays' => max(0, $workingDays - $present - $leaveDays)
+        ];
+    }
+
+    private function getAttendanceHistory(Employee $employee, Carbon $today)
+    {
+        $startOfMonth = $today->copy()->startOfMonth();
+        $existingRecords = AttendanceRecord::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startOfMonth, $today])
+            ->get()->keyBy(fn($item) => Carbon::parse($item->date)->toDateString());
+
+        $approvedLeaves = LeaveApplication::where('employee_id', $employee->id)
+            ->where('status', 'approved')
+            ->where(function($q) use ($startOfMonth, $today) {
+                $q->whereBetween('from_date', [$startOfMonth, $today])
+                  ->orWhereBetween('to_date', [$startOfMonth, $today])
+                  ->orWhere(fn($sub) => $sub->where('from_date', '<=', $startOfMonth)->where('to_date', '>=', $today));
+            })->get();
+
+        $history = collect();
+        $checkDate = $today->copy();
+        while ($checkDate->gte($startOfMonth)) {
+            $dateStr = $checkDate->toDateString();
+            if (isset($existingRecords[$dateStr])) {
+                $history->push($existingRecords[$dateStr]);
+            } elseif ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
+                $onLeave = $approvedLeaves->contains(fn($l) => $checkDate->between($l->from_date, $l->to_date));
+                $history->push(new AttendanceRecord([
+                    'employee_id' => $employee->id, 'date' => $dateStr,
+                    'status' => $onLeave ? 'leave' : 'absent', 'late_seconds' => 0
+                ]));
+            }
+            $checkDate->subDay();
+        }
+        return $history;
+    }
+
+    private function getLeaveSummary(Employee $employee, Carbon $today): array
+    {
+        $apps = LeaveApplication::where('employee_id', $employee->id)
+            ->whereYear('from_date', $today->year)->get();
+        
+        $balances = LeaveBalance::with('leaveType')
+            ->where('employee_id', $employee->id)
+            ->where('year', $today->year)->get();
+
+        return [
+            'approvedLeaves' => $apps->where('status', 'approved')->sum('total_days'),
+            'pendingLeaves' => $apps->where('status', 'pending')->sum('total_days'),
+            'rejectedLeaves' => $apps->where('status', 'rejected')->sum('total_days'),
+            'totalLeaveDays' => $apps->sum('total_days'),
+            'totalUsedLeave' => $balances->sum('used_days'),
+            'totalAvailableLeave' => $balances->sum('remaining_days'),
+            'leaveBalances' => $balances
+        ];
+    }
+
+    private function getTeamManagementMetrics(Employee $employee, string $roleName): array
+    {
+        $isReportingManager = Employee::where('reporting_manager_id', $employee->id)->exists();
+        $pendingCount = 0;
+
+        if ($roleName === 'Team Lead' || $isReportingManager) {
+            $inchargeDeptIds = Department::where('incharge_id', $employee->id)->pluck('id');
+            $teamIds = Employee::where('reporting_manager_id', $employee->id)
+                ->orWhereIn('department_id', $inchargeDeptIds)->pluck('id');
+
+            $pendingCount = LeaveApplication::whereIn('employee_id', $teamIds)
+                ->where('employee_id', '!=', $employee->id)
+                ->where('status', 'pending')->count();
+        }
+
+        return [
+            'isReportingManager' => $isReportingManager,
+            'pendingTeamLeavesCount' => $pendingCount
+        ];
+    }
+
+    private function getDashboardCommonData(Carbon $today, ?Employee $employee): array
+    {
+        return [
+            'activeNotices' => Notice::active()->orderBy('created_at', 'desc')->take(5)->get(),
+            'upcomingHolidays' => Holiday::whereDate('from_date', '>=', $today)
+                ->where('is_active', true)->orderBy('from_date', 'asc')->get(),
+            'upcomingBirthdays' => Employee::whereNotNull('date_of_birth')->where('status', 'active')->get()
+                ->map(function ($emp) use ($today) {
+                    $bday = Carbon::parse($emp->date_of_birth);
+                    $thisYear = $bday->copy()->year($today->year);
+                    if ($thisYear->isBefore($today) && !$thisYear->isSameDay($today)) $thisYear->addYear();
+                    $emp->days_until_birthday = $today->diffInDays($thisYear);
+                    $emp->next_birthday = $thisYear;
+                    return $emp;
+                })->sortBy('days_until_birthday')->take(3)
+        ];
     }
 
     /**
