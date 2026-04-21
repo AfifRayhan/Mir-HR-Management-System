@@ -41,6 +41,13 @@ class LeaveTypeSeeder extends Seeder
                 'carry_forward' => false,
                 'sort_order' => 4,
             ],
+            [
+                'name' => 'Bonus Earn Leave (BEL)',
+                'total_days_per_year' => 10,
+                'max_consecutive_days' => null,
+                'carry_forward' => false,
+                'sort_order' => 5,
+            ],
         ];
 
         foreach ($leaveTypes as $type) {

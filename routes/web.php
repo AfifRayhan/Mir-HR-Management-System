@@ -202,4 +202,9 @@ Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
     ]);
 })->middleware('auth')->name('api.weekly-holidays');
 
+// Get actual working days count (incorporating roster logic) for Leave Duration calculation
+Route::get('api/check-working-days', [\App\Http\Controllers\Api\WorkingDayController::class, 'calculate'])
+    ->middleware('auth')
+    ->name('api.check-working-days');
+
 require __DIR__ . '/auth.php';

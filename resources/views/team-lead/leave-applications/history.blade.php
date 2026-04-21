@@ -15,51 +15,74 @@
             </div>
 
             <div class="hr-panel p-0 overflow-hidden mb-4">
-                <div class="d-flex justify-content-between align-items-center border-bottom p-3">
-                    <h6 class="fw-bold mb-0 text-nowrap me-3"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('Applications History') }}</h6>
+                <div class="border-bottom p-4 bg-light">
                     <form action="{{ route('team-lead.leave-applications.history') }}" method="GET">
-                        <div class="d-flex flex-wrap gap-2 mb-2 justify-content-end">
-                            <select name="month" class="form-select form-select-sm rounded-3 w-auto">
-                                <option value="">{{ __('All Months') }}</option>
-                                @for($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
-                                    {{ date('M', mktime(0, 0, 0, $i, 1)) }}
-                                    </option>
-                                    @endfor
-                            </select>
-                            <select name="year" class="form-select form-select-sm rounded-3 w-auto">
-                                <option value="">{{ __('All Years') }}</option>
-                                @for($i = date('Y'); $i >= date('Y') - 5; $i--)
-                                <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>
-                                    {{ $i }}
-                                </option>
-                                @endfor
-                            </select>
-                            <select name="employee_id" class="form-select form-select-sm rounded-3 w-auto border-success">
-                                <option value="">{{ __('All Employees') }}</option>
-                                @foreach($teamEmployees as $teamEmp)
-                                <option value="{{ $teamEmp->id }}" {{ $employeeId == $teamEmp->id ? 'selected' : '' }}>
-                                    {{ $teamEmp->name }} ({{ $teamEmp->employee_code }})
-                                </option>
-                                @endforeach
-                            </select>
-                            <select name="leave_type_id" class="form-select form-select-sm rounded-3 w-auto">
-                                <option value="">{{ __('All Leave Types') }}</option>
-                                @foreach($leaveTypes as $lt)
-                                    <option value="{{ $lt->id }}" {{ $leaveTypeId == $lt->id ? 'selected' : '' }}>{{ $lt->name }}</option>
-                                @endforeach
-                            </select>
-                            <select name="status" class="form-select form-select-sm rounded-3 w-auto">
-                                <option value="">{{ __('All Status') }}</option>
-                                <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
-                                <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>{{ __('Approved') }}</option>
-                                <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>{{ __('Rejected') }}</option>
-                            </select>
-                        </div>
-                        
-                        <div class="d-flex gap-2 justify-content-end pb-2">
-                            <button type="submit" class="btn btn-hr-search">{{ __('Search') }}</button>
-                            <a href="{{ route('team-lead.leave-applications.history') }}" class="btn btn-hr-clear">{{ __('Clear') }}</a>
+                        <div class="row g-3">
+                            <div class="col-md-10">
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold text-muted mb-1">{{ __('Employee') }}</label>
+                                        <select name="employee_id" class="form-select form-select-sm rounded-3">
+                                            <option value="">{{ __('All Employees') }}</option>
+                                            @foreach($teamEmployees as $teamEmp)
+                                            <option value="{{ $teamEmp->id }}" {{ $employeeId == $teamEmp->id ? 'selected' : '' }}>
+                                                {{ $teamEmp->name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small fw-bold text-muted mb-1">{{ __('Type') }}</label>
+                                        <select name="leave_type_id" class="form-select form-select-sm rounded-3">
+                                            <option value="">{{ __('All Types') }}</option>
+                                            @foreach($leaveTypes as $lt)
+                                                <option value="{{ $lt->id }}" {{ $leaveTypeId == $lt->id ? 'selected' : '' }}>{{ $lt->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small fw-bold text-muted mb-1">{{ __('Status') }}</label>
+                                        <select name="status" class="form-select form-select-sm rounded-3">
+                                            <option value="">{{ __('All Status') }}</option>
+                                            <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
+                                            <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>{{ __('Approved') }}</option>
+                                            <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>{{ __('Rejected') }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label class="form-label small fw-bold text-muted mb-1">{{ __('Month') }}</label>
+                                        <select name="month" class="form-select form-select-sm rounded-3">
+                                            <option value="">{{ __('All') }}</option>
+                                            @for($i = 1; $i <= 12; $i++)
+                                                <option value="{{ $i }}" {{ $month == $i ? 'selected' : '' }}>
+                                                {{ date('M', mktime(0, 0, 0, $i, 1)) }}
+                                                </option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label small fw-bold text-muted mb-1">{{ __('Year') }}</label>
+                                        <select name="year" class="form-select form-select-sm rounded-3">
+                                            <option value="">{{ __('All') }}</option>
+                                            @for($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                            <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>
+                                                {{ $i }}
+                                            </option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <div class="d-flex gap-2 w-100">
+                                            <button type="submit" class="btn btn-success btn-sm w-100 rounded-3 shadow-sm">
+                                                <i class="bi bi-search me-1"></i>{{ __('Filter') }}
+                                            </button>
+                                            <a href="{{ route('team-lead.leave-applications.history') }}" class="btn btn-outline-secondary btn-sm rounded-3" title="Clear">
+                                                <i class="bi bi-x-circle"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>

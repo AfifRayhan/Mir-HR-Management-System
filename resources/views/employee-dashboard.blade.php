@@ -110,42 +110,41 @@
             </div>
 
             {{-- Leave Balance Cards --}}
-            <div class="row g-3 mb-4">
-                <div class="col-12">
-                    <div class="row align-items-center mb-3">
-                        <div class="col">
-                            <h6 class="font-bold text-gray-800 mb-0">
-                                <i class="bi bi-calendar-check me-2 text-success"></i>{{ __('My Leave Balances') }}
-                            </h6>
-                        </div>
-                        <div class="col-auto">
-                            <a href="{{ route('employee.leave.index') }}" class="btn btn-success btn-sm text-white px-3 font-bold rounded-pill btn-pill-action flex-shrink-0">
-                                <i class="bi bi-plus-circle me-1"></i>{{ __('Apply Leave') }}
-                            </a>
-                        </div>
-                    </div>
+            <div class="row align-items-center mb-3">
+                <div class="col">
+                    <h6 class="font-bold text-gray-800 mb-0">
+                        <i class="bi bi-calendar-check me-2 text-success"></i>{{ __('My Leave Balances') }}
+                    </h6>
                 </div>
+                <div class="col-auto">
+                    <a href="{{ route('employee.leave.index') }}" class="btn btn-success btn-sm text-white px-3 font-bold rounded-pill btn-pill-action flex-shrink-0">
+                        <i class="bi bi-plus-circle me-1"></i>{{ __('Apply Leave') }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mb-4 overflow-hidden">
                 @forelse($leaveBalances as $balance)
-                <div class="col-md-3 col-sm-6">
-                    <div class="balance-card h-100 shadow-sm border-0">
+                <div style="flex: 1; min-width: 0;">
+                    <div class="balance-card h-100 shadow-sm border-0 px-2 py-3 bg-white">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-uppercase fw-bold text-muted" style="font-size: 0.65rem; letter-spacing: 0.05em;">{{ $balance->leaveType->name }}</span>
-                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;">
-                                <i class="bi bi-calculator text-success" style="font-size: 0.75rem;"></i>
+                            <span class="text-uppercase fw-bold text-muted text-truncate" style="font-size: 0.6rem; letter-spacing: 0.02em;" title="{{ $balance->leaveType->name }}">{{ $balance->leaveType->name }}</span>
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 20px; height: 20px;">
+                                <i class="bi bi-calculator text-success" style="font-size: 0.7rem;"></i>
                             </div>
                         </div>
-                        <div class="fw-bold text-dark mb-1" style="font-size: 1.5rem; line-height: 1;">{{ $balance->remaining_days }}</div>
-                        <div class="text-muted mb-2" style="font-size: 0.7rem;">{{ __('Days Remaining') }}</div>
+                        <div class="fw-bold text-dark mb-1" style="font-size: 1.4rem; line-height: 1;">{{ $balance->remaining_days }}</div>
+                        <div class="text-muted mb-2" style="font-size: 0.7rem;">{{ __('Remaining') }}</div>
                         <div class="pt-2 border-top">
-                            <div class="d-flex justify-content-between text-muted" style="font-size: 0.65rem;">
-                                <span>{{ __('Used:') }} <span class="fw-bold text-dark">{{ $balance->used_days }}</span></span>
-                                <span>{{ __('Total:') }} <span class="fw-bold text-dark">{{ $balance->opening_balance }}</span></span>
+                            <div class="d-flex justify-content-between text-muted" style="font-size: 0.6rem;">
+                                <span>Used: <span class="fw-bold text-dark">{{ $balance->used_days }}</span></span>
+                                <span>Total: <span class="fw-bold text-dark">{{ $balance->opening_balance }}</span></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 @empty
-                <div class="col-12">
+                <div class="w-100">
                     <div class="alert alert-info border-0 shadow-sm rounded-4 small">
                         <i class="bi bi-info-circle-fill me-2"></i>{{ __('No leave balances initialized.') }}
                     </div>

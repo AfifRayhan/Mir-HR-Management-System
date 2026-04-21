@@ -221,11 +221,20 @@ class AttendanceService
     public function isWorkingDay(Employee $employee, $date)
     {
         $carbonDate = Carbon::parse($date);
+        
+        $officeTime = $employee->officeTime;
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            // Roster Employee: Only roster schedule matters. 
+            // They work on national holidays (as per user clarification).
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            return $rosterShift && !$rosterShift->is_off_day;
+        }
+
+        // General Employee Logic
         $dayName = $carbonDate->format('l');
 
         // 1. Check Weekly Holidays
         $hasOfficeConfig = WeeklyHoliday::where('office_id', $employee->office_id)->exists();
-
         $isWeeklyHoliday = WeeklyHoliday::where('day_name', $dayName)
             ->where(function ($q) use ($hasOfficeConfig, $employee) {
                 if ($hasOfficeConfig) {
@@ -259,16 +268,6 @@ class AttendanceService
             return false;
         }
 
-        // 3. Check Roster Off-Days
-        $officeTime = $employee->officeTime;
-        if ($officeTime && $officeTime->shift_name === 'Roster') {
-            $rosterShift = $this->getRosterShiftForDate($employee, $date);
-            // If no roster schedule is set or it's an off day, it's not a working day
-            if (!$rosterShift || $rosterShift->is_off_day) {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -277,7 +276,20 @@ class AttendanceService
         $carbonDate = Carbon::parse($date);
         $dayName = $carbonDate->format('l');
 
-        // Check for specific holidays first (gazetted)
+        $officeTime = $employee->officeTime;
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            if (!$rosterShift || $rosterShift->is_off_day) {
+                // For roster, if it's Fri/Sat and an off-day, we can still label as weekly holiday for UI clarity
+                if (in_array($dayName, ['Friday', 'Saturday'])) {
+                    return 'weekly_holiday';
+                }
+                return 'off_day';
+            }
+            return 'working_day';
+        }
+
+        // General Employee Logic: Check for specific holidays first (gazetted)
         $isHoliday = Holiday::where('is_active', true)
             ->where(function ($q) use ($carbonDate, $employee) {
                 $q->where(function ($sq) use ($carbonDate) {
@@ -293,20 +305,6 @@ class AttendanceService
 
         if ($isHoliday) {
             return 'holiday';
-        }
-
-        // Check Roster Off-Days
-        $officeTime = $employee->officeTime;
-        if ($officeTime && $officeTime->shift_name === 'Roster') {
-            $rosterShift = $this->getRosterShiftForDate($employee, $date);
-            if (!$rosterShift || $rosterShift->is_off_day) {
-                // If it's Fri/Sat, label as weekly holiday even for roster? Per user request.
-                if (in_array($dayName, ['Friday', 'Saturday'])) {
-                    return 'weekly_holiday';
-                }
-                return 'off_day';
-            }
-            return 'working_day';
         }
 
         // Check Weekly Holidays (Friday/Saturday usually)

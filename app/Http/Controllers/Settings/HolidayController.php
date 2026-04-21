@@ -9,13 +9,32 @@ use Illuminate\Http\Request;
 
 class HolidayController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employee = \App\Models\Employee::where('user_id', $user->id)->first();
-        $holidays = Holiday::with('office')->orderBy('from_date', 'desc')->get();
+        
+        $query = Holiday::with('office');
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('office_id')) {
+            $query->where('office_id', $request->office_id);
+        }
+
+        if ($request->filled('year')) {
+            $query->where('year', $request->year);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $holidays = $query->orderBy('from_date', 'desc')->get();
         $offices = Office::all();
 
         return view('settings.holidays.others', compact('holidays', 'offices', 'user', 'roleName', 'employee'));
@@ -32,7 +51,7 @@ class HolidayController extends Controller
             'remarks' => 'nullable|string',
             'all_office' => 'nullable|boolean',
             'office_id' => 'required_without:all_office|nullable|exists:offices,id',
-            'is_active' => 'required|boolean',
+            'is_active' => 'nullable',
         ]);
 
         $fromDate = new \DateTime($validated['from_date']);
@@ -40,7 +59,7 @@ class HolidayController extends Controller
 
         $validated['total_days'] = $fromDate->diff($toDate)->days + 1;
         $validated['all_office'] = $request->has('all_office');
-        $validated['is_active'] = (bool)$request->is_active;
+        $validated['is_active'] = $request->has('is_active');
 
         Holiday::create($validated);
 
@@ -58,7 +77,7 @@ class HolidayController extends Controller
             'remarks' => 'nullable|string',
             'all_office' => 'nullable|boolean',
             'office_id' => 'required_without:all_office|nullable|exists:offices,id',
-            'is_active' => 'required|boolean',
+            'is_active' => 'nullable',
         ]);
 
         $fromDate = new \DateTime($validated['from_date']);
@@ -66,6 +85,7 @@ class HolidayController extends Controller
         $validated['total_days'] = $fromDate->diff($toDate)->days + 1;
         $validated['all_office'] = $request->has('all_office');
 
+        $validated['is_active'] = $request->has('is_active');
         $holiday->update($validated);
 
         return redirect()->back()->with('success', 'Holiday updated successfully.');

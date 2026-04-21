@@ -98,8 +98,7 @@
                             </div>
 
                             <div id="leave_days_display" class="mb-3 d-none" 
-                                 data-holidays="{{ json_encode($weeklyHolidayDays) }}"
-                                 data-national-holidays="{{ json_encode($nationalHolidayDates) }}">
+                                 data-employee-id="{{ $employee->id }}">
                                 <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
                                     <span class="small fw-bold text-success"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
                                     <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
@@ -203,35 +202,26 @@
         document.addEventListener('DOMContentLoaded', function() {
             const daysDisplay = document.getElementById('leave_days_display');
             const daysCount = document.getElementById('total_days_count');
-            const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
-            const nationalHolidays = JSON.parse(daysDisplay.dataset.nationalHolidays || '[]');
 
             function calculateDays() {
                 const fromDate = fromPicker.selectedDates[0];
                 const toDate   = toPicker.selectedDates[0];
 
-                if (fromDate && toDate) {
-                    if (toDate >= fromDate) {
-                        let totalDays = 0;
-                        let current = new Date(fromDate);
+                if (fromDate && toDate && toDate >= fromDate) {
+                    const employeeId = daysDisplay.dataset.employeeId;
+                    const fromStr = fromPicker.formatDate(fromDate, 'Y-m-d');
+                    const toStr   = fromPicker.formatDate(toDate, 'Y-m-d');
 
-                        while (current <= toDate) {
-                            const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-                            const dateStr = current.getFullYear() + '-' + 
-                                            String(current.getMonth() + 1).padStart(2, '0') + '-' + 
-                                            String(current.getDate()).padStart(2, '0');
-
-                            if (!weeklyHolidays.includes(dayName) && !nationalHolidays.includes(dateStr)) {
-                                totalDays++;
-                            }
-                            current.setDate(current.getDate() + 1);
-                        }
-
-                        daysCount.textContent = totalDays;
-                        daysDisplay.classList.remove('d-none');
-                    } else {
-                        daysDisplay.classList.add('d-none');
-                    }
+                    fetch(`/api/check-working-days?employee_id=${employeeId}&from_date=${fromStr}&to_date=${toStr}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            daysCount.textContent = data.total_days;
+                            daysDisplay.classList.remove('d-none');
+                        })
+                        .catch(err => {
+                            console.error('Error calculating days:', err);
+                            daysDisplay.classList.add('d-none');
+                        });
                 } else {
                     daysDisplay.classList.add('d-none');
                 }

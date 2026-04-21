@@ -29,12 +29,12 @@
             @endif
 
             <!-- Balances Row -->
-            <div class="row g-3 mb-5 flex-nowrap" style="overflow-x: auto;">
+            <div class="row row-cols-5 g-2 mb-5 flex-nowrap" style="overflow-x: hidden;">
                 @forelse($balances as $balance)
-                <div class="col">
-                    <div class="balance-card h-100" style="padding: 1rem 1.15rem;">
+                <div class="col" style="flex: 0 0 20%; max-width: 20%; min-width: 20%;">
+                    <div class="balance-card h-100 px-2 py-3">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-uppercase fw-bold text-gray-500" style="font-size: 0.7rem; letter-spacing: 0.03em;">{{ $balance->leaveType->name }}</span>
+                            <span class="text-uppercase fw-bold text-gray-500 text-truncate" style="font-size: 0.65rem; letter-spacing: 0.02em;" title="{{ $balance->leaveType->name }}">{{ $balance->leaveType->name }}</span>
                             <i class="bi bi-calendar-check text-success" style="font-size: 1.1rem;"></i>
                         </div>
                         <div class="fw-bold text-gray-800 mb-1" style="font-size: 1.75rem; line-height: 1;">{{ $balance->remaining_days }}</div>
@@ -85,8 +85,7 @@
                             </div>
 
                             <div id="leave_days_display" class="mb-3 d-none" 
-                                 data-holidays="{{ json_encode($weeklyHolidayDays) }}"
-                                 data-national-holidays="{{ json_encode($nationalHolidayDates) }}">
+                                 data-employee-id="{{ $employee->id }}">
                                 <div class="alert alert-info py-2 px-3 rounded-pill d-flex align-items-center justify-content-between mb-0 shadow-sm border-0" style="background-color: #c8e6c9ff; color: #007a10;">
                                     <span class="small fw-bold text-success"><i class="bi bi-calendar-event me-2"></i>{{ __('Total Days') }}:</span>
                                     <span id="total_days_count" class="badge bg-success rounded-pill">0</span>
@@ -253,35 +252,26 @@
         document.addEventListener('DOMContentLoaded', function() {
             const daysDisplay = document.getElementById('leave_days_display');
             const daysCount = document.getElementById('total_days_count');
-            const weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays);
-            const nationalHolidays = JSON.parse(daysDisplay.dataset.nationalHolidays || '[]');
 
             function calculateDays() {
                 const fromDate = fromPicker.selectedDates[0];
                 const toDate   = toPicker.selectedDates[0];
 
-                if (fromDate && toDate) {
-                    if (toDate >= fromDate) {
-                        let totalDays = 0;
-                        let current = new Date(fromDate);
+                if (fromDate && toDate && toDate >= fromDate) {
+                    const employeeId = daysDisplay.dataset.employeeId;
+                    const fromStr = fromPicker.formatDate(fromDate, 'Y-m-d');
+                    const toStr   = fromPicker.formatDate(toDate, 'Y-m-d');
 
-                        while (current <= toDate) {
-                            const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-                            const dateStr = current.getFullYear() + '-' + 
-                                            String(current.getMonth() + 1).padStart(2, '0') + '-' + 
-                                            String(current.getDate()).padStart(2, '0');
-
-                            if (!weeklyHolidays.includes(dayName) && !nationalHolidays.includes(dateStr)) {
-                                totalDays++;
-                            }
-                            current.setDate(current.getDate() + 1);
-                        }
-
-                        daysCount.textContent = totalDays;
-                        daysDisplay.classList.remove('d-none');
-                    } else {
-                        daysDisplay.classList.add('d-none');
-                    }
+                    fetch(`/api/check-working-days?employee_id=${employeeId}&from_date=${fromStr}&to_date=${toStr}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            daysCount.textContent = data.total_days;
+                            daysDisplay.classList.remove('d-none');
+                        })
+                        .catch(err => {
+                            console.error('Error calculating days:', err);
+                            daysDisplay.classList.add('d-none');
+                        });
                 } else {
                     daysDisplay.classList.add('d-none');
                 }

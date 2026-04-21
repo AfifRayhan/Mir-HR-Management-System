@@ -107,14 +107,20 @@ class LeaveBalanceController extends Controller
         $skippedCount     = 0;
 
         foreach ($selectedTypes as $type) {
+            $openingBalance = $this->getAllocatedDays($employee, $type);
+
+            // Approach 3: Bonus Earn Leave won't initialize if opening balance is 0 (due to < 1 year service)
+            if (str_contains(strtolower($type->name), 'bonus') && $openingBalance == 0) {
+                $skippedCount++;
+                continue;
+            }
+
             $exists = LeaveBalance::where('employee_id', $employee->id)
                 ->where('leave_type_id', $type->id)
                 ->where('year', $request->year)
                 ->exists();
 
             if (!$exists) {
-                $openingBalance = $this->getAllocatedDays($employee, $type);
-
                 if ($type->carry_forward) {
                     $previousBalance = LeaveBalance::where('employee_id', $employee->id)
                         ->where('leave_type_id', $type->id)
@@ -167,6 +173,16 @@ class LeaveBalanceController extends Controller
             }
         } else {
             if (str_contains($nameStr, 'earn')) {
+                // Determine if this is "Bonus Earn Leave" or regular "Earn Leave"
+                if (str_contains($nameStr, 'bonus')) {
+                    if ($employee->joining_date) {
+                        $joinDate = Carbon::parse($employee->joining_date);
+                        $yearsOfService = $joinDate->diffInYears(now());
+                        return $yearsOfService >= 1 ? 10 : 0;
+                    }
+                    return 0;
+                }
+
                 if ($employee->joining_date) {
                     $joinDate = Carbon::parse($employee->joining_date);
                     $daysSinceJoin = $joinDate->diffInDays(now());

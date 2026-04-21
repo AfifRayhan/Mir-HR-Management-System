@@ -103,14 +103,10 @@
                                 <textarea name="remarks" class="form-control form-control-sm rounded-3" rows="2" placeholder="{{ __('Optional notes...') }}"></textarea>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="form-label small fw-bold text-muted d-block">{{ __('Status') }}</label>
-                                <div class="btn-group w-100" role="group">
-                                    <input type="radio" class="btn-check" name="is_active" id="active_yes" value="1" checked>
-                                    <label class="btn btn-outline-success btn-sm py-2" for="active_yes">{{ __('Active') }}</label>
-
-                                    <input type="radio" class="btn-check" name="is_active" id="active_no" value="0">
-                                    <label class="btn btn-outline-danger btn-sm py-2" for="active_no">{{ __('Inactive') }}</label>
+                             <div class="mb-4">
+                                <div class="form-check form-switch p-2 bg-light rounded-3 px-3">
+                                    <input class="form-check-input ms-0 me-3" type="checkbox" name="is_active" role="switch" id="isActiveSwitchDefault" checked>
+                                    <label class="form-check-label small fw-bold text-muted" for="isActiveSwitchDefault">{{ __('Active Status') }}</label>
                                 </div>
                             </div>
 
@@ -123,22 +119,52 @@
 
                 <!-- Holiday List -->
                 <div class="col-lg-8">
-                    <div class="hr-panel">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="hr-panel-title mb-0">
-                                <i class="bi bi-list-task me-2 text-primary"></i>{{ __('Holiday Calendar') }}
+                    <!-- Filter Bar -->
+                    <div class="filter-bar mb-4">
+                        <form action="{{ route('settings.holidays.others.index') }}" method="GET" class="row g-2">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Search') }}</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                                    <input type="text" name="search" class="form-control border-start-0 ps-0 rounded-end-3" placeholder="Holiday title..." value="{{ request('search') }}">
+                                </div>
                             </div>
-                            <div class="d-flex gap-2">
-                                <select class="form-select form-select-sm rounded-pill px-3" style="width: 180px;">
-                                    <option>{{ __('All Offices') }}</option>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">{{ __('Office') }}</label>
+                                <select name="office_id" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Offices') }}</option>
                                     @foreach($offices as $office)
-                                    <option value="{{ $office->id }}">{{ $office->name }}</option>
+                                    <option value="{{ $office->id }}" {{ request('office_id') == $office->id ? 'selected' : '' }}>{{ $office->name }}</option>
                                     @endforeach
                                 </select>
-                                <button class="btn btn-info-soft btn-sm rounded-circle p-2" title="{{ __('Refresh') }}">
-                                    <i class="bi bi-arrow-repeat text-info"></i>
-                                </button>
                             </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold text-muted">{{ __('Year') }}</label>
+                                <select name="year" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Years') }}</option>
+                                    @for($i = date('Y') - 1; $i <= date('Y') + 5; $i++)
+                                    <option value="{{ $i }}" {{ request('year') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label small fw-bold text-muted">{{ __('Type') }}</label>
+                                <select name="type" class="form-select form-select-sm rounded-3">
+                                    <option value="">{{ __('All Types') }}</option>
+                                    <option value="National" {{ request('type') == 'National' ? 'selected' : '' }}>{{ __('National') }}</option>
+                                    <option value="Other" {{ request('type') == 'Other' ? 'selected' : '' }}>{{ __('Other') }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end gap-1">
+                                <button type="submit" class="btn btn-primary btn-sm flex-grow-1 rounded-3">{{ __('Filter') }}</button>
+                                <a href="{{ route('settings.holidays.others.index') }}" class="btn btn-light btn-sm flex-grow-1 rounded-3" title="{{ __('Clear') }}">{{ __('Clear') }}</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="hr-panel">
+                        <div class="hr-panel-title mb-4">
+                            <i class="bi bi-calendar-event me-2 text-primary"></i>{{ __('Holiday Calendar') }}
                         </div>
 
                         <div class="table-responsive">
@@ -286,14 +312,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label small fw-bold text-muted d-block">{{ __('Status') }}</label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="is_active" id="edit_active_yes_{{ $holiday->id }}" value="1" {{ $holiday->is_active ? 'checked' : '' }}>
-                                <label class="btn btn-outline-success btn-sm py-2" for="edit_active_yes_{{ $holiday->id }}">{{ __('Active') }}</label>
-
-                                <input type="radio" class="btn-check" name="is_active" id="edit_active_no_{{ $holiday->id }}" value="0" {{ !$holiday->is_active ? 'checked' : '' }}>
-                                <label class="btn btn-outline-danger btn-sm py-2" for="edit_active_no_{{ $holiday->id }}">{{ __('Inactive') }}</label>
-                            </div>
+                             <div class="form-check form-switch p-2 bg-light rounded-3 px-3">
+                                 <input class="form-check-input ms-0 me-3" type="checkbox" name="is_active" role="switch" id="edit_is_active_{{ $holiday->id }}" {{ $holiday->is_active ? 'checked' : '' }}>
+                                 <label class="form-check-label small fw-bold text-muted" for="edit_is_active_{{ $holiday->id }}">{{ __('Active Status') }}</label>
+                             </div>
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 pt-0 pb-3">
