@@ -223,58 +223,25 @@
         const daysDisplay    = document.getElementById('leave_days_display');
         const daysCount      = document.getElementById('total_days_count');
 
-        let weeklyHolidays = JSON.parse(daysDisplay.dataset.holidays || '[]');
-        let nationalHolidays = JSON.parse(daysDisplay.dataset.nationalHolidays || '[]');
-
-        function fetchHolidaysAndRecalculate() {
-            const officeId = employeeSelect.options[employeeSelect.selectedIndex]?.dataset?.office;
-            if (!officeId) {
-                weeklyHolidays = [];
-                nationalHolidays = [];
-                calculateDays();
-                return;
-            }
-
-            fetch(`/api/weekly-holidays?office_id=${officeId}`)
-                .then(r => r.json())
-                .then(data => {
-                    weeklyHolidays = data.holiday_days || [];
-                    nationalHolidays = data.national_holidays || [];
-                    calculateDays();
-                })
-                .catch(() => {
-                    weeklyHolidays = [];
-                    nationalHolidays = [];
-                    calculateDays();
-                });
-        }
-
         function calculateDays() {
+            const employeeId = employeeSelect.value;
             const fromDate = fromPicker.selectedDates[0];
             const toDate   = toPicker.selectedDates[0];
 
-            if (fromDate && toDate) {
-                if (toDate >= fromDate) {
-                    let totalDays = 0;
-                    let current   = new Date(fromDate);
+            if (employeeId && fromDate && toDate && toDate >= fromDate) {
+                const fromStr = fromPicker.formatDate(fromDate, 'Y-m-d');
+                const toStr   = fromPicker.formatDate(toDate, 'Y-m-d');
 
-                    while (current <= toDate) {
-                        const dayName = current.toLocaleDateString('en-US', { weekday: 'long' });
-                        const dateStr = current.getFullYear() + '-' + 
-                                        String(current.getMonth() + 1).padStart(2, '0') + '-' + 
-                                        String(current.getDate()).padStart(2, '0');
-
-                        if (!weeklyHolidays.includes(dayName) && !nationalHolidays.includes(dateStr)) {
-                            totalDays++;
-                        }
-                        current.setDate(current.getDate() + 1);
-                    }
-
-                    daysCount.textContent = totalDays;
-                    daysDisplay.classList.remove('d-none');
-                } else {
-                    daysDisplay.classList.add('d-none');
-                }
+                fetch(`/api/check-working-days?employee_id=${employeeId}&from_date=${fromStr}&to_date=${toStr}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        daysCount.textContent = data.total_days;
+                        daysDisplay.classList.remove('d-none');
+                    })
+                    .catch(err => {
+                        console.error('Error calculating days:', err);
+                        daysDisplay.classList.add('d-none');
+                    });
             } else {
                 daysDisplay.classList.add('d-none');
             }
@@ -295,11 +262,7 @@
             onChange: calculateDays
         });
 
-        employeeSelect.addEventListener('change', fetchHolidaysAndRecalculate);
-
-        if (employeeSelect.value) {
-            fetchHolidaysAndRecalculate();
-        }
+        employeeSelect.addEventListener('change', calculateDays);
     });
     </script>
     @endpush

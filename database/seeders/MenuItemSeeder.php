@@ -194,7 +194,6 @@ class MenuItemSeeder extends Seeder
             'employee-profile',
             'employee-attendance',
             'employee-leave',
-            'employee-payslips',
             'employee-leave-self',
             'team-lead-leave-request',
             'team-lead-leave-apps',

@@ -101,12 +101,6 @@
                 </li>
 
                 <li>
-                    <span class="hr-sidebar-link">
-                        <i class="bi bi-envelope-paper"></i>
-                        <span>{{ __('Payslips') }}</span>
-                    </span>
-                </li>
-                <li>
                     <a href="{{ route('notifications.index') }}" 
                        class="hr-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
                         <i class="bi bi-bell"></i>
