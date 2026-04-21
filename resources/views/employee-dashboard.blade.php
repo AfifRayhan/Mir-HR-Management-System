@@ -155,10 +155,95 @@
 
             <!-- Bottom Row: Recent Attendance + Holidays -->
             <div class="row g-4 mb-4">
-                <!-- Recent Attendance Table -->
+                <!-- My Roster Schedule Section -->
                 <div class="col-lg-8">
-                    <div class="hr-panel p-0 overflow-hidden">
-                        <div class="p-4 border-bottom d-flex align-items-center">
+                    @if($myRoster)
+                    <div class="hr-panel p-0 mb-4 shadow-sm border-0">
+                        <div class="p-4 border-bottom d-flex align-items-center justify-content-between bg-white">
+                            <h6 class="mb-0 font-bold text-gray-800">
+                                <i class="bi bi-calendar3 me-2 text-success"></i>{{ __('Weekly Roster Schedule') }} 
+                                <span class="text-muted small fw-normal ms-2">({{ $rosterStart->format('d M') }} - {{ $rosterEnd->format('d M, Y') }})</span>
+                            </h6>
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-outline-success rounded-pill shadow-sm d-flex align-items-center justify-content-center text-nowrap" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown" 
+                                        style="padding: 8px 24px; width: auto !important; min-width: 140px; font-weight: 700; gap: 8px;">
+                                    <i class="bi bi-cloud-download"></i>
+                                    <span>{{ __('Download') }}</span>
+                                    <i class="bi bi-caret-down-fill small"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><a class="dropdown-item px-3 py-2 small" href="{{ route('employee.roster.download', ['format' => 'xlsx']) }}">
+                                        <i class="bi bi-file-earmark-excel text-success me-2"></i> Excel (.xlsx)</a></li>
+                                    <li><a class="dropdown-item px-3 py-2 small" href="{{ route('employee.roster.download', ['format' => 'csv']) }}">
+                                        <i class="bi bi-file-earmark-spreadsheet text-info me-2"></i> CSV (.csv)</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><button class="dropdown-item px-3 py-2 small" onclick="downloadRosterAsImage()">
+                                        <i class="bi bi-file-earmark-image text-warning me-2"></i> Image (.png)</button></li>
+                                    <li><button class="dropdown-item px-3 py-2 small" onclick="downloadRosterAsPDF()">
+                                        <i class="bi bi-file-earmark-pdf text-danger me-2"></i> PDF (.pdf)</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="p-0">
+                            <div class="table-responsive">
+                                <table class="table hr-table mb-0" id="personal-roster-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4">{{ __('Date') }}</th>
+                                            <th>{{ __('Day') }}</th>
+                                            <th>{{ __('Shift') }}</th>
+                                            <th class="pe-4 text-end">{{ __('Timing') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $todayStr = now()->toDateString();
+                                            $cursor = $rosterStart->copy();
+                                        @endphp
+                                        @for($i = 0; $i < 7; $i++)
+                                            @php
+                                                $dateStr = $cursor->toDateString();
+                                                $assignment = $myRoster[$dateStr] ?? null;
+                                                $shiftKey = $assignment ? $assignment->shift_type : 'Off';
+                                                $def = $shiftDefinitions[$shiftKey] ?? null;
+                                                $isToday = $dateStr === $todayStr;
+                                            @endphp
+                                            <tr class="{{ $isToday ? 'bg-success-soft' : '' }}">
+                                                <td class="ps-4 small {{ $isToday ? 'fw-bold' : '' }}">
+                                                    {{ $cursor->format('d M, Y') }}
+                                                    @if($isToday)
+                                                        <span class="badge bg-success ms-1" style="font-size: 0.6rem;">{{ __('TODAY') }}</span>
+                                                    @endif
+                                                </td>
+                                                <td class="small">{{ $cursor->format('l') }}</td>
+                                                <td class="small">
+                                                    @if($def)
+                                                        <span class="shift-badge {{ $def->badge_class }}">{{ $def->display_label }}</span>
+                                                    @else
+                                                        <span class="shift-badge bg-secondary-soft text-secondary uppercase">{{ $shiftKey === 'Off' ? 'Off Day' : $shiftKey }}</span>
+                                                    @endif
+                                                </td>
+                                                <td class="pe-4 text-end small fw-medium text-muted">
+                                                    @if($def && $def->start_time)
+                                                        {{ \Carbon\Carbon::parse($def->start_time)->format('g:i A') }} - {{ \Carbon\Carbon::parse($def->end_time)->format('g:i A') }}
+                                                    @else
+                                                        --
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @php $cursor->addDay(); @endphp
+                                        @endfor
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="hr-panel p-0 overflow-hidden shadow-sm border-0">
+                        <div class="p-4 border-bottom d-flex align-items-center bg-white">
                             <h6 class="mb-0 font-bold text-gray-800 flex-grow-1"><i class="bi bi-activity me-2 text-success"></i>{{ __('Monthly Attendance') }} ({{ now()->format('F') }})</h6>
                         </div>
                         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
@@ -185,6 +270,12 @@
                                         <td class="pe-4 text-end">
                                             @if($record->status === 'absent')
                                                 <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">{{ __('Absent') }}</span>
+                                            @elseif($record->status === 'holiday')
+                                                <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">{{ __('Holiday') }}</span>
+                                            @elseif($record->status === 'weekly_holiday')
+                                                <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">{{ __('Weekly Holiday') }}</span>
+                                            @elseif($record->status === 'off_day')
+                                                <span class="badge bg-secondary-soft text-secondary" style="font-size: 0.7rem;">{{ __('Off Day') }}</span>
                                             @elseif($record->status === 'leave')
                                                 <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">{{ __('Leave') }}</span>
                                             @elseif($record->late_seconds > 0)
@@ -378,7 +469,61 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
+        window.downloadRosterAsImage = function() {
+            const table = document.getElementById('personal-roster-table');
+            if (!table) return;
+
+            Swal.fire({ 
+                title: '{{ __("Capturing...") }}', 
+                text: '{{ __("Preparing image download") }}', 
+                didOpen: () => Swal.showLoading() 
+            });
+
+            html2canvas(table, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                Swal.close();
+                const link = document.createElement('a');
+                link.download = `Roster_{{ str_replace(' ', '_', $employee->name) }}_{{ now()->format('Y-M') }}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        };
+
+        window.downloadRosterAsPDF = function() {
+            const table = document.getElementById('personal-roster-table');
+            if (!table) return;
+
+            Swal.fire({ 
+                title: '{{ __("Generating PDF...") }}', 
+                text: '{{ __("This may take a moment") }}', 
+                didOpen: () => Swal.showLoading() 
+            });
+
+            html2canvas(table, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const imgData = canvas.toDataURL('image/png');
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Roster_{{ str_replace(' ', '_', $employee->name) }}_{{ now()->format('Y-M') }}.pdf`);
+                Swal.close();
+            });
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
             // Generic highlight logic for deep-linked sections (e.g., #supervisor-remarks, #notices-events)
             const hash = window.location.hash;

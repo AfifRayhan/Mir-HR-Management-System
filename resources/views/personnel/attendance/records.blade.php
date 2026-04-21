@@ -123,12 +123,12 @@
                                     <td class="fw-semibold">{{ $record->date->format('d M Y') }}</td>
                                     <td class="text-muted">{{ $record->date->format('l') }}</td>
                                     <td>
-                                        {{ $record->in_time ? $record->in_time->format('H:i') : '-' }}
+                                        {{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}
                                         @if($record->is_manual)
                                             <span class="badge bg-secondary-soft text-secondary ms-1 shadow-sm" style="font-size: 0.65rem;">{{ __('Manual') }}</span>
                                         @endif
                                     </td>
-                                    <td>{{ $record->out_time ? $record->out_time->format('H:i') : '-' }}</td>
+                                    <td>{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
                                     <td>{{ $record->working_hours ? $record->working_hours . 'h' : '-' }}</td>
                                     <td>
                                         @if($record->late_seconds > 0)

@@ -85,8 +85,17 @@ class AttendanceService
                 return;
             }
 
+            // Determine if this is an overnight roster shift
+            $isOvernightShift = $rosterShift && $rosterShift->is_overnight;
+
             $logs = Attendance::where('user_id', $employee->employee_code)
-                ->whereDate('punch_time', $date)
+                ->where(function ($q) use ($date, $isOvernightShift) {
+                    $q->whereDate('punch_time', $date);
+                    if ($isOvernightShift) {
+                        $nextDay = Carbon::parse($date)->addDay()->toDateString();
+                        $q->orWhereDate('punch_time', $nextDay);
+                    }
+                })
                 ->orderBy('punch_time', 'asc')
                 ->get();
 
@@ -148,7 +157,7 @@ class AttendanceService
                 $outTime->setDateFrom(Carbon::parse($date));
 
                 // If out_time is actually before in_time after normalization, 
-                // it might be an overnight shift (though not fully supported yet)
+                // it might be an overnight shift (though not fully supported yet) OR a standard overnight shift
                 if ($outTime->lessThan($inTime)) {
                     $outTime->addDay();
                 }
@@ -187,7 +196,7 @@ class AttendanceService
 
         // Look up their schedule for this date
         $schedule = RosterSchedule::where('employee_id', $employee->id)
-            ->where('date', $date)
+            ->whereDate('date', $date)
             ->first();
 
         if (!$schedule || !$schedule->shift_type) {
@@ -261,5 +270,62 @@ class AttendanceService
         }
 
         return true;
+    }
+
+    public function getDateAttendanceStatus(Employee $employee, $date): string
+    {
+        $carbonDate = Carbon::parse($date);
+        $dayName = $carbonDate->format('l');
+
+        // Check for specific holidays first (gazetted)
+        $isHoliday = Holiday::where('is_active', true)
+            ->where(function ($q) use ($carbonDate, $employee) {
+                $q->where(function ($sq) use ($carbonDate) {
+                    $sq->whereDate('from_date', '<=', $carbonDate)
+                        ->whereDate('to_date', '>=', $carbonDate);
+                })
+                ->where(function ($sq) use ($employee) {
+                    $sq->where('all_office', true)
+                        ->orWhere('office_id', $employee->office_id);
+                });
+            })
+            ->exists();
+
+        if ($isHoliday) {
+            return 'holiday';
+        }
+
+        // Check Roster Off-Days
+        $officeTime = $employee->officeTime;
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            if (!$rosterShift || $rosterShift->is_off_day) {
+                // If it's Fri/Sat, label as weekly holiday even for roster? Per user request.
+                if (in_array($dayName, ['Friday', 'Saturday'])) {
+                    return 'weekly_holiday';
+                }
+                return 'off_day';
+            }
+            return 'working_day';
+        }
+
+        // Check Weekly Holidays (Friday/Saturday usually)
+        $hasOfficeConfig = WeeklyHoliday::where('office_id', $employee->office_id)->exists();
+        $isWeeklyHoliday = WeeklyHoliday::where('day_name', $dayName)
+            ->where(function ($q) use ($hasOfficeConfig, $employee) {
+                if ($hasOfficeConfig) {
+                    $q->where('office_id', $employee->office_id);
+                } else {
+                    $q->whereNull('office_id');
+                }
+            })
+            ->where('is_holiday', true)
+            ->exists();
+
+        if ($isWeeklyHoliday) {
+            return 'weekly_holiday';
+        }
+
+        return 'working_day';
     }
 }

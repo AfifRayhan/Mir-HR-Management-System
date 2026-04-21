@@ -104,6 +104,7 @@ Route::middleware(['auth', 'verified'])->prefix('employee')->name('employee.')->
     Route::post('attendance/adjust', [EmployeeAttendanceController::class, 'storeAdjustment'])->name('attendance.store-adjustment');
     Route::get('leave', [LeaveApplicationController::class, 'indexEmployee'])->name('leave.index');
     Route::post('leave', [LeaveApplicationController::class, 'store'])->name('leave.store');
+    Route::get('roster/download', [EmployeeDashboardController::class, 'downloadRoster'])->name('roster.download');
 });
 
 // Team Lead specific routes

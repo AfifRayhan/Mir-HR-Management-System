@@ -56,14 +56,12 @@ class EmployeeAttendanceController extends Controller
         $toDateStr = $toDate->format('Y-m-d');
 
         // 4. Generate Date Sequence and Merge with Records
-        $allWorkingDates = [];
+        $allDates = [];
         $checkDate = $fromDate->copy()->startOfDay();
         $toDateEndOfDay = $toDate->copy()->endOfDay();
         
         while ($checkDate->lte($toDateEndOfDay)) {
-            if ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
-                $allWorkingDates[] = $checkDate->toDateString();
-            }
+            $allDates[] = $checkDate->toDateString();
             $checkDate->addDay();
         }
  
@@ -90,23 +88,35 @@ class EmployeeAttendanceController extends Controller
 
         // Merge and Filter by Status if needed
         $mergedRecords = collect();
-        foreach (array_reverse($allWorkingDates) as $dateStr) {
+        foreach (array_reverse($allDates) as $dateStr) {
             if (isset($existingRecords[$dateStr])) {
                 $record = $existingRecords[$dateStr];
             } else {
-                // Check if on approved leave
                 $carbonDate = Carbon::parse($dateStr);
+                $dateStatus = $this->attendanceService->getDateAttendanceStatus($employee, $carbonDate);
+                
+                // Check if on approved leave
                 $onLeave = $approvedLeaves->contains(function($leave) use ($carbonDate) {
                     return $carbonDate->between($leave->from_date, $leave->to_date);
                 });
  
-                // Create a temporary record for "Absent" or "Leave"
-                $record = new AttendanceRecord([
-                    'employee_id' => $employee->id,
-                    'date' => $dateStr,
-                    'status' => $onLeave ? 'leave' : 'absent',
-                    'late_seconds' => 0
-                ]);
+                if ($dateStatus === 'working_day' || $onLeave) {
+                    // Create a temporary record for "Absent" or "Leave"
+                    $record = new AttendanceRecord([
+                        'employee_id' => $employee->id,
+                        'date' => $dateStr,
+                        'status' => $onLeave ? 'leave' : 'absent',
+                        'late_seconds' => 0
+                    ]);
+                } else {
+                    // Create a temporary record for Holiday/Off-day
+                    $record = new AttendanceRecord([
+                        'employee_id' => $employee->id,
+                        'date' => $dateStr,
+                        'status' => $dateStatus,
+                        'late_seconds' => 0
+                    ]);
+                }
             }
             
             if (empty($status) || strtolower($record->status) == strtolower($status)) {
