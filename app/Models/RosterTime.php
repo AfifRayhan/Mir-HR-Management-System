@@ -14,6 +14,12 @@ class RosterTime extends Model
         'end_time',
         'badge_class',
         'is_off_day',
+        'is_overnight',
+    ];
+
+    protected $casts = [
+        'is_off_day' => 'boolean',
+        'is_overnight' => 'boolean',
     ];
 
     public function scopeForGroup($query, $groupSlug)

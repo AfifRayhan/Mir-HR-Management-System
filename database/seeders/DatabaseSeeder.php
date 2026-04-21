@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             QualificationSeeder::class,
             ExperienceSeeder::class,
             RosterGroupSeeder::class,
+            RosterTimeSeeder::class,
         ]);
     }
 }

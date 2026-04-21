@@ -152,14 +152,21 @@
                                         </span>
                                     </td>
                                     <td class="text-end">
-                                        @if(strtolower($record->status) == 'present')
+                                        @php $lowStatus = strtolower($record->status); @endphp
+                                        @if($lowStatus == 'present')
                                             <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Present</span>
-                                        @elseif(strtolower($record->status) == 'late')
+                                        @elseif($lowStatus == 'late')
                                             <span class="badge bg-warning-soft text-warning" style="font-size: 0.7rem;">Late</span>
-                                        @elseif(strtolower($record->status) == 'absent')
+                                        @elseif($lowStatus == 'absent')
                                             <span class="badge bg-danger-soft text-danger" style="font-size: 0.7rem;">Absent</span>
-                                        @elseif(strtolower($record->status) == 'leave')
+                                        @elseif($lowStatus == 'leave')
                                             <span class="badge bg-info-soft text-info" style="font-size: 0.7rem;">On Leave</span>
+                                        @elseif($lowStatus == 'holiday')
+                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Holiday</span>
+                                        @elseif($lowStatus == 'weekly_holiday')
+                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Weekly Holiday</span>
+                                        @elseif($lowStatus == 'off_day')
+                                            <span class="badge bg-secondary-soft text-secondary" style="font-size: 0.7rem;">Off Day</span>
                                         @else
                                             <span class="badge bg-secondary text-white" style="font-size: 0.7rem;">{{ ucfirst($record->status) }}</span>
                                         @endif

@@ -10,7 +10,11 @@ use App\Models\LeaveBalance;
 use App\Models\Holiday;
 use App\Models\Notice;
 use App\Models\SupervisorRemark;
+use App\Models\RosterSchedule;
+use App\Models\RosterTime;
 use App\Services\AttendanceService;
+use App\Exports\PersonalRosterExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -47,7 +51,9 @@ class EmployeeDashboardController extends Controller
             'totalUsedLeave' => 0, 'totalAvailableLeave' => 0,
             'leaveBalances' => collect(),
             'pendingTeamLeavesCount' => 0,
-            'isReportingManager' => false
+            'isReportingManager' => false,
+            'myRoster' => null,
+            'shiftDefinitions' => collect()
         ];
 
         if ($employee) {
@@ -62,6 +68,14 @@ class EmployeeDashboardController extends Controller
                 ->latest()->take(5)->get();
 
             $data = array_merge($data, $this->getTeamManagementMetrics($employee, $roleName));
+
+            if ($employee->officeTime && $employee->officeTime->shift_name === 'Roster') {
+                $rosterData = $this->getMyRosterData($employee, $today);
+                $data['myRoster'] = $rosterData['schedule'];
+                $data['shiftDefinitions'] = $rosterData['definitions'];
+                $data['rosterStart'] = $rosterData['startOfWeek'];
+                $data['rosterEnd'] = $rosterData['endOfWeek'];
+            }
         }
 
         $data = array_merge($data, $this->getDashboardCommonData($today, $employee));
@@ -159,12 +173,21 @@ class EmployeeDashboardController extends Controller
             $dateStr = $checkDate->toDateString();
             if (isset($existingRecords[$dateStr])) {
                 $history->push($existingRecords[$dateStr]);
-            } elseif ($this->attendanceService->isWorkingDay($employee, $checkDate)) {
+            } else {
+                $dateStatus = $this->attendanceService->getDateAttendanceStatus($employee, $checkDate);
                 $onLeave = $approvedLeaves->contains(fn($l) => $checkDate->between($l->from_date, $l->to_date));
-                $history->push(new AttendanceRecord([
-                    'employee_id' => $employee->id, 'date' => $dateStr,
-                    'status' => $onLeave ? 'leave' : 'absent', 'late_seconds' => 0
-                ]));
+                
+                if ($dateStatus === 'working_day' || $onLeave) {
+                    $history->push(new AttendanceRecord([
+                        'employee_id' => $employee->id, 'date' => $dateStr,
+                        'status' => $onLeave ? 'leave' : 'absent', 'late_seconds' => 0
+                    ]));
+                } else {
+                    $history->push(new AttendanceRecord([
+                        'employee_id' => $employee->id, 'date' => $dateStr,
+                        'status' => $dateStatus, 'late_seconds' => 0
+                    ]));
+                }
             }
             $checkDate->subDay();
         }
@@ -228,6 +251,73 @@ class EmployeeDashboardController extends Controller
                     return $emp;
                 })->sortBy('days_until_birthday')->take(3)
         ];
+    }
+
+    /**
+     * Fetch roster data for the personal dashboard.
+     */
+    private function getMyRosterData(Employee $employee, Carbon $today): array
+    {
+        // Roster week starts on Saturday (6)
+        $startOfWeek = $today->copy()->startOfWeek(6);
+        $endOfWeek = $startOfWeek->copy()->addDays(6);
+
+        // Resolve group slug
+        $groupSlug = AttendanceService::ROSTER_GROUP_SLUG_MAP[$employee->roster_group] ?? null;
+        
+        if (!$groupSlug) {
+            return ['schedule' => collect(), 'definitions' => collect()];
+        }
+
+        // Fetch shift definitions
+        $definitions = RosterTime::where('group_slug', $groupSlug)
+            ->get()
+            ->keyBy('shift_key');
+
+        // Fetch schedules for the current week
+        $schedules = RosterSchedule::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->get()
+            ->keyBy(fn($item) => Carbon::parse($item->date)->toDateString());
+
+        return [
+            'schedule' => $schedules,
+            'definitions' => $definitions,
+            'startOfWeek' => $startOfWeek,
+            'endOfWeek' => $endOfWeek
+        ];
+    }
+
+    /**
+     * Download personal roster as Excel.
+     */
+    public function downloadRoster(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $employee = Employee::where('user_id', $user->id)->first();
+        $today = Carbon::today();
+        $format = $request->query('format', 'xlsx');
+
+        if (!$employee || !$employee->officeTime || $employee->officeTime->shift_name !== 'Roster') {
+            return redirect()->back()->with('error', 'Roster schedule not found.');
+        }
+
+        $rosterData = $this->getMyRosterData($employee, $today);
+        $data = [
+            'employee' => $employee,
+            'monthStart' => $today->copy()->startOfMonth(),
+            'monthEnd' => $today->copy()->endOfMonth(),
+            'myRoster' => $rosterData['schedule'],
+            'shiftDefinitions' => $rosterData['definitions'],
+        ];
+
+        $extension = $format === 'csv' ? 'csv' : 'xlsx';
+        $exportFormat = $format === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX;
+        
+        $fileName = 'Roster_' . str_replace(' ', '_', $employee->name) . '_' . $today->format('Y-m') . '.' . $extension;
+
+        return Excel::download(new PersonalRosterExport($data), $fileName, $exportFormat);
     }
 
     /**
