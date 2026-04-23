@@ -103,8 +103,28 @@ class AttendanceService
                 $inTime = null;
                 $outTime = null;
             } else {
-                $inTime = $logs->first()->punch_time;
-                $outTime = $logs->count() > 1 ? $logs->last()->punch_time : null;
+                // Find first valid inTime within 4 hours of scheduled start if it's a roster shift
+                if ($rosterShift && $rosterShift->start_time) {
+                    $scheduledStart = Carbon::parse($date . ' ' . $rosterShift->start_time);
+                    
+                    $validInLog = $logs->first(function($log) use ($scheduledStart) {
+                        // Use abs() to cover both early and late check-ins within 4 hours
+                        return abs(Carbon::parse($log->punch_time)->diffInHours($scheduledStart, false)) <= 4;
+                    });
+                    
+                    if ($validInLog) {
+                        $inTime = $validInLog->punch_time;
+                        // Out time is the last log after this inTime
+                        $outTime = $logs->where('punch_time', '>', $inTime)->last()?->punch_time;
+                    } else {
+                        $inTime = null;
+                        $outTime = null;
+                    }
+                } else {
+                    // Fallback for non-roster or missing start_time
+                    $inTime = $logs->first()->punch_time;
+                    $outTime = $logs->count() > 1 ? $logs->last()->punch_time : null;
+                }
                 $machineId = $logs->first()->machine_id;
             }
         }
