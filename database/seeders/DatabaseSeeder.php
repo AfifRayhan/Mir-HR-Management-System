@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             ExperienceSeeder::class,
             RosterGroupSeeder::class,
             RosterTimeSeeder::class,
+            ReportTemplateSeeder::class,
+            DeviceSeeder::class,
         ]);
     }
 }

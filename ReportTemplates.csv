@@ -1,0 +1,1594 @@
+﻿Id,ReportTemplateTypeId,ReportFormat,Text
+2,2,English,"<p><span style=""font-size:13px"">Date: <strong>#CreatedDate</strong><br />
+Ref No: <strong>#RefNo</strong></span></p>
+
+<p><span style=""font-size:13px"">Name: <strong>#EmployeeName</strong></span></p>
+
+<p><span style=""font-size:13px"">Subject: New designation letter as <strong>#NewDesignation</strong></span></p>
+
+<p><span style=""font-size:13px"">Dear <strong>#EmployeeName ,</strong></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px"">We are very happy to inform you that you have been promoted to the position of <strong>#NewDesignation</strong> from your previous designation, <strong>#PreviousDesignation</strong>, and shall be effective from </span><strong><span style=""font-size:13px"">#EffectiveFrom</span></strong><span style=""font-size:13px"">. Thus your new gross salary will be BDT <strong>#NewSalary</strong> effective from the month of <strong>#EffectiveFrom</strong> and onwards.</span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px"">All other terms and conditions will be effective as per the Original Contract dated <strong>#JoiningDate</strong> and the company may include/ amend its existing terms and conditions in future as and when required.</span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px"">We wish you a long, mutually rewarding relationship with our Company that we are carrying now.</span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p><span style=""font-size:13px"">Employee Signature ______________________________&nbsp;</span></p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-size:13px"">Employee name &nbsp;#EmployeeName&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date -- -- -- -- -- -- -- -- -- -- -- -- -- --.&nbsp;</span></p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-size:13px"">Employer Signature ______________________________&nbsp;</span></p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-size:13px"">Name: -- -- -- -- -- -- -- -- -- -- -- -- - Date -- -- -- -- -- -- -- -- -- -- -- -- -- --.</span></p>
+
+<p>&nbsp;</p>
+"
+3,3,English,"<p>Date:<strong><span style=""font-size:small"">#CreatedDate</span></strong><br />
+<br />
+<span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">Name:&nbsp;</span></span><strong><span style=""font-size:small"">#EmployeeName</span></strong><br />
+<span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">Position:&nbsp;</span></span></span><strong><span style=""font-size:small"">#DesignationName</span></strong><br />
+<span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">Process: </span></span></span><br />
+<br />
+<span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">Dear </span></span></span><strong><span style=""font-size:small"">#EmployeeName</span></strong><span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">,</span></span></span></span><br />
+&nbsp;</p>
+
+<p>This is to inform you that existing salary has been restructured considering betterment of employee&rsquo;s benefit and simplification of salary breakdown. Following is your new salary structure which is effective from&nbsp;<strong><span style=""font-size:small"">#EffectDate&nbsp;</span></strong><span style=""color:#1b150e""><span style=""color:#1b150e""><span style=""font-family:'Times New Roman',serif""><span style=""font-size:small"">: </span></span></span></span></p>
+
+<p>&nbsp;</p>
+
+<p><strong>Basic : </strong>#Basic</p>
+
+<p><strong>Conveyance : </strong>#CV</p>
+
+<p><strong>Food Allowance : </strong>#FA</p>
+
+<p><strong>House Rent : </strong>#HR</p>
+
+<p><strong>Medical Allowance : </strong>#MA&nbsp;</p>
+
+<p><strong>Gross : </strong>#Gross</p>
+
+<p>&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p>We are happy to inform you that, we have implemented Provident Fund and Gratuity facility from January 2017. So, for Provident Fund, 8% of your basic salary will be deposited in Provident Fund account from January, 2017 onward. Company will also contribute the same in Provident Fund account. Gratuity will be entitled after completion of 5 years service and payment will be made as per Gratuity policy. For other terms and benefits, please refer to your original contract.</p>
+
+<p>We look forward to your valuable contributions and wish you all the very best for a rewarding career with the organization.</p>
+
+<p>Please sign the duplicate copy of this letter as a token of acceptance of the same.</p>
+
+<p>For,</p>
+
+<p>Desipro Pte. Ltd.</p>
+
+<p>&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;</p>
+
+<p>Sumona Sharmin</p>
+
+<p>Manager, HR</p>
+
+<p><br />
+<br />
+&nbsp;</p>
+"
+7,4,Bangla-2,"<p style=""text-align:center""><span style=""font-family:solaimanlipi""><strong><span style=""font-size:18.0pt"">#CompanyName</span></strong><br />
+#CompanyAddress<br />
+<strong>নিয়োগপত্র</strong></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">নিয়োগপত্র ইস্যুর তারিখঃ #CreatedDate<br />
+যোগদানের তারিখঃ #JoiningDate</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">নামঃ #EmployeeName<br />
+পিতার নামঃ #FatherName মাতার নামঃ #MotherName<br />
+স্বামী / স্ত্রীর নামঃ #SpouseName<br />
+স্থায়ী ঠিকানাঃ গ্রাম: #PermanentAddress<br />
+বর্তমান ঠিকানাঃ #PresentAddress</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">আপনার আবেদন ও কর্তৃপক্ষের সাথে সাক্ষাৎকারের ভিত্তিতে আপনাকে কারখানার #DepartmentName বিভাগে #DesignationName পদে, #GradeName গ্রেড / শ্রেণিতে নিয়োগ করা হইলো। আপনার কাজের ধরন #TypeofWork আপনার #ProbationPeriod শিক্ষানবিশ কাল #JoiningDate<span style=""background-color:white""><span style=""color:#333333"">&nbsp;</span></span>তারিখ হতে <span style=""background-color:white""><span style=""color:#333333"">#ConfirmationDate</span></span> তারিখ পর্যন্ত উক্ত মেয়াদ অতিক্রম হলে আপনাকে স্থায়ী শ্রমিক হিসাবে গণ্য করা হবে, এজন্য আলাদা কোনো পত্র প্রদান করা হবে না। কিন্তু দক্ষ শ্রমিকের ক্ষেত্রে যদি উপরোক্ত তিন মাসে দক্ষতার প্রমাণ না দিতে পারেন তাহলে কর্তৃপক্ষ ইচ্ছা করলে আপনাকে আরও তিন মাস শিক্ষানবিশকাল বৃদ্ধি করতে পারবেন।<br />
+আপনাকে</span></span></p>
+
+<p style=""margin-left:0.5in; margin-right:0in; text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">#EmployeeType&nbsp;শ্রমিক</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">হিসাবে নিয়োগ করা হলো।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px""><strong>বেতন<strong> </strong>ও</strong><strong> </strong><strong>মজুরির<strong> </strong>হিসাব</strong></span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:11px"">(ক) মূল বেতন : #Basic টাকা<br />
+(খ) বাড়ি ভাড়া : #HR টাকা<br />
+(গ) চিকিৎসা ভাতা : #MA টাকা<br />
+(ঘ) যাতায়াত ভাতা : #CV টাকা<br />
+(ঙ) খাদ্য ভাতা : #FA টাকা<br />
+<strong>মোট</strong><strong>: </strong>#Gross টাকা<br />
+<br />
+১. আপনি কোম্পানির নিয়ম অনুযায়ী হাজিরা বোনাস, উৎপাদন বোনাস (শুধুমাত্র পিসরেট শ্রমিকদের জন্য প্রযোজ্য) এবং উৎসব বোনাস পাবেন।<br />
+২. প্রতি ছয় (৬) কর্মদিবস পরে এক (১) দিন সাপ্তাহিক ছুটি প্রাপ্য হবেন।<br />
+৩. নৈমিত্তিক ছুটি বছরে দশ (১০) দিন, অসুস্থতাজনিত ছুটি পূর্ণ বেতনে বছরে চৌদ্দ (১৪) দিন, বার্ষিক ছুটি প্রতি আঠার (১৮) কার্যদিবসের জন্য এক (১) দিন এবং উৎসব ছুটি কমপক্ষে বছরে এগার (১১) দিন। মাতৃত্বকালীন ছুটি প্রসবের পূর্বে আট (৮) সপ্তাহ এবং প্রসবের পরে আট (৮) সপ্তাহ।<br />
+৪. সাধারণ কর্মঘণ্টা দৈনিক আট (৮) ঘণ্টা, আহার ও বিশ্রামের বিরতি দৈনিক এক ঘণ্টা, অতিরিক্ত সময় কাজ ওভারটাইম হিসাবে গণ্য করা হবে।<br />
+৫. ওভারটাইম ভাতা প্রচলিত আইনানুযায়ী দেওয়া হয়, (ক) ফিক্স ক্ষেত্রে যেমন- মূল বেতন &divide; ২০৮ &times; ২ &times;অতিরিক্ত কাজের ঘণ্টা = অতিরিক্ত মজুরির টাকা।<br />
+(খ) পিসরেট ক্ষেত্রে যেমন- উৎপাদন মজুরি &divide; প্রকৃত কাজের দিন &times; ৮ ঘণ্টা অতিরিক্ত কাজের ঘণ্টা &times; অতিরিক্ত কাজের ঘণ্টা = অতিরিক্ত মজুরির টাকা।<br />
+৬. আপনার বেতন / মজুরি প্রতি বছরান্তে (প্রচলিত আইনে নির্ধারিত হারের সমানুপাতিক হারে) বৃদ্ধি পাবে।<br />
+৭. আপনার কোনো অভিযোগ বা পরামর্শ থাকলে তা অভিযোগ বাক্সে লিখিতভাবে অথবা ওয়েলফেয়ার অফিসার বা বিদ্যমান বিভিন্ন কমিটির সদস্যদের কাছে মৌখিকভাবে জানাতে পারবেন।<br />
+৮. আপনি আপনার ঠিকানা পরিবর্তন করলে সাত (৭) দিনের মধ্যে কর্তৃপক্ষকে লিখিতভাবে জানাবেন।<br />
+৯. মাস শেষ হওয়ার পরবর্তী সাত (৭) কর্মদিবসের মধ্যে মজুরি পরিশোধ করা হয়।<br />
+১০. আপনাকে হাজিরা কার্ড ও পরিচয়পত্র প্রদান করা হবে এবং আপনার জন্য একটি সার্ভিস বুক থাকবে যাতে আপনার চাকরি সংক্রান্ত যাবতীয় তথ্য লিপিবদ্ধ থাকবে এবং চাকরি ত্যাগকালীন সময়ে যা আপনাকে প্রদান করা হবে।<br />
+১১. চাকরির অবসান :- (ক) শ্রমিক কর্তৃক চাকরির অবসানঃ কোনো শ্রমিক মাসিক মজুরির ভিত্তিতে নিয়োজিত থাকা অবস্থায় চাকরির অবসান করতে চাইলে স্থায়ী শ্রমিক ষাট (৬০) দিনের নোটিশ, অস্থায়ী শ্রমিক ত্রিশ (৩০) দিনের নোটিশ নিয়োগকর্তাকে প্রদান করতে পারবেন। যদি উক্ত শ্রমিক উপরোক্ত দিন পূর্বে নোটিশ দিতে ব্যর্থ হন তাহলে সংশ্লিষ্ট শ্রমিক নোটিশ মেয়াদের সমপরিমাণ মজুরির অর্থ নিয়োগকর্তাকে ফেরত দিতে বাধ্য থাকবেন।<br />
+(খ) মালিক কর্তৃক চাকরির অবসান করা হলেঃ মাসিক মজুরির ভিত্তিতে নিয়োজিত স্থায়ী শ্রমিকের ক্ষেত্রে একশত বিশ (১২০) দিনের নোটিশ এবং অস্থায়ী শ্রমিকের ক্ষেত্রে ত্রিশ (৩০) দিনের নোটিশ অথবা নোটিশের পরিবর্তে উপরোক্ত দিনের মজুরি পরিশোধ করা হবে।<br />
+১২. নিয়োগের যাবতীয় শর্ত বিদ্যমান শ্রম আইন অনুযায়ী পরিচালিত হবে।<br />
+১৩. আমি সুস্থ ও সজ্ঞানে উল্লিখিত শর্তে সম্মত হয়ে নিয়োগপত্রে স্বাক্ষর করে এক (১) কপি অনুলিপি গ্রহণ করলাম।</span></span></p>
+
+<p style=""text-align:justify""><br />
+<br />
+<span style=""font-family:solaimanlipi""><span style=""font-size:11px"">শ্রমিক / কর্মচারির স্বাক্ষর&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;কর্তৃপক্ষ</span></span></p>
+"
+8,5,English,"<div style=""float:left; width:55%"">
+<p style=""text-align:justify""><span style=""font-size:11px""><strong>আবেদনকারীর আইডিঃ </strong>#EmployeeId<br />
+<strong>আবেদনকারীর নামঃ </strong>#EmployeeName<br />
+<strong>পদবীঃ&nbsp;</strong>#Designation<br />
+<strong>ডিপার্টমেন্টঃ&nbsp;</strong>#Department<br />
+<strong>যোগদানের তারিখঃ&nbsp;</strong>#JoiningDate</span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px"">ছুটির মেয়াদকালঃ...................................... ইং তারিখ হইতে ................................ইং তারিখ পর্যন্ত মোটঃ..................দিন ।<br />
+নৈমিত্তিক/অসুস্থতা/অর্জিত .................. ছুটির জন্য আবেদন।<br />
+<br />
+<strong>ছুটির কারণঃ</strong></span></p>
+
+<p><span style=""font-size:11px""><strong>ছুটিকালীন সময়ে&nbsp;অবস্থানের স্থানঃ</strong></span></p>
+
+<p><br />
+<span style=""font-size:11px"">আবেদনকারীর স্বাক্ষরঃ....................................</span></p>
+
+<p><span style=""font-size:11px"">তারিখঃ..........................................</span></p>
+
+<p><span style=""font-size:11px""><strong>বিভাগ/শাখা প্রধানের মতামতঃ</strong></span></p>
+
+<p><br />
+<span style=""font-size:11px""><strong>বিঃ দ্রঃ </strong>চিকিৎসা&nbsp; ছুটির আবেদন পত্রে ডাক্তারি সনদপত্র সহ পেশ করতে হবে।</span></p>
+
+<p><span style=""font-size:11px"">৪। সহ-সভাপতি&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ঃ</span></p>
+
+<p><span style=""font-size:11px"">৫। ঊর্ধ্বতন সহ-সভাপতি&nbsp;ঃ</span></p>
+
+<p><span style=""font-size:11px"">৬। সভাপতি&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;ঃ</span></p>
+</div>
+
+<div style=""float:left; width:38%"">
+<table border=""1"" cellpadding=""1"" cellspacing=""1"" dir=""ltr"" style=""width:318px"">
+	<tbody>
+		<tr>
+			<td colspan=""4"" style=""text-align:center""><span style=""font-size:11px""><strong>#Year সালের ছুটির রেকর্ড</strong></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:center""><span style=""font-size:11px""><strong>ছুটির ধরন</strong></span></td>
+			<td style=""text-align:center""><span style=""font-size:11px""><strong>প্রাপ্য ছুটি</strong></span></td>
+			<td style=""text-align:center""><span style=""font-size:11px""><strong>মঞ্জুরীকৃত ছুটি</strong></span></td>
+			<td style=""text-align:center""><span style=""font-size:11px""><strong>অবশিষ্ট ছুটি</strong></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:center""><span style=""font-size:11px"">নৈমিত্তিক</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ClYearlyAllow</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ClTaken</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ClBalance</span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:center""><span style=""font-size:11px"">অসুস্থতা</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#SLYearlyAllow</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#SLTaken</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#SLBalance</span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:center""><span style=""font-size:11px"">অর্জিত</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ELYearlyAllow</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ELTaken</span></td>
+			<td style=""text-align:center""><span style=""font-size:11px"">#ELBalance</span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><strong>সর্বশেষ ছুটি নেওয়ার তারিখঃ</strong> #LastLeaveDate</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><br />
+<span style=""font-size:11px""><strong><u>প্রশাসনিক সুপারিশ/প্রত্যাখান</u></strong><br />
+১। যুগ্ম&nbsp;সচিব (মেম্বারশীপ,এস্টেট ও প্রশাঃ)</span></p>
+
+<p><span style=""font-size:11px"">২। সচিব</span></p>
+
+<p><span style=""font-size:11px"">৩। মহাসচিব</span></p>
+
+<p><span style=""font-size:11px"">সর্বশেষ ছুটি ভোগ করার তারিখঃ..........................................</span></p>
+
+<p><span style=""font-size:11px""><strong>নথিভুক্তোঃ</strong>............দিন</span><br />
+<span style=""font-size:11px""><strong>স্বাক্ষরঃ</strong></span></p>
+</div>
+
+<div style=""float:left; width:100%"">
+<p style=""text-align:center"">----------------------------------------------------------------------------------------------------------------------</p>
+
+<p style=""text-align:center""><u><strong>ছুটি অনুমোদন স্লীপ</strong></u></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><strong>নামঃ&nbsp;</strong>&nbsp;#EmployeeName, <strong>পদবীঃ</strong> #Designation,&nbsp;......................................................<strong> থেকে</strong> ........................................<strong>পর্যন্ত</strong> ........................<strong>দিন </strong>.............................. ছুটি মঞ্জুর করা হলো।</span></p>
+
+<p style=""text-align:right""><br />
+<br />
+<br />
+<span style=""font-size:11px"">-------------------------------------------------------------&nbsp;</span><br />
+<span style=""font-size:11px""><strong>যুগ্ম&nbsp;সচিব (মেম্বারশীপ,এস্টেট ও প্রশাঃ)/সচিব/মহাসচিব</strong></span></p>
+</div>
+"
+10,6,Bangla,"<table cellspacing=""0"" class=""Table"" style=""border-collapse:collapse; border:none; width:100%"">
+	<tbody>
+		<tr>
+			<td colspan=""15"" style=""width:715.3pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi""><span style=""font-size:28px"">#CompanyName</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""3"" style=""width:170.7pt"">
+			<p><span style=""font-family:solaimanlipi""><strong>ডাঃ</strong><strong> </strong><strong>মুনিফা</strong><strong> </strong><strong>মেহেদী</strong><strong> </strong></span></p>
+			</td>
+			<td colspan=""8"" style=""width:250.25pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi"">#CompanyAddress</span></p>
+			</td>
+			<td colspan=""4"" style=""width:170.35pt"">
+			<p><span style=""font-family:solaimanlipi""><strong>ডাঃ</strong><strong> </strong><strong>রাফেজা</strong><strong> </strong><strong>খাতুন</strong></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""3"" style=""width:209.7pt"">
+			<p><span style=""font-family:solaimanlipi""><strong><span style=""font-size:10pt"">এমবিবিএস</span></strong></span></p>
+			</td>
+			<td colspan=""8"" rowspan=""2"" style=""width:350.25pt"">
+			<p style=""text-align:center""><span style=""font-size:15px""><span style=""font-family:solaimanlipi""><strong><u>বয়স</u></strong><strong><u> </u></strong><strong><u>ও</u></strong><strong><u> </u></strong><strong><u>সক্ষমতার</u></strong><strong><u> </u></strong><strong><u>প্রত্যয়নপত্র</u></strong></span></span></p>
+			</td>
+			<td colspan=""4"" style=""width:155.35pt"">
+			<p><span style=""font-family:solaimanlipi""><strong><span style=""font-size:10pt"">এমবিবিএস</span></strong></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""3"" style=""width:209.7pt"">
+			<p><span style=""font-family:solaimanlipi""><strong><span style=""font-size:10pt"">মেডিকেল</span></strong><strong> </strong><strong><span style=""font-size:10pt"">অফিসার</span></strong></span></p>
+			</td>
+			<td colspan=""4"" style=""width:155.35pt"">
+			<p><span style=""font-family:solaimanlipi""><strong><span style=""font-size:10pt"">মেডিকেল</span></strong><strong> </strong><strong><span style=""font-size:10pt"">অফিসার</span></strong></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""3"" style=""width:209.7pt"">
+			<p><span style=""font-family:solaimanlipi""><strong><span style=""font-size:10pt"">রেজি</span></strong><strong> </strong><strong><span style=""font-size:10pt"">নং</span></strong><strong><span style=""font-size:10pt"">- </span></strong><strong><span style=""font-size:10pt"">বিএমডিসি</span></strong><strong><span style=""font-size:10pt"">-</span></strong><strong><span style=""font-size:10pt"">এ</span></strong><strong><span style=""font-size:10pt"">-</span></strong><strong><span style=""font-size:10pt"">৭০৮৯৬</span></strong></span></p>
+			</td>
+			<td colspan=""8"" style=""width:350.25pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">ফরম</span><span style=""font-size:10pt"">-</span><span style=""font-size:10pt"">১৫</span></span></p>
+			</td>
+			<td colspan=""4"" style=""width:155.35pt"">
+			<p><span style=""font-size:12px""><span style=""font-family:solaimanlipi""><strong>রেজি</strong><strong> </strong><strong>নং</strong><strong> -</strong><strong> </strong><strong>বিএমডিসি</strong><strong>-</strong><strong>এ</strong><strong>-</strong><strong>৮৩৬৯৫</strong></span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td style=""width:69.9pt"">
+			<p>&nbsp;</p>
+			</td>
+			<td style=""width:69.9pt"">
+			<p>&nbsp;</p>
+			</td>
+			<td style=""width:69.9pt"">
+			<p>&nbsp;</p>
+			</td>
+			<td colspan=""8"" style=""width:350.25pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi""><span style=""font-size:9pt"">[ </span><span style=""font-size:9pt"">ধারা</span> <span style=""font-size:9pt"">৩৪</span><span style=""font-size:9pt"">, </span><span style=""font-size:9pt"">৩৬</span><span style=""font-size:9pt"">, </span><span style=""font-size:9pt"">৩৭</span> <span style=""font-size:9pt"">ও</span> <span style=""font-size:9pt"">২৭৭</span> <span style=""font-size:9pt"">এবং</span> <span style=""font-size:9pt"">বিধি</span> <span style=""font-size:9pt"">৩৪</span><span style=""font-size:9pt"">(</span><span style=""font-size:9pt"">১</span><span style=""font-size:9pt"">) </span><span style=""font-size:9pt"">ও</span> <span style=""font-size:9pt"">৩৩৬</span><span style=""font-size:9pt"">(</span><span style=""font-size:9pt"">৪</span><span style=""font-size:9pt"">)</span> <span style=""font-size:9pt"">দ্রষ্টব্য</span><span style=""font-size:9pt"">]</span></span></p>
+			</td>
+			<td colspan=""2"" style=""width:124.5pt"">
+			<p>&nbsp;</p>
+			</td>
+			<td colspan=""3"" style=""width:103.8pt"">
+			<p>&nbsp;</p>
+			</td>
+			<td>
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td style=""height:14.25pt; width:69.9pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:69.9pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:69.9pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:34.6pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:34.6pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:34.6pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:15.15pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:61.8pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:61.55pt"">&nbsp;</td>
+			<td style=""height:14.25pt; width:61.55pt"">&nbsp;</td>
+			<td colspan=""2"" style=""height:14.25pt; width:61.55pt"">&nbsp;</td>
+			<td colspan=""2"" style=""height:14.25pt; width:124.5pt"">&nbsp;</td>
+			<td colspan=""3"" style=""height:14.25pt; width:102.2pt"">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi"">বয়স ও সক্ষমতার প্রত্যয়নপত্র</span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p style=""text-align:center""><span style=""font-family:solaimanlipi"">বয়স ও সক্ষমতার প্রত্যয়নপত্র</span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">১।</span> <span style=""font-size:10pt"">ক্রমিক</span> <span style=""font-size:10pt"">নং</span><span style=""font-size:10pt"">-</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">১।</span> <span style=""font-size:10pt"">ক্রমিক</span> <span style=""font-size:10pt"">নং</span><span style=""font-size:10pt"">-</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">তারিখঃ #CurrentDate</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">তারিখঃ&nbsp;#CurrentDate</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">২।</span> <span style=""font-size:10pt"">নামঃ #EmployeeName</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">আমি</span> <span style=""font-size:10pt"">এই</span> <span style=""font-size:10pt"">মার্মে</span> <span style=""font-size:10pt"">প্রত্যয়ন</span> <span style=""font-size:10pt"">করিতেছি</span> <span style=""font-size:10pt"">যে</span><span style=""font-size:10pt""> (</span><span style=""font-size:10pt"">নাম)<strong>&nbsp;&nbsp;</strong>#EmployeeName</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৩।</span> <span style=""font-size:10pt"">পিতার</span> <span style=""font-size:10pt"">নামঃ #FatherName</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">পিতা:&nbsp;&nbsp;#FatherName&nbsp;মাতা</span><span style=""font-size:10pt"">:&nbsp;&nbsp;#MotherName</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৪।</span> <span style=""font-size:10pt"">মাতার</span> <span style=""font-size:10pt"">নামঃ&nbsp;#MotherName</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">ঠিকানা&nbsp;#PesentAddress</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৫।</span> <span style=""font-size:10pt"">লিঙ্গঃ #Gender</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">কে</span> <span style=""font-size:10pt"">আমি</span> <span style=""font-size:10pt"">পরীক্ষা</span> <span style=""font-size:10pt"">করিয়াছি</span><span style=""font-size:10pt"">।</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৬।</span> <span style=""font-size:10pt"">স্থায়ী</span> <span style=""font-size:10pt"">ঠিকানাঃ #PermanentAddress</span></span></p>
+			</td>
+			<td colspan=""9"" rowspan=""2"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">তিনি</span> <span style=""font-size:10pt"">প্রতিষ্ঠানে</span> <span style=""font-size:10pt"">নিযুক্ত</span> <span style=""font-size:10pt"">হইতে</span> <span style=""font-size:10pt"">ইচ্ছুক</span><span style=""font-size:10pt"">, </span><span style=""font-size:10pt"">এবং</span> <span style=""font-size:10pt"">আমার</span> <span style=""font-size:10pt"">পরীক্ষা</span> <span style=""font-size:10pt"">হইতে</span> <span style=""font-size:10pt"">এইরুপ</span> <span style=""font-size:10pt"">পাওয়া</span> <span style=""font-size:10pt"">গিয়াছে</span> <span style=""font-size:10pt"">যে</span> <span style=""font-size:10pt"">তাহার</span> <span style=""font-size:10pt"">বয়স</span><span style=""font-size:10pt"">&nbsp;#TotalAgeInYear&nbsp;</span><span style=""font-size:10pt"">বৎসর</span> <span style=""font-size:10pt"">এবং</span> <span style=""font-size:10pt"">তিনি</span> <span style=""font-size:10pt"">প্রতিষ্ঠানে</span> <span style=""font-size:10pt"">প্রাপ্ত</span> <span style=""font-size:10pt"">বয়স্ক</span><span style=""font-size:10pt"">/</span> <span style=""font-size:10pt"">কিশোর</span> <span style=""font-size:10pt"">হিসাবে</span> <span style=""font-size:10pt"">নিযুক্ত</span> <span style=""font-size:10pt"">হইবার</span> <span style=""font-size:10pt"">যোগ্য</span><span style=""font-size:10pt"">।</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৭।</span> <span style=""font-size:10pt"">অস্থায়ী</span><span style=""font-size:10pt""> / </span><span style=""font-size:10pt"">যোগাযোগের</span> <span style=""font-size:10pt"">ঠিকানাঃ&nbsp;&nbsp;#PesentAddress</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৮।</span> <span style=""font-size:10pt"">জন্ম</span> <span style=""font-size:10pt"">সনদ</span><span style=""font-size:10pt"">/ </span> <span style=""font-size:10pt"">সমদ</span> <span style=""font-size:10pt"">অনুসারে</span> <span style=""font-size:10pt"">বয়স</span><span style=""font-size:10pt"">/ </span><span style=""font-size:10pt"">জন্ম</span> <span style=""font-size:10pt"">তারিখঃ</span><span style=""font-size:10pt"">- #DateOfBirth</span></span></p>
+			</td>
+			<td colspan=""9"" rowspan=""3"" style=""width:401.8pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">তাহার</span> <span style=""font-size:10pt"">সনাক্তকরণের</span> <span style=""font-size:10pt"">চিহ্ন</span><span style=""font-size:10pt"">..........................................................</span><span style=""font-size:10pt"">.</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">৯।</span> <span style=""font-size:10pt"">দৈহিক</span> <span style=""font-size:10pt"">সক্ষমতা</span><span style=""font-size:10pt"">-</span><span style=""font-size:10pt"">-</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">১০।</span> <span style=""font-size:10pt"">সনাক্তকরণ</span> <span style=""font-size:10pt"">চিহ্ন</span><span style=""font-size:10pt"">-</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=""6"" style=""width:313.5pt"">
+			<p><br />
+			<span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">সংশ্লিষ্ট</span> <span style=""font-size:10pt"">ব্যক্তির</span> <span style=""font-size:10pt"">রেজিস্টার্ড</span> <span style=""font-size:10pt"">চিকিৎসকের</span><br />
+			<span style=""font-size:10pt"">স্বাক্ষর</span><span style=""font-size:10pt"">/ </span><span style=""font-size:10pt"">টিপসহি</span> <span style=""font-size:10pt"">স্বাক্ষর</span></span></p>
+			</td>
+			<td colspan=""9"" style=""width:401.8pt"">
+			<p><br />
+			<span style=""font-family:solaimanlipi""><span style=""font-size:10pt"">সংশ্লিষ্ট</span> <span style=""font-size:10pt"">ব্যক্তির</span> <span style=""font-size:10pt"">রেজিস্টার্ড</span> <span style=""font-size:10pt"">চিকিৎসকের</span><br />
+			<span style=""font-size:10pt"">স্বাক্ষর</span><span style=""font-size:10pt"">/ </span><span style=""font-size:10pt"">টিপসহি</span> <span style=""font-size:10pt"">স্বাক্ষর</span></span></p>
+			</td>
+			<td colspan=""2"">
+			<p>&nbsp;</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+"
+16,4,Bangla,"<div style=""width:100%"">
+<p style=""text-align:center""><span style=""font-family:solaimanlipi""><span style=""font-size:20px""><strong>#CompanyName</strong></span><br />
+<span style=""font-size:12px"">#CompanyAddress</span><br />
+<span style=""font-size:16px""><strong><u>নিয়োগপত্র</u></strong></span></span></p>
+
+<table cellpadding=""0"" cellspacing=""0"" style=""width:70%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">নাম</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">&nbsp; #EmployeeName &nbsp;</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">পিতা/স্বামীর নাম</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">&nbsp; #FatherName &nbsp;</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">মাতার নাম</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">&nbsp; #MotherName &nbsp;</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">বর্তমান ঠিকানা</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">&nbsp; #PresentAddress &nbsp;</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">স্থায়ী ঠিকানা</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">&nbsp; #PermanentAddress &nbsp;</span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">অত্মান্ত আনন্দের সাথে জানানো যাচ্ছে যে, আপনার আবেদন ও সাক্ষাৎকারের প্রেক্ষিতে আপনার যোগ্যতা যাচাই পূর্বক আগামী/ আদ্য #JoiningDate ইং তারিখ হইতে পরবর্তী ০৩ (তিন) মাসের জন্য নিম্ম লিখিত শর্ত সাপেক্ষে আপনাকে #DesignationName পদে #GradeName গ্রেড , ( কাজের ধরন : #TypeofWork ) শিক্ষানবিশ শ্রমিক /কর্মচারী হিসাবে নিয়োগ করা হল । কাজের নাম নির্ণয় করা সম্ভব না হলে শিক্ষানবিশ কাল আরও তিন (৩) মাস বৃদ্ধি পাবে (দক্ষ শ্রমিকদের জন্য) । করণিক কাজে শিক্ষানবিশ কাল ছয় (৬) মাস হবে।কৃতিতের সহিত শিক্ষানবিশ কাল সমাপ্তির পর বাংলাদেশ শ্রম আইন মোতাবেক আপনি স্থায়ী শ্রমিক / কর্মচারী হিসাবে বিবেচিত হবেন এবং এই জন্য কোন পত্র দেয়া হবে না।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi""><strong><u>নিয়োগ ও চাকরীর শর্ত সমূহ</u></strong></span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১. কর্মঘণ্টা: দৈনিক ০৮ ঘণ্টা । জরুরী / বিশেষ প্রয়োজনে আপনাকে অতিরিক্ত সময় কাজ করাতে হতে পারে। তবে সে ঘণ্টায় কাজের অতিরিক্ত মুজুরী পাবেন(মূল বেতনের দিগুন হারে)। উল্লেখ্য, অনুমদিত অনুপস্থিতির জন্য বেতন /মুজরী কর্তন করা হবে এবং ওভারটাইম এর ক্ষেত্রে কোনরকম বাধ্য বাধকতা নেই</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">২. বেতন: আপনার মোট বেতন হবে #Gross টাকা । এর মধ্যে: (ক) মূল বেতন #Basic । (খ) বাসা ভাড়া #HR টাকা (মূল বেতনের ৪০%) । (গ) চিকিৎসা ভাতা #MA টাকা। (ঘ) যাতায়াত ভাতা #CV টাকা। (জ্ঞ) খাদ্য ভাতা #FA টাকা ।&nbsp;&nbsp;বাৎসরিক মজুরী বৃদ্ধির হার ৫%। এছাড়াও সরকারি কোন সংশোধিত বিধি বা কোম্পানী প্রচলিত নিয়ম অনুযায়ী বার্ষিক বা ক্ষেত্র বিশেষ দক্ষতার উপর ভিত্তি করে তা বৃদ্ধি করা হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৩. বেতন বা মজুরী পরিশোধের তারিখ আপনি প্রত্যেক মাসের বেতন পরবর্তী মাসের সাত (৭) কর্ম দিবসের মধ্যে যে কোন কর্ম দিবসে পাবেন।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৪. ওভারটাইম (ক) দৈনিক আট (৮) ঘণ্টার বেশী এবং সাপ্তাহে আটচল্লিশ (৪৮) ঘণ্টার চেয়ে বেশী কাজ অতিরিক্ত কার্য ঘণ্টা হিসেবে গণ্য হবে।<br />
+(খ) ওভারটাইম হার নির্ণয় পদ্ধতি (মূল বেতন X ২ X অতিরিক্ত ঘণ্টার পরিমাণ)/২০৮ ।<br />
+(গ) ওভারটাইমের মজুরী সাধারন মজুরী প্রদানের তারিখে পরিশোধ করা হবে</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৫. ছুটি এবং অবকাশ</span></span></p>
+
+<table style=""padding-left:30px; width:100%"">
+	<tbody>
+		<tr>
+			<td style=""text-align:justify; width:100px""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">সাপ্তাহিক ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">শুক্রবার</span></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">উৎসব ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">পূর্ণ মজুরীতে এগারো (১১) দিন</span></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">নৈমিত্তিক ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">পূর্ণ বেতনে দশ (১০) দিন</span></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">অসুস্থতা ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">পূর্ণ বেতনে চৌদ্দ (১৪) দিন</span></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">মাতৃত্বকালীন ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ষোল (১৬) সাপ্তাহ পূর্ণ মজুরীতে (সন্তান প্রসবের পূর্বে ৮ সাপ্তাহ ও পরে ৮ সাপ্তাহ)।</span></span></td>
+		</tr>
+		<tr>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">বার্ষিক ছুটি</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">পূর্ববর্তী বারো (১২) মাসের মধ্যে প্রতি আঠারো (১৮) দিন উপস্থিতির জন্য (১) দিন হারে পূর্ণ মজূরী সহ বার্ষিক ছুটি পাবেন। উক্ত ছুটি প্রাপ্তির জন্য চাকুরীর বয়স কম পক্ষে এক (১) বছর হতে হবে।</span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৬. নোট অসুস্থতা ছুটি ডাঃ কর্তৃক সপারিশকৃত হতে হবে এবং অন্যান্য ছুটি কোম্পানীর কর্তৃপক্ষ কর্তৃক অনুমদিত হবে।</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<table cellpadding=""0"" cellspacing=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">চলমান পাতা- ০১ (০২)</span></span></td>
+			<td style=""text-align:right""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">শ্রমিক/কর্মচারীর স্বাক্ষর</span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<div style=""page-break-after:always""><span style=""display:none"">&nbsp;</span></div>
+
+<p><br />
+<span style=""font-size:11px""><span style=""font-family:solaimanlipi"">চলমান পাতা- ০২ (০২)</span></span></p>
+</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৭. আইডি কার্ড / পাঞ্চ হাজিরা কার্ড: আইডি কার্ড / পাঞ্চ হাজিরা কার্ড প্রদান করা হবে। উক্ত কার্ড প্রাপ্তির পর থেকে ডিউটি চলাকালীন সময়, ফ্যাক্টরীতে প্রবেশ ও বাহিরের সময় নিয়মিত ভাবে পাঞ্চ করতে হবে, যার মাধ্যমে হাজিরা রেকর্ড হবে এবং হাজিরা কার্ড নিরাপত্তার স্বার্থে সবসময় গলায় ঝুলিয়ে রাখতে হবে। তাছাড়াও চাকরী ছেরে চলে গেলে বা বা চাকরী হতে অব্যাহিত নিলে উক্ত কার্ডটি কারখানার এইচ, আর / কমপ্লায়েন্স বিভাগে জমা দিতে হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৮. শ্রমিকদের চাকুরী ত্যাগ / অব্যাহিত</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ক. বরখাস্ত: কোন শ্রমিক/ কর্মচারীর বিরুদ্ধে অসদাচরনের অপরাধ প্রমানিত হলে তাকে বরখাস্ত করা হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">খ. ডিসচার্জ: কোন শ্রমিক/ কর্মচারী দীর্ঘদিন যাবৎ একাধারে অসুস্থ থাকলে অথবা মানসিক বা দৈহিকভাবে অক্ষম হয়ে গেলে (রেজিষ্টার্ড ডাঃ কর্তৃক প্রত্যায়িত) তাকে ডিসচার্জ করা হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">গ. অব্যাহতি প্রদান: কোন শ্রমিক/ কর্মচারী চাকুরী হতে অব্যাহতি দিতে চাইলে ষাট (৬০) দিন পূর্বে নোটিশ দিতে হবে অথবা ষাট (৬০) দিনের বেতন/ মজুরী সারেন্ডার করতে হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ঘ. টার্মিনেশন (অবসান) : ১২০ দিনের নোটিশ বা ১২০ দিনের বেতন/ মজুরী প্রদান করে কোন স্থায়ী শ্রমিক/ কর্মচারীকে টার্মিনেশন করা যেতে পারে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ঙ. অবসর গ্রহণঃ সকল শ্রমিক/ কর্মচারী ষাট (৬০) বছর বয়স পূর্ন হলে অবসর গ্রহণ করবেন। বাংলাদেশ শ্রমআইন&rsquo;২০০৬ এর বর্ণিত ধারা ও সংশ্লিষ্ট বিধি মোতাবেক কোম্পানীর স্বার্থে কোন শ্রমিক/ কর্মচারীর দৈহিক ও মানসিক সক্ষমতা থাকলে তার চাকুরীর মেয়াদ বৃদ্ধি করা কর্তৃপক্ষের এখতেয়ারাধীন।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">৯. নিরাপত্তা বিধিমালা: আপনাকে কোম্পানীর বিধিমালা মেনে চলতে হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১০. বদলি: বাংলাদেশ শ্রমআইন&rsquo;২০০৬ এর বর্ণিত ধারা ও সংশ্লিষ্ট বিধি মোতাবেক প্রতিষ্ঠানের প্রয়োজনে কর্তৃপক্ষ আপনাকে এই প্রতিষ্ঠানের অন্য যেকোন বিভাগে বা শিফটে অথবা একই মালিকের অধীন অন্য কোন প্রতিষ্ঠানে একই বেতন/ মজুরীতে নিয়োজিত করতে পারবেন বা বদলি করতে পারবেন।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১১. গোপনীয়তা: অত্র প্রতিষ্ঠানে কর্মরত থাকা কালীন আপনি অন্য কোথাও প্রত্যক্ষ বা পরোক্ষভাবে কোন চাকুরী করতে পারবেন না। চাকুরীতে কর্মরত থাকা কালিন সময় আপনি অত্র প্রতিষ্ঠানের ব্যবসা সংক্রান্ত গোপনীয় তথ্যাদি কোন ব্যাক্তি , প্রতিষ্ঠান বা অন্য কারো নিকট প্রকাশ করতে পারবেন না। আপনার চাকুরী শেষে আপনার অধীনে থাকা (যদি থাকে) কোম্পানীর সকল কাগজ পত্র বা অন্য কোন বস্ত্র যেমন আই.ডি. কার্ড , ইউনিফর্ম ইত্যাদি আপনার হেফাজতে থাকলে , সেই সকল দ্রব্যাদি ফেরত দিবেন। কোম্পানীর ব্যবসা সংক্রান্ত কোন কাগজ পত্র নকল অথবা অংশ বিশেষ আপনার নিকট রাখতে পারবেন না।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১২. অন্যান্য সুযোগ-সুবিধা:</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">(ক) বোনাস (উৎসব): বাংলাদেশ শ্রম আইন&rsquo;২০০৬ এবং বাংলাদেশ শ্রম বিধিমালা&rsquo;২০১৫ মোতাবেক আপনাকে উৎসব বোনাস প্রদান করা হবে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">(খ) হাজিরা বোনাস: কারখানা খোলার দিনগুলোতে নিয়মিত উপস্থিতির জন্য হাজিরা বোনাস পাবেন। তবে- শর্তসমূহ (যে সকল ক্ষেত্রে হাজিরা বোনাস প্রযোজ্য নহে)</span></span></p>
+
+<ul style=""margin-left:40px"">
+	<li style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">কর্মে অনুপস্থিতি।</span></span></li>
+	<li style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">নির্ধারিত সময়ের পূর্বে অনুমোদিত ছুটি ছাড়া কর্মস্থল ত্যাগ।</span></span></li>
+	<li style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ছুটি ভোগ করা।</span></span></li>
+	<li style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ছলেট করে/ দেরীতে কর্মস্থলে উপস্থিত হওয়া।</span></span></li>
+</ul>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১৩। শিক্ষানবিশ কালে সম্পর্কচ্ছেদ: বাংলাদেশ শ্রমআইন&rsquo;২০০৬ এবং বাংলাদেশ শ্রম বিধিমালা&rsquo;২০১৫ এর বর্ণিত পন্থা মোতাবেক শিক্ষানবিস হিসাবে নিয়োগকৃত সময়ের (০৩/০৬ মাস) মধ্যে আপনার পদের জন্য উপযুক্ত দক্ষতা প্রদর্শনে ব্যর্থতায় কর্তৃপক্ষ আপনাকে চাকুরীচ্যুতি করার অধিকার রাখে, সেক্ষেত্রে অন্যান্য সুযোগ-সুবিধা প্রাপ্যের অধিকারী হইবেন না। তাছাড়াও উক্ত সময়ে মধ্যে আপনি যে কোন সময় আপনার চাকুরী ছেড়ে দেয়া সক্ষমতাও রাখেন।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">১৪. নিম্ন বর্ণিত যে কোন কারনে এই নিয়োগ বাতিল বলে গন্য হবে:</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ক) দৈহিক বা মানসিক অক্ষমতার কারণে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">খ) নৈতিক স্থলনজনিত অপরাধের কারণে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">গ) অসদাচরণের দায়ে দোষী সাব্যস্ত হলে । যেমনঃ ১) উপরস্থের কোন আইনসংগত বা যুক্তিসংগত আদেশ মানার ক্ষেত্রে এককভাবে বা অন্যের সঙ্গে সংঘবদ্ধ হইয়া ইচ্ছাকৃতভাবে অবাধ্যতা। ২) মালিকের ব্যবসা বা সম্পত্তি সম্পর্কে চুরি , প্রতারনা বা অসাধুতা । ৩) মালিকের অধীনে তাহার বা অন্য কোন শ্রমিকের চাকুরী সংক্রান্ত ব্যাপারে ঘুষ গ্রহণ বা প্রদান। ৪) বিনা ছুটিতে অভ্যাসগত অনুপস্থিতি অথবা ছুটি না নিয়া এক সঙ্গে দশ দিনের অধিক সময় অনুপস্থিতি । ৫) অভ্যাসগত বিলম্বে উপস্থিতি। ৬) প্রতিষ্ঠানে প্রযোজ্য কোন আইন, বিধি বা প্রভিধানের অভ্যাসগত লংঘন । ৭) প্রতিষ্ঠানে উচ্ছৃংখল বা দাংগা-হাংগামামূলক আচরন, অথবা শৃংঙ্খলা হানিকর কোন কর্ম। ৮) কাজ কর্মে অভ্যাসগত গাফিলতি । ৯) চাকুরী সংক্রান্ত , শৃংখলা বা আচরণসহ , যে কোন বিধির অভ্যাসগত লংঘন। ১০) মালিকের অফিসিয়াল রেকর্ডের রদবদল , জালকরন , অন্যায় পরিবর্তন , উহার ক্ষতিকরন বা উহা হারাইয়া ফেলা।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">আমি #EmployeeName অত্র নিয়োগ / নিয়োগ ও চাকুরী বর্ণিত বিধি/ শর্তাবলী সম্পূর্নরুপে অবগত হয়ে স্বেচ্ছায় ও সজ্ঞানে উপরোক্ত বিধি / শর্তসমূহ মেনে নিয়ে স্বাক্ষর করলাম এবং ইহার একটি কপি বুঝিয়া নিলাম।</span></span></p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">ধন্যবাদান্তে,</span></span></p>
+
+<table cellpadding=""0"" cellspacing=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">..........................&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span></td>
+			<td style=""text-align:right""><span style=""font-size:11px""><span style=""font-family:solaimanlipi"">...............................</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">নিয়োগকর্তার স্বাক্ষর &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span></td>
+			<td style=""text-align:right""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">শ্রমিক/ কর্মচারীর স্বাক্ষর</span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+"
+17,8,Bangla,"<div style=""text-align:center; width:100%"">&nbsp;</div>
+
+<div style=""text-align:center; width:100%""><span style=""font-size:19px""><span style=""font-family:solaimanlipi""><strong>#CompanyName</strong></span></span><br />
+<span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#CompanyAddress</span></span></div>
+
+<div style=""width:100%"">&nbsp;</div>
+
+<div style=""width:100%""><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">সূত্রঃ ( রেজিস্ট্রি ডাকযোগে প্রেরিত / হাতে হাতে প্রদত্ত )<br />
+তারিখঃ <strong>#CurrentDate </strong></span></span></div>
+
+<div style=""width:100%"">
+<h3 style=""text-align:center""><u><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">প্রথম চিঠি</span></span></u></h3>
+
+<table border=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">প্রতি,</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">নামঃ&nbsp;<strong>#EmployeeName &nbsp; </strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">পিতা/স্বামীর নামঃ&nbsp;<strong>#FatherName &nbsp; </strong></span></span></td>
+			<td><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">মাতার নামঃ&nbsp;<strong>#MotherName &nbsp; </strong></span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<div>
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">বিষয়ঃ বাংলাদেশ শ্রম আইন ২০০৬ এর ৪২ নংআইনের ২৭ (৩ক) ধারা অনুযায়ী কোনো প্রকার পূর্ব নোটিস প্রদান না করে কর্মস্থল হতে অনুপস্থিতির ব্যাখ্যাসহ কাজে যোগদান প্রসঙ্গে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">জনাব / জনাবা,<br />
+আপনিগত #JoiningDate ইং তারিখ হতে প্রতিষ্ঠানের নামঃ ইন্টারন্যাশনাল ক্লাসিক কম্পোজিট লিঃ এ নামঃ #EmployeeName পদবীঃ #DesignationName আই.ডিকার্ডনংঃ #EmployeeId বিভাগঃ #DepartmentName। আপনি কর্তৃপক্ষকে কোনো প্রকার পূর্ব নোটিস এবং অনুমোদন ছাড়া গত #LastPresentDate ইংতারিখ হতে ১০ দিনের বেশি কর্মস্থলে অনুপস্থি তআছেন। আপনার এরূপ অনুপস্থিতিতে কারখানার আর্থিক ক্ষতি হচ্ছে। আপনার এরূপ অনুপস্থিতির বিষয়ে আগামী ১০ (দশ) দিনের মধ্যে ব্যাখ্যা প্রদান পূর্বক কাজে যোগদান করবেন।</span></span></p>
+</div>
+
+<div style=""width:100%"">
+<p><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">অন্যথায় কর্তৃপক্ষ পরবর্তী ব্যবস্থা গ্রহণ করবেন।</span></span></p>
+
+<p><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">আদেশক্রমে,</span></span></p>
+&nbsp;
+
+<p><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">নির্বাহী পরিচালক</span></span></p>
+
+<p><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">অনুলিপিঃ</span></span></p>
+
+<ul>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০১) পরিচালকমহোদয়</span></span></li>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০২) সিইও</span></span></li>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০৩) হিসাববিভাগ</span></span></li>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০৪) কারখানারনোটিশবোর্ড</span></span></li>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০৫) অফিসকপি</span></span></li>
+	<li><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">০৬) ব্যক্তিগতনথি</span></span></li>
+</ul>
+</div>
+
+<div style=""width:100%"">
+<p><span style=""font-family:solaimanlipi""><span style=""font-size:12px"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></span></p>
+
+<table border=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td colspan=""2"" rowspan=""1""><u><span style=""font-family:solaimanlipi""><span style=""font-size:14px""><strong>বর্তমান ঠিকানা</strong></span></span></u><br />
+			&nbsp;</td>
+			<td colspan=""2"" rowspan=""1""><u><span style=""font-family:solaimanlipi""><span style=""font-size:14px""><strong>&nbsp; স্থায়ী ঠিকানা</strong></span></span></u><br />
+			&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><strong>নাম</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #EmployeeName</span></td>
+			<td><span style=""font-size:12px""><strong>নাম</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #EmployeeName</span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><strong>প্রযত্নে</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #FatherName</span></td>
+			<td><span style=""font-size:12px""><strong>প্রযত্নে</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #FatherName</span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><strong>ঠিকানা</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #PresentAddress</span></td>
+			<td><span style=""font-size:12px""><strong>ঠিকানা</strong></span></td>
+			<td style=""width:220px""><span style=""font-size:12px"">: #PermanentAddress</span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+"
+21,12,Bangla,"<div style=""width:100%"">
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">তারিখঃ #CurrentDate</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">এই মর্মে #EmployeeName অঙ্গীকার করতিছি যে, এই প্রতিষ্ঠানে #DesignationName হিসেবে কর্তব্যরত অবস্থায় প্রতিষ্ঠানের সক্ল লিখিত-অলিখিত নিয়মকানুন মানিয়া চলিব। ইহা ছাড়া আমার অধীনস্থ সকল অপারেটর, সহঃ অপারেটর, কিউ.আই এবং অন্যান্য কর্মীবৃন্দের সাথে দূব্যাবহার অমানবিক, অশালীন, ক্ষমতার অপব্যাবহার , বৈষম্যমূলক আচরণ, অমানুষিক শারীরিকভেবে কোন রকম আঘাত করিব না। আমি আরো অঙ্গীকার করতিছি যে, আমার সকল অধীনস্থদের নিজ পরিবারের সদস্য মনে করিয়া আদর শাসন ও ভালবাসার মাধ্যমে কার্যসাধন করিব।</span></span></p>
+<br />
+<br />
+<br />
+&nbsp;
+<div>
+<p><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">অঙ্গীকার স্বাক্ষর</span></span></p>
+</div>
+</div>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<div style=""width:100%"">
+<table>
+	<tbody>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">নাম</span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><strong><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">#EmployeeName</span></span></strong></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">পদবী</span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">#DesignationName</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">তারিখ</span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-family:solaimanlipi""><span style=""font-size:14px"">#CurrentDate</span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+"
+24,15,Bangla,"<div style=""float:left; width:100%"">
+<table style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">নাম</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#EmployeeName</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">পিতা/স্বামীর নাম</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#FatherName</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">বর্তমান ঠিকানা</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#PresentAddress</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">স্থায়ী ঠিকানা</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#PermanentAddress</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">টেলিফোন নম্বর</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#PhoneNumber</span></span></td>
+		</tr>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">জন্মের তারিখ</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#JoiningDate</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">বয়স</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">&nbsp; #Age</span></span></td>
+		</tr>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">ধর্ম</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#Religion</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">জাতীয়তা</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">&nbsp; #Nationality</span></span></td>
+		</tr>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">শিক্ষাগত যোগ্যতা</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#EducationQualification</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">জাতীয়ত আইডি</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">&nbsp; #NationalId</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">অভিজ্ঞতা</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px"">#Experience</span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+
+<div style=""text-align:center; width:100%""><span style=""font-size:12px""><span style=""font-family:solaimanlipi""><strong>ঘোষণা</strong></span></span>
+
+<p style=""text-align:justify""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">আমি এই মর্মে ঘোষণা করছি যে আমি কোন মিথ্যা তথ্য পরিবেশন করিনি বা কোন তথ্য গোপ্ন করিনি এবং আমি আরো ঘোষণা করছি যে, চাক্রিতে কর্মরত থাকাকালে ফ্যাক্টরির নিয়ম শৃঙ্খলা সর্বদা মেনে চলব ।</span></span></p>
+<br />
+<span style=""font-size:12px""><span style=""font-family:solaimanlipi"">বিনীত নিবেদক<br />
+<br />
+তারিখঃ#CurrentDate আবেদনকারীর স্বাক্ষর<br />
+<strong>অফিস কর্তৃপক্ষ পূরণীয়</strong></span></span><br />
+&nbsp;</div>
+
+<p>&nbsp;</p>
+
+<div style=""width:100%"">
+<table style=""width:100%"">
+	<tbody>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">পদবী</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#DesignationName</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">কার্ড নং</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#EmployeeId</span></span></td>
+		</tr>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">সেকশন</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#SectionName</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">গ্রেড</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#Grade</span></span></td>
+		</tr>
+		<tr>
+			<td rowspan=""2"" style=""width:100px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">যোগদানের তাং</span></span></td>
+			<td rowspan=""2"" style=""width:10px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td rowspan=""2"" style=""width:300px""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#JoiningDate</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">নির্ধারিত বেতন</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">#Gross</span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-size:12px""><span style=""font-family:solaimanlipi"">ভারপ্রাপ্ত কর্মকর্তা/পার্সোনেল সেকশন &nbsp; &nbsp; &nbsp; &nbsp; জি.এম/বিভাগীয় প্রধান &nbsp; &nbsp; &nbsp; &nbsp; সি.ই.ও &nbsp; &nbsp; &nbsp; &nbsp; নির্বাহী পরিচালক &nbsp; &nbsp; &nbsp; &nbsp; পরিচালক/ব্যবস্থাপনা পরিচালক</span></span></p>
+</div>
+"
+26,18,Bangla,"<div style=""float:left; width:100%"">
+<div>
+<p style=""text-align:center""><span style=""font-size:18px""><span style=""font-family:solaimanlipi""><strong>#CompanyName</strong></span></span><br />
+<span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#CompanyAddress</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">আমি #EmployeeName আই.ডিকার্ডনংঃ #EmployeeId পদবীঃ #DesignationName বিভাগঃ #DepartmentName আজ / গত #JoiningDate&nbsp;ইং তারিখে কাজে যোগদান করেছি। আমি এ মর্মে ঘোষণা করেছি যে, সময়ে যে কোন দুর্ঘটনা / স্বাভাবিক মৃত্যু হলে কিংবা আমার আবর্তমানে সমস্ত দেনা পাওনা গ্রহনের জন্য আমি,</span></span></p>
+</div>
+
+<div style=""float:left; width:100%"">
+<table style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">নাম</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#NomineeName</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">ঠিকানা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#NomineeAddress</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">সম্পর্ক</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#Relation কে উত্তরাধিকারী/উত্তরাধিকারিণী হিসাবে মনোনীত করছি ।</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+&nbsp;
+
+<div style=""float:left; width:100%"">
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">মনোনয়নের তারিখ :#CurrentDate</span></span></p>
+</div>
+&nbsp;
+
+<div><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">নিবেদক</span></span></div>
+&nbsp;
+
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">নাম :#EmployeeName</span></span></p>
+</div>
+&nbsp;
+
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">স্বাক্ষর :.......................................................................</span></span></p>
+</div>
+<br />
+&nbsp;</div>
+</div>
+"
+30,5,Bangla,"<p>sfsdfsd</p>
+"
+31,1,English,"<div style=""text-align:Left; width:100%""><span style=""font-family:Calibri""><span style=""font-size:14px"">Date: #CurrentDate<br />
+Ref: #RefNo(#NoOfIncrement)</span></span></div>
+
+<div style=""text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">#EmployeeName<br />
+#PresentAddress</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">Subject: Letter of Employment Verification for<strong> #EmployeeName</strong></span></span></p>
+<span style=""font-family:Calibri""><span style=""font-size:14px"">&nbsp;</span></span>
+
+<p style=""text-align:center""><span style=""font-family:Calibri""><span style=""font-size:14px""><strong><u>To Whom it May Concern</u></strong></span></span></p>
+</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px""><strong>#EmployeeName </strong> has been employed as a #DesignationName at #CompanyName. since #JoiningDate and his salary until #PreviousAgreementEndDate has been #PreviousSalary BDT.</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px""><strong>As of&nbsp;&nbsp;</strong></span></span><span style=""font-family:Calibri""><span style=""font-size:14px""><strong>#NewAgreementStartDate #EmployeeName salary has been revised to #Gross BDT.</strong></span></span></p>
+<span style=""font-family:Calibri""><span style=""font-size:14px"">&nbsp;</span></span>
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px""><strong>#EmployeeName</strong> is to work on a full-time basis. This letter has been issued on the #NewAgreementStartDate as an agreement between #CompanyName and #EmployeeName, Where Systech digital and #EmployeeName both agreed through mutual decision, that #EmployeeName will remain under the employment with #CompanyName with same salary structure for next one year following other policies of the company.</span><span style=""font-size:14px"">&nbsp;</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">This agreement will be valid until #NextIncrementDate and can be extended through another agreement letter with mutual decisions of #CompanyName and #EmployeeName.</span></span></p>
+</div>
+
+<p>&nbsp;</p>
+
+<div style=""width:100%""><span style=""font-family:Calibri""><span style=""font-size:14px"">Sincerely</span></span></div>
+
+<div style=""width:100%""><br />
+<br />
+<br />
+<span style=""font-family:Calibri""><span style=""font-size:14px""><strong>Nahid Mowla Mowri<br />
+Chairman<br />
+#CompanyName</strong></span></span></div>
+"
+34,4,English,"<div style=""font-family:Calibri; text-align:Left; width:100%"">&nbsp;</div>
+
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+
+<div>&nbsp;</div>
+
+<div><span style=""font-size:14px""><span style=""font-family:Calibri"">#CreatedDate<br />
+Ref No: #RefNo</span></span></div>
+
+<div style=""font-family:Calibri"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">#EmployeeName<br />
+#PresentAddress</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri""><strong><u>Employment Contact</u></strong></span></span></p>
+</div>
+
+<div>
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Dear #EmployeeName ,</span></span></p>
+</div>
+
+<div>
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We are happy to inform you that Systech Digital Limited is confirming your permanent employment as a #DesignationName according to terms and condition signed during your join to the company.</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Your salary will be revised after one year from your joining date.</span></span></p>
+<span style=""font-size:14px""><span style=""font-family:Calibri"">&nbsp;</span></span>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We welcome you to the #CompanyName family and look forward to a long-term association with you.</span></span></p>
+</div>
+
+<p>&nbsp;</p>
+
+<div><span style=""font-size:14px""><span style=""font-family:Calibri"">Thank You</span></span></div>
+
+<div>
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<table border=""0"" cellpadding=""1"" cellspacing=""1"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri"">M Rashidul Hasan<br />
+			Managing Director &amp; CEO<br />
+			<strong>Systech Digital Ltd</strong></span></span></td>
+			<td style=""text-align:right""><span style=""font-size:14px""><span style=""font-family:Calibri"">Received<br />
+			<strong>#EmployeeName</strong></span></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+</div>
+
+<p>&nbsp;</p>
+"
+35,1,Bangla,"<div style=""text-align:Left; width:100%""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">তারিখঃ #CurrentDate<br />
+রেফারেন্সঃ #RefNo(#NoOfIncrement)</span></span></div>
+
+<div style=""text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#EmployeeName<br />
+#PresentAddress</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">বিষয়ঃ বেতন বৃদ্ধি চিঠি <strong> #EmployeeName</strong> জন্য</span></span></p>
+<span style=""font-size:13px""><span style=""font-family:solaimanlipi"">&nbsp;</span></span>
+
+<p style=""text-align:center""><span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong><u>সংশ্লিষ্টের প্রতি&nbsp;</u></strong></span></span></p>
+</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#JoiningDate থেকে #CompanyName এর #DesignationName হিসেবে <strong>#EmployeeName</strong> নিয়োগ দেওয়া হয়েছে। #PreviousAgreementEndDate পর্যন্ত বেতন #PreviousSalary টাকা হয়েছে।</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong>#NewAgreementStartDate&nbsp;তারিখ থেকে #EmployeeName এর&nbsp;বেতন #Gross&nbsp;টাকায় সংশোধন করা হয়েছে।</strong></span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong>#EmployeeName</strong> পূর্ণসময়ের ভিত্তিতে কাজ করতে হবে। #NewAgreementStartDate তারিখে এই চিঠিটি জারি করা হয়েছে #CompanyName এবং #EmployeeName মধ্যে চুক্তি, যেখানে #CompanyName ও #EmployeeName উভয়ই পারস্পরিক সিদ্ধান্তে সম্মত হন, #EmployeeName চাকরির অধীনে থাকবেন একই বেতন এবং&nbsp;#CompanyName এর অন্যান্য নীতি অনুসরণ করে পরবর্তী এক বছরের জন্য। </span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">এই চুক্তিটি #NextIncrementDate পর্যন্ত বৈধ হবে এবং এর সাথে আরেকটি চুক্তির চিঠি দেওয়া যেতে পারে #CompanyName এবং #EmployeeName&nbsp;পারস্পরিক সিদ্ধান্ত।</span></span></p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">ধন্যবাদান্তে</span></span></p>
+</div>
+
+<div style=""width:100%""><br />
+<br />
+<br />
+<span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong>Nahid Mowla Mowri<br />
+Chairman<br />
+#CompanyName</strong></span></span></div>
+"
+36,20,English,"<div style=""font-family:Calibri"">
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><span style=""font-family:Calibri""><span style=""font-size:14px"">Date:&nbsp; #CurrentDate</span></span></p>
+&nbsp;
+
+<p style=""text-align:center""><span style=""font-family:Calibri""><span style=""font-size:14px""><u><strong>CERTIFICATE OF EMPLOYMENT</strong></u></span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">This is to certify that #EmployeeName has been working with our esteem company #CompanyName since #JoiningDate. He is a Permanent Employee of our company. As per our service rule/terms of employment, his date of retirement is on: N/A. Now he is </span></span><span style=""font-family:Calibri""><span style=""font-size:14px"">working</span></span><span style=""font-family:Calibri""><span style=""font-size:14px""> </span></span><span style=""font-family:Calibri""><span style=""font-size:14px"">withour</span></span><span style=""font-family:Calibri""><span style=""font-size:14px""> company under the title of #DesignationName.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">This certification is being issued upon request of the above employee for whatever purpose it may serve him best.</span></span></p>
+<span style=""font-family:Calibri""><span style=""font-size:14px"">Regards,</span></span><br />
+<br />
+<br />
+&nbsp;
+<p style=""text-align:justify""><span style=""font-family:Calibri""><span style=""font-size:14px"">Munirul Hasan<br />
+General Manager<br />
+<strong>Systech Digital Limited</strong></span></span></p>
+</div>
+"
+37,21,English,"<div style=""font-family:Calibri (Body)"">
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%""><span style=""font-size:15px""><span style=""font-family:Calibri"">Date:&nbsp; #CurrentDate</span></span></div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%""><span style=""font-family:Calibri""><span style=""font-size:15px"">Ref: </span><strong><span style=""font-size:15px"">#RefNo</span> </strong><span style=""font-size:16px""> </span></span></div>
+
+<div style=""font-family:Calibri (Body); text-align:justify"">
+<p style=""text-align:center""><span style=""font-size:16px""><span style=""font-family:Calibri""><strong>TO WHOM IT MAY CONCERN</strong></span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">This is to certify that #EmployeeName worked in our esteem company #CompanyName as #DesignationName. since #JoiningDate to #CurrentDate.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We found him sincere, hardworking, technically sound and result oriented during his tenure. #EmployeeName has a friendly, outgoing personality, a good sense of humour and works well as part of a team.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We thank him for his contribution and wish him success in his future endeavours.</span></span></p>
+</div>
+&nbsp;
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">M Rashidul Hasan<br />
+Managing Director<br />
+<strong>Systech Digital Limited</strong></span></span></p>
+</div>
+</div>
+"
+38,22,English,"<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%""><span style=""font-size:14px""><span style=""font-family:Calibri"">Date:<strong>#CurrentDate</strong></span></span></div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p><span style=""font-size:14px""><span style=""font-family:Calibri"">The Visa Officer<br />
+High Commission of India<br />
+Bangladesh</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Subject: <strong>Request for issuance of Visa</strong></span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Dear Sir</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We would like to inform you that #EmployeeName, #FatherName and #MotherName, has been working in #CompanyName #JoiningDate. His current position is #DesignationName.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">#EmployeeName, a Bangladeshi citizen, expressed interest in visiting India for tourism &amp; our organization has no objection regarding his visit to India.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">The necessary visa application forms duly filled along with pictures are enclosed herewith. His passport details are appended below:</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); width:100%"">
+<table border=""0"" cellpadding=""0"" cellspacing=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Name</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #EmployeeName</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Passport Number</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #PassportNo</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Date of Issue</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #IssueDate</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>ExpiryDate</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #ExpiryDate</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Nationality</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #Nationality</strong></span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">In view, we request your good office to issue his Visa to facilitate his journey. Thanking you in advance and assuring you of our cooperation at all time.</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%""><span style=""font-size:14px""><span style=""font-family:Calibri"">Yours truly</span></span><br />
+&nbsp;</div>
+
+<p>&nbsp;</p>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">M Rashidul Hasan<br />
+Managing Director<br />
+<strong>Systech Digital Limited</strong></span></span></p>
+</div>
+
+<p>&nbsp;</p>
+"
+39,23,English,"<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Date:</span></span><strong>#CurrentDate </strong></p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Ref No:<strong>#RefNo</strong></span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:center""><strong><span style=""font-size:16.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">TO WHOM IT MAY CONCERN</span></span></strong></p>
+
+<p style=""text-align:center"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">This is to certify that #EmployeeName<span style=""color:black"">&nbsp;</span></span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">has worked&nbsp;</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">under the title of #DesignationName</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">&nbsp;for #TotalServiceAge with </span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">#CompanyName since #JoiningDate</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">. He got the clearance at the time of resignation from all the required/relevant departments of the company. So, there is no any obligation on&nbsp; #EmployeeName&nbsp;</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">after the date of his resignation from the company.</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">This letter is issued on the request of </span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;""><span style=""color:black"">#EmployeeName</span></span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">.&nbsp; </span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Regards,</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Nahid Mowla Mouri<br />
+Chairman</span></span><br />
+<span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;""><strong>Systech Digital Limited</strong></span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+"
+43,15,Bangla-2,"<div style=""float:left; width:100%"">
+<table>
+	<tbody>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">নাম</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#EmployeeName &nbsp;</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">পদবীঃ</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#DesignationName &nbsp;</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">আই.ডিকার্ডনং</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#EmployeeId</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">বিভাগ</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#DepartmentName</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">বর্তমান ঠিকানা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td>&nbsp;</td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#PresentAddress</span></span></td>
+			<td>&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+
+<div style=""float:left; width:100%"">
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong>বিষয়ঃ</strong> চাকুরি স্থায়ীকরন প্রসঙ্গে।</span></span></p>
+</div>
+
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">জনাব / জনাবা,</span></span></p>
+</div>
+</div>
+
+<p>&nbsp;</p>
+
+<div style=""float:left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">আপনার #JoiningDate&nbsp;ইং তারিখ হতে #JobConfirmationDate ইং তারিখ পর্যন্ত শিক্ষানবীশকাল সন্তোষজনক তবে সম্পন্ন হওয়া কারখানা কর্তৃপক্ষ #JobConfirmationDate ইং তারিখ হতে #DesignationName পদে #Grade গ্রেড #Gross মজুরি / বেতনের স্থায়ী শ্রমিক / কর্মচারী হিসেবে গণ্য করেছে।</span></span></p>
+</div>
+
+<div style=""float:left; width:100%"">
+<div>
+<p><span style=""font-size:13px""><span style=""font-family:solaimanlipi""><strong>বর্তমান বেতন / মজুরীর</strong></span></span></p>
+</div>
+
+<table cellspacing=""0"" style=""border-collapse:collapse"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">মূল বেতন</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#Basic টাকা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; যাতায়াত ভাতা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#CV টাঁকা</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">বাড়ী ভাড়া</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#HR টাকা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; খাদ্য ভাতা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#FA টাঁকা</span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">চিকিৎসা ভাতা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#MA টাকা</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; সর্বমোট বেতন / মজুরীর</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">:</span></span></td>
+			<td><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">#Gross টাঁকা</span></span></td>
+		</tr>
+	</tbody>
+</table>
+<br />
+&nbsp;</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">কর্তৃপক্ষ আরো আশা করছে যে, আপনি অত্র প্রতিষ্ঠানে আপনার চাকুরী তথা দায়িত্ব ও কর্তব্য সততা ও নিষ্ঠার সহিত সন্তোষজনক ভাবে পালন করবেন।</span></span></p>
+<br />
+&nbsp;</div>
+
+<div style=""width:100%"">
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">মানব সম্পদ প্রধান &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; শ্রমিক / কর্মচারীর স্বাক্ষর</span></span></p>
+&nbsp;
+
+<p style=""text-align:justify""><span style=""font-size:13px""><span style=""font-family:solaimanlipi"">স্বাক্ষর : &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; শ্বাক্ষর :<br />
+তারিখ: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; তারিখ:</span></span></p>
+</div>
+"
+46,21,English,"<div style=""font-family:Calibri (Body)"">
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""margin-left:40px; text-align:justify; width:100%""><span style=""font-family:Times New Roman""><span style=""font-size:15px"">Date:&nbsp; #CurrentDate</span></span></div>
+
+<div style=""margin-left:40px; text-align:justify; width:100%""><span style=""font-family:Times New Roman""><span style=""font-size:15px"">Ref: </span><strong><span style=""font-size:15px"">#RefNo</span> </strong><span style=""font-size:16px""> </span></span></div>
+
+<div style=""font-family:Calibri (Body); text-align:justify"">
+<p style=""margin-left:40px; text-align:center"">&nbsp;</p>
+
+<p style=""margin-left:40px; text-align:center""><span style=""font-size:24px""><span style=""font-family:Times New Roman""><strong>TO WHOM IT MAY CONCERN</strong></span></span></p>
+
+<p style=""margin-left:40px; text-align:center"">&nbsp;</p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""margin-left:40px; text-align:justify""><span style=""font-size:15px""><span style=""font-family:Times New Roman"">This is to certify that #EmployeeName is a full time permanant employee of #CompanyName. He joined us on&nbsp;#JoiningDate&nbsp; </span></span></p>
+
+<p style=""margin-left:40px; text-align:justify""><span style=""font-size:15px""><span style=""font-family:Times New Roman"">and currently has been working as a #DesignationName in #DepartmentName. Department</span></span></p>
+
+<p style=""margin-left:40px; text-align:justify""><span style=""font-size:15px""><span style=""font-family:Times New Roman"">We found #EmployeeName </span><span style=""font-family:Times New Roman"">a warm and friendly person by nature who is well liked by his peers. </span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""margin-left:40px; text-align:justify"">&nbsp;</p>
+
+<p style=""margin-left:40px; text-align:justify""><span style=""font-size:15px""><span style=""font-family:Times New Roman"">Md. Riaz Mahmud<br />
+Head of Human Resource &amp; Administration</span></span><br />
+&nbsp;</p>
+</div>
+</div>
+
+<p>&nbsp;</p>
+"
+51,22,English,"<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">&nbsp;</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%""><span style=""font-size:14px""><span style=""font-family:Calibri"">Date:<strong>#CurrentDate</strong></span></span></div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p><span style=""font-size:14px""><span style=""font-family:Calibri"">The Visa Officer<br />
+High Commission of India<br />
+Bangladesh</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Subject: <strong>Request for issuance of Visa</strong></span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">Dear Sir</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:justify; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">We would like to inform you that #EmployeeName, #FatherName and #MotherName, has been working in #CompanyName #JoiningDate. His current position is #DesignationName.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">#EmployeeName, a Bangladeshi citizen, expressed interest in visiting India for tourism &amp; our organization has no objection regarding his visit to India.</span></span></p>
+
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">The necessary visa application forms duly filled along with pictures are enclosed herewith. His passport details are appended below:</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); width:100%"">
+<table border=""0"" cellpadding=""0"" cellspacing=""0"" style=""width:100%"">
+	<tbody>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Name</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #EmployeeName</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Passport Number</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #PassportNo</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Date of Issue</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #IssueDate</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>ExpiryDate</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #ExpiryDate</strong></span></span></td>
+		</tr>
+		<tr>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>Nationality</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>:</strong></span></span></td>
+			<td><span style=""font-size:14px""><span style=""font-family:Calibri""><strong>&nbsp; #Nationality</strong></span></span></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">In view, we request your good office to issue his Visa to facilitate his journey. Thanking you in advance and assuring you of our cooperation at all time.</span></span></p>
+</div>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%""><span style=""font-size:14px""><span style=""font-family:Calibri"">Yours truly</span></span><br />
+&nbsp;</div>
+
+<p>&nbsp;</p>
+
+<div style=""font-family:Calibri (Body); text-align:Left; width:100%"">
+<p style=""text-align:justify""><span style=""font-size:14px""><span style=""font-family:Calibri"">M Rashidul Hasan<br />
+Managing Director<br />
+<strong>Systech Digital Limited</strong></span></span></p>
+</div>
+
+<p>&nbsp;</p>
+"
+52,23,English,"<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Date:</span></span><strong>#CurrentDate </strong></p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Ref No:<strong>#RefNo</strong></span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:center""><strong><span style=""font-size:16.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">TO WHOM IT MAY CONCERN</span></span></strong></p>
+
+<p style=""text-align:center"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">This is to certify that #EmployeeName<span style=""color:black"">&nbsp;</span></span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">has worked&nbsp;</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">under the title of #DesignationName</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">&nbsp;for #TotalServiceAge with </span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">#CompanyName since #JoiningDate</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">. He got the clearance at the time of resignation from all the required/relevant departments of the company. So, there is no any obligation on&nbsp; #EmployeeName&nbsp;</span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">after the date of his resignation from the company.</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">This letter is issued on the request of </span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;""><span style=""color:black"">#EmployeeName</span></span></span><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">.&nbsp; </span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Regards,</span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify""><span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;"">Nahid Mowla Mouri<br />
+Chairman</span></span><br />
+<span style=""font-size:13.0pt""><span style=""font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;""><strong>Systech Digital Limited</strong></span></span></p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+
+<p style=""text-align:justify"">&nbsp;</p>
+"
+56,25,English,"<p>Date: #current_date</p><p>&nbsp;</p><p>&nbsp;</p><p><strong>#employee_name</strong>&nbsp;</p><p><strong>ID:&nbsp;#employee_id</strong></p><p>&nbsp;</p><p><strong>&nbsp;</strong></p><p><strong>Subject: Clearance Letter</strong></p><p>&nbsp;</p><p>&nbsp;</p><p>Dear <strong>#employee_name</strong>,</p><p>&nbsp;</p><p>With reference to your resignation letter dated #resignation_receive_date, we hereby accept your resignation and agree to relieve you from the duties effective from #resignation_date. You have worked in our company from #joining_date to #resignation_date, where your last designation was #designation, #department Department.</p><p><br>The company expects you to maintain confidentiality of the Company affairs and not to share any information which may cause loss or damage of Company image or incur loss to the business in future.</p><p>&nbsp;</p><p>This is mutually agreed that you are being released from your service and the company has no allegation or claim against you.</p><p>&nbsp;</p><p>The management would like to thank you for your service and we wish you all the best in your future endeavors.</p><p><br><br>&nbsp;</p><p>Yours Sincerely</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>_________________</p><p><strong>Md. Riaz Mahmud</strong></p><p>Head of Human Resource &amp; Administration</p>"
+57,26,English,<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p><strong>TO WHOM IT MAY CONCERN</strong></p><p><br>This is to certify that #employee_name (ID: #employee_id) is a full-time permanent employee of #office_name. He joined us on #joining_date where his designation is #designation (#department).</p><p>#employee_name is a warm and friendly person who is well liked by his peers.</p><p><br>_______________<br>Md. Riaz Mahmud<br>Head of Human Resource &amp; Administration</p><p>Dated: #current_date</p>
+58,27,English,"<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p><strong>TO WHOM IT MAY CONCERN</strong></p><p><br>This is to certify that #employee_name (ID: #employee_id) is an employee of #office_name. He joined us on #joining_date and left us on #resignation_date where his last designation was #designation, #department Department.</p><p>#employee_name is a warm and friendly person who is well liked by his peers.</p><p>&nbsp;</p><p><br>________________<br>Md. Riaz Mahmud<br>Head of Human Resource &amp; Administration</p><p>Dated: #current_date</p>"
+59,28,English,"<p>Date: #current_date</p><p><strong>TO WHOM IT MAY CONCERN</strong></p><p>This is to certify that #employee_name, bearing Bangladesh Passport No. #passport_no is currently employed as #designation at #office_name. He is working with us since #joining_date. He plans to visit #country and his leave has been granted from #leave_start to #leave_end and the company has no objection to his visit. He will bear all the expenses for this visit and will resume duty upon arrival.</p><p>Sincerely Yours,</p><p><br>Md. Riaz Mahmud<br>Head of Human Resource &amp; Administration&nbsp;<br>E-mail: riaz.mahmud@mirtelecom-bd.com</p>"

@@ -66,11 +66,6 @@ class User extends Authenticatable
             return false;
         }
 
-        // HR Admin always has full access
-        if ($role->name === 'HR Admin') {
-            return true;
-        }
-
         return $role->menuItems()->where('slug', $slug)->exists();
     }
 

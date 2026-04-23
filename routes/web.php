@@ -25,6 +25,14 @@ use App\Http\Controllers\Settings\DeviceController;
 use App\Http\Controllers\EmployeeAttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RosterController;
+use App\Http\Controllers\Roster\RosterTimeController;
+use App\Http\Controllers\ReportTemplateController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TeamLead\AttendanceApprovalController;
+use App\Http\Controllers\TeamLead\SupervisorRemarkController;
+use App\Http\Controllers\Api\WorkingDayController;
+use App\Http\Controllers\Api\DeviceLogController;
+use App\Http\Controllers\ReportGeneratorController;
 
 Route::get('/', function () {
     return view('/auth/login');
@@ -48,9 +56,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Notifications
-    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
 // Security management routes (protected by menu-based permission check)
@@ -66,6 +74,9 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
 Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')->group(function () {
     Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
     Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
+    Route::get('employees/export/pdf', [EmployeeController::class, 'exportPdf'])->name('employees.export.pdf');
+    Route::get('employees/export/word', [EmployeeController::class, 'exportWord'])->name('employees.export.word');
+    Route::get('employees/export/preview', [EmployeeController::class, 'exportPreview'])->name('employees.export.preview');
     Route::get('employees/next-code', [EmployeeController::class, 'getNextCode'])->name('employees.next-code');
     Route::delete('employees/experience/{experience}', [EmployeeController::class, 'destroyExperience'])->name('employees.delete-experience');
     Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
@@ -87,6 +98,10 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::post('leave-accounts/update-bulk', [LeaveBalanceController::class, 'updateBulk'])->name('leave-balances.update-bulk');
 
     // Attendance routes
+    Route::get('attendances/export/excel', [AttendanceController::class, 'exportExcel'])->name('attendances.export.excel');
+    Route::get('attendances/export/csv', [AttendanceController::class, 'exportCsv'])->name('attendances.export.csv');
+    Route::get('attendances/export/pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export.pdf');
+    Route::get('attendances/export/word', [AttendanceController::class, 'exportWord'])->name('attendances.export.word');
     Route::get('attendances', [AttendanceController::class, 'index'])->name('attendances.index');
     Route::get('attendances/records', [AttendanceController::class, 'records'])->name('attendances.records');
     Route::post('attendances/process', [AttendanceController::class, 'processLogs'])->name('attendances.process');
@@ -95,6 +110,15 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::get('attendances/approvals', [AttendanceController::class, 'approvals'])->name('attendances.approvals');
     Route::post('attendances/approvals/{id}/approve', [AttendanceController::class, 'approveAdjustment'])->name('attendances.approve-adjustment');
     Route::post('attendances/approvals/{id}/reject', [AttendanceController::class, 'rejectAdjustment'])->name('attendances.reject-adjustment');
+
+    // Report templates routes
+    Route::resource('report-templates', ReportTemplateController::class);
+
+    // Report Generator
+    Route::get('reports/generate', [ReportGeneratorController::class, 'index'])->name('reports.generate');
+    Route::get('reports/generate/fields', [ReportGeneratorController::class, 'getFields'])->name('reports.generate.fields');
+    Route::post('reports/generate/preview', [ReportGeneratorController::class, 'preview'])->name('reports.generate.preview');
+    Route::post('reports/generate/pdf', [ReportGeneratorController::class, 'generatePdf'])->name('reports.generate.pdf');
 });
 
 // Employee specific routes
@@ -116,14 +140,14 @@ Route::middleware(['auth', 'verified'])->prefix('team-lead')->name('team-lead.')
     Route::get('leave-applications/history', [LeaveApplicationController::class, 'historyTeamLead'])->name('leave-applications.history');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatusTeamLead'])->name('leave-applications.status');
 
-    Route::get('attendances/approvals', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'index'])->name('attendances.approvals');
-    Route::post('attendances/approvals/{id}/approve', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'approve'])->name('attendances.approve');
-    Route::post('attendances/approvals/{id}/reject', [App\Http\Controllers\TeamLead\AttendanceApprovalController::class, 'reject'])->name('attendances.reject');
+    Route::get('attendances/approvals', [AttendanceApprovalController::class, 'index'])->name('attendances.approvals');
+    Route::post('attendances/approvals/{id}/approve', [AttendanceApprovalController::class, 'approve'])->name('attendances.approve');
+    Route::post('attendances/approvals/{id}/reject', [AttendanceApprovalController::class, 'reject'])->name('attendances.reject');
     
-    Route::get('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'index'])->name('remarks.index');
-    Route::get('remarks/create', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'create'])->name('remarks.create');
-    Route::post('remarks', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'store'])->name('remarks.store');
-    Route::delete('remarks/{remark}', [App\Http\Controllers\TeamLead\SupervisorRemarkController::class, 'destroy'])->name('remarks.destroy');
+    Route::get('remarks', [SupervisorRemarkController::class, 'index'])->name('remarks.index');
+    Route::get('remarks/create', [SupervisorRemarkController::class, 'create'])->name('remarks.create');
+    Route::post('remarks', [SupervisorRemarkController::class, 'store'])->name('remarks.store');
+    Route::delete('remarks/{remark}', [SupervisorRemarkController::class, 'destroy'])->name('remarks.destroy');
 });
 
 // Settings management routes
@@ -156,11 +180,11 @@ Route::middleware(['auth', 'verified'])->prefix('roster')->name('roster.')->grou
     Route::get('/export', [RosterController::class, 'export'])->name('export');
 
     // Roster Times Management
-    Route::resource('times', \App\Http\Controllers\Roster\RosterTimeController::class);
+    Route::resource('times', RosterTimeController::class);
 });
 
 // Device Sync API (Exempt from CSRF in bootstrap/app.php)
-Route::post('api/device/sync', [\App\Http\Controllers\Api\DeviceLogController::class, 'sync'])->name('api.device.sync');
+Route::post('api/device/sync', [DeviceLogController::class, 'sync'])->name('api.device.sync');
 
 // Weekly and National holidays lookup for Manual Leave form (authenticated)
 Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
@@ -203,7 +227,7 @@ Route::get('api/weekly-holidays', function (\Illuminate\Http\Request $request) {
 })->middleware('auth')->name('api.weekly-holidays');
 
 // Get actual working days count (incorporating roster logic) for Leave Duration calculation
-Route::get('api/check-working-days', [\App\Http\Controllers\Api\WorkingDayController::class, 'calculate'])
+Route::get('api/check-working-days', [WorkingDayController::class, 'calculate'])
     ->middleware('auth')
     ->name('api.check-working-days');
 

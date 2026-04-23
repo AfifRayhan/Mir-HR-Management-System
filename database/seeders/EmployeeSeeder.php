@@ -16,59 +16,8 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        // Core Users matching existing Employee records (Updating with office_id)
-        $coreEmployees = [
-            ['email' => 'teamlead@example.com', 'code' => 'EMP001', 'first' => 'Nadia', 'last' => 'Khan', 'manager_code' => null, 'department' => 'HR Admin & Legal', 'designation' => 'Manager', 'grade' => 'Management', 'salary' => 85000],
-            ['email' => 'david.chen@example.com', 'code' => 'EMP002', 'first' => 'David', 'last' => 'Chen', 'manager_code' => null, 'department' => 'Planning & Engineering', 'designation' => 'Manager', 'grade' => 'Management', 'salary' => 75000],
-            ['email' => 'employee@example.com', 'code' => 'EMP003', 'first' => 'Rakib', 'last' => 'Islam', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Executive', 'grade' => 'Management', 'salary' => 45000],
-            ['email' => 'amir.khan@example.com', 'code' => 'EMP004', 'first' => 'Amir', 'last' => 'Khan', 'manager_code' => 'EMP001', 'department' => 'HR Admin & Legal', 'designation' => 'Assistant Manager', 'grade' => 'Management', 'salary' => 55000],
-            ['email' => 'linda.okafor@example.com', 'code' => 'EMP005', 'first' => 'Linda', 'last' => 'Okafor', 'manager_code' => 'EMP004', 'department' => 'HR Admin & Legal', 'designation' => 'Office Assistant', 'grade' => 'Peon', 'salary' => 15000],
-            ['email' => 'marco.rossi@example.com', 'code' => 'EMP006', 'first' => 'Marco', 'last' => 'Rossi', 'manager_code' => 'EMP004', 'department' => 'Restaurant - FOH', 'designation' => 'Restaurant Manager', 'grade' => 'Restaurant', 'salary' => 35000],
-        ];
-
-
         $defaultTime = OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null;
-        $defaultOffice = Office::first();
 
-        foreach ($coreEmployees as $data) {
-            $user = \App\Models\User::where('email', $data['email'])->first();
-
-            if ($user && $user->employee_id !== $data['code']) {
-                $user->update(['employee_id' => $data['code']]);
-            }
-
-            $manager = $data['manager_code'] ? Employee::where('employee_code', $data['manager_code'])->first() : null;
-
-            $deptId = Department::where('name', $data['department'])->value('id') ?? Department::firstOrCreate(['name' => $data['department']])->id;
-            $desigId = Designation::where('name', $data['designation'])->value('id') ?? Designation::firstOrCreate(['name' => $data['designation']])->id;
-            $gradeId = Grade::where('name', $data['grade'])->value('id') ?? Grade::firstOrCreate(['name' => $data['grade']])->id;
-
-            $bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
-            $fatherSuffixes = ['Ahmed', 'Uddin', 'Chowdhury', 'Hossain', 'Khan'];
-            $motherSuffixes = ['Begum', 'Akter', 'Khatun', 'Nahar', 'Lata'];
-
-            Employee::updateOrCreate(
-                ['employee_code' => $data['code']],
-                [
-                    'user_id' => $user?->id,
-                    'name' => trim($data['first'] . ' ' . $data['last']),
-                    'email' => $data['email'],
-                    'personal_email' => $data['email'],
-                    'blood_group' => $bloodGroups[array_rand($bloodGroups)],
-                    'father_name' => $data['last'] . ' ' . $fatherSuffixes[array_rand($fatherSuffixes)],
-                    'mother_name' => 'Mrs. ' . $motherSuffixes[array_rand($motherSuffixes)],
-                    'department_id' => $deptId,
-                    'designation_id' => $desigId,
-                    'grade_id' => $gradeId,
-                    'office_id' => $defaultOffice->id,
-                    'office_time_id' => $defaultTime,
-                    'reporting_manager_id' => $manager?->id,
-                    'status' => 'active',
-                    'joining_date' => now()->format('Y-m-d'),
-                    'gross_salary' => $data['salary'],
-                ]
-            );
-        }
         // composer require phpoffice/phpspreadsheet
 
         $filePath = base_path('EmployeeSummary_transformed.xlsx');
@@ -126,13 +75,21 @@ class EmployeeSeeder extends Seeder
             $spouseName = trim((string) ($row['V'] ?? ''));
             $gender = trim((string) ($row['W'] ?? ''));
             $religion = trim((string) ($row['X'] ?? ''));
-            $nationalId = trim((string) ($row['Y'] ?? ''));
+            $formatNumber = function($val) {
+                $val = trim((string)$val);
+                if (is_numeric($val) && stripos($val, 'E') !== false) {
+                    return number_format((float)$val, 0, '', '');
+                }
+                return $val;
+            };
+
+            $nationalId = $formatNumber($row['Y'] ?? '');
             $maritalStatus = trim((string) ($row['Z'] ?? ''));
             $noOfChildren = trim((string) ($row['AA'] ?? ''));
-            $contactNo = trim((string) ($row['AB'] ?? ''));
+            $contactNo = $formatNumber($row['AB'] ?? '');
             $emergencyContactName = trim((string) ($row['AC'] ?? ''));
             $emergencyContactAddress = trim((string) ($row['AD'] ?? ''));
-            $emergencyContactNo = trim((string) ($row['AE'] ?? ''));
+            $emergencyContactNo = $formatNumber($row['AE'] ?? '');
             $emergencyContactRelation = trim((string) ($row['AF'] ?? ''));
             $presentAddress = trim((string) ($row['AG'] ?? ''));
             $permanentAddress = trim((string) ($row['AH'] ?? ''));
@@ -157,12 +114,8 @@ class EmployeeSeeder extends Seeder
             }
 
             $existing = Employee::where('employee_code', $empId)->first();
-            if ($existing) {
-                continue;
-            }
 
-            Employee::create([
-                'employee_code' => $empId,
+            $employeeData = [
                 'hrm_employee_id' => !empty($hrmEmployeeId) ? $hrmEmployeeId : null,
                 'name' => $name,
                 'email' => !empty($email) ? $email : null,
@@ -196,10 +149,17 @@ class EmployeeSeeder extends Seeder
                 'grade_id' => $gradeModel->id,
                 'office_id' => $officeModel->id,
                 'office_time_id' => $defaultTime,
-                'reporting_manager_id' => null, // resolved in second pass below
                 'status' => (strtolower($status) === 'active') ? 'active' : 'inactive',
                 'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,
-            ]);
+            ];
+
+            if ($existing) {
+                $existing->update($employeeData);
+            } else {
+                $employeeData['employee_code'] = $empId;
+                $employeeData['reporting_manager_id'] = null;
+                Employee::create($employeeData);
+            }
 
             // Store manager mapping (empCode => managerHrmId) for second pass
             if (!empty($managerCode)) {
