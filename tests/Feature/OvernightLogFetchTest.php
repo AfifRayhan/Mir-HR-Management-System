@@ -164,4 +164,64 @@ class OvernightLogFetchTest extends TestCase
         $this->assertTrue($service->isWorkingDay($employee, '2026-04-20'), 'Monday should be a working day');
         $this->assertFalse($service->isWorkingDay($employee, '2026-04-21'), 'Tuesday should NOT be a working day if not rostered');
     }
+
+    public function test_checkout_of_previous_shift_is_not_reused_as_checkin_of_next_day()
+    {
+        $user = \App\Models\User::create([
+            'name' => 'Admin 4',
+            'email' => 'admin4@example.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $officeTime = \App\Models\OfficeTime::create([
+            'shift_name' => 'Roster',
+            'start_time' => '10:00:00',
+            'end_time'   => '18:00:00',
+        ]);
+
+        $employee = \App\Models\Employee::create([
+            'name' => 'Test Employee 4',
+            'employee_code' => 'T004',
+            'email' => 'test4@example.com',
+            'roster_group'  => 'NOC (Borak)',
+            'office_time_id' => $officeTime->id,
+            'status' => 'active'
+        ]);
+
+        RosterTime::create([
+            'group_slug'    => 'noc-borak',
+            'shift_key'     => 'N4',
+            'display_label' => 'Night 4',
+            'start_time'    => '22:00:00',
+            'end_time'      => '06:00:00',
+            'is_overnight'  => true,
+        ]);
+
+        // Day 1 (Monday) and Day 2 (Tuesday) both have Night Shift (10 PM - 6 AM)
+        RosterSchedule::create(['employee_id' => $employee->id, 'date' => '2026-04-20', 'shift_type' => 'N4']);
+        RosterSchedule::create(['employee_id' => $employee->id, 'date' => '2026-04-21', 'shift_type' => 'N4']);
+
+        // Logs:
+        // Day 1: 10:05 PM (Check-in Day 1)
+        // Day 2: 06:10 AM (Check-out Day 1)
+        // Day 2: 10:05 PM (Check-in Day 2)
+        // Day 3: 06:10 AM (Check-out Day 2)
+        Attendance::create(['user_id' => 'T004', 'punch_time' => '2026-04-20 22:05:00', 'machine_id' => 1]);
+        Attendance::create(['user_id' => 'T004', 'punch_time' => '2026-04-21 06:10:00', 'machine_id' => 1]);
+        Attendance::create(['user_id' => 'T004', 'punch_time' => '2026-04-21 22:05:00', 'machine_id' => 1]);
+        Attendance::create(['user_id' => 'T004', 'punch_time' => '2026-04-22 06:10:00', 'machine_id' => 1]);
+
+        $service = new AttendanceService();
+
+        // Process Day 2
+        $service->processEmployeeAttendance($employee, '2026-04-21');
+
+        $record = \App\Models\AttendanceRecord::where('employee_id', $employee->id)
+            ->whereDate('date', '2026-04-21')->first();
+
+        $this->assertNotNull($record);
+        // CURRENT BUG: $record->in_time would be 2026-04-21 06:10:00
+        // DESIRED: $record->in_time should be 2026-04-21 22:05:00
+        $this->assertEquals('2026-04-21 22:05:00', $record->in_time->toDateTimeString(), 'Check-in for Day 2 should be the 10:05 PM log, not the 6:10 AM log');
+    }
 }
