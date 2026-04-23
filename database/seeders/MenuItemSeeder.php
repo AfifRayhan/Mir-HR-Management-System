@@ -23,6 +23,7 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 5],
             ['name' => 'Attendances', 'slug' => 'attendances',        'icon' => 'bi-clock-history',  'route_name' => null,                 'sort_order' => 6],
             ['name' => 'Roster',     'slug' => 'roster',            'icon' => 'bi-calendar3',      'route_name' => 'roster.index',      'sort_order' => 7],
+            ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 8],
         ];
 
         $menuModels = [];
@@ -141,6 +142,20 @@ class MenuItemSeeder extends Seeder
 
         foreach ($rosterChildren as $child) {
             $child['parent_id'] = $menuModels['roster']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Define child menu items under Reports
+        $reportsChildren = [
+            ['name' => 'Generate Report', 'slug' => 'reports-generate', 'icon' => 'bi-file-earmark-plus', 'route_name' => 'personnel.reports.generate', 'sort_order' => 1],
+            ['name' => 'Report Templates', 'slug' => 'personnel-report-templates', 'icon' => 'bi-file-earmark-richtext', 'route_name' => 'personnel.report-templates.index', 'sort_order' => 2],
+        ];
+
+        foreach ($reportsChildren as $child) {
+            $child['parent_id'] = $menuModels['reports']->id;
             $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child

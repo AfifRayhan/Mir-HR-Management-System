@@ -14,11 +14,8 @@
                         <p class="mb-0 text-gray-500">{{ __('Manage your organization\'s workforce') }}</p>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="{{ route('personnel.employees.export.excel', request()->query()) }}" class="btn btn-sm btn-outline-success d-flex align-items-center">
-                            <i class="bi bi-file-earmark-excel me-2"></i>{{ __('Export Excel') }}
-                        </a>
-                        <a href="{{ route('personnel.employees.export.csv', request()->query()) }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
-                            <i class="bi bi-filetype-csv me-2"></i>{{ __('Export CSV') }}
+                        <a href="{{ route('personnel.employees.export.preview', request()->query()) }}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                            <i class="bi bi-eye me-2"></i>{{ __('Preview & Export') }}
                         </a>
                         <a href="{{ route('personnel.employees.create') }}" class="btn btn-sm btn-primary d-flex align-items-center">
                             <i class="bi bi-person-plus me-2"></i>{{ __('Add Employee') }}

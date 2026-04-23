@@ -1,8 +1,8 @@
-# Overnight Shift Support — Task Tracker
-
-| # | Task | Status |
-|---|---|---|
-| 1 | Add `is_overnight` flag to `roster_times` | done |
-| 2 | Fix log fetching to span midnight for overnight shifts | done |
-| 3 | Verify late calculation for overnight shifts (regression test) | done |
-| 4 | Verify `isWorkingDay()` for second calendar day (regression test) | done |
+| Task | Status |
+|------|--------|
+| Task 1: Column Configuration in EmployeesExport | in_progress |
+| Task 2: Routes & Controller | pending |
+| Task 3: Preview Blade Template | pending |
+| Task 4: Update Index Page | pending |
+| Task 5: Cleanup & Cache Clear | pending |
+| Task 6: Manual Verification | pending |

@@ -10,6 +10,8 @@ use App\Models\ManualAttendanceAdjustment;
 use App\Models\Office;
 use App\Services\AttendanceService;
 use App\Services\NotificationService;
+use App\Exports\AttendancesExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -19,6 +21,64 @@ class AttendanceController extends Controller
     public function __construct(AttendanceService $attendanceService)
     {
         $this->attendanceService = $attendanceService;
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(new AttendancesExport($request->all(), 'excel'), 'attendance_' . date('Y-m-d') . '.xlsx');
+    }
+
+    public function exportCsv(Request $request)
+    {
+        return Excel::download(new AttendancesExport($request->all(), 'csv'), 'attendance_' . date('Y-m-d') . '.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+        return Excel::download(new AttendancesExport($request->all(), 'pdf'), 'attendance_' . date('Y-m-d') . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+    }
+
+    public function exportWord(Request $request)
+    {
+        $date = $request->input('date', now()->toDateString());
+        $departmentId = $request->input('department_id');
+        $officeId = $request->input('office_id');
+        $status = $request->input('status');
+        $search = $request->input('search');
+
+        $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
+            ->whereHas('employee', function ($q) {
+                $q->where('status', 'active');
+            })
+            ->where('date', $date);
+
+        if ($departmentId) {
+            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+        }
+        if ($officeId) {
+            $query->whereHas('employee', fn($q) => $q->where('office_id', $officeId));
+        }
+        if ($status) {
+            $query->where('status', $status);
+        }
+        if ($search) {
+            $query->whereHas('employee', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('employee_code', 'like', "%{$search}%");
+            });
+        }
+
+        $records = $query->get();
+        $filename = 'attendance_' . $date . '.doc';
+
+        return response()->view('personnel.attendance.exports.word', [
+            'records' => $records,
+            'date' => $date
+        ])
+        ->header('Content-Type', 'application/vnd.ms-word')
+        ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 
     public function index(Request $request)

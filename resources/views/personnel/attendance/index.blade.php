@@ -22,13 +22,17 @@
                             <a href="{{ route('personnel.attendances.adjust') }}" class="btn btn-outline-success">
                                 <i class="bi bi-pencil-square me-2"></i>{{ __('Manual Adjustment') }}
                             </a>
-                            <!--<form action="{{ route('personnel.attendances.process') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="date" value="{{ $date }}">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-arrow-repeat me-2"></i>{{ __('Process Logs') }}
+                            <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-download me-2"></i>{{ __('') }}
                                 </button>
-                            </form> -->
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('excel')"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel (.xlsx)</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('csv')"><i class="bi bi-filetype-csv text-secondary me-2"></i>CSV (.csv)</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('pdf')"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF (.pdf)</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('word')"><i class="bi bi-file-earmark-word text-primary me-2"></i>Word (.doc)</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,6 +161,22 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+        const exportRoutes = {
+            excel: "{{ route('personnel.attendances.export.excel') }}",
+            csv: "{{ route('personnel.attendances.export.csv') }}",
+            pdf: "{{ route('personnel.attendances.export.pdf') }}",
+            word: "{{ route('personnel.attendances.export.word') }}",
+        };
+
+        function downloadAttendance(format) {
+            const params = new URLSearchParams(window.location.search);
+            // Ensure date is included if not in URL but exists in input
+            if (!params.has('date')) {
+                params.set('date', document.getElementById('attendance_date').value);
+            }
+            window.location.href = exportRoutes[format] + '?' + params.toString();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             flatpickr('#attendance_date', {
                 dateFormat: 'Y-m-d',

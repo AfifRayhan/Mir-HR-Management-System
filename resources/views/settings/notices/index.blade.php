@@ -29,7 +29,7 @@
                 <div class="col-lg-4">
                     <div class="hr-panel">
                         <div class="hr-panel-title mb-4">
-                            <i class="bi bi-plus-circle me-2 text-primary"></i>{{ __('Add Notice/Event') }}
+                            <i class="bi bi-plus-circle me-2 text-success"></i>{{ __('Add Notice/Event') }}
                         </div>
 
                         <form action="{{ route('settings.notices.store') }}" method="POST">
@@ -67,7 +67,7 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-success w-100 py-2 rounded-pill shadow-sm">
                                 <i class="bi bi-megaphone me-2"></i>{{ __('Publish Notice') }}
                             </button>
                         </form>
@@ -78,7 +78,7 @@
                 <div class="col-lg-8">
                     <div class="hr-panel p-0 overflow-hidden">
                         <div class="hr-panel-title p-4 border-bottom">
-                            <i class="bi bi-list-task me-2 text-primary"></i>{{ __('Notice List') }}
+                            <i class="bi bi-list-task me-2 text-success"></i>{{ __('Notice List') }}
                         </div>
                         <div class="table-responsive">
                             <table class="table hr-table mb-0">
@@ -102,7 +102,7 @@
                                                 @if($notice->type === 'notice')
                                                     <span class="badge bg-info-soft text-info">{{ __('Notice') }}</span>
                                                 @else
-                                                    <span class="badge bg-primary-soft text-primary" style="background-color: #e0e7ff; color: #4338ca;">{{ __('Event') }}</span>
+                                                    <span class="badge bg-success-soft text-success" style="background-color: #e0e7ff; color: #4338ca;">{{ __('Event') }}</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -117,7 +117,7 @@
                                             </td>
                                             <td class="pe-4 text-end">
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="modal" data-bs-target="#editNoticeModal{{ $notice->id }}" title="{{ __('Edit') }}">
+                                                    <button type="button" class="btn btn-sm btn-outline-success border-0" data-bs-toggle="modal" data-bs-target="#editNoticeModal{{ $notice->id }}" title="{{ __('Edit') }}">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </button>
                                                     <form action="{{ route('settings.notices.destroy', $notice) }}" method="POST" data-confirm data-confirm-message="{{ __('Are you sure you want to delete this notice?') }}">
@@ -136,7 +136,7 @@
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content rounded-4 border-0 shadow">
                                                     <div class="modal-header border-0 pb-0 px-4 pt-4">
-                                                        <h5 class="modal-title fw-bold text-primary">{{ __('Edit Notice/Event') }}</h5>
+                                                        <h5 class="modal-title fw-bold text-success">{{ __('Edit Notice/Event') }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <form action="{{ route('settings.notices.update', $notice) }}" method="POST">
@@ -175,7 +175,7 @@
                                                         </div>
                                                         <div class="modal-footer border-0 p-4 pt-0">
                                                             <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                                                            <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Update Notice') }}</button>
+                                                            <button type="submit" class="btn btn-success rounded-pill px-4">{{ __('Update Notice') }}</button>
                                                         </div>
                                                     </form>
                                                 </div>

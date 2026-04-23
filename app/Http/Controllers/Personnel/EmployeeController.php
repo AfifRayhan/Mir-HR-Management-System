@@ -409,12 +409,122 @@ class EmployeeController extends Controller
 
     public function exportExcel(Request $request)
     {
-        return Excel::download(new EmployeesExport($request->all()), 'employees_' . date('Y-m-d_H-i-s') . '.xlsx');
+        $columns = $request->input('columns', null);
+        return Excel::download(new EmployeesExport($request->all(), $columns, false, 'excel'), 'employees_' . date('Y-m-d_H-i-s') . '.xlsx');
     }
 
     public function exportCsv(Request $request)
     {
-        return Excel::download(new EmployeesExport($request->all()), 'employees_' . date('Y-m-d_H-i-s') . '.csv', \Maatwebsite\Excel\Excel::CSV);
+        $columns = $request->input('columns', null);
+        return Excel::download(new EmployeesExport($request->all(), $columns, false, 'csv'), 'employees_' . date('Y-m-d_H-i-s') . '.csv', \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+        $columns = $request->input('columns', null);
+        return Excel::download(new EmployeesExport($request->all(), $columns, true, 'pdf'), 'employees_' . date('Y-m-d_H-i-s') . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+    }
+
+    public function exportWord(Request $request)
+    {
+        $allColumns = EmployeesExport::getColumnDefinitions();
+        $selectedColumns = $request->input('columns', EmployeesExport::DEFAULT_COLUMNS);
+        $selectedColumns = array_values(array_intersect($selectedColumns, array_keys($allColumns)));
+
+        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
+
+        // Apply same filters as preview
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('employee_code', 'like', "%{$request->search}%");
+            });
+        }
+        if ($request->office_id) $query->where('office_id', $request->office_id);
+        if ($request->department_id) $query->where('department_id', $request->department_id);
+        if ($request->designation_id) $query->where('designation_id', $request->designation_id);
+        if ($request->section_id) $query->where('section_id', $request->section_id);
+        if ($request->status) $query->where('status', $request->status);
+
+        // Sorting
+        $sortColumn = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('direction', 'asc');
+        if ($sortColumn === 'employee_code') {
+            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
+                  ->orderBy('employee_code', $sortDirection);
+        } else {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        $employees = $query->get();
+
+        $filename = 'employees_' . date('Y-m-d_H-i-s') . '.doc';
+
+        return response()->view('personnel.employees.exports.word', [
+            'employees' => $employees,
+            'allColumns' => $allColumns,
+            'selectedColumns' => $selectedColumns,
+        ])
+        ->header('Content-Type', 'application/vnd.ms-word')
+        ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+
+    public function exportPreview(Request $request)
+    {
+        $allColumns = EmployeesExport::getColumnDefinitions();
+        $selectedColumns = $request->input('columns', EmployeesExport::DEFAULT_COLUMNS);
+
+        // Validate columns
+        $selectedColumns = array_values(array_intersect($selectedColumns, array_keys($allColumns)));
+        if (empty($selectedColumns)) {
+            $selectedColumns = EmployeesExport::DEFAULT_COLUMNS;
+        }
+
+        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
+
+        // Reuse same filters as index
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('employee_code', 'like', '%' . $request->search . '%');
+            });
+        }
+        if ($request->department_id) $query->where('department_id', $request->department_id);
+        if ($request->office_id) $query->where('office_id', $request->office_id);
+        if ($request->designation_id) $query->where('designation_id', $request->designation_id);
+        if ($request->section_id) $query->where('section_id', $request->section_id);
+        if ($request->status) $query->where('status', $request->status);
+
+        // Sorting
+        $sortColumn = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('direction', 'asc');
+        if ($sortColumn === 'employee_code') {
+            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
+                  ->orderBy('employee_code', $sortDirection);
+        } else {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        $employees = $query->paginate(50)->withQueryString();
+
+        $offices = Office::orderBy('name')->get();
+        $departments = Department::orderBy('name')->get();
+        $sections = Section::orderBy('name')->get();
+        $designations = Designation::orderBy('name')->get();
+
+        return view('personnel.employees.export-preview', [
+            'employees' => $employees,
+            'allColumns' => $allColumns,
+            'selectedColumns' => $selectedColumns,
+            'offices' => $offices,
+            'departments' => $departments,
+            'sections' => $sections,
+            'designations' => $designations,
+            'sortColumn' => $sortColumn,
+            'sortDirection' => $sortDirection,
+        ]);
     }
 
     /**
@@ -440,7 +550,7 @@ class EmployeeController extends Controller
     }
 
     //Delete Qualification
-    public function destroyQualification(\App\Models\EmployeeQualification $qualification)
+    public function destroyQualification(EmployeeQualification $qualification)
     {
         try {
             $qualification->delete();
