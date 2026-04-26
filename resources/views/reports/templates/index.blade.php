@@ -9,7 +9,7 @@
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Report Templates') }}</h5>
+                        <h5 class="mb-1 text-2xl font-bold">{{ __('Letter Template') }}</h5>
                         <p class="mb-0 text-gray-500">{{ __('Manage dynamic document templates and placeholders.') }}</p>
                     </div>
                     <div>
@@ -32,7 +32,7 @@
                     <table class="table hr-table mb-0 align-middle">
                         <thead class="bg-light">
                             <tr>
-                                <th class="ps-4 py-3">{{ __('Report Name') }}</th>
+                                <th class="ps-4 py-3">{{ __('Letter Name') }}</th>
                                 <th class="py-3">{{ __('Format') }}</th>
                                 <th class="py-3">{{ __('Status') }}</th>
                                 <th class="pe-4 text-end py-3">{{ __('Actions') }}</th>
@@ -77,7 +77,7 @@
                                     <td colspan="4" class="text-center py-5">
                                         <div class="text-muted">
                                             <i class="bi bi-file-earmark-text display-4 mb-3 d-block opacity-25"></i>
-                                            {{ __('No report templates found. Click "Add Template" to create one.') }}
+                                            {{ __('No letter templates found. Click "Add Template" to create one.') }}
                                         </div>
                                     </td>
                                 </tr>

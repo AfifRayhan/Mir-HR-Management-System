@@ -34,7 +34,7 @@
                         <a href="{{ route('personnel.report-templates.index') }}" class="text-secondary text-decoration-none mb-2 d-inline-block small hover-opacity">
                             <i class="bi bi-arrow-left"></i> {{ __('Back to Templates') }}
                         </a>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Edit Report Template') }}</h5>
+                        <h5 class="mb-1 text-2xl font-bold">{{ __('Edit Letter Template') }}</h5>
                         <p class="mb-0 text-gray-500">{{ __('Modify the template structure and dynamic placeholders.') }}</p>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                         <div class="hr-panel mb-4 shadow-sm border-0 rounded-4">
                             <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-info-circle me-2 text-success"></i>{{ __('Template Settings') }}</h6>
                             <div class="mb-3">
-                                <label for="report_template_type_id" class="form-label small font-bold text-muted">{{ __('Report Type') }}</label>
+                                <label for="report_template_type_id" class="form-label small font-bold text-muted">{{ __('Letter Type') }}</label>
                                 <select name="report_template_type_id" id="report_template_type_id" class="form-select rounded-3">
                                     @foreach($types as $type)
                                         <option value="{{ $type->id }}" @selected($template->report_template_type_id == $type->id)>{{ $type->name }}</option>

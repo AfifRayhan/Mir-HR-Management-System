@@ -56,7 +56,7 @@ class ReportTemplateController extends Controller
         ]);
 
         return redirect()->route('personnel.report-templates.index')
-            ->with('success', 'Report template created successfully.');
+            ->with('success', 'Letter template created successfully.');
     }
 
     /**
@@ -110,7 +110,7 @@ class ReportTemplateController extends Controller
         }
 
         return redirect()->route('personnel.report-templates.index')
-            ->with('success', 'Report template updated successfully.');
+            ->with('success', 'Letter template updated successfully.');
     }
 
     /**
@@ -122,6 +122,6 @@ class ReportTemplateController extends Controller
         $template->delete();
 
         return redirect()->route('personnel.report-templates.index')
-            ->with('success', 'Report template deleted successfully.');
+            ->with('success', 'Letter template deleted successfully.');
     }
 }

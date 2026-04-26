@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\EmployeesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
 class EmployeeController extends Controller
 {
@@ -423,8 +424,52 @@ class EmployeeController extends Controller
     {
         ini_set('memory_limit', '1024M');
         set_time_limit(300);
-        $columns = $request->input('columns', null);
-        return Excel::download(new EmployeesExport($request->all(), $columns, true, 'pdf'), 'employees_' . date('Y-m-d_H-i-s') . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+        
+        $allColumns = EmployeesExport::getColumnDefinitions();
+        $selectedColumns = $request->input('columns', EmployeesExport::DEFAULT_COLUMNS);
+        $selectedColumns = array_values(array_intersect($selectedColumns, array_keys($allColumns)));
+        if (empty($selectedColumns)) {
+            $selectedColumns = EmployeesExport::DEFAULT_COLUMNS;
+        }
+
+        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
+
+        // Apply filters
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('employee_code', 'like', "%{$request->search}%");
+            });
+        }
+        if ($request->office_id) $query->where('office_id', $request->office_id);
+        if ($request->department_id) $query->where('department_id', $request->department_id);
+        if ($request->designation_id) $query->where('designation_id', $request->designation_id);
+        if ($request->section_id) $query->where('section_id', $request->section_id);
+        if ($request->status) $query->where('status', $request->status);
+
+        // Sorting
+        $sortColumn = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('direction', 'asc');
+        if ($sortColumn === 'employee_code') {
+            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
+                  ->orderBy('employee_code', $sortDirection);
+        } else {
+            $query->orderBy($sortColumn, $sortDirection);
+        }
+
+        $employees = $query->get();
+
+        return PDF::loadView('personnel.employees.exports.pdf', [
+                'employees' => $employees,
+                'allColumns' => $allColumns,
+                'selectedColumns' => $selectedColumns,
+            ])
+            ->setPaper('a3', 'landscape')
+            ->setOption('margin-bottom', 10)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10)
+            ->download('employees_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 
     public function exportWord(Request $request)
