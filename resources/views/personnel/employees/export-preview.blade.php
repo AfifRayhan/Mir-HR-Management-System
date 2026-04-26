@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <form method="GET" action="{{ route('personnel.employees.export.preview') }}" id="exportForm">
+            <form method="GET" action="{{ route('personnel.reports.employees.export.preview') }}" id="exportForm">
                 {{-- Filters --}}
                 <div class="hr-panel mb-4">
                     <div class="row g-3">
@@ -172,35 +172,35 @@
                                 </div>
                             @endforeach
                         </div>
+                    </div>
 
-                        {{-- Sort Controls + Apply All --}}
-                        <div class="d-flex align-items-center flex-wrap gap-3 pt-3 border-top">
-                            <div class="d-flex align-items-center gap-2">
-                                <label class="form-label mb-0 fw-bold small text-gray-600">{{ __('Sort by:') }}</label>
-                                <select name="sort" class="form-select form-select-sm" style="width: auto; min-width: 160px;">
-                                    <option value="created_at" {{ $sortColumn === 'created_at' ? 'selected' : '' }}>{{ __('Created Date') }}</option>
-                                    <option value="employee_code" {{ $sortColumn === 'employee_code' ? 'selected' : '' }}>{{ __('Employee Code') }}</option>
-                                    <option value="name" {{ $sortColumn === 'name' ? 'selected' : '' }}>{{ __('Full Name') }}</option>
-                                    <option value="email" {{ $sortColumn === 'email' ? 'selected' : '' }}>{{ __('Email') }}</option>
-                                    <option value="joining_date" {{ $sortColumn === 'joining_date' ? 'selected' : '' }}>{{ __('Joining Date') }}</option>
-                                    <option value="date_of_birth" {{ $sortColumn === 'date_of_birth' ? 'selected' : '' }}>{{ __('Date of Birth') }}</option>
-                                    <option value="gross_salary" {{ $sortColumn === 'gross_salary' ? 'selected' : '' }}>{{ __('Gross Salary') }}</option>
-                                    <option value="status" {{ $sortColumn === 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
-                                </select>
-                                <select name="direction" class="form-select form-select-sm" style="width: auto;">
-                                    <option value="asc" {{ $sortDirection === 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
-                                    <option value="desc" {{ $sortDirection === 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
-                                </select>
-                            </div>
-                            
-                            <div class="ms-auto d-flex gap-2">
-                                <a href="{{ route('personnel.employees.export.preview') }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-arrow-counterclockwise me-1"></i>{{ __('Reset All') }}
-                                </a>
-                                <button type="submit" class="btn btn-sm btn-success px-4">
-                                    <i class="bi bi-check2-circle me-1"></i>{{ __('Apply All') }}
-                                </button>
-                            </div>
+                    {{-- Sort Controls & Action Buttons (Single Row) --}}
+                    <div class="d-flex align-items-center flex-wrap gap-3 py-3 border-top mt-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="form-label mb-0 fw-bold small text-gray-600">{{ __('Sort by:') }}</label>
+                            <select name="sort" class="form-select form-select-sm" style="width: auto; min-width: 140px;">
+                                <option value="created_at" {{ $sortColumn === 'created_at' ? 'selected' : '' }}>{{ __('Created Date') }}</option>
+                                <option value="employee_code" {{ $sortColumn === 'employee_code' ? 'selected' : '' }}>{{ __('Employee Code') }}</option>
+                                <option value="name" {{ $sortColumn === 'name' ? 'selected' : '' }}>{{ __('Full Name') }}</option>
+                                <option value="email" {{ $sortColumn === 'email' ? 'selected' : '' }}>{{ __('Email') }}</option>
+                                <option value="joining_date" {{ $sortColumn === 'joining_date' ? 'selected' : '' }}>{{ __('Joining Date') }}</option>
+                                <option value="date_of_birth" {{ $sortColumn === 'date_of_birth' ? 'selected' : '' }}>{{ __('Date of Birth') }}</option>
+                                <option value="gross_salary" {{ $sortColumn === 'gross_salary' ? 'selected' : '' }}>{{ __('Gross Salary') }}</option>
+                                <option value="status" {{ $sortColumn === 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
+                            </select>
+                            <select name="direction" class="form-select form-select-sm" style="width: auto;">
+                                <option value="asc" {{ $sortDirection === 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
+                                <option value="desc" {{ $sortDirection === 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
+                            </select>
+                        </div>
+                        
+                        <div class="ms-auto d-flex gap-2">
+                            <a href="{{ route('personnel.reports.employees.export.preview') }}" class="btn btn-sm btn-outline-success px-4 fw-bold">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>{{ __('Reset') }}
+                            </a>
+                            <button type="submit" class="btn btn-sm btn-success px-4 fw-bold">
+                                <i class="bi bi-filter me-1"></i>{{ __('Apply Filters') }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -251,28 +251,53 @@
                     {{ __('Showing :count columns, :total total records', ['count' => count($selectedColumns), 'total' => $employees->total()]) }}
                 </span>
                 <div class="dropdown">
-                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-download me-2"></i>{{ __('') }}
+                    <button class="btn btn-success dropdown-toggle d-flex align-items-center justify-content-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px; border-radius: 12px; padding: 0;">
+                        <i class="bi bi-download fs-5"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4">
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" id="downloadExcel">
-                                <i class="bi bi-file-earmark-excel text-success me-2"></i>{{ __('Excel (.xlsx)') }}
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadExcel">
+                                <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-file-earmark-excel text-success"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('Excel Spreadsheet') }}</div>
+                                    <div class="small text-muted">{{ __('Data with formatting (.xlsx)') }}</div>
+                                </div>
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" id="downloadCsv">
-                                <i class="bi bi-filetype-csv text-secondary me-2"></i>{{ __('CSV (.csv)') }}
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadCsv">
+                                <div class="bg-secondary bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-filetype-csv text-secondary"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('CSV File') }}</div>
+                                    <div class="small text-muted">{{ __('Raw data for other systems (.csv)') }}</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadPdf">
+                                <div class="bg-danger bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('PDF Document') }}</div>
+                                    <div class="small text-muted">{{ __('Print-ready document (.pdf)') }}</div>
+                                </div>
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" id="downloadPdf">
-                                <i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ __('PDF (.pdf)') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#" id="downloadWord">
-                                <i class="bi bi-file-earmark-word text-primary me-2"></i>{{ __('Word (.doc)') }}
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadWord">
+                                <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-file-earmark-word text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('Word Document') }}</div>
+                                    <div class="small text-muted">{{ __('Editable document (.doc)') }}</div>
+                                </div>
                             </a>
                         </li>
                     </ul>
@@ -298,10 +323,10 @@
                     'direction' => request('direction'),
                 ]),
                 'routes' => [
-                    'excel' => route('personnel.employees.export.excel'),
-                    'csv' => route('personnel.employees.export.csv'),
-                    'pdf' => route('personnel.employees.export.pdf'),
-                    'word' => route('personnel.employees.export.word'),
+                    'excel' => route('personnel.reports.employees.export.excel'),
+                    'csv' => route('personnel.reports.employees.export.csv'),
+                    'pdf' => route('personnel.reports.employees.export.pdf'),
+                    'word' => route('personnel.reports.employees.export.word'),
                 ],
             ]);
         @endphp

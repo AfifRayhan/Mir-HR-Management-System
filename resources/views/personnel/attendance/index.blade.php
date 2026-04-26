@@ -22,17 +22,6 @@
                             <a href="{{ route('personnel.attendances.adjust') }}" class="btn btn-outline-success">
                                 <i class="bi bi-pencil-square me-2"></i>{{ __('Manual Adjustment') }}
                             </a>
-                            <div class="dropdown">
-                                <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-download me-2"></i>{{ __('') }}
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('excel')"><i class="bi bi-file-earmark-excel text-success me-2"></i>Excel (.xlsx)</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('csv')"><i class="bi bi-filetype-csv text-secondary me-2"></i>CSV (.csv)</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('pdf')"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>PDF (.pdf)</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="downloadAttendance('word')"><i class="bi bi-file-earmark-word text-primary me-2"></i>Word (.doc)</a></li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,7 +163,9 @@
             if (!params.has('date')) {
                 params.set('date', document.getElementById('attendance_date').value);
             }
-            window.location.href = exportRoutes[format] + '?' + params.toString();
+            
+            const url = exportRoutes[format] + '?' + params.toString();
+            window.location.href = url;
         }
 
         document.addEventListener('DOMContentLoaded', function() {

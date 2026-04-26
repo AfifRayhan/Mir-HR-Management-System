@@ -21,8 +21,8 @@
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Generate Report') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('Select a template and fill in the dynamic tags to generate a PDF report.') }}</p>
+                        <h5 class="mb-1 text-2xl font-bold">{{ __('Generate Letter') }}</h5>
+                        <p class="mb-0 text-gray-500">{{ __('Select a template and fill in the dynamic tags to generate a PDF letter.') }}</p>
                     </div>
                 </div>
             </div>
@@ -35,9 +35,9 @@
                             
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label for="report_template_type_id" class="form-label font-bold text-gray-700">{{ __('Report Name') }}</label>
+                                    <label for="report_template_type_id" class="form-label font-bold text-gray-700">{{ __('Letter Name') }}</label>
                                     <select name="report_template_type_id" id="report_template_type_id" class="form-select rounded-3" required>
-                                        <option value="" disabled selected>{{ __('Select Report Name') }}</option>
+                                        <option value="" disabled selected>{{ __('Select Letter Name') }}</option>
                                         @foreach($types as $type)
                                             <option value="{{ $type->id }}">{{ $type->name }}</option>
                                         @endforeach
@@ -69,13 +69,13 @@
                                 <!-- Dynamic fields will be injected here via JS -->
                                 <p class="text-muted text-center" id="empty-state">
                                     <i class="bi bi-file-earmark-text display-4 d-block mb-2 text-light"></i>
-                                    {{ __('Please select a Report Name and Format to load the required fields.') }}
+                                    {{ __('Please select a Letter Name and Format to load the required fields.') }}
                                 </p>
                             </div>
 
                             <div class="text-end">
                                 <button type="submit" class="btn btn-success px-4 py-2 font-bold" id="generate-btn" disabled>
-                                    <i class="bi bi-eye me-2"></i> {{ __('Preview Report') }}
+                                    <i class="bi bi-eye me-2"></i> {{ __('Preview Letter') }}
                                 </button>
                             </div>
                         </form>

@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\AttendanceRecord;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -86,7 +87,8 @@ class AttendancesExport implements FromCollection, WithHeadings, WithMapping, Wi
             });
         }
 
-        return $query->get();
+        $records = $query->get();
+        return $records;
     }
 
     public function headings(): array
@@ -193,6 +195,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
+                
                 if ($this->format === 'csv') return;
 
                 $sheet = $event->sheet->getDelegate();

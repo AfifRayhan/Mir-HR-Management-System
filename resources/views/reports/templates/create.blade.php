@@ -34,7 +34,7 @@
                         <a href="{{ route('personnel.report-templates.index') }}" class="text-secondary text-decoration-none mb-2 d-inline-block small hover-opacity">
                             <i class="bi bi-arrow-left"></i> {{ __('Back to Templates') }}
                         </a>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Add New Report Template') }}</h5>
+                        <h5 class="mb-1 text-2xl font-bold">{{ __('Add New Letter Template') }}</h5>
                         <p class="mb-0 text-gray-500">{{ __('Create a new dynamic document template with rich text and placeholders.') }}</p>
                     </div>
                 </div>

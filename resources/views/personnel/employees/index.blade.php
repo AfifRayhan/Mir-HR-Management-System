@@ -7,20 +7,16 @@
         @include('partials.hr-sidebar')
 
         <main class="hr-main">
-            <div class="row mb-4">
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Management') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('Manage your organization\'s workforce') }}</p>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <a href="{{ route('personnel.employees.export.preview', request()->query()) }}" class="btn btn-sm btn-outline-primary d-flex align-items-center">
-                            <i class="bi bi-eye me-2"></i>{{ __('Preview & Export') }}
-                        </a>
-                        <a href="{{ route('personnel.employees.create') }}" class="btn btn-sm btn-primary d-flex align-items-center">
-                            <i class="bi bi-person-plus me-2"></i>{{ __('Add Employee') }}
-                        </a>
-                    </div>
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Management') }}</h5>
+                    <p class="mb-0 text-gray-500">{{ __('Manage your organization\'s workforce') }}</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{{ route('personnel.employees.create') }}" class="btn btn-primary px-4 d-inline-flex align-items-center" style="min-width: max-content;">
+                        <i class="bi bi-person-plus me-2"></i>
+                        <span class="text-nowrap">{{ __('Add Employee') }}</span>
+                    </a>
                 </div>
             </div>
 

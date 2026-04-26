@@ -150,8 +150,13 @@ class MenuItemSeeder extends Seeder
 
         // Define child menu items under Reports
         $reportsChildren = [
-            ['name' => 'Generate Report', 'slug' => 'reports-generate', 'icon' => 'bi-file-earmark-plus', 'route_name' => 'personnel.reports.generate', 'sort_order' => 1],
-            ['name' => 'Report Templates', 'slug' => 'personnel-report-templates', 'icon' => 'bi-file-earmark-richtext', 'route_name' => 'personnel.report-templates.index', 'sort_order' => 2],
+            ['name' => 'Generate Letter', 'slug' => 'reports-generate', 'icon' => 'bi-file-earmark-plus', 'route_name' => 'personnel.reports.generate', 'sort_order' => 1],
+            ['name' => 'Letter Template', 'slug' => 'personnel-report-templates', 'icon' => 'bi-file-earmark-richtext', 'route_name' => 'personnel.report-templates.index', 'sort_order' => 2],
+            ['name' => 'Employee Export', 'slug' => 'reports-employee-export', 'icon' => 'bi-file-earmark-spreadsheet', 'route_name' => 'personnel.reports.employees.export.preview', 'sort_order' => 3],
+            ['name' => 'Attendance Export (Daily)', 'slug' => 'reports-attendance-export', 'icon' => 'bi-calendar-check', 'route_name' => 'personnel.reports.attendances.export.preview', 'sort_order' => 4],
+            ['name' => 'Attendance Export (Monthly)', 'slug' => 'reports-attendance-export-monthly', 'icon' => 'bi-calendar-month', 'route_name' => 'personnel.reports.attendances.monthly.export.preview', 'sort_order' => 5],
+            ['name' => 'Attendance Export (Yearly)', 'slug' => 'reports-attendance-export-yearly', 'icon' => 'bi-calendar-range', 'route_name' => 'personnel.reports.attendances.yearly.export.preview', 'sort_order' => 6],
+            ['name' => 'Employee Log', 'slug' => 'reports-attendance-log', 'icon' => 'bi-person-badge', 'route_name' => 'personnel.reports.attendances.log.preview', 'sort_order' => 7],
         ];
 
         foreach ($reportsChildren as $child) {

@@ -24,7 +24,7 @@
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Preview Report:') }} {{ $reportName }}</h5>
+                        <h5 class="mb-1 text-2xl font-bold">{{ __('Preview Letter:') }} {{ $reportName }}</h5>
                         <p class="mb-0 text-gray-500">{{ __('Make any final adjustments before generating the PDF.') }}</p>
                     </div>
                     <div>

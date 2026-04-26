@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
@@ -72,11 +73,6 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
 
 // Personnel management routes
 Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')->group(function () {
-    Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
-    Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
-    Route::get('employees/export/pdf', [EmployeeController::class, 'exportPdf'])->name('employees.export.pdf');
-    Route::get('employees/export/word', [EmployeeController::class, 'exportWord'])->name('employees.export.word');
-    Route::get('employees/export/preview', [EmployeeController::class, 'exportPreview'])->name('employees.export.preview');
     Route::get('employees/next-code', [EmployeeController::class, 'getNextCode'])->name('employees.next-code');
     Route::delete('employees/experience/{experience}', [EmployeeController::class, 'destroyExperience'])->name('employees.delete-experience');
     Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
@@ -98,10 +94,6 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::post('leave-accounts/update-bulk', [LeaveBalanceController::class, 'updateBulk'])->name('leave-balances.update-bulk');
 
     // Attendance routes
-    Route::get('attendances/export/excel', [AttendanceController::class, 'exportExcel'])->name('attendances.export.excel');
-    Route::get('attendances/export/csv', [AttendanceController::class, 'exportCsv'])->name('attendances.export.csv');
-    Route::get('attendances/export/pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export.pdf');
-    Route::get('attendances/export/word', [AttendanceController::class, 'exportWord'])->name('attendances.export.word');
     Route::get('attendances', [AttendanceController::class, 'index'])->name('attendances.index');
     Route::get('attendances/records', [AttendanceController::class, 'records'])->name('attendances.records');
     Route::post('attendances/process', [AttendanceController::class, 'processLogs'])->name('attendances.process');
@@ -111,14 +103,52 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::post('attendances/approvals/{id}/approve', [AttendanceController::class, 'approveAdjustment'])->name('attendances.approve-adjustment');
     Route::post('attendances/approvals/{id}/reject', [AttendanceController::class, 'rejectAdjustment'])->name('attendances.reject-adjustment');
 
+    // Reports & Exports
+    Route::prefix('reports')->name('reports.')->group(function () {
+        // Employee Exports
+        Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
+        Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
+        Route::get('employees/export/pdf', [EmployeeController::class, 'exportPdf'])->name('employees.export.pdf');
+        Route::get('employees/export/word', [EmployeeController::class, 'exportWord'])->name('employees.export.word');
+        Route::get('employees/export/preview', [EmployeeController::class, 'exportPreview'])->name('employees.export.preview');
+
+        // Attendance Exports
+        Route::get('attendances/export/excel', [AttendanceController::class, 'exportExcel'])->name('attendances.export.excel');
+        Route::get('attendances/export/csv', [AttendanceController::class, 'exportCsv'])->name('attendances.export.csv');
+        Route::get('attendances/export/pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export.pdf');
+        Route::get('attendances/export/word', [AttendanceController::class, 'exportWord'])->name('attendances.export.word');
+        Route::get('attendances/export/preview', [AttendanceController::class, 'exportPreview'])->name('attendances.export.preview');
+
+        // Monthly Attendance Exports
+        Route::get('attendances/monthly/export/excel', [AttendanceController::class, 'exportMonthlyExcel'])->name('attendances.monthly.export.excel');
+        Route::get('attendances/monthly/export/csv', [AttendanceController::class, 'exportMonthlyCsv'])->name('attendances.monthly.export.csv');
+        Route::get('attendances/monthly/export/pdf', [AttendanceController::class, 'exportMonthlyPdf'])->name('attendances.monthly.export.pdf');
+        Route::get('attendances/monthly/export/word', [AttendanceController::class, 'exportMonthlyWord'])->name('attendances.monthly.export.word');
+        Route::get('attendances/monthly/export/preview', [AttendanceController::class, 'exportMonthlyPreview'])->name('attendances.monthly.export.preview');
+
+        // Yearly Attendance Exports
+        Route::get('attendances/yearly/export/excel', [AttendanceController::class, 'exportYearlyExcel'])->name('attendances.yearly.export.excel');
+        Route::get('attendances/yearly/export/csv', [AttendanceController::class, 'exportYearlyCsv'])->name('attendances.yearly.export.csv');
+        Route::get('attendances/yearly/export/pdf', [AttendanceController::class, 'exportYearlyPdf'])->name('attendances.yearly.export.pdf');
+        Route::get('attendances/yearly/export/word', [AttendanceController::class, 'exportYearlyWord'])->name('attendances.yearly.export.word');
+        Route::get('attendances/yearly/export/preview', [AttendanceController::class, 'exportYearlyPreview'])->name('attendances.yearly.export.preview');
+        
+        // Employee Log (Specific Employee Report)
+        Route::get('attendances/log/preview', [AttendanceController::class, 'exportLogPreview'])->name('attendances.log.preview');
+        Route::get('attendances/log/export/excel', [AttendanceController::class, 'exportLogExcel'])->name('attendances.log.export.excel');
+        Route::get('attendances/log/export/csv', [AttendanceController::class, 'exportLogCsv'])->name('attendances.log.export.csv');
+        Route::get('attendances/log/export/pdf', [AttendanceController::class, 'exportLogPdf'])->name('attendances.log.export.pdf');
+        Route::get('attendances/log/export/word', [AttendanceController::class, 'exportLogWord'])->name('attendances.log.export.word');
+
+        // Report Generator
+        Route::get('generate', [ReportGeneratorController::class, 'index'])->name('generate');
+        Route::get('generate/fields', [ReportGeneratorController::class, 'getFields'])->name('generate.fields');
+        Route::post('generate/preview', [ReportGeneratorController::class, 'preview'])->name('generate.preview');
+        Route::post('generate/pdf', [ReportGeneratorController::class, 'generatePdf'])->name('generate.pdf');
+    });
+
     // Report templates routes
     Route::resource('report-templates', ReportTemplateController::class);
-
-    // Report Generator
-    Route::get('reports/generate', [ReportGeneratorController::class, 'index'])->name('reports.generate');
-    Route::get('reports/generate/fields', [ReportGeneratorController::class, 'getFields'])->name('reports.generate.fields');
-    Route::post('reports/generate/preview', [ReportGeneratorController::class, 'preview'])->name('reports.generate.preview');
-    Route::post('reports/generate/pdf', [ReportGeneratorController::class, 'generatePdf'])->name('reports.generate.pdf');
 });
 
 // Employee specific routes
