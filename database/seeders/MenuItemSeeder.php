@@ -157,6 +157,7 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Attendance Export (Monthly)', 'slug' => 'reports-attendance-export-monthly', 'icon' => 'bi-calendar-month', 'route_name' => 'personnel.reports.attendances.monthly.export.preview', 'sort_order' => 5],
             ['name' => 'Attendance Export (Yearly)', 'slug' => 'reports-attendance-export-yearly', 'icon' => 'bi-calendar-range', 'route_name' => 'personnel.reports.attendances.yearly.export.preview', 'sort_order' => 6],
             ['name' => 'Employee Log', 'slug' => 'reports-attendance-log', 'icon' => 'bi-person-badge', 'route_name' => 'personnel.reports.attendances.log.preview', 'sort_order' => 7],
+            ['name' => 'Leave Balance', 'slug' => 'reports-leave-balance', 'icon' => 'bi-wallet2', 'route_name' => 'personnel.reports.leave-balance.preview', 'sort_order' => 8],
         ];
 
         foreach ($reportsChildren as $child) {

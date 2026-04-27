@@ -140,6 +140,13 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
         Route::get('attendances/log/export/pdf', [AttendanceController::class, 'exportLogPdf'])->name('attendances.log.export.pdf');
         Route::get('attendances/log/export/word', [AttendanceController::class, 'exportLogWord'])->name('attendances.log.export.word');
 
+        // Leave Balance Report
+        Route::get('leave-balance/preview', [\App\Http\Controllers\Personnel\LeaveBalanceReportController::class, 'preview'])->name('leave-balance.preview');
+        Route::get('leave-balance/export/excel', [\App\Http\Controllers\Personnel\LeaveBalanceReportController::class, 'exportExcel'])->name('leave-balance.export.excel');
+        Route::get('leave-balance/export/csv', [\App\Http\Controllers\Personnel\LeaveBalanceReportController::class, 'exportCsv'])->name('leave-balance.export.csv');
+        Route::get('leave-balance/export/pdf', [\App\Http\Controllers\Personnel\LeaveBalanceReportController::class, 'exportPdf'])->name('leave-balance.export.pdf');
+        Route::get('leave-balance/export/word', [\App\Http\Controllers\Personnel\LeaveBalanceReportController::class, 'exportWord'])->name('leave-balance.export.word');
+
         // Report Generator
         Route::get('generate', [ReportGeneratorController::class, 'index'])->name('generate');
         Route::get('generate/fields', [ReportGeneratorController::class, 'getFields'])->name('generate.fields');
