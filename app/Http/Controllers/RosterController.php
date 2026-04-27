@@ -77,6 +77,24 @@ class RosterController extends Controller
             $scheduleMap[$s->employee_id][Carbon::parse($s->date)->toDateString()] = $s->shift_type;
         }
 
+        // For weekly mode, build a pattern map indexed by day-of-week index (0=Sat..6=Fri)
+        // so display works even when the current week spans two months
+        $patternMap = [];
+        if ($mode === 'weekly') {
+            $dayIndexMap = [6 => 0, 0 => 1, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 6];
+            $cursor = $monthStart->copy();
+            while ($cursor->lte($monthEnd)) {
+                $dayIndex = $dayIndexMap[$cursor->dayOfWeek];
+                $dateStr = $cursor->toDateString();
+                foreach ($employees as $emp) {
+                    if (isset($scheduleMap[$emp->id][$dateStr])) {
+                        $patternMap[$dayIndex][$emp->id] = $scheduleMap[$emp->id][$dateStr];
+                    }
+                }
+                $cursor->addDay();
+            }
+        }
+
         $days = [];
         if ($mode === 'weekly') {
             $startOfWeek = Carbon::now()->startOfWeek(6);
@@ -121,7 +139,7 @@ class RosterController extends Controller
 
         return compact(
             'groupSlug', 'groupLabel', 'monthStart', 'monthEnd',
-            'employees', 'scheduleMap',
+            'employees', 'scheduleMap', 'patternMap',
             'days', 'groups', 'shiftTypes', 'monthParam', 'mode'
         );
     }

@@ -186,7 +186,11 @@
                                 foreach(array_keys($shiftTypes) as $st) { $shiftBuckets[$st] = []; }
                                 
                                 foreach ($employees as $emp) {
-                                    $assigned = $scheduleMap[$emp->id][$dateStr] ?? 'Off';
+                                    if ($mode === 'weekly') {
+                                        $assigned = $patternMap[$index][$emp->id] ?? 'Off';
+                                    } else {
+                                        $assigned = $scheduleMap[$emp->id][$dateStr] ?? 'Off';
+                                    }
                                     // Compatibility check: if old data exists that doesn't match new keys
                                     if (!isset($shiftBuckets[$assigned])) {
                                         $assigned = 'Off';
