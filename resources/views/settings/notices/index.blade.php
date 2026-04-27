@@ -6,14 +6,14 @@
     </x-slot>
 
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -27,8 +27,8 @@
             <div class="row g-4">
                 <!-- Create Form -->
                 <div class="col-lg-4">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title mb-4">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title mb-4">
                             <i class="bi bi-plus-circle me-2 text-success"></i>{{ __('Add Notice/Event') }}
                         </div>
 
@@ -76,12 +76,12 @@
 
                 <!-- Table List -->
                 <div class="col-lg-8">
-                    <div class="hr-panel p-0 overflow-hidden">
-                        <div class="hr-panel-title p-4 border-bottom">
+                    <div class="ui-panel p-0 overflow-hidden">
+                        <div class="ui-panel-title p-4 border-bottom">
                             <i class="bi bi-list-task me-2 text-success"></i>{{ __('Notice List') }}
                         </div>
                         <div class="table-responsive">
-                            <table class="table hr-table mb-0">
+                            <table class="table ui-table mb-0">
                                 <thead>
                                     <tr>
                                         <th class="ps-4">{{ __('Title') }}</th>
@@ -217,3 +217,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

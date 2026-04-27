@@ -3,10 +3,10 @@
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-holidays.css'])
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -25,8 +25,8 @@
 
             <div class="row justify-content-center">
                 <div class="col-md-10">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title d-flex justify-content-between align-items-center">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title d-flex justify-content-between align-items-center">
                             <span><i class="bi bi-calendar-week me-2"></i>{{ __('Configure Weekly Holidays') }}</span>
                             <div style="min-width: 250px;">
                                 <form action="{{ route('settings.holidays.weekly.index') }}" method="GET" id="officeFilterForm">
@@ -42,7 +42,7 @@
                             </div>
                         </div>
 
-                        <div class="hr-panel-subtitle mb-4">
+                        <div class="ui-panel-subtitle mb-4">
                             @if($officeId)
                                 {{ __('Configuring holidays for:') }} <strong>{{ $offices->find($officeId)->name }}</strong>. 
                             @else
@@ -86,3 +86,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

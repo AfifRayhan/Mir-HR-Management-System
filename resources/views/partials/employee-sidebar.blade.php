@@ -1,9 +1,9 @@
 {{-- Mobile Top Bar --}}
-<div class="emp-mobile-topbar" id="empMobileTopbar">
-    <button class="mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
+<div class="ui-ui-mobile-topbar" id="empMobileTopbar">
+    <button class="ui-ui-mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <a href="{{ route('employee-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
+    <a href="{{ route('employee-dashboard') }}" class="ui-ui-topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
 
     {{-- Notification Mobile Bell --}}
     @auth
@@ -19,60 +19,60 @@
 </div>
 
 {{-- Sidebar Overlay --}}
-<div class="emp-sidebar-overlay" id="empSidebarOverlay"></div>
+<div class="ui-overlay" id="empSidebarOverlay"></div>
 
-        <aside class="emp-sidebar" id="empSidebar">
-            <a href="{{ route('employee-dashboard') }}" class="emp-logo" style="text-decoration: none;">
-                <span>Employee</span>
-                <span>Portal</span>
-            </a>
+<aside class="ui-sidebar" id="empSidebar">
+    <a href="{{ route('employee-dashboard') }}" class="ui-logo" style="text-decoration: none;">
+        <span>Employee</span>
+        <span>Portal</span>
+    </a>
 
-            <ul class="emp-sidebar-nav">
-                @foreach($sidebarItems as $item)
-                    @if($item->slug === 'employee-dashboard' && $item->filtered_children->isNotEmpty())
-                        @foreach($item->filtered_children as $child)
-                            <li>
-                                <a href="{{ $child->route_name ? route($child->route_name) : '#' }}" 
-                                   class="emp-sidebar-link {{ $child->is_active ? 'active' : '' }}">
-                                    <i class="bi {{ $child->icon }}"></i>
-                                    <span>{{ __($child->name) }}</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    @else
-                        <li>
-                            <a href="{{ $item->route_name ? route($item->route_name) : '#' }}" 
-                               class="emp-sidebar-link {{ $item->is_active ? 'active' : '' }}">
-                                <i class="bi {{ $item->icon }}"></i>
-                                <span>{{ __($item->name) }}</span>
-                            </a>
-                        </li>
-                    @endif
+    <ul class="ui-sidebar-nav">
+        @foreach($sidebarItems as $item)
+            @if($item->slug === 'employee-dashboard' && $item->filtered_children->isNotEmpty())
+                @foreach($item->filtered_children as $child)
+                    <li>
+                        <a href="{{ $child->route_name ? route($child->route_name) : '#' }}" 
+                           class="ui-sidebar-link {{ $child->is_active ? 'active' : '' }}">
+                            <i class="bi {{ $child->icon }}"></i>
+                            <span>{{ __($child->name) }}</span>
+                        </a>
+                    </li>
                 @endforeach
-
-                {{-- Notifications Link --}}
+            @else
                 <li>
-                    <a href="{{ route('notifications.index') }}" 
-                       class="emp-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-                        <i class="bi bi-bell"></i>
-                        <span class="d-flex w-100 align-items-center justify-content-between">
-                            {{ __('Notifications') }}
-                            @if(($unreadNotificationCount ?? 0) > 0)
-                                <span class="badge bg-danger rounded-pill">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
-                            @endif
-                        </span>
+                    <a href="{{ $item->route_name ? route($item->route_name) : '#' }}" 
+                       class="ui-sidebar-link {{ $item->is_active ? 'active' : '' }}">
+                        <i class="bi {{ $item->icon }}"></i>
+                        <span>{{ __($item->name) }}</span>
                     </a>
                 </li>
-            </ul>
+            @endif
+        @endforeach
 
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                @csrf
-                <button type="submit" class="emp-sidebar-link w-100 border-0 bg-transparent text-start">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>{{ __('Log Out') }}</span>
-                </button>
-            </form>
-        </aside>
+        {{-- Notifications Link --}}
+        <li>
+            <a href="{{ route('notifications.index') }}" 
+               class="ui-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                <i class="bi bi-bell"></i>
+                <span class="d-flex w-100 align-items-center justify-content-between">
+                    {{ __('Notifications') }}
+                    @if(($unreadNotificationCount ?? 0) > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
+                    @endif
+                </span>
+            </a>
+        </li>
+    </ul>
+
+    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+        @csrf
+        <button type="submit" class="ui-sidebar-link w-100 border-0 bg-transparent text-start">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>{{ __('Log Out') }}</span>
+        </button>
+    </form>
+</aside>
 
 @pushOnce('scripts')
 <script>
@@ -95,11 +95,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     toggle.addEventListener('click', openSidebar);
     overlay.addEventListener('click', closeSidebar);
-    sidebar.querySelectorAll('a.emp-sidebar-link').forEach(function (link) {
+    sidebar.querySelectorAll('a.ui-sidebar-link').forEach(function (link) {
         link.addEventListener('click', function () {
             if (window.innerWidth < 992) closeSidebar();
         });
     });
 });
 </script>
-@endPushOnce
+@endPushOnce
+
+
+

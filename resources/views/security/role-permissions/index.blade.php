@@ -3,10 +3,10 @@
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/role-permissions.css'])
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
 
             <div class="rp-container">
                 <div class="rp-header">
@@ -213,3 +213,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

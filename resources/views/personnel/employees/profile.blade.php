@@ -1,7 +1,5 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-employee-dashboard.css'])
-    @endpush
+    
 
     @php 
         $isTeamLeadRole = optional(auth()->user()->role)->name === 'Team Lead';
@@ -9,14 +7,14 @@
         $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager;
     @endphp
 
-    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+    <div class="{{ $isTeamLeadLayout ? 'ui-layout' : 'ui-layout' }}">
         @if($isTeamLeadLayout)
         @include('partials.team-lead-sidebar')
         @else
         @include('partials.employee-sidebar')
         @endif
 
-        <main class="emp-main">
+        <main class="ui-main">
             <div class="profile-card">
                 <div class="profile-header">
                     <div class="profile-header-avatar">
@@ -258,3 +256,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

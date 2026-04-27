@@ -4,10 +4,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -41,8 +41,8 @@
             <div class="row g-4">
                 <!-- New Holiday Form -->
                 <div class="col-lg-4">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title">
                             <i class="bi bi-calendar-plus me-2 text-primary"></i>{{ __('Add New Holiday') }}
                         </div>
 
@@ -120,7 +120,7 @@
                 <!-- Holiday List -->
                 <div class="col-lg-8">
                     <!-- Filter Bar -->
-                    <div class="filter-bar mb-4">
+                    <div class="ui-filter-bar mb-4">
                         <form action="{{ route('settings.holidays.others.index') }}" method="GET" class="row g-2">
                             <div class="col-md-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Search') }}</label>
@@ -162,13 +162,13 @@
                         </form>
                     </div>
 
-                    <div class="hr-panel">
-                        <div class="hr-panel-title mb-4">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title mb-4">
                             <i class="bi bi-calendar-event me-2 text-primary"></i>{{ __('Holiday Calendar') }}
                         </div>
 
                         <div class="table-responsive">
-                            <table class="hr-table">
+                            <table class="ui-table">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>{{ __('Year') }}</th>
@@ -186,7 +186,7 @@
                                         <td class="fw-bold">{{ $holiday->year }}</td>
                                         <td>
                                             @if($holiday->all_office)
-                                            <span class="hr-badge hr-badge-global">{{ __('Global') }}</span>
+                                            <span class="hr-badge ui-badge-global">{{ __('Global') }}</span>
                                             @else
                                             <span class="small text-truncate d-inline-block" style="max-width: 120px;">{{ $holiday->office->name }}</span>
                                             @endif
@@ -373,3 +373,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

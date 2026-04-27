@@ -1,0 +1,150 @@
+/* Unified UI Components */
+
+/* Panels */
+.ui-panel {
+    background: var(--ui-card-bg);
+    border-radius: var(--ui-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--ui-shadow);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+.ui-panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--ui-text);
+    display: flex;
+    align-items: center;
+}
+
+/* Cards */
+.ui-card {
+    background: var(--ui-card-bg);
+    border-radius: var(--ui-radius-md);
+    padding: 1rem;
+    box-shadow: var(--ui-shadow);
+    border: 1px solid var(--ui-border);
+}
+
+.ui-metric-card {
+    background: var(--ui-card-bg);
+    border-radius: var(--ui-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: var(--ui-shadow);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.ui-metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.ui-metric-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--ui-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.ui-metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ui-text);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.ui-metric-label {
+    font-size: 0.875rem;
+    color: var(--ui-text-light);
+    font-weight: 500;
+}
+
+/* Badges */
+.ui-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ui-badge-success {
+    background-color: var(--ui-success-soft);
+    color: var(--ui-success);
+}
+
+.ui-badge-warning {
+    background-color: var(--ui-warning-soft);
+    color: var(--ui-warning);
+}
+
+.ui-badge-danger {
+    background-color: var(--ui-danger-soft);
+    color: var(--ui-danger);
+}
+
+.ui-badge-info {
+    background-color: var(--ui-info-soft);
+    color: var(--ui-info);
+}
+
+/* Buttons */
+.btn {
+    border-radius: var(--ui-radius-md);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--ui-primary);
+    border-color: var(--ui-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--ui-primary-hover);
+    border-color: var(--ui-primary-hover);
+}
+
+.btn-success {
+    background-color: var(--ui-success);
+    border-color: var(--ui-success);
+    color: #fff;
+}
+
+.ui-btn-search {
+    background-color: var(--ui-primary);
+    color: white;
+    border-radius: 9999px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.ui-btn-search:hover {
+    background-color: var(--ui-primary-hover);
+    color: white;
+}
+
+.ui-btn-clear {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border-radius: 9999px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.ui-btn-clear:hover {
+    background-color: #e2e8f0;
+    color: #475569;
+}

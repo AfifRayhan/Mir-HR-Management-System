@@ -1,3 +1,7 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'ui-variables.css';
+@import 'ui-layout.css';
+@import 'ui-components.css';
+@import 'ui-tables.css';
+@import 'ui-utilities.css';
 @import 'custom-login.css';
-@import 'custom-hr-dashboard.css';

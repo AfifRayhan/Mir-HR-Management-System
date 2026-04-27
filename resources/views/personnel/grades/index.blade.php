@@ -1,12 +1,10 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -28,8 +26,8 @@
             <div class="row g-4">
                 <!-- New Grade Form -->
                 <div class="col-lg-4">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title">
                             <i class="bi bi-plus-circle me-2 text-success"></i>{{ __('Add New Grade') }}
                         </div>
 
@@ -49,13 +47,13 @@
 
                 <!-- Grade List -->
                 <div class="col-lg-8">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title mb-4">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title mb-4">
                             <i class="bi bi-list-task me-2 text-success"></i>{{ __('Grade List') }}
                         </div>
 
                         <div class="table-responsive">
-                            <table class="hr-table">
+                            <table class="ui-table">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>{{ __('Grade Name') }}</th>
@@ -129,3 +127,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <style>
         .ck-editor__editable_inline {
             min-height: 500px;
@@ -24,10 +24,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -45,7 +45,7 @@
                 
                 <div class="row g-4">
                     <div class="col-lg-8">
-                        <div class="hr-panel shadow-sm border-0 rounded-4">
+                        <div class="ui-panel shadow-sm border-0 rounded-4">
                             <div class="mb-4">
                                 <label for="name" class="form-label font-bold text-gray-700">{{ __('Template Name') }}</label>
                                 <input type="text" name="name" id="name" class="form-control rounded-3 py-2" placeholder="{{ __('Enter template name (e.g. Appointment Letter)') }}" required>
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="hr-panel mb-4 shadow-sm border-0 rounded-4">
+                        <div class="ui-panel mb-4 shadow-sm border-0 rounded-4">
                             <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-info-circle me-2 text-success"></i>{{ __('Template Settings') }}</h6>
 
                             <div class="mb-3">
@@ -129,3 +129,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

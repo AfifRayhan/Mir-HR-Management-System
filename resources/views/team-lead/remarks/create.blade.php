@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="hr-layout">
+    <div class="ui-layout">
         @include('partials.team-lead-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4 align-items-center">
                 <div class="col-md-6">
                     <h4 class="fw-bold mb-1">{{ __('Send New Remark') }}</h4>
@@ -30,7 +30,7 @@
                 @csrf
                 <div class="row">
                     <div class="col-lg-8">
-                        <div class="hr-panel mb-4">
+                        <div class="ui-panel mb-4">
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted uppercase tracking-wider">{{ __('Message Title') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="title" class="form-control rounded-3" 
@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="hr-panel mb-4">
+                        <div class="ui-panel mb-4">
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-muted uppercase tracking-wider mb-2 d-block">{{ __('Select Recipients') }} <span class="text-danger">*</span></label>
                                 <div class="bg-light p-3 rounded-3 border mb-2" style="max-height: 250px; overflow-y: auto;">
@@ -133,3 +133,7 @@
     </style>
     @endpush
 </x-app-layout>
+
+
+
+

@@ -27,10 +27,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -46,7 +46,7 @@
 
                 <div class="row">
                     <div class="col-md-8 col-lg-6">
-                        <div class="hr-panel">
+                        <div class="ui-panel">
                             <form action="{{ isset($designation) ? route('personnel.designations.update', $designation) : route('personnel.designations.store') }}" method="POST">
                                 @csrf
                                 @if(isset($designation))
@@ -132,3 +132,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

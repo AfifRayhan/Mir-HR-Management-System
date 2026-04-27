@@ -6,14 +6,14 @@
     </x-slot>
 
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12 d-flex justify-content-between align-items-center">
@@ -27,7 +27,7 @@
                 </div>
 
                 <!-- Filters -->
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <form action="{{ route('personnel.attendances.index') }}" method="GET" class="row g-3">
                         <div class="col-md-2">
                             <label class="form-label">{{ __('Date') }}</label>
@@ -71,14 +71,14 @@
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
-                            <a href="{{ route('personnel.attendances.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
+                            <button type="submit" class="btn ui-btn-search flex-grow-1">{{ __('Search') }}</button>
+                            <a href="{{ route('personnel.attendances.index') }}" class="btn ui-btn-clear flex-grow-1">{{ __('Clear') }}</a>
                         </div>
                     </form>
                 </div>
 
 
-                <div class="hr-panel">
+                <div class="ui-panel">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
@@ -180,3 +180,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

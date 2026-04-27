@@ -6,7 +6,7 @@
     </x-slot>
 
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
     <style>
@@ -15,10 +15,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Filters -->
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <form action="{{ route('personnel.attendances.records') }}" method="GET" class="row g-3 align-items-end">
                         <div class="col-md-4">
                             <label class="form-label fw-bold">{{ __('Select Employee') }}</label>
@@ -60,8 +60,8 @@
                             </select>
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
-                            <a href="{{ route('personnel.attendances.records') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
+                            <button type="submit" class="btn ui-btn-search flex-grow-1">{{ __('Search') }}</button>
+                            <a href="{{ route('personnel.attendances.records') }}" class="btn ui-btn-clear flex-grow-1">{{ __('Clear') }}</a>
                         </div>
                     </form>
                 </div>
@@ -70,25 +70,25 @@
                 <!-- Stats Summary -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
-                        <div class="hr-panel text-center p-3 border-start border-4 border-primary">
+                        <div class="ui-panel text-center p-3 border-start border-4 border-primary">
                             <div class="text-muted small mb-1">{{ __('Total Records') }}</div>
                             <div class="h4 mb-0 fw-bold">{{ $stats['totalRecords'] }}</div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="hr-panel text-center p-3 border-start border-4 border-success">
+                        <div class="ui-panel text-center p-3 border-start border-4 border-success">
                             <div class="text-muted small mb-1">{{ __('Present') }}</div>
                             <div class="h4 mb-0 fw-bold text-success">{{ $stats['totalPresent'] }}</div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="hr-panel text-center p-3 border-start border-4 border-warning">
+                        <div class="ui-panel text-center p-3 border-start border-4 border-warning">
                             <div class="text-muted small mb-1">{{ __('Late') }}</div>
                             <div class="h4 mb-0 fw-bold text-warning">{{ $stats['totalLate'] }}</div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="hr-panel text-center p-3 border-start border-4 border-danger">
+                        <div class="ui-panel text-center p-3 border-start border-4 border-danger">
                             <div class="text-muted small mb-1">{{ __('Absent') }}</div>
                             <div class="h4 mb-0 fw-bold text-danger">{{ $stats['totalAbsent'] }}</div>
                         </div>
@@ -96,7 +96,7 @@
                 </div>
 
                 <!-- Records Table -->
-                <div class="hr-panel">
+                <div class="ui-panel">
                     <div class="d-flex justify-content-between align-items-center mb-4 px-2">
                         <h5 class="mb-0">
                             <i class="bi bi-person-badge me-2 text-success"></i>
@@ -170,7 +170,7 @@
                     @endif
                 </div>
                 @else
-                <div class="hr-panel text-center py-5">
+                <div class="ui-panel text-center py-5">
                     <div class="py-5">
                         <i class="bi bi-search display-4 text-muted mb-3 d-block"></i>
                         <h5>{{ __('Please select an employee to view their records') }}</h5>
@@ -202,3 +202,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

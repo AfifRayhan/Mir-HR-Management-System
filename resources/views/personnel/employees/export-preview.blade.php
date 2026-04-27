@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <style>
         .column-selector-grid {
             display: grid;
@@ -21,7 +21,7 @@
             font-weight: 600;
             color: #4F46E5;
         }
-        .download-bar {
+        .ui-download-bar {
             position: sticky;
             bottom: 0;
             background: #fff;
@@ -47,10 +47,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -66,7 +66,7 @@
 
             <form method="GET" action="{{ route('personnel.reports.employees.export.preview') }}" id="exportForm">
                 {{-- Filters --}}
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <div class="row g-3">
                         {{-- Search --}}
                         <div class="col-md-4">
@@ -144,7 +144,7 @@
                 </div>
 
                 {{-- Column Selector + Sort --}}
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <h6 class="mb-0 fw-bold">
@@ -207,9 +207,9 @@
             </form>
 
             {{-- Preview Table --}}
-            <div class="hr-panel p-0 overflow-hidden mb-4">
+            <div class="ui-panel p-0 overflow-hidden mb-4">
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0">
+                    <table class="table ui-table mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4">#</th>
@@ -245,7 +245,7 @@
             </div>
 
             {{-- Download Bar --}}
-            <div class="download-bar d-flex justify-content-between align-items-center">
+            <div class="ui-download-bar d-flex justify-content-between align-items-center">
                 <span class="text-gray-600 small">
                     <i class="bi bi-info-circle me-1"></i>
                     {{ __('Showing :count columns, :total total records', ['count' => count($selectedColumns), 'total' => $employees->total()]) }}
@@ -445,3 +445,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

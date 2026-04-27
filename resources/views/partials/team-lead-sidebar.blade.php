@@ -1,9 +1,9 @@
 {{-- Mobile Top Bar --}}
-<div class="mobile-topbar" id="tlMobileTopbar">
-    <button class="mobile-hamburger" id="tlSidebarToggle" aria-label="Toggle Sidebar">
+<div class="ui-ui-mobile-topbar" id="tlMobileTopbar">
+    <button class="ui-ui-mobile-hamburger" id="tlSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <a href="{{ route('employee-dashboard') }}" class="topbar-brand" style="text-decoration: none;"><span>Team</span>&nbsp;<span>Lead</span></a>
+    <a href="{{ route('employee-dashboard') }}" class="ui-ui-topbar-brand" style="text-decoration: none;"><span>Team</span>&nbsp;<span>Lead</span></a>
 
     {{-- Notification Mobile Bell --}}
     @auth
@@ -19,109 +19,110 @@
 </div>
 
 {{-- Sidebar Overlay --}}
-<div class="sidebar-overlay" id="tlSidebarOverlay"></div>
+<div class="ui-overlay" id="tlSidebarOverlay"></div>
 
-        <aside class="hr-sidebar" id="tlSidebar">
-            <a href="{{ route('employee-dashboard') }}" class="hr-logo" style="text-decoration: none;">
-                <span>Team</span>
-                <span>Lead</span>
+<aside class="ui-sidebar" id="tlSidebar">
+    <a href="{{ route('employee-dashboard') }}" class="ui-logo" style="text-decoration: none;">
+        <span>Team</span>
+        <span>Lead</span>
+    </a>
+
+    <ul class="ui-sidebar-nav">
+        <li>
+            <a href="{{ route('employee-dashboard') }}" class="ui-sidebar-link {{ request()->routeIs('employee-dashboard') ? 'active' : '' }}">
+                <i class="bi bi-speedometer2"></i>
+                <span>{{ __('Dashboard') }}</span>
             </a>
+        </li>
+        <li>
+            <a href="{{ route('employee-profile') }}" class="ui-sidebar-link {{ request()->routeIs('employee-profile') ? 'active' : '' }}">
+                <i class="bi bi-person-vcard"></i>
+                <span>{{ __('My Profile') }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('employee.attendance.index') }}" class="ui-sidebar-link {{ request()->routeIs('employee.attendance.index') ? 'active' : '' }}">
+                <i class="bi bi-clock"></i>
+                <span>{{ __('Attendances') }}</span>
+            </a>
+        </li>
 
-            <ul class="hr-sidebar-nav">
-                <li>
-                    <a href="{{ route('employee-dashboard') }}" class="hr-sidebar-link {{ request()->routeIs('employee-dashboard') ? 'active' : '' }}">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>{{ __('Dashboard') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('employee-profile') }}" class="hr-sidebar-link {{ request()->routeIs('employee-profile') ? 'active' : '' }}">
-                        <i class="bi bi-person-vcard"></i>
-                        <span>{{ __('My Profile') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('employee.attendance.index') }}" class="hr-sidebar-link {{ request()->routeIs('employee.attendance.index') ? 'active' : '' }}">
-                        <i class="bi bi-clock"></i>
-                        <span>{{ __('Attendances') }}</span>
-                    </a>
-                </li>
+        @php
+            $tlEmployeeRecord = \App\Models\Employee::where('user_id', auth()->id())->first();
+            $isReportingMgrSidebar = $tlEmployeeRecord
+                ? \App\Models\Employee::where('reporting_manager_id', $tlEmployeeRecord->id)->exists()
+                : false;
+        @endphp
+        @if($isReportingMgrSidebar)
+        <li>
+            <a href="{{ route('team-lead.attendances.approvals') }}" class="ui-sidebar-link {{ request()->routeIs('team-lead.attendances.approvals') ? 'active' : '' }}">
+                <i class="bi bi-check2-all"></i>
+                <span>{{ __('Attendance Approvals') }}</span>
+            </a>
+        </li>
+        @endif
 
-                @php
-                    $tlEmployeeRecord = \App\Models\Employee::where('user_id', auth()->id())->first();
-                    $isReportingMgrSidebar = $tlEmployeeRecord
-                        ? \App\Models\Employee::where('reporting_manager_id', $tlEmployeeRecord->id)->exists()
-                        : false;
-                @endphp
-                @if($isReportingMgrSidebar)
+        {{-- Leave dropdown --}}
+        @php $leaveActive = request()->routeIs('team-lead.leave.*') || request()->routeIs('team-lead.leave-applications.*'); @endphp
+        <li class="ui-sidebar-parent {{ $leaveActive ? 'open' : '' }}">
+            <span class="ui-sidebar-link ui-sidebar-toggle" onclick="this.closest('.ui-sidebar-parent').classList.toggle('open')">
+                <i class="bi bi-calendar2-minus"></i>
+                <span>{{ __('Leave') }}</span>
+                <i class="bi bi-chevron-down ui-chevron ms-auto"></i>
+            </span>
+            <ul class="ui-sidebar-submenu">
                 <li>
-                    <a href="{{ route('team-lead.attendances.approvals') }}" class="hr-sidebar-link {{ request()->routeIs('team-lead.attendances.approvals') ? 'active' : '' }}">
-                        <i class="bi bi-check2-all"></i>
-                        <span>{{ __('Attendance Approvals') }}</span>
+                    <a href="{{ route('team-lead.leave.index') }}"
+                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave.index') ? 'active' : '' }}">
+                        <i class="bi bi-journal-plus"></i>
+                        <span>{{ __('Requests') }}</span>
                     </a>
                 </li>
-                @endif
-
-                {{-- Leave dropdown --}}
-                @php $leaveActive = request()->routeIs('team-lead.leave.*') || request()->routeIs('team-lead.leave-applications.*'); @endphp
-                <li class="hr-sidebar-parent {{ $leaveActive ? 'open' : '' }}">
-                    <span class="hr-sidebar-link hr-sidebar-toggle" onclick="this.closest('.hr-sidebar-parent').classList.toggle('open')">
-                        <i class="bi bi-calendar2-minus"></i>
-                        <span>{{ __('Leave') }}</span>
-                        <i class="bi bi-chevron-down hr-chevron ms-auto"></i>
-                    </span>
-                    <ul class="hr-sidebar-submenu">
-                        <li>
-                            <a href="{{ route('team-lead.leave.index') }}"
-                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave.index') ? 'active' : '' }}">
-                                <i class="bi bi-journal-plus"></i>
-                                <span>{{ __('Requests') }}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('team-lead.leave-applications.index') }}"
-                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave-applications.index') ? 'active' : '' }}">
-                                <i class="bi bi-file-earmark-text"></i>
-                                <span>{{ __('Applications') }}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('team-lead.leave-applications.history') }}"
-                                class="hr-sidebar-link {{ request()->routeIs('team-lead.leave-applications.history') ? 'active' : '' }}">
-                                <i class="bi bi-clock-history"></i>
-                                <span>{{ __('History') }}</span>
-                            </a>
-                        </li>
-                    </ul>
                 <li>
-                    <a href="{{ route('team-lead.remarks.index') }}" class="hr-sidebar-link {{ request()->routeIs('team-lead.remarks.*') ? 'active' : '' }}">
-                        <i class="bi bi-chat-left-dots"></i>
-                        <span>{{ __('Supervisor Remarks') }}</span>
+                    <a href="{{ route('team-lead.leave-applications.index') }}"
+                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave-applications.index') ? 'active' : '' }}">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>{{ __('Applications') }}</span>
                     </a>
                 </li>
-
                 <li>
-                    <a href="{{ route('notifications.index') }}" 
-                       class="hr-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
-                        <i class="bi bi-bell"></i>
-                        <span class="d-flex w-100 align-items-center justify-content-between">
-                            {{ __('Notifications') }}
-                            @if(($unreadNotificationCount ?? 0) > 0)
-                                <span class="badge bg-danger rounded-pill">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
-                            @endif
-                        </span>
+                    <a href="{{ route('team-lead.leave-applications.history') }}"
+                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave-applications.history') ? 'active' : '' }}">
+                        <i class="bi bi-clock-history"></i>
+                        <span>{{ __('History') }}</span>
                     </a>
                 </li>
             </ul>
+        </li>
+        <li>
+            <a href="{{ route('team-lead.remarks.index') }}" class="ui-sidebar-link {{ request()->routeIs('team-lead.remarks.*') ? 'active' : '' }}">
+                <i class="bi bi-chat-left-dots"></i>
+                <span>{{ __('Supervisor Remarks') }}</span>
+            </a>
+        </li>
 
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
-                @csrf
-                <button type="submit" class="hr-sidebar-link w-100 border-0 bg-transparent text-start">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>{{ __('Log Out') }}</span>
-                </button>
-            </form>
-        </aside>
+        <li>
+            <a href="{{ route('notifications.index') }}" 
+               class="ui-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                <i class="bi bi-bell"></i>
+                <span class="d-flex w-100 align-items-center justify-content-between">
+                    {{ __('Notifications') }}
+                    @if(($unreadNotificationCount ?? 0) > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $unreadNotificationCount > 99 ? '99+' : $unreadNotificationCount }}</span>
+                    @endif
+                </span>
+            </a>
+        </li>
+    </ul>
+
+    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+        @csrf
+        <button type="submit" class="ui-sidebar-link w-100 border-0 bg-transparent text-start">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>{{ __('Log Out') }}</span>
+        </button>
+    </form>
+</aside>
 
 @pushOnce('scripts')
 <script>
@@ -144,11 +145,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     toggle.addEventListener('click', openSidebar);
     overlay.addEventListener('click', closeSidebar);
-    sidebar.querySelectorAll('a.hr-sidebar-link').forEach(function (link) {
+    sidebar.querySelectorAll('a.ui-sidebar-link').forEach(function (link) {
         link.addEventListener('click', function () {
             if (window.innerWidth < 992) closeSidebar();
         });
     });
 });
 </script>
-@endPushOnce
+@endPushOnce
+
+
+

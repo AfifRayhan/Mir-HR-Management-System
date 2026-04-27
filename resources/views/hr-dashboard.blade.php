@@ -1,23 +1,11 @@
 <x-app-layout>
     <!-- Specific styles for this dashboard -->
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    <style>
-        @keyframes highlightFade {
-            0% { background-color: #fef3c7; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-            100% { background-color: transparent; box-shadow: none; }
-        }
-        .highlight-section {
-            animation: highlightFade 4s ease-out forwards;
-            border-radius: 1rem;
-        }
-    </style>
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout ui-scope-admin">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -37,61 +25,61 @@
             <!-- Status and HR Metrics -->
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-4 mb-4">
                 <div class="col">
-                    <div class="hr-metric-card px-3 py-4 gap-3">
-                        <div class="metric-icon bg-primary-soft text-primary">
+                    <div class="ui-metric-card px-3 py-4 gap-3">
+                        <div class="ui-metric-icon bg-primary-soft text-primary">
                             <i class="bi bi-people-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Staff') }}</div>
-                            <div class="metric-value">{{ $totalEmployees }}</div>
+                            <div class="ui-metric-label">{{ __('Total Staff') }}</div>
+                            <div class="ui-metric-value">{{ $totalEmployees }}</div>
                             <div class="metric-sub">{{ __('Registered') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="hr-metric-card px-3 py-4 gap-3">
-                        <div class="metric-icon bg-success-soft text-success">
+                    <div class="ui-metric-card px-3 py-4 gap-3">
+                        <div class="ui-metric-icon bg-success-soft text-success">
                             <i class="bi bi-person-check-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Present Today') }}</div>
-                            <div class="metric-value">{{ $presentToday }}</div>
+                            <div class="ui-metric-label">{{ __('Present Today') }}</div>
+                            <div class="ui-metric-value">{{ $presentToday }}</div>
                             <div class="metric-sub">{{ __('Clocked-in') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="hr-metric-card px-3 py-4 gap-3">
-                        <div class="metric-icon bg-danger-soft text-danger">
+                    <div class="ui-metric-card px-3 py-4 gap-3">
+                        <div class="ui-metric-icon bg-danger-soft text-danger">
                             <i class="bi bi-person-x-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Absent Today') }}</div>
-                            <div class="metric-value">{{ $absentToday }}</div>
+                            <div class="ui-metric-label">{{ __('Absent Today') }}</div>
+                            <div class="ui-metric-value">{{ $absentToday }}</div>
                             <div class="metric-sub">{{ __('Not in office') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="hr-metric-card px-3 py-4 gap-3">
-                        <div class="metric-icon bg-warning-soft text-warning">
+                    <div class="ui-metric-card px-3 py-4 gap-3">
+                        <div class="ui-metric-icon bg-warning-soft text-warning">
                             <i class="bi bi-clock-history text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Late Today') }}</div>
-                            <div class="metric-value">{{ $lateToday }}</div>
+                            <div class="ui-metric-label">{{ __('Late Today') }}</div>
+                            <div class="ui-metric-value">{{ $lateToday }}</div>
                             <div class="metric-sub">{{ __('After threshold') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="hr-metric-card px-3 py-4 gap-3">
-                        <div class="metric-icon bg-info-soft text-info">
+                    <div class="ui-metric-card px-3 py-4 gap-3">
+                        <div class="ui-metric-icon bg-info-soft text-info">
                             <i class="bi bi-calendar2-range text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('On Leave') }}</div>
-                            <div class="metric-value">{{ $onLeaveToday }}</div>
+                            <div class="ui-metric-label">{{ __('On Leave') }}</div>
+                            <div class="ui-metric-value">{{ $onLeaveToday }}</div>
                             <div class="metric-sub">{{ __('Approved') }}</div>
                         </div>
                     </div>
@@ -103,7 +91,7 @@
                 <!-- Recent Attendance Summary & Chart -->
                 <div class="col-lg-8">
                     <!-- Office Attendance Chart -->
-                    <div class="hr-panel p-4 mb-4">
+                    <div class="ui-panel p-4 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h6 class="mb-0 font-bold text-gray-800"><i class="bi bi-bar-chart-fill me-2 text-success"></i>{{ __('Office Attendance Overview') }}</h6>
                         </div>
@@ -112,13 +100,13 @@
                         </div>
                     </div>
 
-                    <div class="hr-panel p-0 overflow-hidden">
+                    <div class="ui-panel p-0 overflow-hidden">
                         <div class="p-4 border-bottom d-flex align-items-center">
                             <h6 class="mb-0 font-bold text-gray-800 flex-grow-1"><i class="bi bi-activity me-2 text-success"></i>{{ __('Recent Attendance Summary') }}</h6>
                             <a href="{{ route('personnel.attendances.index') }}" class="btn btn-success btn-sm text-white px-3 font-bold rounded-pill btn-pill-action flex-shrink-0">{{ __('View All') }}</a>
                         </div>
                         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table hr-table mb-0">
+                            <table class="table ui-table mb-0">
                                 <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 1;">
                                     <tr>
                                         <th class="ps-4">{{ __('Employee') }}</th>
@@ -179,7 +167,7 @@
                 <!-- Side Panels -->
                 <div class="col-lg-4">
                     <!-- Pending Leave Requests -->
-                    <div class="hr-panel mb-4">
+                    <div class="ui-panel mb-4">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-envelope-exclamation me-2 text-warning"></i>{{ __('Pending Leave Requests') }}</h6>
                         <div class="d-flex align-items-center justify-content-between p-3 bg-warning-soft rounded-4 border-start border-warning border-4">
                             <div class="d-flex align-items-center">
@@ -194,7 +182,7 @@
                     </div>
 
                     <!-- Upcoming Holidays -->
-                    <div class="hr-panel mb-4">
+                    <div class="ui-panel mb-4">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-calendar-check me-2 text-info"></i>{{ __('Upcoming Holidays') }}</h6>
                         <div class="holiday-scroll-container" style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">
@@ -214,7 +202,7 @@
                     </div>
 
                     <!-- Upcoming Birthdays -->
-                    <div class="hr-panel mb-4">
+                    <div class="ui-panel mb-4">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-gift me-2 text-danger"></i>{{ __('Upcoming Birthdays') }}</h6>
                         <div class="birthday-scroll-container" style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">
@@ -245,7 +233,7 @@
                     </div>
 
                     <!-- Notices & Events -->
-                    <div class="hr-panel mb-4" id="notices-events">
+                    <div class="ui-panel mb-4" id="notices-events">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-bold text-gray-800 mb-0"><i class="bi bi-megaphone me-2 text-primary"></i>{{ __('Notices & Events') }}</h6>
                             <a href="{{ route('settings.notices.index') }}" class="btn btn-link btn-sm text-decoration-none small px-3 font-bold rounded-pill btn-pill-action">{{ __('Manage') }}</a>
@@ -332,7 +320,7 @@
             if (hash) {
                 const target = document.querySelector(hash);
                 if (target) {
-                    target.classList.add('highlight-section');
+                    target.classList.add('ui-highlight-section');
                     setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
                 }
             }
@@ -430,3 +418,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

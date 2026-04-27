@@ -1,12 +1,10 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4 align-items-center">
                 <div class="col-md-8">
                     <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Management') }}</h5>
@@ -22,7 +20,7 @@
 
 
             <!-- Filter Bar -->
-            <div class="filter-bar">
+            <div class="ui-filter-bar">
                 <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2">
                     <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Search') }}</label>
@@ -86,15 +84,15 @@
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
-                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-hr-clear flex-grow-1">{{ __('Clear') }}</a>
+                        <button type="submit" class="btn ui-btn-search flex-grow-1">{{ __('Search') }}</button>
+                        <a href="{{ route('personnel.employees.index') }}" class="btn ui-btn-clear flex-grow-1">{{ __('Clear') }}</a>
                     </div>
                 </form>
             </div>
 
-            <div class="hr-panel p-0 overflow-hidden">
+            <div class="ui-panel p-0 overflow-hidden">
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0">
+                    <table class="table ui-table mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4">
@@ -216,3 +214,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .balance-card {
@@ -18,10 +18,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
+    <div class="ui-layout">
         @include('partials.team-lead-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12">
@@ -73,7 +73,7 @@
             <div class="row g-4">
                 {{-- Apply Leave Form --}}
                 <div class="col-lg-4">
-                    <div class="hr-panel">
+                    <div class="ui-panel">
                         <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Apply for Leave') }}</h5>
                         <form action="{{ route('team-lead.leave.store') }}" method="POST">
                             @csrf
@@ -121,7 +121,7 @@
 
                 {{-- Applications History --}}
                 <div class="col-lg-8">
-                    <div class="hr-panel">
+                    <div class="ui-panel">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
                             <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('My Applications History') }}</h5>
                             <form action="{{ route('team-lead.leave.index') }}" method="GET" class="d-flex gap-2">
@@ -148,7 +148,7 @@
                             </form>
                         </div>
                         <div class="table-responsive">
-                            <table class="table hr-table">
+                            <table class="table ui-table">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>{{ __('Leave Type') }}</th>
@@ -247,3 +247,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

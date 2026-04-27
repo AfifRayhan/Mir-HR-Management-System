@@ -1,0 +1,59 @@
+/* Unified UI Utilities */
+
+/* Filter Bars */
+.ui-filter-bar {
+    background: var(--ui-card-bg);
+    padding: 1.5rem;
+    border-radius: var(--ui-radius-lg);
+    border: 1px solid var(--ui-border);
+    margin-bottom: 2rem;
+}
+
+/* Download Bars */
+.ui-download-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--ui-card-bg);
+    border-top: 1px solid var(--ui-border);
+    padding: 0.75rem 1.5rem;
+    z-index: 10;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+
+/* Text Utilities */
+.text-ui-primary { color: var(--ui-primary) !important; }
+.text-ui-success { color: var(--ui-success) !important; }
+.text-ui-danger { color: var(--ui-danger) !important; }
+
+/* Background Utilities */
+.bg-ui-success-soft { background-color: var(--ui-success-soft) !important; }
+.bg-ui-danger-soft { background-color: var(--ui-danger-soft) !important; }
+
+/* Form Elements */
+.ui-form-label {
+    font-weight: 600;
+    color: var(--ui-text-light);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.ui-input, .ui-select {
+    border-radius: var(--ui-radius-md);
+    border: 1px solid var(--ui-border);
+}
+
+.ui-input:focus, .ui-select:focus {
+    border-color: var(--ui-primary);
+    box-shadow: 0 0 0 0.25rem rgba(0, 122, 16, 0.1);
+}
+
+/* Animations */
+@keyframes uiHighlightFade {
+    0% { background-color: #fef3c7; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+    100% { background-color: transparent; box-shadow: none; }
+}
+
+.ui-highlight-section {
+    animation: uiHighlightFade 4s ease-out forwards;
+    border-radius: var(--ui-radius-lg);
+}

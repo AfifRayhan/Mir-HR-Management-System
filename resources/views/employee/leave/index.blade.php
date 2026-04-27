@@ -1,13 +1,13 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-employee-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="emp-layout">
+    <div class="ui-layout">
         @include('partials.employee-sidebar')
 
-        <main class="emp-main">
+        <main class="ui-main">
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12">
@@ -59,7 +59,7 @@
             <div class="row g-4">
                 <!-- Apply Leave Form -->
                 <div class="col-lg-4">
-                    <div class="emp-panel">
+                    <div class="ui-panel">
                         <h5 class="fw-bold mb-4 border-bottom pb-2"><i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Apply for Leave') }}</h5>
                         <form action="{{ route('employee.leave.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -119,7 +119,7 @@
 
                 <!-- My Applications History -->
                 <div class="col-lg-8">
-                    <div class="emp-panel">
+                    <div class="ui-panel">
                         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
                             <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-success"></i>{{ __('My Applications History') }}</h5>
                             <form action="{{ route('employee.leave.index') }}" method="GET" class="d-flex gap-2">
@@ -139,13 +139,13 @@
                                     </option>
                                     @endfor
                                 </select>
-                                <button type="submit" class="btn btn-hr-search border-0">{{ __('Search') }}</button>
-                                <a href="{{ route('employee.leave.index') }}" class="btn btn-hr-clear">{{ __('Clear') }}</a>
+                                <button type="submit" class="btn ui-btn-search border-0">{{ __('Search') }}</button>
+                                <a href="{{ route('employee.leave.index') }}" class="btn ui-btn-clear">{{ __('Clear') }}</a>
                             </form>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table emp-table">
+                            <table class="table ui-table">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>{{ __('Leave Type') }}</th>
@@ -338,3 +338,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

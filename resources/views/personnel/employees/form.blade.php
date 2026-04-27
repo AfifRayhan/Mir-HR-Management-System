@@ -1,13 +1,13 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-5">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -955,3 +955,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

@@ -5,20 +5,6 @@
         </h2>
     </x-slot>
 
-    <!-- Specific styles for this dashboard -->
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
-    <style>
-        @keyframes highlightFade {
-            0% { background-color: #fef3c7; box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
-            100% { background-color: transparent; box-shadow: none; }
-        }
-        .highlight-section {
-            animation: highlightFade 4s ease-out forwards;
-            border-radius: 1rem;
-        }
-    </style>
-    @endpush
 
     @php 
         $isTeamLeadRole = optional(auth()->user()->role)->name === 'Team Lead';
@@ -26,14 +12,14 @@
         $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager;
     @endphp
 
-    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+    <div class="{{ $isTeamLeadLayout ? 'ui-layout ui-scope-lead' : 'ui-layout ui-scope-emp' }}">
         @if($isTeamLeadLayout)
         @include('partials.team-lead-sidebar')
         @else
         @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $isTeamLeadLayout ? 'hr-main' : 'emp-main' }}">
+        <main class="ui-main">
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -60,49 +46,49 @@
             <!-- Employee Summary Metrics -->
             <div class="row g-4 mb-4">
                 <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-success-soft text-success">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-success-soft text-success">
                             <i class="bi bi-person-check-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Present Days') }}</div>
-                            <div class="metric-value">{{ $presentDays }}</div>
+                            <div class="ui-metric-label">{{ __('Present Days') }}</div>
+                            <div class="ui-metric-value">{{ $presentDays }}</div>
                             <div class="metric-sub">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-warning-soft text-warning">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-warning-soft text-warning">
                             <i class="bi bi-clock-history text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Late Days') }}</div>
-                            <div class="metric-value">{{ $lateDays }}</div>
+                            <div class="ui-metric-label">{{ __('Late Days') }}</div>
+                            <div class="ui-metric-value">{{ $lateDays }}</div>
                             <div class="metric-sub">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-danger-soft text-danger">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-danger-soft text-danger">
                             <i class="bi bi-person-x-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Absent Days') }}</div>
-                            <div class="metric-value">{{ $absentDays }}</div>
+                            <div class="ui-metric-label">{{ __('Absent Days') }}</div>
+                            <div class="ui-metric-value">{{ $absentDays }}</div>
                             <div class="metric-sub">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-info-soft text-info">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-info-soft text-info">
                             <i class="bi bi-calendar2-range text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Leaves Taken') }}</div>
-                            <div class="metric-value">{{ $approvedLeaves }}</div>
+                            <div class="ui-metric-label">{{ __('Leaves Taken') }}</div>
+                            <div class="ui-metric-value">{{ $approvedLeaves }}</div>
                             <div class="metric-sub">{{ __("This year " . "(" . now()->format('Y') . ")") }}</div>
                         </div>
                     </div>
@@ -157,7 +143,7 @@
                 <!-- My Roster Schedule Section -->
                 <div class="col-lg-8">
                     @if($myRoster)
-                    <div class="hr-panel p-0 mb-4 shadow-sm border-0">
+                    <div class="ui-panel p-0 mb-4 shadow-sm border-0">
                         <div class="p-4 border-bottom d-flex align-items-center justify-content-between bg-white">
                             <h6 class="mb-0 font-bold text-gray-800">
                                 <i class="bi bi-calendar3 me-2 text-success"></i>{{ __('Weekly Roster Schedule') }} 
@@ -187,7 +173,7 @@
                         </div>
                         <div class="p-0">
                             <div class="table-responsive">
-                                <table class="table hr-table mb-0" id="personal-roster-table">
+                                <table class="table ui-table mb-0" id="personal-roster-table">
                                     <thead>
                                         <tr>
                                             <th class="ps-4">{{ __('Date') }}</th>
@@ -241,12 +227,12 @@
                     </div>
                     @endif
 
-                    <div class="hr-panel p-0 overflow-hidden shadow-sm border-0">
+                    <div class="ui-panel p-0 overflow-hidden shadow-sm border-0">
                         <div class="p-4 border-bottom d-flex align-items-center bg-white">
                             <h6 class="mb-0 font-bold text-gray-800 flex-grow-1"><i class="bi bi-activity me-2 text-success"></i>{{ __('Monthly Attendance') }} ({{ now()->format('F') }})</h6>
                         </div>
                         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table hr-table mb-0">
+                            <table class="table ui-table mb-0">
                                 <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 1;">
                                     <tr>
                                         <th class="ps-4">{{ __('Date') }}</th>
@@ -299,7 +285,7 @@
                 <div class="col-lg-4">
                     @if($isTeamLeadLayout)
                     <!-- Pending Leave Requests (Team Lead & Reporting Managers) -->
-                    <div class="hr-panel mb-4 shadow-sm">
+                    <div class="ui-panel mb-4 shadow-sm">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-envelope-exclamation me-2 text-warning"></i>{{ __('Pending Leave Requests') }}</h6>
                         <div class="d-flex align-items-center justify-content-between p-3 bg-warning-soft rounded-4 border-start border-warning border-4">
                             <div class="d-flex align-items-center">
@@ -315,7 +301,7 @@
                     @endif
 
                     <!-- Supervisor Remarks -->
-                    <div class="hr-panel mb-4 shadow-sm" id="supervisor-remarks">
+                    <div class="ui-panel mb-4 shadow-sm" id="supervisor-remarks">
                         <h6 class="font-bold text-gray-800 mb-3 small uppercase tracking-wider">
                             <i class="bi bi-chat-left-text me-2 text-warning"></i>{{ __('Supervisor Remarks') }}
                         </h6>
@@ -349,7 +335,7 @@
                     </div>
 
                     <!-- Upcoming Holidays -->
-                    <div class="hr-panel mb-4 shadow-sm">
+                    <div class="ui-panel mb-4 shadow-sm">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-calendar-check me-2 text-info"></i>{{ __('Upcoming Holidays') }}</h6>
                         <div class="holiday-scroll-container" style="max-height: 180px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">
@@ -369,7 +355,7 @@
                     </div>
  
                     <!-- Notices & Events -->
-                    <div class="hr-panel mb-4 shadow-sm" id="notices-events">
+                    <div class="ui-panel mb-4 shadow-sm" id="notices-events">
                         <h6 class="font-bold text-gray-800 mb-3"><i class="bi bi-megaphone me-2 text-success"></i>{{ __('Notices & Events') }}</h6>
                         <div class="notice-scroll-container" style="max-height: 250px; overflow-y: auto; overflow-x: hidden;">
                             <ul class="hr-list px-2">
@@ -529,7 +515,7 @@
             if (hash) {
                 const targetSection = document.querySelector(hash);
                 if (targetSection) {
-                    targetSection.classList.add('highlight-section');
+                    targetSection.classList.add('ui-highlight-section');
                     // Smooth scroll to the section
                     setTimeout(() => {
                         targetSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -567,3 +553,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

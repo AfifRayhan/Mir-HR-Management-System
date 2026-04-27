@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -18,7 +18,7 @@
 
                 <div class="row">
                     <div class="col-md-8 col-lg-6">
-                        <div class="hr-panel">
+                        <div class="ui-panel">
                             <form action="{{ isset($section) ? route('personnel.sections.update', $section) : route('personnel.sections.store') }}" method="POST">
                                 @csrf
                                 @if(isset($section))
@@ -62,3 +62,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

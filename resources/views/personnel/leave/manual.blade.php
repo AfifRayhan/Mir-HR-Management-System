@@ -1,13 +1,13 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12">
@@ -31,7 +31,7 @@
             <div class="row g-4">
                 <!-- Manual Leave Form -->
                 <div class="col-lg-5">
-                    <div class="hr-panel">
+                    <div class="ui-panel">
                         <h5 class="fw-bold mb-4 border-bottom pb-2">
                             <i class="bi bi-journal-plus me-2 text-success"></i>{{ __('Record Manual Leave') }}
                         </h5>
@@ -136,14 +136,14 @@
 
                 <!-- Recent manual leaves (all approved leaves) -->
                 <div class="col-lg-7">
-                    <div class="hr-panel p-0 overflow-hidden">
+                    <div class="ui-panel p-0 overflow-hidden">
                         <div class="px-4 py-3 border-bottom">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-clock-history me-2 text-success"></i>{{ __('Recent Manual Leaves') }}
                             </h5>
                         </div>
                         <div class="table-responsive">
-                            <table class="table hr-table mb-0">
+                            <table class="table ui-table mb-0">
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="ps-4">{{ __('Employee') }}</th>
@@ -267,3 +267,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

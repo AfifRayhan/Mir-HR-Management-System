@@ -6,14 +6,14 @@
     </x-slot>
 
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -23,7 +23,7 @@
 
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="hr-panel">
+                        <div class="ui-panel">
                             <form action="{{ route('personnel.attendances.store-adjustment') }}" method="POST">
                                 @csrf
                                 <div class="mb-4">
@@ -114,3 +114,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

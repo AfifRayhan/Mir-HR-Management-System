@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
@@ -13,14 +13,14 @@
         $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager || $isDeptHead;
     @endphp
 
-    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+    <div class="{{ $isTeamLeadLayout ? 'ui-layout' : 'ui-layout' }}">
         @if($isTeamLeadLayout)
             @include('partials.team-lead-sidebar')
         @else
             @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $isTeamLeadLayout ? 'hr-main' : 'emp-main' }}">
+        <main class="{{ $isTeamLeadLayout ? 'ui-main' : 'ui-main' }}">
 
             <div class="row mb-4 align-items-center">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -35,7 +35,7 @@
             </div>
 
             <!-- Filters Panel -->
-            <div class="hr-panel mb-4">
+            <div class="ui-panel mb-4">
                 <form action="{{ route('employee.attendance.index') }}" method="GET" class="row g-3 align-items-end">
                     <div class="col-md-3">
                         <label class="form-label small fw-bold text-muted">{{ __('From Date') }}</label>
@@ -56,8 +56,8 @@
                         </select>
                     </div>
                     <div class="col-md-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-hr-search">{{ __('Search') }}</button>
-                        <a href="{{ route('employee.attendance.index') }}" class="btn btn-hr-clear">{{ __('Clear') }}</a>
+                        <button type="submit" class="btn ui-btn-search">{{ __('Search') }}</button>
+                        <a href="{{ route('employee.attendance.index') }}" class="btn ui-btn-clear">{{ __('Clear') }}</a>
                     </div>
                 </form>
             </div>
@@ -65,49 +65,49 @@
             <!-- Summary Stats -->
             <div class="row g-4 mb-4">
                 <div class="col-md-3">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-success-soft text-success">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-success-soft text-success">
                             <i class="bi bi-person-check-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Present') }}</div>
-                            <div class="metric-value">{{ $totalPresent }}</div>
+                            <div class="ui-metric-label">{{ __('Present') }}</div>
+                            <div class="ui-metric-value">{{ $totalPresent }}</div>
                             <div class="metric-sub">{{ __('Days present') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-warning-soft text-warning">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-warning-soft text-warning">
                             <i class="bi bi-clock-history text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Late') }}</div>
-                            <div class="metric-value">{{ $totalLate }}</div>
+                            <div class="ui-metric-label">{{ __('Late') }}</div>
+                            <div class="ui-metric-value">{{ $totalLate }}</div>
                             <div class="metric-sub">{{ __('Days late') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-danger-soft text-danger">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-danger-soft text-danger">
                             <i class="bi bi-person-x-fill text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Absent') }}</div>
-                            <div class="metric-value">{{ $totalAbsent }}</div>
+                            <div class="ui-metric-label">{{ __('Absent') }}</div>
+                            <div class="ui-metric-value">{{ $totalAbsent }}</div>
                             <div class="metric-sub">{{ __('Days absent') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="hr-metric-card">
-                        <div class="metric-icon bg-info-soft text-info">
+                    <div class="ui-metric-card">
+                        <div class="ui-metric-icon bg-info-soft text-info">
                             <i class="bi bi-journal-text text-2xl"></i>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">{{ __('Total Records') }}</div>
-                            <div class="metric-value">{{ $totalRecords }}</div>
+                            <div class="ui-metric-label">{{ __('Total Records') }}</div>
+                            <div class="ui-metric-value">{{ $totalRecords }}</div>
                             <div class="metric-sub">{{ __('For this period') }}</div>
                         </div>
                     </div>
@@ -115,12 +115,12 @@
             </div>
 
             <!-- Attendance Records Table -->
-            <div class="hr-panel p-0 overflow-hidden" style="height: auto;">
+            <div class="ui-panel p-0 overflow-hidden" style="height: auto;">
                 <div class="p-4 border-bottom">
                     <h6 class="mb-0 font-bold text-gray-800"><i class="bi bi-table me-2 text-success"></i>{{ __('Attendance Logs') }}</h6>
                 </div>
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0">
+                    <table class="table ui-table mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4">Date</th>
@@ -296,3 +296,7 @@
     </style>
     @endpush
 </x-app-layout>
+
+
+
+

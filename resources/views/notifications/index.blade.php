@@ -13,9 +13,9 @@
 <x-app-layout>
     @push('styles')
     @if($useHrLayout)
-        @vite(['resources/css/custom-hr-dashboard.css'])
+        
     @else
-        @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
+        
     @endif
     <style>
         /* ── Notification page specific styles ── */
@@ -155,18 +155,18 @@
     @endpush
 
     {{-- ── Layout wrapper ── --}}
-    <div class="{{ $useHrLayout ? 'hr-layout' : 'emp-layout' }}">
+    <div class="{{ $useHrLayout ? 'ui-layout' : 'ui-layout' }}">
 
         {{-- Sidebar --}}
         @if($useHrLayout)
-            @include('partials.hr-sidebar')
+            @include('partials.ui-sidebar')
         @elseif($useTeamLeadLayout)
             @include('partials.team-lead-sidebar')
         @else
             @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $useHrLayout ? 'hr-main' : 'emp-main' }}">
+        <main class="{{ $useHrLayout ? 'ui-main' : 'ui-main' }}">
 
             {{-- Page header --}}
             <div class="notif-page-header">
@@ -263,3 +263,7 @@
         </main>
     </div>
 </x-app-layout>
+
+
+
+

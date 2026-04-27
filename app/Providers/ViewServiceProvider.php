@@ -19,7 +19,7 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Illuminate\Support\Facades\View::composer('partials.hr-sidebar', function ($view) {
+        \Illuminate\Support\Facades\View::composer('partials.ui-sidebar', function ($view) {
             $menuService = app(\App\Services\MenuService::class);
             $sidebarItems = $menuService->getSidebarMenu();
             

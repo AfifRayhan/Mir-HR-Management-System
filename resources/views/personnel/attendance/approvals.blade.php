@@ -5,14 +5,12 @@
         </h2>
     </x-slot>
 
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12">
@@ -20,9 +18,9 @@
                     </div>
                 </div>
 
-                <div class="hr-panel p-0 overflow-hidden">
+                <div class="ui-panel p-0 overflow-hidden">
                     <div class="table-responsive">
-                        <table class="table hr-table mb-0">
+                        <table class="table ui-table mb-0">
                             <thead>
                                 <tr>
                                     <th class="ps-4">Employee</th>
@@ -109,3 +107,7 @@
         </main>
     </div>
 </x-app-layout>
+
+
+
+

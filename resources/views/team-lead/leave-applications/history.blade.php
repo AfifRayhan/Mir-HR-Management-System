@@ -1,12 +1,10 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
+    <div class="ui-layout">
         @include('partials.team-lead-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4">
                 <div class="col-12">
                     <h5 class="mb-1 fw-bold">{{ __('Team Leave History') }}</h5>
@@ -14,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="hr-panel p-0 overflow-hidden mb-4">
+            <div class="ui-panel p-0 overflow-hidden mb-4">
                 <div class="border-bottom p-4 bg-light">
                     <form action="{{ route('team-lead.leave-applications.history') }}" method="GET">
                         <div class="row g-3">
@@ -88,7 +86,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0">
+                    <table class="table ui-table mb-0">
                         <thead class="bg-light">
                             <tr>
                                 <th class="ps-4">{{ __('Employee') }}</th>
@@ -205,3 +203,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

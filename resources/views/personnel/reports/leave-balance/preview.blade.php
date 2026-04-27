@@ -1,8 +1,8 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <style>
-        .download-bar {
+        .ui-download-bar {
             position: sticky;
             bottom: 0;
             background: #fff;
@@ -21,10 +21,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -36,7 +36,7 @@
             </div>
 
             {{-- Filter Bar --}}
-            <div class="filter-bar">
+            <div class="ui-filter-bar">
                 <form action="{{ route('personnel.reports.leave-balance.preview') }}" method="GET" class="row g-2">
                     <div class="col-md-4">
                         <label class="form-label small font-bold text-gray-600">{{ __('Employee') }}</label>
@@ -58,7 +58,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-hr-search flex-grow-1">{{ __('Search') }}</button>
+                        <button type="submit" class="btn ui-btn-search flex-grow-1">{{ __('Search') }}</button>
                     </div>
                 </form>
             </div>
@@ -84,9 +84,9 @@
                     </div>
                 </div>
 
-                <div class="hr-panel p-0 overflow-hidden mb-4">
+                <div class="ui-panel p-0 overflow-hidden mb-4">
                     <div class="table-responsive">
-                        <table class="table hr-table mb-0">
+                        <table class="table ui-table mb-0">
                             <thead>
                                 <tr class="text-center">
                                     <th class="ps-4 text-start">Leave Type</th>
@@ -174,7 +174,7 @@
                 </div>
 
                 {{-- Download Bar --}}
-                <div class="download-bar d-flex justify-content-between align-items-center mb-4 rounded-4">
+                <div class="ui-download-bar d-flex justify-content-between align-items-center mb-4 rounded-4">
                     <span class="text-gray-600 small">
                         <i class="bi bi-info-circle me-1"></i>
                         {{ __('Showing :count records', ['count' => count($leaveBalances)]) }}
@@ -233,7 +233,7 @@
                     </div>
                 </div>
             @else
-                <div class="hr-panel text-center py-5">
+                <div class="ui-panel text-center py-5">
                     <i class="bi bi-wallet2 text-gray-200" style="font-size: 5rem;"></i>
                     <h5 class="mt-3 text-gray-500">Please select an employee and year to view the leave balance report.</h5>
                 </div>
@@ -276,3 +276,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

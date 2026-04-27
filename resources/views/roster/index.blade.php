@@ -1,60 +1,12 @@
 <x-app-layout>
     @push('styles')
-    <style>
-        .roster-table th, .roster-table td { vertical-align: middle; font-size: 0.82rem; }
-        .roster-table thead th { background: #1e293b; color: #fff; white-space: nowrap; padding: 10px 12px; }
-        .roster-cell { min-width: 140px; font-size: 0.8rem; }
-        .day-label { font-weight: 700; font-size: 0.85rem; min-width: 40px; }
-        .weekend-row { background-color: #fffbeb; }
-        .group-tab.active { background: #10b981 !important; color: #fff !important; border-color: #10b981 !important; }
-        .shift-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 2px; }
-        .badge-a { background-color: #fef3c7; color: #92400e; } /* amber */
-        .badge-b { background-color: #e0f2fe; color: #075985; } /* sky */
-        .badge-c { background-color: #fee2e2; color: #991b1b; } /* red */
-        .badge-g { background-color: #dcfce7; color: #166534; } /* green */
-        .badge-off { background-color: #f3f4f6; color: #374151; } /* gray */
-        
-        /* New Roster UI Styles */
-        .roster-cell-container { position: relative; min-width: 140px; }
-        .badge-list { display: flex; flex-wrap: wrap; gap: 4px; min-height: 30px; margin-bottom: 8px; }
-        .emp-badge { 
-            display: inline-flex; align-items: center; background: #f1f5f9; border: 1px solid #e2e8f0; 
-            border-radius: 4px; padding: 1px 6px; font-size: 0.75rem; color: #475569; transition: all 0.2s;
-        }
-        .emp-badge:hover { background: #e2e8f0; }
-        .emp-badge .remove-btn { 
-            margin-left: 4px; cursor: pointer; color: #94a3b8; font-weight: bold; font-size: 1rem; line-height: 1;
-        }
-        .emp-badge .remove-btn:hover { color: #ef4444; }
-        
-        .add-emp-btn {
-            width: 24px; height: 24px; border-radius: 4px; border: 1px dashed #cbd5e1;
-            background: #f8fafc; color: #64748b; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
-        }
-        .add-emp-btn:hover { background: #f1f5f9; border-color: #94a3b8; color: #475569; }
-        
-        .emp-selector-dropdown {
-            position: absolute; top: 100%; left: 0; z-index: 1000; display: none;
-            width: 200px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); padding: 8px; margin-top: 4px;
-        }
-        .emp-selector-dropdown.show { display: block; }
-        .emp-selector-search { margin-bottom: 8px; }
-        .emp-selector-list { max-height: 200px; overflow-y: auto; }
-        .emp-selector-item {
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .emp-selector-item:hover { background: #f1f5f9; color: #10b981; }
-        .emp-selector-item.selected { background: #ecfdf5; color: #059669; cursor: default; }
-    </style>
+    @vite(['resources/css/ui-roster.css'])
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             {{-- Page Header --}}
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -69,7 +21,7 @@
             </div>
 
             {{-- Group Tabs + Month Selector --}}
-            <div class="hr-panel p-3 mb-3">
+            <div class="ui-panel p-3 mb-3">
                 <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between">
                     <div class="d-flex gap-2 overflow-auto pb-1" style="max-width: 100%;">
                         @foreach($groups as $slug => $label)
@@ -104,7 +56,7 @@
             </div>
 
             {{-- Roster Table --}}
-            <div class="hr-panel p-0 mb-4">
+            <div class="ui-panel p-0 mb-4">
                 <div class="p-3 border-bottom d-flex align-items-center justify-content-between bg-white">
                     <div class="d-flex align-items-center gap-3 flex-grow-1">
                         <h6 class="mb-0 font-bold text-gray-800 d-none d-lg-block">
@@ -592,3 +544,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

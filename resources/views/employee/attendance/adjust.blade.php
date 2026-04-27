@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-employee-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @endpush
 
@@ -11,14 +11,14 @@
         $isTeamLeadLayout = $isTeamLeadRole || $isReportingManager;
     @endphp
 
-    <div class="{{ $isTeamLeadLayout ? 'hr-layout' : 'emp-layout' }}">
+    <div class="{{ $isTeamLeadLayout ? 'ui-layout' : 'ui-layout' }}">
         @if($isTeamLeadLayout)
             @include('partials.team-lead-sidebar')
         @else
             @include('partials.employee-sidebar')
         @endif
 
-        <main class="{{ $isTeamLeadLayout ? 'hr-main' : 'emp-main' }}">
+        <main class="{{ $isTeamLeadLayout ? 'ui-main' : 'ui-main' }}">
             <div class="row mb-4 align-items-center">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -30,7 +30,7 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="hr-panel">
+                    <div class="ui-panel">
                         <form action="{{ route('employee.attendance.store-adjustment') }}" method="POST">
                             @csrf
                             <div class="mb-4">
@@ -111,3 +111,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+

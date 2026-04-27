@@ -1,0 +1,58 @@
+/* Unified UI Variables & Design Tokens */
+:root {
+    /* Brand Colors */
+    --ui-primary: #007a10;
+    --ui-primary-hover: #005c0c;
+    --ui-primary-dark: #275e26;
+    --ui-primary-soft: #e6f2e7;
+
+    /* Status Colors */
+    --ui-success: #4ade80;
+    /* Lighter success green as requested */
+    --ui-success-soft: #dcfce7;
+    --ui-warning: #f59e0b;
+    --ui-warning-soft: #fef3c7;
+    --ui-info: #3b82f6;
+    --ui-info-soft: #dbeafe;
+    --ui-danger: #ef4444;
+    --ui-danger-soft: #fee2e2;
+
+    /* Base Colors */
+    --ui-bg: #f8fafc;
+    --ui-card-bg: #ffffff;
+    --ui-border: #e2e8f0;
+    --ui-text: #0f172a;
+    --ui-text-light: #64748b;
+
+    /* Dimensions */
+    --ui-sidebar-width: 260px;
+    --ui-radius-sm: 0.375rem;
+    --ui-radius-md: 0.5rem;
+    --ui-radius-lg: 1rem;
+    --ui-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+}
+
+/* Role-Specific Overrides to keep views "Distinct" */
+
+/* HR Admin Scope */
+.ui-scope-admin {
+    --ui-primary: #007a10;
+    --ui-sidebar-bg: #ffffff;
+    --ui-accent: #007a10;
+}
+
+/* Employee Scope */
+.ui-scope-emp {
+    --ui-primary: #275e26;
+    /* Slightly deeper green for employee context */
+    --ui-sidebar-bg: #ffffff;
+    --ui-accent: #275e26;
+}
+
+/* Team Lead Scope */
+.ui-scope-lead {
+    --ui-primary: #15803d;
+    /* Distinct green for leads */
+    --ui-sidebar-bg: #ffffff;
+    --ui-accent: #15803d;
+}

@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <style>
         .monthly-grid-table {
             font-size: 0.7rem;
@@ -53,7 +53,7 @@
             border-radius: 6px;
             background: #f8fafc;
         }
-        .download-bar {
+        .ui-download-bar {
             position: sticky;
             bottom: 0;
             background: #fff;
@@ -63,17 +63,17 @@
             box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
         }
         @media print {
-            .hr-sidebar, .download-bar, .no-print { display: none !important; }
-            .hr-main { padding: 0 !important; margin: 0 !important; }
+            .ui-sidebar, .ui-download-bar, .no-print { display: none !important; }
+            .ui-main { padding: 0 !important; margin: 0 !important; }
             .monthly-grid-table { font-size: 0.6rem; }
         }
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             {{-- Header --}}
             <div class="row mb-4 no-print">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -94,7 +94,7 @@
 
             <form method="GET" action="{{ route('personnel.reports.attendances.monthly.export.preview') }}" id="exportForm" class="no-print">
                 {{-- Filters --}}
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-2">
                             <label class="form-label small fw-bold text-gray-600">{{ __('Month') }}</label>
@@ -162,7 +162,7 @@
             </div>
 
             {{-- Grid Table --}}
-            <div class="hr-panel p-0 overflow-hidden mb-4">
+            <div class="ui-panel p-0 overflow-hidden mb-4">
                 <div class="table-responsive">
                     <table class="monthly-grid-table">
                         <thead>
@@ -237,7 +237,7 @@
             </div>
 
             {{-- Download Bar --}}
-            <div class="download-bar d-flex justify-content-end align-items-center no-print">
+            <div class="ui-download-bar d-flex justify-content-end align-items-center no-print">
                 <div class="dropdown">
                     <button class="btn btn-success dropdown-toggle d-flex align-items-center justify-content-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 45px; height: 45px; border-radius: 12px; padding: 0;">
                         <i class="bi bi-download fs-5"></i>
@@ -294,3 +294,7 @@
         </main>
     </div>
 </x-app-layout>
+
+
+
+

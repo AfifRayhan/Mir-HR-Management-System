@@ -3,10 +3,10 @@
     @vite(['resources/css/custom-hr-dashboard.css', 'resources/css/custom-holidays.css'])
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -28,8 +28,8 @@
             <div class="row g-4">
                 <!-- New Office Form -->
                 <div class="col-lg-4">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title">
                             <i class="bi bi-plus-circle me-2 text-primary"></i>{{ __('Add New Office') }}
                         </div>
 
@@ -100,13 +100,13 @@
 
                 <!-- Office List -->
                 <div class="col-lg-8">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title mb-4">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title mb-4">
                             <i class="bi bi-list-task me-2 text-primary"></i>{{ __('Office List') }}
                         </div>
 
                         <div class="table-responsive">
-                            <table class="hr-table">
+                            <table class="ui-table">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 60px;">{{ __('Order') }}</th>
@@ -135,7 +135,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td><span class="hr-badge hr-badge-global">{{ $office->type->name }}</span></td>
+                                        <td><span class="hr-badge ui-badge-global">{{ $office->type->name }}</span></td>
                                         <td>
                                             <div class="small"><i class="bi bi-envelope me-1"></i>{{ $office->email ?? '---' }}</div>
                                             <div class="small"><i class="bi bi-telephone me-1"></i>{{ $office->phone ?? '---' }}</div>
@@ -258,3 +258,6 @@
         </main>
     </div>
 </x-app-layout>
+
+
+

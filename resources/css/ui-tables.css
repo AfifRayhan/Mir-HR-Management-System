@@ -1,0 +1,41 @@
+/* Unified UI Tables */
+.ui-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.ui-table thead th {
+    background-color: var(--ui-bg);
+    color: var(--ui-text-light);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--ui-border);
+    white-space: nowrap;
+}
+
+.ui-table tbody td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--ui-border);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.ui-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.01);
+}
+
+.sort-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.sort-link:hover {
+    color: var(--ui-primary);
+}

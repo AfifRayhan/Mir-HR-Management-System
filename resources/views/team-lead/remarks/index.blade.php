@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="hr-layout">
+    <div class="ui-layout">
         @include('partials.team-lead-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4 align-items-center">
                 <div class="col-md-6">
                     <h4 class="fw-bold mb-1">{{ __('Supervisor Remarks') }}</h4>
@@ -16,9 +16,9 @@
             </div>
 
 
-            <div class="hr-panel">
+            <div class="ui-panel">
                 <div class="table-responsive">
-                    <table class="table hr-table text-nowrap">
+                    <table class="table ui-table text-nowrap">
                         <thead>
                             <tr>
                                 <th>{{ __('Recipient') }}</th>
@@ -102,3 +102,7 @@
     </style>
     @endpush
 </x-app-layout>
+
+
+
+

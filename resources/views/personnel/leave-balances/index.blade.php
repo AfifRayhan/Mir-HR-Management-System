@@ -1,12 +1,10 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -31,8 +29,8 @@
             <div class="row g-4">
                 <!-- Initialize Account Form -->
                 <div class="col-lg-4">
-                    <div class="hr-panel">
-                        <div class="hr-panel-title">
+                    <div class="ui-panel">
+                        <div class="ui-panel-title">
                             <i class="bi bi-person-plus me-2 text-success"></i>{{ __('Initialize Employee Account') }}
                         </div>
 
@@ -120,7 +118,7 @@
 
                 <!-- Existing Balances List -->
                 <div class="col-lg-8">
-                    <div class="hr-panel p-0 overflow-hidden">
+                    <div class="ui-panel p-0 overflow-hidden">
                         <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3">
                             <h5 class="fw-bold mb-0">
                                 <i class="bi bi-list-task me-2 text-success"></i>{{ __('Initialized Accounts') }}
@@ -142,7 +140,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table hr-table mb-0">
+                            <table class="table ui-table mb-0">
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="ps-4">
@@ -265,7 +263,7 @@
                                 <input type="hidden" name="year" value="{{ $currentYear }}">
                                 <div class="modal-body py-4">
                                     <div class="table-responsive">
-                                        <table class="table table-sm align-middle hr-table mb-0">
+                                        <table class="table table-sm align-middle ui-table mb-0">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>{{ __('Leave Type') }}</th>
@@ -423,3 +421,6 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+

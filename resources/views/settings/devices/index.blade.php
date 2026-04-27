@@ -5,14 +5,12 @@
         </h2>
     </x-slot>
 
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
+    
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="container-fluid">
                 <div class="row mb-4">
                     <div class="col-12 d-flex justify-content-between align-items-center">
@@ -24,7 +22,7 @@
                 </div>
 
 
-                <div class="hr-panel">
+                <div class="ui-panel">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead class="table-light">
@@ -177,3 +175,6 @@
         </div>
     </div>
 </x-app-layout>
+
+
+

@@ -1,7 +1,9 @@
+# Task Tracker: Unified UI Refactor
+
 | Task | Status | Description |
 | :--- | :--- | :--- |
-| Task 1 | done | Infrastructure and Routes |
-| Task 2 | done | MonthlyAttendanceExport Progress Tracking |
-| Task 3 | done | AttendancesExport (Daily) Progress Tracking |
-| Task 4 | done | Frontend Polling Logic |
-| Task 5 | done | Integration in UI |
+| Task 1 | [ ] | Foundation & Variables |
+| Task 2 | [ ] | Refactor Main Layouts |
+| Task 3 | [ ] | Bulk Class Replacement |
+| Task 4 | [ ] | Extract Inline Styles |
+| Task 5 | [ ] | Final Asset Cleanup |

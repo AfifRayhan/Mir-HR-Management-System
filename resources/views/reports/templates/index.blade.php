@@ -1,11 +1,9 @@
 <x-app-layout>
-    @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
-    @endpush
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
@@ -27,9 +25,9 @@
                 </div>
             @endif
 
-            <div class="hr-panel p-0 overflow-hidden">
+            <div class="ui-panel p-0 overflow-hidden">
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0 align-middle">
+                    <table class="table ui-table mb-0 align-middle">
                         <thead class="bg-light">
                             <tr>
                                 <th class="ps-4 py-3">{{ __('Letter Name') }}</th>
@@ -89,3 +87,7 @@
         </main>
     </div>
 </x-app-layout>
+
+
+
+

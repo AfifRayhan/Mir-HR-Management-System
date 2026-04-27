@@ -1,9 +1,9 @@
 <x-app-layout>
     @push('styles')
-    @vite(['resources/css/custom-hr-dashboard.css'])
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        .download-bar {
+        .ui-download-bar {
             position: sticky;
             bottom: 0;
             background: #fff;
@@ -19,10 +19,10 @@
     </style>
     @endpush
 
-    <div class="hr-layout">
-        @include('partials.hr-sidebar')
+    <div class="ui-layout">
+        @include('partials.ui-sidebar')
 
-        <main class="hr-main">
+        <main class="ui-main">
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -38,7 +38,7 @@
 
             <form method="GET" action="{{ route('personnel.reports.attendances.export.preview') }}" id="exportForm">
                 {{-- Filters --}}
-                <div class="hr-panel mb-4">
+                <div class="ui-panel mb-4">
                     <div class="row g-3">
                         {{-- Date --}}
                         <div class="col-md-2">
@@ -122,9 +122,9 @@
             </form>
 
             {{-- Preview Table --}}
-            <div class="hr-panel p-0 overflow-hidden mb-4">
+            <div class="ui-panel p-0 overflow-hidden mb-4">
                 <div class="table-responsive">
-                    <table class="table hr-table mb-0">
+                    <table class="table ui-table mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4">#</th>
@@ -186,7 +186,7 @@
             </div>
 
             {{-- Download Bar --}}
-            <div class="download-bar d-flex justify-content-between align-items-center">
+            <div class="ui-download-bar d-flex justify-content-between align-items-center">
                 <span class="text-gray-600 small">
                     <i class="bi bi-info-circle me-1"></i>
                     {{ __('Showing :count records of :total total', ['count' => $records->count(), 'total' => $records->total()]) }}
@@ -307,3 +307,7 @@
     </script>
     @endpush
 </x-app-layout>
+
+
+
+
