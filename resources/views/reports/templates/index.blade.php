@@ -62,7 +62,7 @@
                                             <a href="{{ route('personnel.report-templates.edit', $template->id) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
-                                            <form action="{{ route('personnel.report-templates.destroy', $template->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this template?')">
+                                            <form action="{{ route('personnel.report-templates.destroy', $template->id) }}" method="POST" data-confirm="true" data-confirm-message="Are you sure you want to delete this template?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">

@@ -163,7 +163,7 @@
                                                 <button class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editRtModal{{ $rt->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <form action="{{ route('roster.times.destroy', $rt) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                                <form action="{{ route('roster.times.destroy', $rt) }}" method="POST" data-confirm="true" data-confirm-message="Are you sure you want to delete this shift?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
