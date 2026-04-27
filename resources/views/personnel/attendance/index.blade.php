@@ -151,10 +151,10 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         const exportRoutes = {
-            excel: "{{ route('personnel.attendances.export.excel') }}",
-            csv: "{{ route('personnel.attendances.export.csv') }}",
-            pdf: "{{ route('personnel.attendances.export.pdf') }}",
-            word: "{{ route('personnel.attendances.export.word') }}",
+            excel: "{{ route('personnel.reports.attendances.export.excel') }}",
+            csv: "{{ route('personnel.reports.attendances.export.csv') }}",
+            pdf: "{{ route('personnel.reports.attendances.export.pdf') }}",
+            word: "{{ route('personnel.reports.attendances.export.word') }}",
         };
 
         function downloadAttendance(format) {
