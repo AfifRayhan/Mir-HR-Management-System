@@ -1,22 +1,32 @@
+/* Role Permissions Styles */
+
+/* Page wrapper */
+.rp-container {
+    max-width: 860px;
+}
+
+/* Card header */
 .rp-header {
-    background: linear-gradient(135deg, #275e26 0%, #007a10 100%);
+    background: linear-gradient(135deg, var(--ui-primary-dark) 0%, var(--ui-primary) 100%);
     color: #fff;
     text-align: center;
     padding: 12px 24px;
-    border-radius: 8px 8px 0 0;
+    border-radius: var(--ui-radius-sm) var(--ui-radius-sm) 0 0;
     font-size: 1.15rem;
     font-weight: 600;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
 }
 
+/* Card body */
 .rp-body {
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: var(--ui-card-bg);
+    border: 1px solid var(--ui-border);
     border-top: none;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 var(--ui-radius-sm) var(--ui-radius-sm);
     padding: 28px 32px;
 }
 
+/* Form row */
 .rp-form-row {
     display: flex;
     align-items: center;
@@ -27,13 +37,14 @@
 .rp-form-row label {
     min-width: 120px;
     font-weight: 600;
-    color: #334155;
+    color: var(--ui-text);
 }
 
 .rp-form-row select {
     min-width: 200px;
 }
 
+/* Two-column layout */
 .rp-split {
     display: flex;
     gap: 48px;
@@ -50,10 +61,11 @@
     min-width: 300px;
 }
 
+/* Menu tree */
 .rp-menu-title {
     font-weight: 700;
     font-size: 1.05rem;
-    color: #1e293b;
+    color: var(--ui-text);
     margin-bottom: 12px;
 }
 
@@ -64,7 +76,7 @@
 }
 
 .rp-tree li {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--ui-bg);
     padding: 6px 0;
 }
 
@@ -85,17 +97,17 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #94a3b8;
-    font-size: .75rem;
-    border: 1px solid #cbd5e1;
+    color: var(--ui-text-light);
+    font-size: 0.75rem;
+    border: 1px solid var(--ui-border);
     border-radius: 3px;
-    background: #f8fafc;
-    transition: all .15s;
+    background: var(--ui-bg);
+    transition: background 0.15s;
     flex-shrink: 0;
 }
 
 .rp-tree-toggle:hover {
-    background: #e2e8f0;
+    background: var(--ui-border);
 }
 
 .rp-tree-toggle.no-children {
@@ -104,10 +116,11 @@
 
 .rp-tree-label {
     font-weight: 600;
-    color: #334155;
-    font-size: .95rem;
+    color: var(--ui-text);
+    font-size: 0.95rem;
 }
 
+/* Subtree */
 .rp-subtree {
     list-style: none;
     padding: 0 0 0 44px;
@@ -121,25 +134,16 @@
 
 .rp-subtree li {
     padding: 4px 0;
-    border-bottom: 1px dashed #e2e8f0;
+    border-bottom: 1px dashed var(--ui-border);
 }
 
 .rp-subtree li:last-child {
     border-bottom: none;
 }
 
+/* "All" separator row */
 .rp-all-row {
-    border-bottom: 2px solid #e2e8f0 !important;
+    border-bottom: 2px solid var(--ui-border) !important;
     padding-bottom: 10px !important;
     margin-bottom: 4px;
-}
-
-/* Override for consistent checkbox color */
-.form-check-input:checked {
-    background-color: #275e26;
-    border-color: #275e26;
-}
-
-.rp-container {
-    max-width: 860px;
 }

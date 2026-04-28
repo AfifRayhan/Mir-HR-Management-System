@@ -1,60 +1,26 @@
-/* Custom styles for Holiday Management */
+/* Holiday Management Styles */
 
-.holiday-green-theme {
-    --hr-primary: #275e26;
-    --hr-primary-hover: #007a10;
-}
-
-/* Ensure global badges and status badges use the primary green */
-.hr-badge-global {
-    background-color: var(--hr-primary-soft, #D1FAE5);
-    color: var(--hr-primary);
-    border-color: transparent;
-}
-
-.hr-status-active {
-    background-color: var(--hr-success-soft);
-    color: var(--hr-success);
-}
-
-/* Custom switches */
+/* Toggle switches */
+.ui-switch .form-check-input,
 .custom-switch .form-check-input {
     width: 3em;
     height: 1.5em;
     cursor: pointer;
 }
 
+.ui-switch .form-check-input:checked,
 .custom-switch .form-check-input:checked {
-    background-color: var(--hr-primary);
-    border-color: var(--hr-primary);
+    background-color: var(--ui-primary);
+    border-color: var(--ui-primary);
 }
 
-/* Table refinements */
-.hr-table th {
-    color: var(--hr-primary);
+/* Status badges */
+.ui-badge-active {
+    background-color: var(--ui-success-soft);
+    color: var(--ui-success);
 }
 
-/* Buttons and Links */
-.text-primary {
-    color: var(--hr-primary) !important;
-}
-
-.btn-primary {
-    background-color: var(--hr-primary);
-    border-color: var(--hr-primary);
-}
-
-.btn-primary:hover {
-    background-color: var(--hr-primary-hover);
-    border-color: var(--hr-primary-hover);
-}
-
-.btn-outline-primary {
-    color: var(--hr-primary);
-    border-color: var(--hr-primary);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--hr-primary);
-    color: #fff;
+/* Table header accent */
+.ui-table-primary th {
+    color: var(--ui-primary);
 }

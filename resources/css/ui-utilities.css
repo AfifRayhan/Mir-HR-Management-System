@@ -42,9 +42,21 @@
     border: 1px solid var(--ui-border);
 }
 
-.ui-input:focus, .ui-select:focus {
+/* Global focus override — removes Bootstrap blue ring from all form controls */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus,
+.ui-input:focus,
+.ui-select:focus {
     border-color: var(--ui-primary);
-    box-shadow: 0 0 0 0.25rem rgba(0, 122, 16, 0.1);
+    box-shadow: 0 0 0 0.25rem rgba(0, 122, 16, 0.15);
+    outline: none;
+}
+
+/* Checkboxes & radio buttons — green when checked */
+.form-check-input:checked {
+    background-color: var(--ui-primary);
+    border-color: var(--ui-primary);
 }
 
 /* Animations */

@@ -1,9 +1,9 @@
 {{-- Mobile Top Bar --}}
-<div class="ui-ui-mobile-topbar" id="empMobileTopbar">
-    <button class="ui-ui-mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
+<div class="ui-mobile-topbar" id="empMobileTopbar">
+    <button class="ui-mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <a href="{{ route('employee-dashboard') }}" class="ui-ui-topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
+    <a href="{{ route('employee-dashboard') }}" class="ui-topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
 
     {{-- Notification Mobile Bell --}}
     @auth

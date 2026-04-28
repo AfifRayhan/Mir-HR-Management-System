@@ -7,9 +7,8 @@
     --ui-primary-soft: #e6f2e7;
 
     /* Status Colors */
-    --ui-success: #4ade80;
-    /* Lighter success green as requested */
-    --ui-success-soft: #dcfce7;
+    --ui-success: #0e8b3c;
+    --ui-success-soft: #d1fae5;
     --ui-warning: #f59e0b;
     --ui-warning-soft: #fef3c7;
     --ui-info: #3b82f6;
@@ -30,6 +29,14 @@
     --ui-radius-md: 0.5rem;
     --ui-radius-lg: 1rem;
     --ui-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+
+    /* Bootstrap Override — remap Bootstrap's primary to project green */
+    --bs-primary: #007a10;
+    --bs-primary-rgb: 0, 122, 16;
+    --bs-link-color: #007a10;
+    --bs-link-color-rgb: 0, 122, 16;
+    --bs-link-hover-color: #005c0c;
+    --bs-focus-ring-color: rgba(0, 122, 16, 0.25);
 }
 
 /* Role-Specific Overrides to keep views "Distinct" */

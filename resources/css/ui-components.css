@@ -148,3 +148,43 @@
     background-color: #e2e8f0;
     color: #475569;
 }
+
+/* Pagination Override */
+.pagination {
+    --bs-pagination-color: var(--ui-primary);
+    --bs-pagination-active-bg: var(--ui-primary);
+    --bs-pagination-active-border-color: var(--ui-primary);
+    --bs-pagination-hover-color: var(--ui-primary-hover);
+    --bs-pagination-focus-color: var(--ui-primary);
+    --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(0, 122, 16, 0.25);
+}
+
+.page-link {
+    color: var(--ui-primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--ui-primary);
+    border-color: var(--ui-primary);
+    color: #fff;
+}
+
+.page-link:hover {
+    color: var(--ui-primary-hover);
+}
+
+/* Table Action Buttons */
+.ui-table .btn-group .btn,
+.ui-table td .btn {
+    color: var(--ui-primary) !important;
+    border-color: var(--ui-primary) !important;
+    background-color: transparent !important;
+    border-radius: var(--ui-radius-md) !important;
+    margin: 0 0.125rem;
+}
+
+.ui-table .btn-group .btn:hover,
+.ui-table td .btn:hover {
+    background-color: var(--ui-primary) !important;
+    color: #fff !important;
+}

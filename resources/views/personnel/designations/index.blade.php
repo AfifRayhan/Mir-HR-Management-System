@@ -48,7 +48,7 @@
                             <div class="mb-4">
                                 <div class="d-flex align-items-center justify-content-between mb-2">
                                     <label class="form-label small fw-bold text-muted mb-0">{{ __('Priority Order') }}</label>
-                                    <button type="button" id="toggleModeBtn" class="mode-toggle-btn">
+                                    <button type="button" id="toggleModeBtn" class="btn btn-sm btn-outline-primary rounded-pill mode-toggle-btn">
                                         Switch to: Insert Mode
                                     </button>
                                 </div>
@@ -179,13 +179,15 @@
                     if (isInsert) {
                         modeInput.value = '0';
                         btn.textContent = 'Switch to: Insert Mode';
-                        btn.classList.remove('active-insert');
+                        btn.classList.remove('btn-primary');
+                        btn.classList.add('btn-outline-primary');
                         insertHint.classList.add('d-none');
                         normalHint.classList.remove('d-none');
                     } else {
                         modeInput.value = '1';
                         btn.textContent = 'Switch to: Priority Order';
-                        btn.classList.add('active-insert');
+                        btn.classList.remove('btn-outline-primary');
+                        btn.classList.add('btn-primary');
                         insertHint.classList.remove('d-none');
                         normalHint.classList.add('d-none');
                     }

@@ -4,11 +4,11 @@ $currentRoute = request()->route()->getName() ?? '';
 @endphp
 
 {{-- Mobile Top Bar --}}
-<div class="ui-ui-mobile-topbar" id="hrMobileTopbar">
-    <button class="ui-ui-mobile-hamburger" id="hrSidebarToggle" aria-label="Toggle Sidebar">
+<div class="ui-mobile-topbar" id="hrMobileTopbar">
+    <button class="ui-mobile-hamburger" id="hrSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <a href="{{ route('hr-dashboard') }}" class="ui-ui-topbar-brand" style="text-decoration: none;"><span>HRM</span>&nbsp;<span>System</span></a>
+    <a href="{{ route('hr-dashboard') }}" class="ui-topbar-brand" style="text-decoration: none;"><span>HRM</span>&nbsp;<span>System</span></a>
 
     {{-- Notification Mobile Bell --}}
     @auth
