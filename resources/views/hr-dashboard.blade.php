@@ -120,7 +120,7 @@
                                     <tr>
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center">
-                                                <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
+                                                <div class="emp-avatar-sm me-2">
                                                     {{ strtoupper(substr($record->employee->name, 0, 1)) }}
                                                 </div>
                                                 <span class="small font-bold">{{ $record->employee->name }}</span>
@@ -209,7 +209,7 @@
                                 @forelse($upcomingBirthdays as $birthdayEmp)
                                 <li class="small d-flex justify-content-between border-bottom-0 pb-1 mb-2">
                                     <div class="d-flex align-items-center">
-                                        <div class="emp-avatar-sm me-2" style="width: 30px; height: 30px; font-size: 0.75rem;">
+                                        <div class="emp-avatar-sm me-2">
                                             {{ strtoupper(substr($birthdayEmp->name, 0, 1)) }}
                                         </div>
                                         <div>

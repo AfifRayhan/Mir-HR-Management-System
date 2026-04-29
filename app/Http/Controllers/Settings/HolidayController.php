@@ -34,7 +34,7 @@ class HolidayController extends Controller
             $query->where('type', $request->type);
         }
 
-        $holidays = $query->orderBy('from_date', 'desc')->get();
+        $holidays = $query->orderBy('from_date', 'asc')->get();
         $offices = Office::all();
 
         return view('settings.holidays.others', compact('holidays', 'offices', 'user', 'roleName', 'employee'));
@@ -42,6 +42,10 @@ class HolidayController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->type === 'Eid Day') {
+            $request->merge(['to_date' => $request->from_date]);
+        }
+
         $validated = $request->validate([
             'type' => 'required|string',
             'year' => 'required|numeric',
@@ -68,6 +72,10 @@ class HolidayController extends Controller
 
     public function update(Request $request, Holiday $holiday)
     {
+        if ($request->type === 'Eid Day') {
+            $request->merge(['to_date' => $request->from_date]);
+        }
+
         $validated = $request->validate([
             'type' => 'required|string',
             'year' => 'required|numeric',

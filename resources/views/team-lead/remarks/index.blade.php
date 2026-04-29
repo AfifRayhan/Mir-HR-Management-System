@@ -35,7 +35,7 @@
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-light text-success rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                        <div class="avatar-sm me-2">
                                             {{ substr($remark->employee->name, 0, 1) }}
                                         </div>
                                         <div>

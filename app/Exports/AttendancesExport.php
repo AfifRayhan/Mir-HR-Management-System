@@ -129,7 +129,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithMapping, Wi
             $record->out_time ? $record->out_time->format('h:i A') : '-',
             $record->working_hours . 'h',
             $record->late_timing,
-            ucfirst($record->status),
+            $record->status === 'weekly_holiday' ? ($record->employee->roster_group ? 'Off Day' : 'Weekly Holiday') : ($record->status === 'off_day' ? 'Off Day' : ucfirst($record->status)),
         ];
     }
 

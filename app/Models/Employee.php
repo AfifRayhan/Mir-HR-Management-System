@@ -161,6 +161,11 @@ class Employee extends Model
         return $this->hasMany(EmployeeQualification::class);
     }
 
+    public function overtimes()
+    {
+        return $this->hasMany(Overtime::class);
+    }
+
     /**
      * Generate next employee code based on joining date.
      * Format: YYMMXXXX (8 digits total, 4 digits YYMM + 4 digits increment)

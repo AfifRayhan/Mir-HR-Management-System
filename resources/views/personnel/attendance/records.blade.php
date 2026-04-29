@@ -147,7 +147,13 @@
                                         ][strtolower($record->status)] ?? 'bg-secondary';
                                         @endphp
                                         <span class="badge {{ $statusClass }}">
-                                            {{ ucfirst($record->status) }}
+                                            @if(strtolower($record->status) === 'weekly_holiday')
+                                                {{ $selectedEmployee->roster_group ? __('Off Day') : __('Weekly Holiday') }}
+                                            @elseif(strtolower($record->status) === 'off_day')
+                                                {{ __('Off Day') }}
+                                            @else
+                                                {{ ucfirst($record->status) }}
+                                            @endif
                                         </span>
                                     </td>
                                 </tr>

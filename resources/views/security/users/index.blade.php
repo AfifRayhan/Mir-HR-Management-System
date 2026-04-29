@@ -122,7 +122,7 @@
                                     <tr>
                                         <td class="ps-4">
                                             <div class="d-flex align-items-center gap-3">
-                                                <div class="hr-avatar-sm flex-shrink-0" style="background-color: var(--hr-primary-soft); color: var(--hr-primary); font-weight: 700;">
+                                                <div class="hr-avatar-sm flex-shrink-0">
                                                     {{ strtoupper(substr($u->name, 0, 1)) }}
                                                 </div>
                                                 <div>

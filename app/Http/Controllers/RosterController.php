@@ -53,6 +53,15 @@ class RosterController extends Controller
         
         $mode = $request->query('mode', 'weekly');
 
+        // Determine the query range based on mode
+        if ($mode === 'weekly') {
+            $startOfDisplay = Carbon::now()->startOfWeek(6);
+            $endOfDisplay   = $startOfDisplay->copy()->addDays(6);
+        } else {
+            $startOfDisplay = $monthStart;
+            $endOfDisplay   = $monthEnd;
+        }
+
         $query = Employee::whereHas('officeTime', fn($q) => $q->where('shift_name', 'Roster'))
             ->where('status', 'active');
 
@@ -69,7 +78,7 @@ class RosterController extends Controller
         $employees = $query->orderBy('name')->get();
 
         $schedules = RosterSchedule::whereIn('employee_id', $employees->pluck('id'))
-            ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+            ->whereBetween('date', [$startOfDisplay->toDateString(), $endOfDisplay->toDateString()])
             ->get();
 
         $scheduleMap = [];
@@ -78,28 +87,29 @@ class RosterController extends Controller
         }
 
         // For weekly mode, build a pattern map indexed by day-of-week index (0=Sat..6=Fri)
-        // so display works even when the current week spans two months
         $patternMap = [];
         if ($mode === 'weekly') {
             $dayIndexMap = [6 => 0, 0 => 1, 1 => 2, 2 => 3, 3 => 4, 4 => 5, 5 => 6];
-            $cursor = $monthStart->copy();
-            while ($cursor->lte($monthEnd)) {
-                $dayIndex = $dayIndexMap[$cursor->dayOfWeek];
+            
+            // Build pattern from the actual displayed week
+            $cursor = $startOfDisplay->copy();
+            $index = 0;
+            while ($cursor->lte($endOfDisplay)) {
                 $dateStr = $cursor->toDateString();
                 foreach ($employees as $emp) {
                     if (isset($scheduleMap[$emp->id][$dateStr])) {
-                        $patternMap[$dayIndex][$emp->id] = $scheduleMap[$emp->id][$dateStr];
+                        $patternMap[$index][$emp->id] = $scheduleMap[$emp->id][$dateStr];
                     }
                 }
                 $cursor->addDay();
+                $index++;
             }
         }
 
         $days = [];
         if ($mode === 'weekly') {
-            $startOfWeek = Carbon::now()->startOfWeek(6);
             for ($i = 0; $i < 7; $i++) {
-                $days[] = $startOfWeek->copy()->addDays($i);
+                $days[] = $startOfDisplay->copy()->addDays($i);
             }
         } else {
             $cursor = $monthStart->copy();

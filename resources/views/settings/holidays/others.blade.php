@@ -50,9 +50,10 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-muted">{{ __('Holiday Type') }} <span class="text-danger">*</span></label>
-                                <select name="type" class="form-select form-select-sm rounded-3" required>
+                                <select name="type" id="holiday_type" class="form-select form-select-sm rounded-3" required>
                                     <option value="National">{{ __('National') }}</option>
                                     <option value="Other">{{ __('Other') }}</option>
+                                    <option value="Eid Day">{{ __('Eid Day') }}</option>
                                 </select>
                             </div>
 
@@ -88,11 +89,11 @@
                             </div>
 
                             <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
+                                <div class="col-6" id="from_date_col">
+                                    <label class="form-label small fw-bold text-muted" id="from_date_label">{{ __('From Date') }} <span class="text-danger">*</span></label>
                                     <input type="text" id="add_from_date" name="from_date" class="form-control form-control-sm rounded-3" placeholder="Select date" readonly required>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6" id="to_date_col">
                                     <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
                                     <input type="text" id="add_to_date" name="to_date" class="form-control form-control-sm rounded-3" placeholder="Select date" readonly required>
                                 </div>
@@ -153,6 +154,7 @@
                                     <option value="">{{ __('All Types') }}</option>
                                     <option value="National" {{ request('type') == 'National' ? 'selected' : '' }}>{{ __('National') }}</option>
                                     <option value="Other" {{ request('type') == 'Other' ? 'selected' : '' }}>{{ __('Other') }}</option>
+                                    <option value="Eid Day" {{ request('type') == 'Eid Day' ? 'selected' : '' }}>{{ __('Eid Day') }}</option>
                                 </select>
                             </div>
                             <div class="col-md-2 d-flex align-items-end gap-1">
@@ -258,9 +260,10 @@
                     <div class="modal-body pb-0">
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-muted">{{ __('Holiday Type') }} <span class="text-danger">*</span></label>
-                            <select name="type" class="form-select form-select-sm rounded-3" required>
+                            <select name="type" class="form-select form-select-sm rounded-3 edit-holiday-type" data-id="{{ $holiday->id }}" required>
                                 <option value="National" {{ $holiday->type == 'National' ? 'selected' : '' }}>{{ __('National') }}</option>
                                 <option value="Other" {{ $holiday->type == 'Other' ? 'selected' : '' }}>{{ __('Other') }}</option>
+                                <option value="Eid Day" {{ $holiday->type == 'Eid Day' ? 'selected' : '' }}>{{ __('Eid Day') }}</option>
                             </select>
                         </div>
 
@@ -296,11 +299,11 @@
                         </div>
 
                         <div class="row g-2 mb-3">
-                            <div class="col-6">
-                                <label class="form-label small fw-bold text-muted">{{ __('From Date') }} <span class="text-danger">*</span></label>
+                            <div class="col-6" id="edit_from_date_col_{{ $holiday->id }}">
+                                <label class="form-label small fw-bold text-muted" id="edit_from_date_label_{{ $holiday->id }}">{{ $holiday->type == 'Eid Day' ? __('Date') : __('From Date') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="from_date" id="edit_from_date_{{ $holiday->id }}" class="form-control form-control-sm rounded-3" value="{{ $holiday->from_date->format('Y-m-d') }}" placeholder="Select date" readonly required>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6" id="edit_to_date_col_{{ $holiday->id }}" @if($holiday->type == 'Eid Day') style="display: none;" @endif>
                                 <label class="form-label small fw-bold text-muted">{{ __('To Date') }} <span class="text-danger">*</span></label>
                                 <input type="text" name="to_date" id="edit_to_date_{{ $holiday->id }}" class="form-control form-control-sm rounded-3" value="{{ $holiday->to_date->format('Y-m-d') }}" placeholder="Select date" readonly required>
                             </div>
@@ -335,12 +338,77 @@
         flatpickr('#add_from_date', { dateFormat: 'Y-m-d', allowInput: false });
         flatpickr('#add_to_date',   { dateFormat: 'Y-m-d', allowInput: false });
 
+        // Logic for "Eid Day" in Add Form
+        const holidayType = document.getElementById('holiday_type');
+        const fromDateCol = document.getElementById('from_date_col');
+        const toDateCol = document.getElementById('to_date_col');
+        const fromDateLabel = document.getElementById('from_date_label');
+        const addFromDateInput = document.getElementById('add_from_date');
+        const addToDateInput = document.getElementById('add_to_date');
+
+        holidayType.addEventListener('change', function() {
+            if (this.value === 'Eid Day') {
+                toDateCol.style.display = 'none';
+                fromDateCol.classList.remove('col-6');
+                fromDateCol.classList.add('col-12');
+                fromDateLabel.innerHTML = "{{ __('Date') }} <span class=\"text-danger\">*</span>";
+                addToDateInput.value = addFromDateInput.value;
+            } else {
+                toDateCol.style.display = 'block';
+                fromDateCol.classList.remove('col-12');
+                fromDateCol.classList.add('col-6');
+                fromDateLabel.innerHTML = "{{ __('From Date') }} <span class=\"text-danger\">*</span>";
+            }
+        });
+
+        addFromDateInput.addEventListener('change', function() {
+            if (holidayType.value === 'Eid Day') {
+                addToDateInput.value = this.value;
+            }
+        });
+
         // Init Flatpickr inside each edit modal when it's shown
         document.querySelectorAll('[id^="editHolidayModal"]').forEach(function(modal) {
             modal.addEventListener('shown.bs.modal', function() {
                 const id = modal.id.replace('editHolidayModal', '');
                 flatpickr('#edit_from_date_' + id, { dateFormat: 'Y-m-d', allowInput: false });
                 flatpickr('#edit_to_date_'   + id, { dateFormat: 'Y-m-d', allowInput: false });
+
+                // Logic for "Eid Day" in Edit Modal
+                const editType = modal.querySelector('.edit-holiday-type');
+                const editFromDate = document.getElementById('edit_from_date_' + id);
+                const editToDate = document.getElementById('edit_to_date_' + id);
+                const editFromCol = document.getElementById('edit_from_date_col_' + id);
+                const editToCol = document.getElementById('edit_to_date_col_' + id);
+                const editFromLabel = document.getElementById('edit_from_date_label_' + id);
+
+                const handleEditTypeChange = (val) => {
+                    if (val === 'Eid Day') {
+                        editToCol.style.display = 'none';
+                        editFromCol.classList.remove('col-6');
+                        editFromCol.classList.add('col-12');
+                        editFromLabel.innerHTML = "{{ __('Date') }} <span class=\"text-danger\">*</span>";
+                        editToDate.value = editFromDate.value;
+                    } else {
+                        editToCol.style.display = 'block';
+                        editFromCol.classList.remove('col-12');
+                        editFromCol.classList.add('col-6');
+                        editFromLabel.innerHTML = "{{ __('From Date') }} <span class=\"text-danger\">*</span>";
+                    }
+                };
+
+                editType.addEventListener('change', function() {
+                    handleEditTypeChange(this.value);
+                });
+
+                editFromDate.addEventListener('change', function() {
+                    if (editType.value === 'Eid Day') {
+                        editToDate.value = this.value;
+                    }
+                });
+
+                // Initial call for existing "Eid Day" records being edited
+                handleEditTypeChange(editType.value);
             });
         });
 

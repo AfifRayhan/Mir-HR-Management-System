@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
             RosterTimeSeeder::class,
             ReportTemplateSeeder::class,
             DeviceSeeder::class,
+            Holiday2026Seeder::class,
+            OvertimeSettingSeeder::class,
+            RosterPlanSeeder::class,
         ]);
     }
 }

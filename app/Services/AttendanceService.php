@@ -300,10 +300,7 @@ class AttendanceService
         if ($officeTime && $officeTime->shift_name === 'Roster') {
             $rosterShift = $this->getRosterShiftForDate($employee, $date);
             if (!$rosterShift || $rosterShift->is_off_day) {
-                // For roster, if it's Fri/Sat and an off-day, we can still label as weekly holiday for UI clarity
-                if (in_array($dayName, ['Friday', 'Saturday'])) {
-                    return 'weekly_holiday';
-                }
+                // For roster group employees, we always show "Off Day" for their scheduled off-days
                 return 'off_day';
             }
             return 'working_day';

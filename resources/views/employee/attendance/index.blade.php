@@ -164,7 +164,7 @@
                                         @elseif($lowStatus == 'holiday')
                                             <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Holiday</span>
                                         @elseif($lowStatus == 'weekly_holiday')
-                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">Weekly Holiday</span>
+                                            <span class="badge bg-success-soft text-success" style="font-size: 0.7rem;">{{ $employeeRecord->roster_group ? 'Off Day' : 'Weekly Holiday' }}</span>
                                         @elseif($lowStatus == 'off_day')
                                             <span class="badge bg-secondary-soft text-secondary" style="font-size: 0.7rem;">Off Day</span>
                                         @else
