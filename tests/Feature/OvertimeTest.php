@@ -22,7 +22,8 @@ class OvertimeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->admin = User::factory()->create();
+        $role = \App\Models\Role::create(['name' => 'HR Admin']);
+        $this->admin = User::factory()->create(['role_id' => $role->id]);
         $this->grade = Grade::create(['name' => 'Technician']);
         
         // Create OT rate for this grade
@@ -159,5 +160,14 @@ class OvertimeTest extends TestCase
             'date' => '2026-04-04 00:00:00',
             'amount' => 1800.00,
         ]);
+    }
+
+    public function test_overtime_index_displays_calculation_summary_footer()
+    {
+        $response = $this->actingAs($this->admin)->get(route('overtimes.index', ['employee_id' => $this->employee->id, 'month' => '05', 'year' => '2026']));
+        
+        $response->assertStatus(200);
+        $response->assertSee('Multiplying Factor');
+        $response->assertSee('Sub-Total');
     }
 }

@@ -17,8 +17,22 @@
     </style>
     @endpush
 
-    <div class="ui-layout">
-        @include('partials.ui-sidebar')
+    @php 
+        $user = auth()->user();
+        $roleName = optional($user->role)->name;
+        $isAdmin = $roleName === 'HR Admin' || $roleName === 'Superadmin';
+        // isTeamLeadLayout is passed from controller, but let's be safe
+        $isTeamLeadLayout = $isTeamLeadLayout ?? false;
+    @endphp
+
+    <div class="ui-layout {{ $isAdmin ? '' : ($isTeamLeadLayout ? 'ui-scope-lead' : 'ui-scope-emp') }}">
+        @if($isAdmin)
+            @include('partials.ui-sidebar')
+        @elseif($isTeamLeadLayout)
+            @include('partials.team-lead-sidebar')
+        @else
+            @include('partials.employee-sidebar')
+        @endif
 
         <main class="ui-main">
             <div class="row mb-4">
@@ -80,6 +94,19 @@
                                 <div class="text-xs text-muted">{{ number_format($selectedEmployee->gross_salary, 2) }} BDT</div>
                             </div>
                         </div>
+                        @if($canEdit)
+                            {{-- Auto-Fill button --}}
+                            <div class="text-center">
+                                <button type="button" id="btn-auto-fill" class="btn btn-outline-primary btn-sm px-3"
+                                        data-url="{{ route('overtimes.auto-fill') }}"
+                                        data-employee="{{ $selectedEmployee->id }}"
+                                        data-month="{{ $month }}"
+                                        data-year="{{ $year }}">
+                                    <i class="bi bi-magic me-1"></i> Auto-Fill from Attendance
+                                </button>
+                                <div class="text-xs text-muted mt-1">Fills empty rows only · won't overwrite saved data</div>
+                            </div>
+                        @endif
                         <div class="text-end">
                             <div class="fw-bold text-success" id="total_payable_display">0.00 BDT</div>
                             <div class="text-xs text-muted">Total Payable Amount</div>
@@ -147,30 +174,34 @@
                                             </td>
                                             <td>
                                                 <div class="time-input-container">
-                                                    <input type="text" name="ot[{{ $dateStr }}][start]" class="form-control form-control-xs timepicker ot-input" value="{{ $record ? $record->ot_start : '' }}" data-date="{{ $dateStr }}">
-                                                    <button type="button" class="btn-clear-time" onclick="clearTime(this, '{{ $dateStr }}')">✕</button>
+                                                    <input type="text" name="ot[{{ $dateStr }}][start]" class="form-control form-control-xs timepicker ot-input" value="{{ $record ? $record->ot_start : '' }}" data-date="{{ $dateStr }}" {{ !$canEdit ? 'readonly' : '' }}>
+                                                    @if($canEdit)
+                                                        <button type="button" class="btn-clear-time" onclick="clearTime(this, '{{ $dateStr }}')">✕</button>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="time-input-container">
-                                                    <input type="text" name="ot[{{ $dateStr }}][stop]" class="form-control form-control-xs timepicker ot-input" value="{{ $record ? $record->ot_stop : '' }}" data-date="{{ $dateStr }}">
-                                                    <button type="button" class="btn-clear-time" onclick="clearTime(this, '{{ $dateStr }}')">✕</button>
+                                                    <input type="text" name="ot[{{ $dateStr }}][stop]" class="form-control form-control-xs timepicker ot-input" value="{{ $record ? $record->ot_stop : '' }}" data-date="{{ $dateStr }}" {{ !$canEdit ? 'readonly' : '' }}>
+                                                    @if($canEdit)
+                                                        <button type="button" class="btn-clear-time" onclick="clearTime(this, '{{ $dateStr }}')">✕</button>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="text-center text-xs">
                                                 <span id="total_hours_{{ $dateStr }}">{{ $record ? $record->total_ot_hours : '0.00' }}</span>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" name="ot[{{ $dateStr }}][workday_plus_5]" class="form-check-input ot-check" {{ $record && $record->is_workday_duty_plus_5 ? 'checked' : '' }} data-date="{{ $dateStr }}">
+                                                <input type="checkbox" name="ot[{{ $dateStr }}][workday_plus_5]" class="form-check-input ot-check" {{ $record && $record->is_workday_duty_plus_5 ? 'checked' : '' }} data-date="{{ $dateStr }}" {{ !$canEdit ? 'disabled' : '' }}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" name="ot[{{ $dateStr }}][holiday_plus_5]" class="form-check-input ot-check" {{ $record && $record->is_holiday_duty_plus_5 ? 'checked' : '' }} data-date="{{ $dateStr }}">
+                                                <input type="checkbox" name="ot[{{ $dateStr }}][holiday_plus_5]" class="form-check-input ot-check" {{ $record && $record->is_holiday_duty_plus_5 ? 'checked' : '' }} data-date="{{ $dateStr }}" {{ !$canEdit ? 'disabled' : '' }}>
                                             </td>
                                             <td class="text-center">
-                                                <input type="checkbox" name="ot[{{ $dateStr }}][eid_duty]" class="form-check-input ot-check" {{ $record && $record->is_eid_duty ? 'checked' : '' }} data-date="{{ $dateStr }}">
+                                                <input type="checkbox" name="ot[{{ $dateStr }}][eid_duty]" class="form-check-input ot-check" {{ $record && $record->is_eid_duty ? 'checked' : '' }} data-date="{{ $dateStr }}" {{ !$canEdit ? 'disabled' : '' }}>
                                             </td>
                                             <td>
-                                                <input type="text" name="ot[{{ $dateStr }}][remarks]" class="form-control form-control-xs" value="{{ $record ? $record->remarks : '' }}">
+                                                <input type="text" name="ot[{{ $dateStr }}][remarks]" class="form-control form-control-xs" value="{{ $record ? $record->remarks : '' }}" {{ !$canEdit ? 'readonly' : '' }}>
                                             </td>
                                             <td class="text-end text-xs fw-bold">
                                                 <span id="amount_{{ $dateStr }}">{{ $record ? number_format($record->amount, 2) : '0.00' }}</span>
@@ -178,14 +209,46 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot class="bg-light">
+                                    <tr class="border-top border-2">
+                                        <td colspan="4" class="text-end fw-bold">Total days/Shift</td>
+                                        <td class="text-center fw-bold" id="summary_workday_count">0</td>
+                                        <td class="text-center fw-bold" id="summary_holiday_count">0</td>
+                                        <td class="text-center fw-bold" id="summary_eid_count">0</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end text-muted small">Rate per Shift/Eid Special</td>
+                                        <td class="text-center text-muted small" id="summary_workday_rate">0.00</td>
+                                        <td class="text-center text-muted small" id="summary_holiday_rate">0.00</td>
+                                        <td class="text-center text-muted small" id="summary_eid_rate">0.00</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end text-muted small">Multiplying Factor</td>
+                                        <td class="text-center text-muted small">1</td>
+                                        <td class="text-center text-muted small">2</td>
+                                        <td class="text-center text-muted small">3</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">Sub-Total</td>
+                                        <td class="text-center fw-bold text-success" id="summary_workday_subtotal">0.00</td>
+                                        <td class="text-center fw-bold text-success" id="summary_holiday_subtotal">0.00</td>
+                                        <td class="text-center fw-bold text-success" id="summary_eid_subtotal">0.00</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
 
-                        <div class="mt-4 text-end">
-                            <button type="submit" class="btn btn-success px-5 rounded-pill shadow-sm">
-                                <i class="bi bi-save me-2"></i>{{ __('Save Overtime Records') }}
-                            </button>
-                        </div>
+                        @if($canEdit)
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-success px-5 rounded-pill shadow-sm">
+                                    <i class="bi bi-save me-2"></i>{{ __('Save Overtime Records') }}
+                                </button>
+                            </div>
+                        @endif
                     </form>
                 </div>
             @endif
@@ -292,11 +355,32 @@
 
             function updateGrandTotal() {
                 let total = 0;
+                let workdayCount = 0;
+                let holidayCount = 0;
+                let eidCount = 0;
+                
                 $('[id^="amount_"]').each(function() {
                     const val = parseFloat($(this).text().replace(/,/g, '')) || 0;
                     total += val;
                 });
+                
+                $('.ot-check[name*="[workday_plus_5]"]:checked').each(function() { workdayCount++; });
+                $('.ot-check[name*="[holiday_plus_5]"]:checked').each(function() { holidayCount++; });
+                $('.ot-check[name*="[eid_duty]"]:checked').each(function() { eidCount++; });
+
                 $('#total_payable_display').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BDT');
+                
+                $('#summary_workday_count').text(workdayCount);
+                $('#summary_holiday_count').text(holidayCount);
+                $('#summary_eid_count').text(eidCount);
+                
+                $('#summary_workday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_holiday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_eid_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                
+                $('#summary_workday_subtotal').text((fullShiftIncome * 1 * workdayCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_holiday_subtotal').text((fullShiftIncome * 2 * holidayCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_eid_subtotal').text((fullShiftIncome * 3 * eidCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
             }
 
             $('.ot-input, .ot-check').on('change', function() {
@@ -306,5 +390,88 @@
             updateGrandTotal();
         });
     </script>
+
+    @if($canEdit)
+    <script>
+        $(function () {
+            // ── Auto-Fill from Attendance ──────────────────────────────────────────────
+            $('#btn-auto-fill').on('click', function () {
+                const btn = $(this);
+
+                Swal.fire({
+                    title: 'Auto-Fill from Attendance?',
+                    text: 'This will fill empty rows with suggested overtime based on attendance logs. Saved data will not be overwritten.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, fill it',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#10b981',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i> Loading...');
+
+                        $.getJSON(btn.data('url'), {
+                            employee_id: btn.data('employee'),
+                            month:       btn.data('month'),
+                            year:        btn.data('year'),
+                        })
+                        .done(function (data) {
+                            const suggestions = data.suggestions || {};
+                            let filled = 0;
+
+                            $.each(suggestions, function (date, info) {
+                                const startInput = $(`input[name="ot[${date}][start]"]`);
+                                const stopInput  = $(`input[name="ot[${date}][stop]"]`);
+
+                                // Non-destructive: only fill if both inputs are currently empty
+                                if (startInput.length && !startInput.val() && !stopInput.val()) {
+                                    if (startInput[0]._flatpickr) {
+                                        startInput[0]._flatpickr.setDate(info.ot_start, true, 'H:i');
+                                    } else {
+                                        startInput.val(info.ot_start);
+                                    }
+                                    if (stopInput[0]._flatpickr) {
+                                        stopInput[0]._flatpickr.setDate(info.ot_stop, true, 'H:i');
+                                    } else {
+                                        stopInput.val(info.ot_stop);
+                                    }
+
+                                    // Trigger existing calculateAmount() for this date via the change event
+                                    startInput.trigger('change');
+                                    filled++;
+                                }
+                            });
+
+                            if (filled === 0) {
+                                Swal.fire({
+                                    title: 'No New Entries',
+                                    text: 'All rows are already filled or attendance logs show no overtime for the remaining days.',
+                                    icon: 'info'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: `Auto-filled ${filled} day(s). Please review the times, then click "Save Overtime Records" to commit the changes.`,
+                                    icon: 'success'
+                                });
+                            }
+                    })
+                    .fail(function () {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to load attendance data. Please try again.',
+                            icon: 'error'
+                        });
+                    })
+                    .always(function () {
+                        btn.prop('disabled', false).html('<i class="bi bi-magic me-1"></i> Auto-Fill from Attendance');
+                    });
+                }
+            });
+        });
+    });
+    </script>
+    @endif
     @endpush
 </x-app-layout>
