@@ -48,32 +48,31 @@ class AttendanceService
     {
         $date = Carbon::parse($date)->toDateString();
 
-        // Skip processing for roster off-days or unscheduled roster days
-        $officeTime = $employee->officeTime;
-        if ($officeTime && $officeTime->shift_name === 'Roster') {
-            $rosterShift = $this->getRosterShiftForDate($employee, $date);
-            if (!$rosterShift || $rosterShift->is_off_day) {
-                return;
-            }
-        } else {
-            $rosterShift = null;
-        }
-
-        $machineId = null;
-        $isManual = false;
-
-        // Check for manual adjustment first
+        // Check for manual adjustment first (it overrides off-days)
         $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
             ->where('date', $date)
             ->where('status', 'approved')
             ->first();
 
         if (!$adjustment) {
-            // Fallback for older records where status might not be approved or we just check if it exists
             $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
                 ->where('date', $date)
                 ->first();
         }
+
+        $officeTime = $employee->officeTime;
+        $rosterShift = null;
+
+        if ($officeTime && $officeTime->shift_name === 'Roster') {
+            $rosterShift = $this->getRosterShiftForDate($employee, $date);
+            // Only skip if no adjustment exists AND it's an off-day
+            if (!$adjustment && (!$rosterShift || $rosterShift->is_off_day)) {
+                return;
+            }
+        }
+
+        $machineId = null;
+        $isManual = false;
 
         if ($adjustment && (!isset($adjustment->status) || $adjustment->status === 'approved')) {
             $inTime = $adjustment->in_time;

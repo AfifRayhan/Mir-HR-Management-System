@@ -38,7 +38,7 @@
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-1 fw-bold">{{ __('Roster Shift Management') }}</h5>
+                        <h5 class="mb-1 fw-bold">{{ __($pageTitle ?? 'Roster Shift Management') }}</h5>
                         <p class="mb-0 small text-muted">
                             {{ __('Define and manage dynamic shift timings for different roster groups.') }}
                         </p>
@@ -54,7 +54,7 @@
                             <i class="bi bi-plus-circle me-2 text-primary"></i>{{ __('Add New Roster Shift') }}
                         </div>
 
-                        <form action="{{ route('roster.times.store') }}" method="POST">
+                        <form action="{{ route(($routePrefix ?? 'roster.') . 'times.store') }}" method="POST">
                             @csrf
                             <div class="row g-3">
                                 <div class="col-12">
@@ -122,7 +122,7 @@
                         <div class="p-3 bg-light border-bottom overflow-auto">
                             <div class="d-flex gap-2 flex-nowrap">
                                 @foreach($groups as $slug => $label)
-                                    <a href="{{ route('roster.times.index', ['group' => $slug]) }}" 
+                                    <a href="{{ route(($routePrefix ?? 'roster.') . 'times.index', ['group' => $slug]) }}" 
                                        class="btn btn-sm rounded-pill px-3 shadow-sm group-pill {{ $selectedGroup === $slug ? 'active' : '' }}">
                                         {{ $label }}
                                     </a>
@@ -163,7 +163,7 @@
                                                 <button class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}" data-bs-toggle="modal" data-bs-target="#editRtModal{{ $rt->id }}">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <form action="{{ route('roster.times.destroy', $rt) }}" method="POST" data-confirm="true" data-confirm-message="Are you sure you want to delete this shift?">
+                                                <form action="{{ route(($routePrefix ?? 'roster.') . 'times.destroy', $rt) }}" method="POST" data-confirm="true" data-confirm-message="Are you sure you want to delete this shift?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('Delete') }}">
@@ -182,7 +182,7 @@
                                                     <h5 class="modal-title fw-bold text-primary">{{ __('Edit Roster Shift') }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{ route('roster.times.update', $rt) }}" method="POST">
+                                                <form action="{{ route(($routePrefix ?? 'roster.') . 'times.update', $rt) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="modal-body p-4">

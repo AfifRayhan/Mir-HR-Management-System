@@ -31,11 +31,14 @@ class DatabaseSeeder extends Seeder
             ExperienceSeeder::class,
             RosterGroupSeeder::class,
             RosterTimeSeeder::class,
+            DriverRosterTimeSeeder::class,
+            DriverRosterGroupSeeder::class,
             ReportTemplateSeeder::class,
             DeviceSeeder::class,
             Holiday2026Seeder::class,
             OvertimeSettingSeeder::class,
             RosterPlanSeeder::class,
+            DriverRosterPlanSeeder::class,
         ]);
     }
 }

@@ -6,15 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\RosterTime;
 use Illuminate\Http\Request;
 
-class RosterTimeController extends Controller
+class DriverRosterTimeController extends Controller
 {
     const GROUP_MAP = [
-        'noc-borak'     => 'NOC (Borak)',
-        'noc-sylhet'    => 'NOC (Sylhet)',
-        'tech-gulshan'  => 'Technician (Gulshan)',
-        'tech-borak'    => 'Technician (Borak)',
-        'tech-jessore'  => 'Technician (Jessore)',
-        'tech-sylhet'   => 'Technician (Sylhet)',
+        'drivers' => 'Drivers',
     ];
 
     public function index(Request $request)
@@ -26,8 +21,8 @@ class RosterTimeController extends Controller
             ->orderBy('shift_key')
             ->get();
         
-        $routePrefix = 'roster.';
-        $pageTitle = 'Roster';
+        $routePrefix = 'driver-roster.';
+        $pageTitle = 'Driver Roster';
         return view('roster.times.index', compact('rosterTimes', 'groups', 'selectedGroup', 'routePrefix', 'pageTitle'));
     }
 
@@ -45,7 +40,7 @@ class RosterTimeController extends Controller
 
         RosterTime::create($request->all());
 
-        return redirect()->route('roster.times.index')->with('success', 'Roster Time created successfully.');
+        return redirect()->route('driver-roster.times.index')->with('success', 'Roster Time created successfully.');
     }
 
     public function update(Request $request, RosterTime $rosterTime)
@@ -62,12 +57,12 @@ class RosterTimeController extends Controller
 
         $rosterTime->update($request->all());
 
-        return redirect()->route('roster.times.index')->with('success', 'Roster Time updated successfully.');
+        return redirect()->route('driver-roster.times.index')->with('success', 'Roster Time updated successfully.');
     }
 
     public function destroy(RosterTime $rosterTime)
     {
         $rosterTime->delete();
-        return redirect()->route('roster.times.index')->with('success', 'Roster Time deleted successfully.');
+        return redirect()->route('driver-roster.times.index')->with('success', 'Roster Time deleted successfully.');
     }
 }

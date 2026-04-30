@@ -43,7 +43,7 @@ class EmployeeDashboardController extends Controller
             'user' => $user,
             'roleName' => $roleName,
             'employee' => $employee,
-            'presentDays' => 0, 'lateDays' => 0, 'absentDays' => 0, 'totalWorkingDays' => 0,
+            'presentDays' => 0, 'lateDays' => 0, 'absentDays' => 0, 'totalWorkingDays' => 0, 'overtimeHours' => 0, 'isOtEligible' => false,
             'prevPresentDays' => 0, 'prevLateDays' => 0, 'prevAbsentDays' => 0, 'prevTotalWorkingDays' => 0,
             'fullMonthAttendance' => collect(),
             'supervisorRemarks' => collect(),
@@ -109,11 +109,18 @@ class EmployeeDashboardController extends Controller
                   ->orWhereBetween('to_date', [$startOfMonth, $today]);
             })->sum('total_days');
 
+        $overtimeHours = \App\Models\Overtime::where('employee_id', $employee->id)
+            ->whereYear('date', $today->year)
+            ->whereMonth('date', $today->month)
+            ->sum('total_ot_hours');
+
         return [
             'presentDays' => $presentDays,
             'lateDays' => $lateDays,
             'totalWorkingDays' => $totalWorkingDays,
-            'absentDays' => max(0, $totalWorkingDays - $presentDays - $leaveDays)
+            'absentDays' => max(0, $totalWorkingDays - $presentDays - $leaveDays),
+            'overtimeHours' => $overtimeHours,
+            'isOtEligible' => $employee->designation->is_ot_eligible ?? false,
         ];
     }
 

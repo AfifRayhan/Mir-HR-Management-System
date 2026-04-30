@@ -36,6 +36,7 @@ use App\Http\Controllers\ReportGeneratorController;
 use App\Http\Controllers\Personnel\LeaveBalanceReportController;
 use App\Http\Controllers\Personnel\OvertimeController;
 use App\Http\Controllers\Personnel\OvertimeSettingController;
+use App\Http\Controllers\DriverRosterController;
 
 Route::get('/', function () {
     return view('/auth/login');
@@ -164,6 +165,7 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
 
 // Overtime routes
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('overtimes/auto-fill', [OvertimeController::class, 'autoFill'])->name('overtimes.auto-fill');
     Route::get('overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
     Route::post('overtimes/save', [OvertimeController::class, 'save'])->name('overtimes.save');
     Route::get('overtimes/settings', [OvertimeSettingController::class, 'index'])->name('overtimes.settings');
@@ -230,6 +232,17 @@ Route::middleware(['auth', 'verified'])->prefix('roster')->name('roster.')->grou
 
     // Roster Times Management
     Route::resource('times', RosterTimeController::class);
+});
+
+// Driver Roster management routes
+Route::middleware(['auth', 'verified'])->prefix('driver-roster')->name('driver-roster.')->group(function () {
+    Route::get('/', [DriverRosterController::class, 'index'])->name('index');
+    Route::post('/save', [DriverRosterController::class, 'save'])->name('save');
+    Route::get('/import-previous', [DriverRosterController::class, 'importPrevious'])->name('import-previous');
+    Route::get('/employees', [DriverRosterController::class, 'employees'])->name('employees');
+    Route::get('/export', [DriverRosterController::class, 'export'])->name('export');
+
+    Route::resource('times', \App\Http\Controllers\Roster\DriverRosterTimeController::class);
 });
 
 // Device Sync API (Exempt from CSRF in bootstrap/app.php)

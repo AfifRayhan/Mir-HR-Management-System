@@ -11,24 +11,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class RosterController extends Controller
+class DriverRosterController extends Controller
 {
     // Group Map is now handled via RosterTime or explicitly if needed, 
     // but for the index dropdown, we'll maintain a logical list.
     const GROUP_MAP = [
-        'noc-borak'     => 'NOC (Borak)',
-        'noc-sylhet'    => 'NOC (Sylhet)',
-        'tech-gulshan'  => 'Technician (Gulshan)',
-        'tech-borak'    => 'Technician (Borak)',
-        'tech-jessore'  => 'Technician (Jessore)',
-        'tech-sylhet'   => 'Technician (Sylhet)',
+        'drivers' => 'Drivers',
     ];
 
     public function index(Request $request)
     {
         $data = $this->getRosterData($request);
-        $data['routePrefix'] = 'roster.';
-        $data['pageTitle'] = 'Roster';
+        $data['routePrefix'] = 'driver-roster.';
+        $data['pageTitle'] = 'Driver Roster';
         return view('roster.index', $data);
     }
 
@@ -47,8 +42,8 @@ class RosterController extends Controller
 
     private function getRosterData(Request $request)
     {
-        $groupSlug  = $request->query('group', 'noc-borak');
-        $groupLabel = self::GROUP_MAP[$groupSlug] ?? 'NOC (Borak)';
+        $groupSlug  = $request->query('group', 'drivers');
+        $groupLabel = self::GROUP_MAP[$groupSlug] ?? 'Drivers';
         $monthParam = $request->query('month', now()->format('Y-m'));
         $monthStart = Carbon::parse($monthParam . '-01')->startOfMonth();
         $monthEnd   = $monthStart->copy()->endOfMonth();
@@ -263,8 +258,8 @@ class RosterController extends Controller
 
     public function employees(Request $request)
     {
-        $groupSlug = $request->group ?? 'noc-borak';
-        $groupLabel = self::GROUP_MAP[$groupSlug] ?? 'NOC (Borak)';
+        $groupSlug = $request->group ?? 'drivers';
+        $groupLabel = self::GROUP_MAP[$groupSlug] ?? 'Drivers';
 
         $query = Employee::whereHas('officeTime', fn($q) => $q->where('shift_name', 'Roster'))
             ->where('status', 'active');

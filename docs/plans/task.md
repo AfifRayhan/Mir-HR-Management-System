@@ -1,7 +1,8 @@
-| Task | Status |
-| :--- | :--- |
-| Task 1: Database Migration and Model | [x] |
-| Task 2: Routes and Navigation | [x] |
-| Task 3: Overtime Controller Implementation | [x] |
-| Task 4: Monthly Form Blade View | [x] |
-| Task 5: Verification | [x] |
+# Overtime Calculation Tasks
+
+| Task | Description | Status |
+| :--- | :--- | :--- |
+| 1 | Update PHP calculation logic in OvertimeController | `done` |
+| 2 | Update JavaScript calculation and real-time checkbox behavior in Blade | `done` |
+| 3 | Update feature tests to match new logic | `done` |
+| 4 | Final verification (automated & manual) | `done` |

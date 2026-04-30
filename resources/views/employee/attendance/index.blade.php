@@ -194,7 +194,7 @@
                                                     <i class="bi bi-check-circle me-1"></i>Approved
                                                 </span>
                                             @endif
-                                        @elseif(strtolower($record->status) == 'absent')
+                                        @elseif(in_array(strtolower($record->status), ['absent', 'weekly_holiday', 'holiday', 'off_day']))
                                             <a href="{{ route('employee.attendance.adjust', ['date' => $recordDateStr]) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>

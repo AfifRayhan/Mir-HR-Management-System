@@ -22,14 +22,15 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 4],
             ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 5],
             ['name' => 'Attendances', 'slug' => 'attendances',        'icon' => 'bi-clock-history',  'route_name' => null,                 'sort_order' => 6],
-            ['name' => 'Overtime',    'slug' => 'overtime',           'icon' => 'bi-clock-history',  'route_name' => null,                 'sort_order' => 7],
+            ['name' => 'Overtime',    'slug' => 'overtime',           'icon' => 'bi-clock-history',  'route_name' => 'overtimes.index', 'sort_order' => 7],
             ['name' => 'Roster',      'slug' => 'roster',             'icon' => 'bi-calendar3',      'route_name' => 'roster.index',       'sort_order' => 8],
-            ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 9],
+            ['name' => 'Driver Roster', 'slug' => 'driver-roster',    'icon' => 'bi-car-front',      'route_name' => 'driver-roster.index', 'sort_order' => 9],
+            ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 10],
         ];
 
         $menuModels = [];
         foreach ($items as $data) {
-            $menuModels[$data['slug']] = MenuItem::firstOrCreate(
+            $menuModels[$data['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $data['slug']],
                 $data
             );
@@ -44,7 +45,7 @@ class MenuItemSeeder extends Seeder
 
         foreach ($securityChildren as $child) {
             $child['parent_id'] = $menuModels['security']->id;
-            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
             );
@@ -61,7 +62,7 @@ class MenuItemSeeder extends Seeder
 
         foreach ($personnelChildren as $child) {
             $child['parent_id'] = $menuModels['personnel']->id;
-            $menuModels[$child['slug']] = MenuItem::firstOrCreate(
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
             );
@@ -143,6 +144,20 @@ class MenuItemSeeder extends Seeder
 
         foreach ($rosterChildren as $child) {
             $child['parent_id'] = $menuModels['roster']->id;
+            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
+        // Define child menu items under Driver Roster
+        $driverRosterChildren = [
+            ['name' => 'Manage Roster', 'slug' => 'driver-roster-index', 'icon' => 'bi-car-front', 'route_name' => 'driver-roster.index', 'sort_order' => 1],
+            ['name' => 'Roster Times',  'slug' => 'driver-roster-times', 'icon' => 'bi-clock',     'route_name' => 'driver-roster.times.index', 'sort_order' => 2],
+        ];
+
+        foreach ($driverRosterChildren as $child) {
+            $child['parent_id'] = $menuModels['driver-roster']->id;
             $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
@@ -236,8 +251,8 @@ class MenuItemSeeder extends Seeder
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Employee Dashboard + all its children
-        $employeeMenuIds = MenuItem::where('slug', 'employee-dashboard')
+        // Employee gets Employee Dashboard + Overtime + all dashboard children
+        $employeeMenuIds = MenuItem::whereIn('slug', ['employee-dashboard', 'overtime', 'overtime-monthly'])
             ->orWhere('parent_id', $menuModels['employee-dashboard']->id)
             ->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);

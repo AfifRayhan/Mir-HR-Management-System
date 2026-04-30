@@ -23,7 +23,7 @@
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="fw-bold mb-1">{{ __('Request Attendance Adjustment') }}</h4>
-                        <p class="text-muted mb-0 small">{{ __('Submit a request to adjust your absent record') }}</p>
+                        <p class="text-muted mb-0 small">{{ __('Submit a request to adjust your attendance or overtime record') }}</p>
                     </div>
                 </div>
             </div>

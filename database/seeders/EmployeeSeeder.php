@@ -17,6 +17,7 @@ class EmployeeSeeder extends Seeder
     public function run(): void
     {
         $defaultTime = OfficeTime::where('shift_name', 'General Shift')->value('id') ?? OfficeTime::first()->id ?? null;
+        $peonTime    = OfficeTime::where('shift_name', 'Peon General Shift')->value('id') ?? $defaultTime;
 
         // composer require phpoffice/phpspreadsheet
 
@@ -148,7 +149,7 @@ class EmployeeSeeder extends Seeder
                 'designation_id' => $designationModel->id,
                 'grade_id' => $gradeModel->id,
                 'office_id' => $officeModel->id,
-                'office_time_id' => $defaultTime,
+                'office_time_id' => in_array($designation, ['Peon', 'Cleaner']) ? $peonTime : $defaultTime,
                 'status' => (strtolower($status) === 'active') ? 'active' : 'inactive',
                 'gross_salary' => !empty($grossSalary) ? (float) str_replace(',', '', $grossSalary) : null,
             ];

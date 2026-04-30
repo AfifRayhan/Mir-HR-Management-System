@@ -11,7 +11,7 @@
             <div class="row mb-3">
                 <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <div>
-                        <h5 class="mb-1"><i class="bi bi-calendar3 me-2 text-success"></i>Roster Management</h5>
+                        <h5 class="mb-1"><i class="bi bi-calendar3 me-2 text-success"></i>{{ $pageTitle ?? 'Roster' }} Management</h5>
                         <p class="mb-0 small text-muted">Manage monthly shifts for designated groups</p>
                     </div>
                     <div class="text-end text-sm text-gray-500">
@@ -25,10 +25,10 @@
                 <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between">
                     <div class="d-flex gap-2 overflow-auto pb-1" style="max-width: 100%;">
                         @foreach($groups as $slug => $label)
-                        <a href="{{ route('roster.index', ['group' => $slug, 'month' => $monthParam, 'mode' => $mode]) }}"
+                        <a href="{{ route(($routePrefix ?? 'roster.') . 'index', ['group' => $slug, 'month' => $monthParam, 'mode' => $mode]) }}"
                            class="btn btn-sm btn-outline-success rounded-pill group-tab px-3 text-nowrap {{ $groupSlug === $slug ? 'active' : '' }}"
                            id="tab-{{ $slug }}">
-                            <i class="bi {{ $slug === 'all' ? 'bi-grid-3x3-gap' : (str_starts_with($slug, 'noc') ? 'bi-broadcast-pin' : 'bi-tools') }} me-1"></i>{{ $label }}
+                            <i class="bi {{ $slug === 'all' ? 'bi-grid-3x3-gap' : (str_starts_with($slug, 'noc') ? 'bi-broadcast-pin' : (str_starts_with($slug, 'driver') ? 'bi-car-front' : 'bi-tools')) }} me-1"></i>{{ $label }}
                         </a>
                         @endforeach
                     </div>
@@ -36,13 +36,13 @@
                     <div class="d-flex flex-column align-items-start align-items-md-end gap-2">
                         {{-- Mode Toggle --}}
                         <div class="btn-group btn-group-sm" role="group">
-                            <a href="{{ route('roster.index', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => 'weekly']) }}" 
+                            <a href="{{ route(($routePrefix ?? 'roster.') . 'index', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => 'weekly']) }}" 
                                class="btn {{ $mode === 'weekly' ? 'btn-success' : 'btn-outline-success' }}">Weekly</a>
-                            <a href="{{ route('roster.index', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => 'monthly']) }}" 
+                            <a href="{{ route(($routePrefix ?? 'roster.') . 'index', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => 'monthly']) }}" 
                                class="btn {{ $mode === 'monthly' ? 'btn-success' : 'btn-outline-success' }}">Monthly</a>
                         </div>
 
-                        <form method="GET" action="{{ route('roster.index') }}" class="d-flex align-items-center gap-2 mb-0">
+                        <form method="GET" action="{{ route(($routePrefix ?? 'roster.') . 'index') }}" class="d-flex align-items-center gap-2 mb-0">
                             <input type="hidden" name="group" value="{{ $groupSlug }}">
                             <input type="hidden" name="mode" value="{{ $mode }}">
                             <label class="small text-muted mb-0 d-none d-sm-block">Month:</label>
@@ -81,9 +81,9 @@
                                     <i class="bi bi-cloud-download me-1"></i> Download
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                    <li><a class="dropdown-item px-3 py-2" href="{{ route('roster.export', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => $mode, 'format' => 'xlsx']) }}">
+                                    <li><a class="dropdown-item px-3 py-2" href="{{ route(($routePrefix ?? 'roster.') . 'export', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => $mode, 'format' => 'xlsx']) }}">
                                         <i class="bi bi-file-earmark-excel text-success me-2"></i> Excel (.xlsx)</a></li>
-                                    <li><a class="dropdown-item px-3 py-2" href="{{ route('roster.export', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => $mode, 'format' => 'csv']) }}">
+                                    <li><a class="dropdown-item px-3 py-2" href="{{ route(($routePrefix ?? 'roster.') . 'export', ['group' => $groupSlug, 'month' => $monthParam, 'mode' => $mode, 'format' => 'csv']) }}">
                                         <i class="bi bi-file-earmark-spreadsheet text-info me-2"></i> CSV (.csv)</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><button class="dropdown-item px-3 py-2" onclick="downloadAsImage()">
@@ -388,7 +388,7 @@
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing...';
 
-            fetch('{{ route("roster.save") }}', {
+            fetch('{{ route(($routePrefix ?? "roster.") . "save") }}', {
                 method:  'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -438,7 +438,7 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            fetch('{{ route("roster.import-previous") }}?month={{ $monthParam }}&group={{ $groupSlug }}')
+            fetch('{{ route(($routePrefix ?? "roster.") . "import-previous") }}?month={{ $monthParam }}&group={{ $groupSlug }}')
             .then(r => r.json())
             .then(data => {
                 Swal.close();

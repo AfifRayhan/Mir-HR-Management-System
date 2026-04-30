@@ -100,6 +100,12 @@
                 <span>{{ __('Supervisor Remarks') }}</span>
             </a>
         </li>
+        <li>
+            <a href="{{ route('overtimes.index') }}" class="ui-sidebar-link {{ request()->routeIs('overtimes.*') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span>{{ __('Overtime') }}</span>
+            </a>
+        </li>
 
         <li>
             <a href="{{ route('notifications.index') }}" 

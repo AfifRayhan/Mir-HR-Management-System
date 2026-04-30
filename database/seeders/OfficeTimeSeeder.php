@@ -38,26 +38,7 @@ class OfficeTimeSeeder extends Seeder
                 'lunch_start'  => '13:00:00',
                 'lunch_end'    => '14:00:00',
             ],
-            [
-                'shift_name'   => 'Driver Day Shift',
-                'short_name'   => 'DDS',
-                'start_time'   => '08:00:00',
-                'end_time'     => '18:00:00',
-                'late_after'   => '09:00:00',
-                'absent_after' => '10:00:00',
-                'lunch_start'  => '13:00:00',
-                'lunch_end'    => '14:00:00',
-            ],
-            [
-                'shift_name'   => 'Driver Night Shift',
-                'short_name'   => 'DNS',
-                'start_time'   => '20:00:00',
-                'end_time'     => '08:00:00',
-                'late_after'   => '21:00:00',
-                'absent_after' => '22:00:00',
-                'lunch_start'  => '00:05:00',
-                'lunch_end'    => '01:00:00',
-            ],
+
             [
                 'shift_name'   => 'Kitchen Staff Duty',
                 'short_name'   => 'KDS',

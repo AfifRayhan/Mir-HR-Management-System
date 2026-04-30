@@ -209,36 +209,6 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot class="bg-light">
-                                    <tr class="border-top border-2">
-                                        <td colspan="4" class="text-end fw-bold">Total days/Shift</td>
-                                        <td class="text-center fw-bold" id="summary_workday_count">0</td>
-                                        <td class="text-center fw-bold" id="summary_holiday_count">0</td>
-                                        <td class="text-center fw-bold" id="summary_eid_count">0</td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-end text-muted small">Rate per Shift/Eid Special</td>
-                                        <td class="text-center text-muted small" id="summary_workday_rate">0.00</td>
-                                        <td class="text-center text-muted small" id="summary_holiday_rate">0.00</td>
-                                        <td class="text-center text-muted small" id="summary_eid_rate">0.00</td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-end text-muted small">Multiplying Factor</td>
-                                        <td class="text-center text-muted small">1</td>
-                                        <td class="text-center text-muted small">2</td>
-                                        <td class="text-center text-muted small">3</td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" class="text-end fw-bold">Sub-Total</td>
-                                        <td class="text-center fw-bold text-success" id="summary_workday_subtotal">0.00</td>
-                                        <td class="text-center fw-bold text-success" id="summary_holiday_subtotal">0.00</td>
-                                        <td class="text-center fw-bold text-success" id="summary_eid_subtotal">0.00</td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
 
@@ -271,8 +241,8 @@
             });
 
             const otForm = document.getElementById('ot-form');
-            const gross = parseFloat(otForm.dataset.gross) || 0;
-            const grade = otForm.dataset.grade || '';
+            const perHourRate    = Number("{{ $perHourRate ?? 0 }}");
+            const gross          = parseFloat(otForm.dataset.gross) || 0;
             const fullShiftIncome = (gross * 0.6) / 30;
 
             window.clearTime = function(btn, date) {
@@ -310,18 +280,16 @@
                 if (hours > 0) {
                     if (isEid) {
                         eidCheck.prop('checked', true);
+                        holidayCheck.prop('checked', false);
                     } else if (isOff) {
                         holidayCheck.prop('checked', true);
+                        eidCheck.prop('checked', false);
                     }
                     
-                    // Specific rule: 12+ hours always marks Workday Duty
-                    if (hours >= 12) {
+                    // Workday Duty checkbox toggles when crossing 5 hours mark
+                    if (hours > 5) {
                         workdayCheck.prop('checked', true);
-                    } else if (!isOff && !isEid && hours >= 5) {
-                        // Standard workday rule
-                        workdayCheck.prop('checked', true);
-                    } else if (isOff || isEid) {
-                        // If it's an off day and < 12 hours, don't mark workday duty
+                    } else {
                         workdayCheck.prop('checked', false);
                     }
                 } else {
@@ -336,51 +304,34 @@
 
                 $(`#total_hours_${date}`).text(hours.toFixed(2));
 
-                let multiplier = 1;
-                if (eidDuty) multiplier = 3;
-                else if (holidayPlus5) multiplier = 2;
-
-                const baseValue = fullShiftIncome * multiplier;
-                
-                let count = 0;
-                if (eidDuty) count++;
-                if (holidayPlus5) count++;
-                if (workdayPlus5) count++;
-
-                const amount = baseValue * count;
-
-                $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                // Two-tier formula mirrors PHP calculateAmount() exactly:
+                //   ≤ 5 hrs → hours × perHourRate × multiplier
+                //   > 5 hrs → one full shift × multiplier
+                // Tier 1: Floor hours, no multipliers
+                if (hours <= 5) {
+                    const amount = Math.floor(hours) * perHourRate;
+                    $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                } else {
+                    // Tier 2: Base + Bonuses
+                    // Base: 2 units (1000 BDT)
+                    let units = 2;
+                    
+                    if (eidCheck.is(':checked')) units += 4; // Eid: +2000 BDT
+                    if (hours > 12) units += 1;             // Long shift: +500 BDT
+                    
+                    const amount = fullShiftIncome * units;
+                    $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                }
                 updateGrandTotal();
             }
 
             function updateGrandTotal() {
                 let total = 0;
-                let workdayCount = 0;
-                let holidayCount = 0;
-                let eidCount = 0;
-                
                 $('[id^="amount_"]').each(function() {
                     const val = parseFloat($(this).text().replace(/,/g, '')) || 0;
                     total += val;
                 });
-                
-                $('.ot-check[name*="[workday_plus_5]"]:checked').each(function() { workdayCount++; });
-                $('.ot-check[name*="[holiday_plus_5]"]:checked').each(function() { holidayCount++; });
-                $('.ot-check[name*="[eid_duty]"]:checked').each(function() { eidCount++; });
-
                 $('#total_payable_display').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BDT');
-                
-                $('#summary_workday_count').text(workdayCount);
-                $('#summary_holiday_count').text(holidayCount);
-                $('#summary_eid_count').text(eidCount);
-                
-                $('#summary_workday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#summary_holiday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#summary_eid_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                
-                $('#summary_workday_subtotal').text((fullShiftIncome * 1 * workdayCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#summary_holiday_subtotal').text((fullShiftIncome * 2 * holidayCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#summary_eid_subtotal').text((fullShiftIncome * 3 * eidCount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
             }
 
             $('.ot-input, .ot-check').on('change', function() {
@@ -435,6 +386,17 @@
                                         stopInput[0]._flatpickr.setDate(info.ot_stop, true, 'H:i');
                                     } else {
                                         stopInput.val(info.ot_stop);
+                                    }
+
+                                    // Auto-check boxes for Off-days and Eid
+                                    const tr = $(`tr[data-date="${date}"]`);
+                                    const isOff = tr.data('is-off') === 1;
+                                    const isEid = tr.data('is-eid') === 1;
+
+                                    if (isEid) {
+                                        $(`input[name="ot[${date}][eid_duty]"]`).prop('checked', true);
+                                    } else if (isOff) {
+                                        $(`input[name="ot[${date}][holiday_plus_5]"]`).prop('checked', true);
                                     }
 
                                     // Trigger existing calculateAmount() for this date via the change event

@@ -44,8 +44,8 @@
             
 
             <!-- Employee Summary Metrics -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-3 col-sm-6">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
+                <div class="col">
                     <div class="ui-metric-card">
                         <div class="ui-metric-icon bg-success-soft text-success">
                             <i class="bi bi-person-check-fill text-2xl"></i>
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col">
                     <div class="ui-metric-card">
                         <div class="ui-metric-icon bg-warning-soft text-warning">
                             <i class="bi bi-clock-history text-2xl"></i>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col">
                     <div class="ui-metric-card">
                         <div class="ui-metric-icon bg-danger-soft text-danger">
                             <i class="bi bi-person-x-fill text-2xl"></i>
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col">
                     <div class="ui-metric-card">
                         <div class="ui-metric-icon bg-info-soft text-info">
                             <i class="bi bi-calendar2-range text-2xl"></i>
@@ -90,6 +90,18 @@
                             <div class="ui-metric-label">{{ __('Leaves Taken') }}</div>
                             <div class="ui-metric-value">{{ $approvedLeaves }}</div>
                             <div class="metric-sub">{{ __("This year " . "(" . now()->format('Y') . ")") }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="ui-metric-card" onclick="location.href='{{ route('overtimes.index') }}';" style="cursor: pointer;">
+                        <div class="ui-metric-icon" style="background-color: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                            <i class="bi bi-clock-fill text-2xl"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="ui-metric-label">{{ __('Overtime Hours') }}</div>
+                            <div class="ui-metric-value">{{ number_format($overtimeHours, 2) }}</div>
+                            <div class="metric-sub">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
                         </div>
                     </div>
                 </div>
