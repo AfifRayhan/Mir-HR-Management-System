@@ -68,10 +68,10 @@ class EmployeeController extends Controller
         }
  
         $employees = $query->paginate(10)->withQueryString();
-        $departments = Department::all();
-        $sections = Section::with('department')->get();
-        $offices = Office::all();
-        $designations = Designation::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $sections = \Illuminate\Support\Facades\Cache::remember('sections_with_dept_all', 3600, fn() => Section::with('department')->get());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
+        $designations = \Illuminate\Support\Facades\Cache::remember('designations_all', 3600, fn() => Designation::all());
  
         return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'offices', 'designations'));
     }
@@ -81,16 +81,16 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $departments = Department::all();
-        $sections = Section::all();
-        $designations = Designation::orderBy('priority', 'asc')->get();
-        $grades = Grade::all();
-        $offices = Office::all();
-        $officeTimes = OfficeTime::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $sections = \Illuminate\Support\Facades\Cache::remember('sections_all', 3600, fn() => Section::all());
+        $designations = \Illuminate\Support\Facades\Cache::remember('designations_ordered_all', 3600, fn() => Designation::orderBy('priority', 'asc')->get());
+        $grades = \Illuminate\Support\Facades\Cache::remember('grades_all', 3600, fn() => Grade::all());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
+        $officeTimes = \Illuminate\Support\Facades\Cache::remember('office_times_all', 3600, fn() => OfficeTime::all());
         $managers = Employee::all();
 
         // Roles for new user creation
-        $roles = Role::orderBy('name')->get();
+        $roles = \Illuminate\Support\Facades\Cache::remember('roles_ordered_all', 3600, fn() => Role::orderBy('name')->get());
 
         // Generate auto employee code based on today as default
         $autoEmployeeCode = Employee::generateEmployeeCode(now());
@@ -235,16 +235,16 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $departments = Department::all();
-        $sections = Section::all();
-        $designations = Designation::orderBy('priority', 'asc')->get();
-        $grades = Grade::all();
-        $offices = Office::all();
-        $officeTimes = OfficeTime::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $sections = \Illuminate\Support\Facades\Cache::remember('sections_all', 3600, fn() => Section::all());
+        $designations = \Illuminate\Support\Facades\Cache::remember('designations_ordered_all', 3600, fn() => Designation::orderBy('priority', 'asc')->get());
+        $grades = \Illuminate\Support\Facades\Cache::remember('grades_all', 3600, fn() => Grade::all());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
+        $officeTimes = \Illuminate\Support\Facades\Cache::remember('office_times_all', 3600, fn() => OfficeTime::all());
         $managers = Employee::where('id', '!=', $employee->id)->get();
 
         // Roles for user modification
-        $roles = Role::orderBy('name')->get();
+        $roles = \Illuminate\Support\Facades\Cache::remember('roles_ordered_all', 3600, fn() => Role::orderBy('name')->get());
 
         return view('personnel.employees.form', compact(
             'employee',
@@ -554,10 +554,10 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(50)->withQueryString();
 
-        $offices = Office::orderBy('name')->get();
-        $departments = Department::orderBy('name')->get();
-        $sections = Section::orderBy('name')->get();
-        $designations = Designation::orderBy('name')->get();
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_ordered_all', 3600, fn() => Office::orderBy('name')->get());
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_ordered_all', 3600, fn() => Department::orderBy('name')->get());
+        $sections = \Illuminate\Support\Facades\Cache::remember('sections_ordered_all', 3600, fn() => Section::orderBy('name')->get());
+        $designations = \Illuminate\Support\Facades\Cache::remember('designations_ordered_name_all', 3600, fn() => Designation::orderBy('name')->get());
 
         return view('personnel.employees.export-preview', [
             'employees' => $employees,

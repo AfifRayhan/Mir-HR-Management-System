@@ -159,8 +159,8 @@ class AttendanceController extends Controller
         }
 
         $records     = $query->get();
-        $departments = Department::all();
-        $offices     = Office::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $offices     = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
         $statuses    = ['present', 'late', 'absent', 'leave'];
 
         return view('personnel.attendance.index', compact(
@@ -213,9 +213,9 @@ class AttendanceController extends Controller
         }
 
         $records = $query->paginate(20)->withQueryString();
-        $departments = Department::all();
-        $offices = Office::all();
-        $designations = \App\Models\Designation::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
+        $designations = \Illuminate\Support\Facades\Cache::remember('designations_all', 3600, fn() => \App\Models\Designation::all());
         $statuses = ['present', 'late', 'absent', 'leave'];
 
         return view('personnel.attendance.export-preview', compact(
@@ -573,8 +573,8 @@ class AttendanceController extends Controller
             ];
         }
 
-        $departments = Department::all();
-        $offices = Office::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
 
         return view('personnel.attendance.export-monthly-preview', compact(
             'processedData', 'departments', 'offices', 'month', 'year', 'daysInMonth', 'employees',
@@ -750,8 +750,8 @@ class AttendanceController extends Controller
             ];
         }
 
-        $departments = Department::all();
-        $offices = Office::all();
+        $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
+        $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
 
         return view('personnel.attendance.export-yearly-preview', compact(
             'processedData', 'departments', 'offices', 'year', 'employees'

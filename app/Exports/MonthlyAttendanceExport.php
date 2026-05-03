@@ -60,85 +60,84 @@ class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wi
             $query->where('department_id', $this->params['department_id']);
         }
 
-        $employees = $query->get();
-        $totalEmployees = count($employees);
-        $employeeIds = $employees->pluck('id');
-
-        $attendance = AttendanceRecord::whereIn('employee_id', $employeeIds)
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get()
-            ->groupBy('employee_id');
-
         $holidays = Holiday::where(function($q) use ($month, $year) {
                 $q->whereYear('from_date', $year)->whereMonth('from_date', $month)
                   ->orWhereYear('to_date', $year)->whereMonth('to_date', $month);
             })->get();
 
         $weeklyHolidays = WeeklyHoliday::all()->groupBy('office_id');
-
-        $leaves = LeaveApplication::whereIn('employee_id', $employeeIds)
-            ->where('status', 'approved')
-            ->where(function($q) use ($month, $year) {
-                $q->whereYear('from_date', $year)->whereMonth('from_date', $month)
-                  ->orWhereYear('to_date', $year)->whereMonth('to_date', $month);
-            })->get()
-            ->groupBy('employee_id');
-
         $processedData = [];
-        foreach ($employees as $index => $emp) {
 
-            $empAttendance = $attendance->get($emp->id, collect())->keyBy(fn($item) => (int)$item->date->format('d'));
-            $empLeaves = $leaves->get($emp->id, collect());
-            $empWeeklyHolidays = $weeklyHolidays->get($emp->office_id, collect())->pluck('day')->toArray();
-            
-            $days = [];
-            $summary = ['P' => 0, 'A' => 0, 'LP' => 0, 'LA' => 0, 'L' => 0, 'H' => 0, 'WD' => 0];
+        $query->chunk(100, function ($employees) use (&$processedData, $month, $year, $daysInMonth, $holidays, $weeklyHolidays) {
+            $employeeIds = $employees->pluck('id');
 
-            for ($d = 1; $d <= $daysInMonth; $d++) {
-                $date = Carbon::createFromDate($year, $month, $d);
-                $dateStr = $date->toDateString();
-                $dayName = $date->format('l');
+            $attendance = AttendanceRecord::whereIn('employee_id', $employeeIds)
+                ->whereYear('date', $year)
+                ->whereMonth('date', $month)
+                ->get()
+                ->groupBy('employee_id');
 
-                $isWorkingDay = true;
-                if (in_array($dayName, $empWeeklyHolidays)) {
-                    $isWorkingDay = false;
-                } else {
-                    $isGenHoliday = $holidays->first(function($h) use ($dateStr) {
-                        return $dateStr >= $h->from_date && $dateStr <= $h->to_date;
-                    });
-                    if ($isGenHoliday) $isWorkingDay = false;
-                }
+            $leaves = LeaveApplication::whereIn('employee_id', $employeeIds)
+                ->where('status', 'approved')
+                ->where(function($q) use ($month, $year) {
+                    $q->whereYear('from_date', $year)->whereMonth('from_date', $month)
+                      ->orWhereYear('to_date', $year)->whereMonth('to_date', $month);
+                })->get()
+                ->groupBy('employee_id');
 
-                $status = '';
-                if (isset($empAttendance[$d])) {
-                    $record = $empAttendance[$d];
-                    if ($record->status === 'present') { $status = 'P'; $summary['P']++; }
-                    elseif ($record->status === 'late') { $status = 'LP'; $summary['LP']++; }
-                    elseif ($record->status === 'absent') { $status = 'A'; $summary['A']++; }
-                    elseif ($record->status === 'leave') { $status = 'L'; $summary['L']++; }
-                } else {
-                    $onLeave = $empLeaves->first(function($leave) use ($dateStr) {
-                        return $dateStr >= $leave->from_date && $dateStr <= $leave->to_date;
-                    });
-
-                    if ($onLeave) { $status = 'L'; $summary['L']++; }
-                    elseif (!$isWorkingDay) { $status = 'H'; $summary['H']++; }
-                    else { $status = 'A'; $summary['A']++; }
-                }
+            foreach ($employees as $index => $emp) {
+                $empAttendance = $attendance->get($emp->id, collect())->keyBy(fn($item) => (int)$item->date->format('d'));
+                $empLeaves = $leaves->get($emp->id, collect());
+                $empWeeklyHolidays = $weeklyHolidays->get($emp->office_id, collect())->pluck('day')->toArray();
                 
-                if ($isWorkingDay) $summary['WD']++;
-                $days[$d] = $status;
-            }
+                $days = [];
+                $summary = ['P' => 0, 'A' => 0, 'LP' => 0, 'LA' => 0, 'L' => 0, 'H' => 0, 'WD' => 0];
 
-            $processedData[] = [
-                'employee' => $emp,
-                'days' => $days,
-                'summary' => $summary,
-                'office_name' => $emp->office->name ?? 'Unassigned',
-                'department_name' => $emp->department->name ?? 'Unassigned'
-            ];
-        }
+                for ($d = 1; $d <= $daysInMonth; $d++) {
+                    $date = Carbon::createFromDate($year, $month, $d);
+                    $dateStr = $date->toDateString();
+                    $dayName = $date->format('l');
+
+                    $isWorkingDay = true;
+                    if (in_array($dayName, $empWeeklyHolidays)) {
+                        $isWorkingDay = false;
+                    } else {
+                        $isGenHoliday = $holidays->first(function($h) use ($dateStr) {
+                            return $dateStr >= $h->from_date && $dateStr <= $h->to_date;
+                        });
+                        if ($isGenHoliday) $isWorkingDay = false;
+                    }
+
+                    $status = '';
+                    if (isset($empAttendance[$d])) {
+                        $record = $empAttendance[$d];
+                        if ($record->status === 'present') { $status = 'P'; $summary['P']++; }
+                        elseif ($record->status === 'late') { $status = 'LP'; $summary['LP']++; }
+                        elseif ($record->status === 'absent') { $status = 'A'; $summary['A']++; }
+                        elseif ($record->status === 'leave') { $status = 'L'; $summary['L']++; }
+                    } else {
+                        $onLeave = $empLeaves->first(function($leave) use ($dateStr) {
+                            return $dateStr >= $leave->from_date && $dateStr <= $leave->to_date;
+                        });
+
+                        if ($onLeave) { $status = 'L'; $summary['L']++; }
+                        elseif (!$isWorkingDay) { $status = 'H'; $summary['H']++; }
+                        else { $status = 'A'; $summary['A']++; }
+                    }
+                    
+                    if ($isWorkingDay) $summary['WD']++;
+                    $days[$d] = $status;
+                }
+
+                $processedData[] = [
+                    'employee' => $emp,
+                    'days' => $days,
+                    'summary' => $summary,
+                    'office_name' => $emp->office->name ?? 'Unassigned',
+                    'department_name' => $emp->department->name ?? 'Unassigned'
+                ];
+            }
+        });
 
         $groupedData = collect($processedData)->groupBy('office_name')->map(function($officeItems) {
             return $officeItems->groupBy('department_name');
