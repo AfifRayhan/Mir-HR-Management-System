@@ -166,6 +166,7 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
 // Overtime routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('overtimes/auto-fill', [OvertimeController::class, 'autoFill'])->name('overtimes.auto-fill');
+    Route::get('overtimes/export', [OvertimeController::class, 'export'])->name('overtimes.export');
     Route::get('overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
     Route::post('overtimes/save', [OvertimeController::class, 'save'])->name('overtimes.save');
     Route::get('overtimes/settings', [OvertimeSettingController::class, 'index'])->name('overtimes.settings');

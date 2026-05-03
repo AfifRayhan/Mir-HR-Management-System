@@ -52,14 +52,6 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <x-input-label for="password" :value="__('Password')" />
-
-                                @if (Route::has('password.request'))
-                                <a
-                                    class="small text-decoration-underline text-muted"
-                                    href="{{ route('password.request') }}">
-                                    {{ __('Forgot your password?') }}
-                                </a>
-                                @endif
                             </div>
 
                             <x-text-input

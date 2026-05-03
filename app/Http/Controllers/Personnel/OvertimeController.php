@@ -8,6 +8,9 @@ use App\Models\Overtime;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OvertimeExport;
 
 class OvertimeController extends Controller
 {
@@ -371,7 +374,7 @@ class OvertimeController extends Controller
         return round($start->diffInMinutes($end) / 60, 2);
     }
 
-    private function calculateTotalHours(string $start, string $stop): float
+    private function calculateTotalHours(?string $start, ?string $stop): float
     {
         if (!$start || !$stop) return 0;
 
@@ -387,50 +390,40 @@ class OvertimeController extends Controller
 
     private function calculateAmount(Employee $employee, float $totalHours, array $data): float
     {
-        // Resolve per-hour rate: designation rate takes priority over grade rate.
-        $perHourRate = 0.0;
-
-        if ($employee->designation_id) {
-            $designationRate = \App\Models\OvertimeRate::where('designation_id', $employee->designation_id)
-                ->whereNull('grade_id')
-                ->value('rate');
-            if ($designationRate !== null) {
-                $perHourRate = (float) $designationRate;
-            }
-        }
-
-        if ($perHourRate === 0.0 && $employee->grade_id) {
-            $gradeRate = \App\Models\OvertimeRate::where('grade_id', $employee->grade_id)
-                ->whereNull('designation_id')
-                ->value('rate');
-            if ($gradeRate !== null) {
-                $perHourRate = (float) $gradeRate;
-            }
-        }
+        $perHourRate = $this->getEmployeePerHourRate($employee);
 
         // Full-shift income (per-day amount) — used when hours > 5
         $fullShiftIncome = ($employee->gross_salary * 0.6) / 30;
 
-        // Tier 1: <= 5 hours (Floor hours, NO multipliers)
-        if ($totalHours <= 5) {
-            return round(floor($totalHours) * $perHourRate, 2);
+        // If any duty is marked, use shift-based (units) calculation
+        if (isset($data['workday_plus_5']) || isset($data['holiday_plus_5']) || isset($data['eid_duty'])) {
+            $units = 0;
+            
+            // Base category units
+            if (isset($data['eid_duty'])) {
+                $units = 3;
+            } elseif (isset($data['holiday_plus_5'])) {
+                $units = 2;
+            }
+
+            // Workday Duty (+5 hrs) checkbox units
+            if (isset($data['workday_plus_5'])) {
+                if (isset($data['eid_duty'])) {
+                    $units += 3; // Eid Long Shift: 3+3=6
+                } elseif (isset($data['holiday_plus_5'])) {
+                    $units += 2; // Holiday Long Shift: 2+2=4
+                } else {
+                    $units += 2; // Regular Workday: 2 units
+                    if ($totalHours > 12) {
+                        $units += 1; // Long Shift Bonus: +1
+                    }
+                }
+            }
+            return round($units * $fullShiftIncome, 2);
         }
 
-        // Tier 2: > 5 hours (Base 1000 + bonuses)
-        // Base: 2 units (1000 BDT)
-        $units = 2;
-
-        // Eid Bonus: +4 units (2000 BDT)
-        if (isset($data['eid_duty'])) {
-            $units += 4;
-        }
-
-        // Long Shift Bonus: +1 unit (500 BDT) if > 12 hours
-        if ($totalHours > 12) {
-            $units += 1;
-        }
-
-        return round($fullShiftIncome * $units, 2);
+        // Fallback: Hourly OT (Floor hours)
+        return round(floor($totalHours) * $perHourRate, 2);
     }
 
     /**
@@ -468,5 +461,137 @@ class OvertimeController extends Controller
         }
 
         return $isDirectManager || $isDeptIncharge;
+    }
+
+    private function getEmployeePerHourRate(Employee $employee): float
+    {
+        $perHourRate = 0.0;
+        if ($employee->designation_id) {
+            $designationRate = \App\Models\OvertimeRate::where('designation_id', $employee->designation_id)
+                ->whereNull('grade_id')
+                ->value('rate');
+            if ($designationRate !== null) {
+                $perHourRate = (float) $designationRate;
+            }
+        }
+        if ($perHourRate === 0.0 && $employee->grade_id) {
+            $gradeRate = \App\Models\OvertimeRate::where('grade_id', $employee->grade_id)
+                ->whereNull('designation_id')
+                ->value('rate');
+            if ($gradeRate !== null) {
+                $perHourRate = (float) $gradeRate;
+            }
+        }
+        return $perHourRate;
+    }
+
+    public function export(Request $request)
+    {
+        $employeeId = $request->input('employee_id');
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+        $format = $request->input('format', 'pdf');
+
+        if (!$employeeId) {
+            return redirect()->back()->with('error', 'Please select an employee first.');
+        }
+
+        $employee = Employee::with(['designation', 'department', 'reportingManager', 'grade', 'officeTime'])->findOrFail($employeeId);
+        
+        if (!$this->canUserEditOvertime($employee)) {
+            abort(403, 'Unauthorized.');
+        }
+
+        // Increase memory and time for PDF generation
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+
+        $startDate = Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+        
+        $records = Overtime::where('employee_id', $employeeId)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get()
+            ->keyBy(function($item) {
+                return Carbon::parse($item->date)->toDateString();
+            });
+
+        $daysInMonth = [];
+        $curr = $startDate->copy();
+        while ($curr->lte($endDate)) {
+            $daysInMonth[] = $curr->copy();
+            $curr->addDay();
+        }
+
+        $weeklyHolidays = \App\Models\WeeklyHoliday::where('is_holiday', true)
+            ->where(function ($q) use ($employee) {
+                $q->where('office_id', $employee->office_id)->orWhereNull('office_id');
+            })
+            ->pluck('day_name')
+            ->toArray();
+
+        $holidays = \App\Models\Holiday::where('is_active', true)
+            ->where(function ($q) use ($employee) {
+                $q->where('all_office', true)->orWhere('office_id', $employee->office_id);
+            })
+            ->get()
+            ->mapWithKeys(function ($h) {
+                $dates = [];
+                $c = Carbon::parse($h->from_date);
+                $e = Carbon::parse($h->to_date);
+                while ($c->lte($e)) {
+                    $dates[$c->toDateString()] = [
+                        'name' => $h->name,
+                        'type' => $h->type,
+                    ];
+                    $c->addDay();
+                }
+                return $dates;
+            })
+            ->toArray();
+
+        $rosterSchedules = \App\Models\RosterSchedule::where('employee_id', $employeeId)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get()
+            ->keyBy(function($r) {
+                return Carbon::parse($r->date)->toDateString();
+            });
+
+        $perHourRate = $this->getEmployeePerHourRate($employee);
+
+        $data = [
+            'employee' => $employee,
+            'month' => $month,
+            'year' => $year,
+            'monthName' => $startDate->format('F'),
+            'daysInMonth' => $daysInMonth,
+            'records' => $records,
+            'weeklyHolidays' => $weeklyHolidays,
+            'holidays' => $holidays,
+            'rosterSchedules' => $rosterSchedules,
+            'perHourRate' => $perHourRate,
+        ];
+
+        if ($format === 'pdf') {
+            $export = new OvertimeExport($request->all());
+            $view = $export->view();
+            $viewData = $view->getData();
+            $pdf = PDF::loadView($view->name(), $viewData);
+            $pdf->setPaper('a4', 'portrait');
+            $filename = "Overtime_{$employee->name}_" . ($viewData['monthName'] ?? 'Report') . "_{$year}.pdf";
+            return $pdf->download($filename);
+        } elseif (in_array($format, ['excel', 'csv'])) {
+            $filename = "Overtime_{$employee->name}_" . Carbon::createFromDate($year, $month, 1)->format('F') . "_{$year}." . ($format === 'excel' ? 'xlsx' : 'csv');
+            return Excel::download(new OvertimeExport($request->all()), $filename, $format === 'csv' ? \Maatwebsite\Excel\Excel::CSV : null);
+        } elseif ($format === 'word') {
+            $export = new OvertimeExport($request->all());
+            $view = $export->view();
+            $filename = "Overtime_{$employee->name}_" . Carbon::createFromDate($year, $month, 1)->format('F') . "_{$year}.doc";
+            return response($view->render())
+                ->header('Content-Type', 'application/vnd.ms-word')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        }
+
+        return abort(404);
     }
 }

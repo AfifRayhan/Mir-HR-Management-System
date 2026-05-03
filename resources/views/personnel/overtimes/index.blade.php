@@ -94,19 +94,22 @@
                                 <div class="text-xs text-muted">{{ number_format($selectedEmployee->gross_salary, 2) }} BDT</div>
                             </div>
                         </div>
-                        @if($canEdit)
-                            {{-- Auto-Fill button --}}
-                            <div class="text-center">
-                                <button type="button" id="btn-auto-fill" class="btn btn-outline-primary btn-sm px-3"
-                                        data-url="{{ route('overtimes.auto-fill') }}"
-                                        data-employee="{{ $selectedEmployee->id }}"
-                                        data-month="{{ $month }}"
-                                        data-year="{{ $year }}">
-                                    <i class="bi bi-magic me-1"></i> Auto-Fill from Attendance
-                                </button>
-                                <div class="text-xs text-muted mt-1">Fills empty rows only · won't overwrite saved data</div>
-                            </div>
-                        @endif
+                        <div class="d-flex align-items-center gap-3">
+                            @if($canEdit)
+                                {{-- Auto-Fill button --}}
+                                <div class="text-center">
+                                    <button type="button" id="btn-auto-fill" class="btn btn-outline-primary btn-sm px-3"
+                                            data-url="{{ route('overtimes.auto-fill') }}"
+                                            data-employee="{{ $selectedEmployee->id }}"
+                                            data-month="{{ $month }}"
+                                            data-year="{{ $year }}">
+                                        <i class="bi bi-magic me-1"></i> Auto-Fill from Attendance
+                                    </button>
+                                    <div class="text-xs text-muted mt-1">Fills empty rows only · won't overwrite saved data</div>
+                                </div>
+                            @endif
+
+                        </div>
                         <div class="text-end">
                             <div class="fw-bold text-success" id="total_payable_display">0.00 BDT</div>
                             <div class="text-xs text-muted">Total Payable Amount</div>
@@ -209,16 +212,81 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot class="bg-light">
+                                    <!-- Row 1: Total hours/Shift -->
+                                    <tr class="border-top border-2">
+                                        <td class="fw-bold text-xs">Gross Salary:</td>
+                                        <td class="text-end text-xs" id="footer_gross_salary">0.00</td>
+                                        <td class="text-end fw-bold text-xs">Total hours/Shift</td>
+                                        <td class="text-center fw-bold text-xs" id="summary_hourly_ot_hours">0.00</td>
+                                        <td class="text-center fw-bold text-xs" id="summary_workday_count">0</td>
+                                        <td class="text-center fw-bold text-xs" id="summary_holiday_count">0</td>
+                                        <td class="text-center fw-bold text-xs" id="summary_eid_count">0</td>
+                                        <td></td>
+                                    </tr>
+                                    <!-- Row 2: Rate -->
+                                    <tr>
+                                        <td class="fw-bold text-xs">Basic Salary</td>
+                                        <td class="text-end text-xs" id="footer_basic_salary">0.00</td>
+                                        <td class="text-end text-muted small text-xs">Rate per hour/Shift/ Eid Special</td>
+                                        <td class="text-center text-muted small text-xs" id="summary_hourly_rate">0.00</td>
+                                        <td class="text-center text-muted small text-xs" id="summary_workday_rate">0.00</td>
+                                        <td class="text-center text-muted small text-xs" id="summary_holiday_rate">0.00</td>
+                                        <td class="text-center text-muted small text-xs" id="summary_eid_rate">0.00</td>
+                                        <td></td>
+                                    </tr>
+                                    <!-- Row 3: Multiplying Factor -->
+                                    <tr>
+                                        <td class="fw-bold text-xs">Per Day</td>
+                                        <td class="text-end text-xs" id="footer_per_day">0.00</td>
+                                        <td class="text-end text-muted small text-xs">Multiplying Factor</td>
+                                        <td class="text-center text-muted small text-xs">1</td>
+                                        <td class="text-center text-muted small text-xs">2</td>
+                                        <td class="text-center text-muted small text-xs">2</td>
+                                        <td class="text-center text-muted small text-xs">3</td>
+                                        <td></td>
+                                    </tr>
+                                    <!-- Row 4: Sub-Total -->
+                                    <tr>
+                                        <td class="fw-bold text-xs">Per Hour</td>
+                                        <td class="text-end text-xs" id="footer_per_hour">0.00</td>
+                                        <td class="text-end fw-bold text-xs">Sub-Total</td>
+                                        <td class="text-center fw-bold text-success text-xs" id="summary_hourly_subtotal">0.00</td>
+                                        <td class="text-center fw-bold text-success text-xs" id="summary_workday_subtotal">0.00</td>
+                                        <td class="text-center fw-bold text-success text-xs" id="summary_holiday_subtotal">0.00</td>
+                                        <td class="text-center fw-bold text-success text-xs" id="summary_eid_subtotal">0.00</td>
+                                        <td></td>
+                                    </tr>
+                                    <!-- Row 5: Grand Total -->
+                                    <tr class="table-dark">
+                                        <td colspan="7" class="text-end fw-bold">Total Payable Amount</td>
+                                        <td colspan="2" class="text-end fw-bold" id="summary_grand_total">0.00</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
 
-                        @if($canEdit)
-                            <div class="mt-4 text-end">
+                        <div class="mt-4 d-flex justify-content-end gap-3">
+                            {{-- Download dropdown --}}
+                            <div class="dropdown">
+                                <button class="btn btn-outline-success px-4 rounded-pill shadow-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-download me-1"></i> Download Report
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                    <li><h6 class="dropdown-header text-xs text-uppercase tracking-wider">Export Form</h6></li>
+                                    <li><a class="dropdown-item py-2" href="{{ route('overtimes.export', ['employee_id' => $selectedEmployee->id, 'month' => $month, 'year' => $year, 'format' => 'pdf']) }}"><i class="bi bi-file-pdf text-danger me-2"></i> PDF Document</a></li>
+                                    <li><a class="dropdown-item py-2" href="{{ route('overtimes.export', ['employee_id' => $selectedEmployee->id, 'month' => $month, 'year' => $year, 'format' => 'excel']) }}"><i class="bi bi-file-excel text-success me-2"></i> Excel Spreadsheet</a></li>
+                                    <li><a class="dropdown-item py-2" href="{{ route('overtimes.export', ['employee_id' => $selectedEmployee->id, 'month' => $month, 'year' => $year, 'format' => 'csv']) }}"><i class="bi bi-file-text text-info me-2"></i> CSV Format</a></li>
+                                    <li><a class="dropdown-item py-2" href="{{ route('overtimes.export', ['employee_id' => $selectedEmployee->id, 'month' => $month, 'year' => $year, 'format' => 'word']) }}"><i class="bi bi-file-word text-primary me-2"></i> Word Document</a></li>
+                                </ul>
+                            </div>
+
+                            @if($canEdit)
                                 <button type="submit" class="btn btn-success px-5 rounded-pill shadow-sm">
                                     <i class="bi bi-save me-2"></i>{{ __('Save Overtime Records') }}
                                 </button>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     </form>
                 </div>
             @endif
@@ -286,8 +354,9 @@
                         eidCheck.prop('checked', false);
                     }
                     
-                    // Workday Duty checkbox toggles when crossing 5 hours mark
-                    if (hours > 5) {
+                    // Workday Duty checkbox toggles when crossing 5 hours mark (Workdays only)
+                    // OR when crossing 12 hours mark (Off/Eid days)
+                    if (hours > 12 || (hours > 5 && !isOff && !isEid)) {
                         workdayCheck.prop('checked', true);
                     } else {
                         workdayCheck.prop('checked', false);
@@ -312,12 +381,24 @@
                     const amount = Math.floor(hours) * perHourRate;
                     $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 } else {
-                    // Tier 2: Base + Bonuses
-                    // Base: 2 units (1000 BDT)
-                    let units = 2;
+                    let units = 0;
                     
-                    if (eidCheck.is(':checked')) units += 4; // Eid: +2000 BDT
-                    if (hours > 12) units += 1;             // Long shift: +500 BDT
+                    if (eidCheck.is(':checked')) {
+                        units = 3;
+                    } else if (holidayCheck.is(':checked')) {
+                        units = 2;
+                    }
+
+                    if (workdayCheck.is(':checked')) {
+                        if (eidCheck.is(':checked')) {
+                            units += 3;
+                        } else if (holidayCheck.is(':checked')) {
+                            units += 2;
+                        } else {
+                            units += 2;
+                            if (hours > 12) units += 1;
+                        }
+                    }
                     
                     const amount = fullShiftIncome * units;
                     $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
@@ -327,11 +408,104 @@
 
             function updateGrandTotal() {
                 let total = 0;
+                let totalRawHours = 0;
+                let hourlyOTHours = 0;
+                let hourlyUnits = 0;
+                let workdayUnits = 0;
+                let holidayUnits = 0;
+                let eidUnits = 0;
+                
+                let workdayCount = 0;
+                let holidayCount = 0;
+                let eidBaseCount = 0;
+                let eidBonusCount = 0;
+
+                // Total Payable logic (from individual row amounts)
                 $('[id^="amount_"]').each(function() {
                     const val = parseFloat($(this).text().replace(/,/g, '')) || 0;
                     total += val;
                 });
+
+                // Raw hours and category breakdown logic
+                $('[id^="total_hours_"]').each(function() {
+                    const hours = parseFloat($(this).text()) || 0;
+                    if (hours <= 0) return;
+
+                    const row = $(this).closest('tr');
+                    const isWorkdayChecked = row.find('.ot-check[name*="workday_plus_5"]').is(':checked');
+                    const isHolidayChecked = row.find('.ot-check[name*="holiday_plus_5"]').is(':checked');
+                    const isEidChecked = row.find('.ot-check[name*="eid_duty"]').is(':checked');
+
+                    if (!isWorkdayChecked && !isHolidayChecked && !isEidChecked) {
+                        // Hourly OT Category (Floor hours for BOTH count and payment)
+                        const floorHours = Math.floor(hours);
+                        hourlyOTHours += floorHours;
+                        hourlyUnits += floorHours;
+                    }
+                });
+
+                $('.ot-check[name*="[workday_plus_5]"]:checked').each(function() {
+                    const row = $(this).closest('tr');
+                    const hours = parseFloat(row.find('span[id^="total_hours_"]').text()) || 0;
+                    const isOff = row.data('is-off') == '1';
+                    const isEid = row.data('is-eid') == '1';
+                    
+                    if (isEid) {
+                        eidBonusCount++;
+                        eidUnits += 3;
+                    } else if (isOff) {
+                        workdayUnits += 2;
+                        workdayCount++;
+                    } else {
+                        workdayUnits += 2;
+                        workdayCount++;
+                        if (hours > 12) workdayUnits += 1;
+                    }
+                });
+                
+                $('.ot-check[name*="[holiday_plus_5]"]:checked').each(function() { 
+                    holidayUnits += 2; 
+                    holidayCount++;
+                });
+
+                $('.ot-check[name*="[eid_duty]"]:checked').each(function() { 
+                    eidUnits += 3; 
+                    eidBaseCount++;
+                });
+
+                // Update UI Labels
+                const basic = gross * 0.6;
+                const perDay = fullShiftIncome;
+                
+                $('#footer_gross_salary').text(gross.toLocaleString());
+                $('#footer_basic_salary').text(basic.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#footer_per_day').text(perDay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#footer_per_hour').text(perHourRate.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
                 $('#total_payable_display').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BDT');
+                $('#summary_grand_total').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                
+                $('#summary_hourly_ot_hours').text(hourlyOTHours.toFixed(2));
+                $('#summary_workday_count').text(workdayCount);
+                $('#summary_holiday_count').text(holidayCount);
+                
+                let eidCountDisplay = eidBaseCount + eidBonusCount;
+                if (eidBaseCount > 0 && eidBonusCount > 0) {
+                    eidCountDisplay = `${eidBaseCount}+${eidBonusCount}`;
+                } else if (eidBonusCount > 0 && eidBaseCount === 0) {
+                    eidCountDisplay = eidBonusCount;
+                }
+                $('#summary_eid_count').text(eidCountDisplay);
+
+                $('#summary_hourly_rate').text(perHourRate.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_workday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_holiday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_eid_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+                $('#summary_hourly_subtotal').text((perHourRate * hourlyUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_workday_subtotal').text((fullShiftIncome * workdayUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_holiday_subtotal').text((fullShiftIncome * holidayUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#summary_eid_subtotal').text((fullShiftIncome * eidUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
             }
 
             $('.ot-input, .ot-check').on('change', function() {

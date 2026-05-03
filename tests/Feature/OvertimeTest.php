@@ -206,7 +206,37 @@ class OvertimeTest extends TestCase
         $this->assertDatabaseHas('overtimes', [
             'employee_id' => $this->employee->id,
             'date'        => '2026-04-06 00:00:00',
-            'amount'      => 1800.00,   // (600 × 3)
+            'amount'      => 2400.00,   // (600 × 4)
+        ]);
+    }
+
+    public function test_overtime_calculation_eid_duty_very_long_shift()
+    {
+        // Gross 30000. fullShiftIncome = 600. 13 hours.
+        // Eid (3 units) + Workday (3 units) = 6 units.
+        // Amount = 600 * 6 = 3600.
+        $data = [
+            'employee_id' => $this->employee->id,
+            'month' => '04',
+            'year' => '2026',
+            'ot' => [
+                '2026-04-07' => [
+                    'start'          => '09:00',
+                    'stop'           => '22:00', // 13 hours
+                    'eid_duty'       => 'on',
+                    'workday_plus_5' => 'on',
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($this->admin)->post(route('overtimes.save'), $data);
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(302);
+
+        $this->assertDatabaseHas('overtimes', [
+            'employee_id' => $this->employee->id,
+            'date'        => '2026-04-07 00:00:00',
+            'amount'      => 3600.00,   // (600 × 6)
         ]);
     }
 
@@ -214,8 +244,8 @@ class OvertimeTest extends TestCase
     public function test_overtime_calculation_eid_duty_above_5_hours()
     {
         // Gross 30000. fullShiftIncome = 600. 6 hours > 5.
-        // Base (2 units) + Eid Bonus (4 units) = 6 units.
-        // Amount = 600 * 6 = 3600.
+        // Base (2 units) + Eid Bonus (1 units) = 3 units.
+        // Amount = 600 * 3 = 1800.
         $data = [
             'employee_id' => $this->employee->id,
             'month' => '04',
@@ -236,7 +266,7 @@ class OvertimeTest extends TestCase
         $this->assertDatabaseHas('overtimes', [
             'employee_id' => $this->employee->id,
             'date'        => '2026-04-07 00:00:00',
-            'amount'      => 3600.00,   // (600 × 6)
+            'amount'      => 1800.00,   // (600 × 3)
         ]);
     }
 
@@ -294,5 +324,17 @@ class OvertimeTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonPath('suggestions.2026-04-03.ot_start', '10:00');
         $response->assertJsonPath('suggestions.2026-04-03.ot_stop', '14:00');
+    }
+
+    public function test_overtime_index_displays_calculation_summary_footer()
+    {
+        $admin = User::factory()->create(['role_id' => Role::where('name', 'HR Admin')->first()->id]);
+        $employee = Employee::factory()->create();
+
+        $response = $this->actingAs($admin)->get(route('overtimes.index', ['employee_id' => $employee->id, 'month' => '05', 'year' => '2026']));
+        
+        $response->assertStatus(200);
+        $response->assertSee('Multiplying Factor');
+        $response->assertSee('Sub-Total');
     }
 }
