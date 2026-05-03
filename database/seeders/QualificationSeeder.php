@@ -12,7 +12,7 @@ class QualificationSeeder extends Seeder
      */
     public function run(): void
     {
-        $filePath = base_path('EmployeeQualification.csv');
+        $filePath = storage_path('app/private/EmployeeQualification.csv');
 
         if (!file_exists($filePath)) {
             $this->command->error("File not found: {$filePath}");

@@ -21,7 +21,7 @@ class EmployeeSeeder extends Seeder
 
         // composer require phpoffice/phpspreadsheet
 
-        $filePath = base_path('EmployeeSummary_transformed.xlsx');
+        $filePath = storage_path('app/private/EmployeeSummary_transformed.xlsx');
 
         if (!file_exists($filePath)) {
             $this->command->error("File not found: {$filePath}");

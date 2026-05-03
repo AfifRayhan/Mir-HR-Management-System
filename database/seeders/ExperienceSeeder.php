@@ -14,7 +14,7 @@ class ExperienceSeeder extends Seeder
      */
     public function run(): void
     {
-        $filePath = base_path('EmployeeExperience.csv');
+        $filePath = storage_path('app/private/EmployeeExperience.csv');
 
         if (!file_exists($filePath)) {
             $this->command->error("File not found: {$filePath}");
