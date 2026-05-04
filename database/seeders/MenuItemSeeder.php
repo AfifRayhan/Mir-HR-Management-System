@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\MenuItem;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MenuItemSeeder extends Seeder
 {
