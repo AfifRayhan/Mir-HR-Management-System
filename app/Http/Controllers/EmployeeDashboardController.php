@@ -273,7 +273,12 @@ class EmployeeDashboardController extends Controller
         $groupSlug = AttendanceService::ROSTER_GROUP_SLUG_MAP[$employee->roster_group] ?? null;
         
         if (!$groupSlug) {
-            return ['schedule' => collect(), 'definitions' => collect()];
+            return [
+                'schedule' => collect(), 
+                'definitions' => collect(),
+                'startOfWeek' => $startOfWeek,
+                'endOfWeek' => $endOfWeek
+            ];
         }
 
         // Fetch shift definitions
