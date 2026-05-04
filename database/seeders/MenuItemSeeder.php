@@ -13,6 +13,13 @@ class MenuItemSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clear existing menu items and relations to ensure a clean state
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('role_menu_item')->truncate();
+        DB::table('user_menu_item')->truncate();
+        MenuItem::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         // Define top-level menu items
         $items = [
             ['name' => 'HR Dashboard', 'slug' => 'hr-dashboard',       'icon' => 'bi-speedometer2',   'route_name' => 'hr-dashboard',       'sort_order' => 1],
@@ -231,8 +238,6 @@ class MenuItemSeeder extends Seeder
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
-            'employee-leave-request',
-            'team-lead-leave-request',
             'team-leave',
             'team-lead-leave-apps',
             'team-lead-leave-history',
@@ -241,25 +246,23 @@ class MenuItemSeeder extends Seeder
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Self-Service items + Overtime + Leave Request (specific)
+        // Employee gets Self-Service items + Overtime
         $employeeMenuIds = MenuItem::whereIn('slug', [
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
             'overtime', 
             'overtime-monthly',
-            'employee-leave-request'
         ])->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 
-        // Team Lead gets Self-Service + Attendance Approvals + Leave Request (specific) + Team Leave + Remarks
+        // Team Lead gets Self-Service + Attendance Approvals + Team Leave + Remarks
         $teamLeadMenuIds = MenuItem::whereIn('slug', [
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
             'team-lead-remarks',
             'team-lead-attendance-approvals',
-            'team-lead-leave-request',
             'team-leave',
             'team-lead-leave-apps',
             'team-lead-leave-history',
