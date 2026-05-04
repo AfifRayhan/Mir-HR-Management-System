@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'device_sync' => [
+        'api_token' => env('DEVICE_SYNC_API_TOKEN', ''),
+    ],
+
 ];

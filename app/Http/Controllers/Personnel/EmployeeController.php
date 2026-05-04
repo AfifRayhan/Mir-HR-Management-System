@@ -56,9 +56,11 @@ class EmployeeController extends Controller
             $query->where('status', $request->status);
         }
  
-        // Sorting
-        $sortColumn = $request->input('sort', 'created_at');
-        $sortDirection = $request->input('direction', 'desc');
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'created_at';
+        $sortDirection = in_array(strtolower($request->input('direction', 'desc')), $allowedDirections) ? strtolower($request->input('direction', 'desc')) : 'desc';
         
         if ($sortColumn === 'employee_code') {
             $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
@@ -182,7 +184,18 @@ class EmployeeController extends Controller
             $userId = $user->id;
         }
 
-        $employeeData = $request->except(['password', 'password_confirmation', 'role_id', 'user_status']);
+        // Use explicit allowlist to prevent mass assignment of sensitive fields (e.g., user_id, status)
+        $employeeData = $request->only([
+            'employee_code', 'hrm_employee_id', 'name', 'email', 'personal_email', 'phone', 'blood_group',
+            'father_name', 'mother_name', 'spouse_name', 'gender', 'religion', 'marital_status',
+            'national_id', 'tin', 'nationality', 'no_of_children', 'contact_no',
+            'emergency_contact_name', 'emergency_contact_address', 'emergency_contact_no',
+            'emergency_contact_relation', 'date_of_birth', 'joining_date',
+            'discontinuation_date', 'discontinuation_reason', 'present_address', 'permanent_address',
+            'department_id', 'section_id', 'designation_id', 'grade_id', 'office_id', 'office_time_id',
+            'reporting_manager_id', 'roster_group', 'employee_type',
+            'probation_duration', 'probation_start_date', 'probation_end_date', 'gross_salary',
+        ]);
         $employeeData['status'] = 'active'; // Employee status removed from form
         $employeeData['user_id'] = $userId;
 
@@ -347,7 +360,18 @@ class EmployeeController extends Controller
             $employee->user_id = $user->id;
         }
 
-        $employeeData = $request->except(['password', 'password_confirmation', 'role_id', 'user_status']);
+        // Use explicit allowlist to prevent mass assignment of sensitive fields
+        $employeeData = $request->only([
+            'employee_code', 'hrm_employee_id', 'name', 'email', 'personal_email', 'phone', 'blood_group',
+            'father_name', 'mother_name', 'spouse_name', 'gender', 'religion', 'marital_status',
+            'national_id', 'tin', 'nationality', 'no_of_children', 'contact_no',
+            'emergency_contact_name', 'emergency_contact_address', 'emergency_contact_no',
+            'emergency_contact_relation', 'date_of_birth', 'joining_date',
+            'discontinuation_date', 'discontinuation_reason', 'present_address', 'permanent_address',
+            'department_id', 'section_id', 'designation_id', 'grade_id', 'office_id', 'office_time_id',
+            'reporting_manager_id', 'roster_group', 'employee_type',
+            'probation_duration', 'probation_start_date', 'probation_end_date', 'gross_salary',
+        ]);
         
         // Handle Salary History
         if (isset($employeeData['gross_salary'])) {
@@ -447,9 +471,11 @@ class EmployeeController extends Controller
         if ($request->section_id) $query->where('section_id', $request->section_id);
         if ($request->status) $query->where('status', $request->status);
 
-        // Sorting
-        $sortColumn = $request->input('sort', 'created_at');
-        $sortDirection = $request->input('direction', 'asc');
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'created_at';
+        $sortDirection = in_array(strtolower($request->input('direction', 'asc')), $allowedDirections) ? strtolower($request->input('direction', 'asc')) : 'asc';
         if ($sortColumn === 'employee_code') {
             $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
                   ->orderBy('employee_code', $sortDirection);
@@ -493,9 +519,11 @@ class EmployeeController extends Controller
         if ($request->section_id) $query->where('section_id', $request->section_id);
         if ($request->status) $query->where('status', $request->status);
 
-        // Sorting
-        $sortColumn = $request->input('sort', 'created_at');
-        $sortDirection = $request->input('direction', 'asc');
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'created_at';
+        $sortDirection = in_array(strtolower($request->input('direction', 'asc')), $allowedDirections) ? strtolower($request->input('direction', 'asc')) : 'asc';
         if ($sortColumn === 'employee_code') {
             $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
                   ->orderBy('employee_code', $sortDirection);
@@ -542,9 +570,11 @@ class EmployeeController extends Controller
         if ($request->section_id) $query->where('section_id', $request->section_id);
         if ($request->status) $query->where('status', $request->status);
 
-        // Sorting
-        $sortColumn = $request->input('sort', 'created_at');
-        $sortDirection = $request->input('direction', 'asc');
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'created_at';
+        $sortDirection = in_array(strtolower($request->input('direction', 'asc')), $allowedDirections) ? strtolower($request->input('direction', 'asc')) : 'asc';
         if ($sortColumn === 'employee_code') {
             $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
                   ->orderBy('employee_code', $sortDirection);

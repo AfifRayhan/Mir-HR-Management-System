@@ -18,8 +18,8 @@ class DepartmentSeeder extends Seeder
             ['name' => 'Infrastructure & Network Support', 'short_name' => 'INS', 'description' => 'Infrastructure and Network Support', 'order_sequence' => 11, 'incharge_code' => '80882'],
             ['name' => 'Operation & Maintenance', 'short_name' => 'O&M', 'description' => 'Operation and Maintenance', 'order_sequence' => 6, 'incharge_code' => '80882'],
             ['name' => 'Planning & Engineering', 'short_name' => 'P&E', 'description' => 'Planning and Engineering', 'order_sequence' => 5, 'incharge_code' => '80882'],
-            ['name' => 'Restaurant - BOH', 'short_name' => 'BOH', 'description' => 'Restaurant - Back of House', 'order_sequence' => 10, 'incharge_code' => null],
-            ['name' => 'Restaurant - FOH', 'short_name' => 'FOH', 'description' => 'Restaurant - Front of House', 'order_sequence' => 9, 'incharge_code' => null],
+            ['name' => 'Restaurant - BOH', 'short_name' => 'BOH', 'description' => 'Restaurant - Back of House', 'order_sequence' => 10, 'incharge_code' => 'OP-201124'],
+            ['name' => 'Restaurant - FOH', 'short_name' => 'FOH', 'description' => 'Restaurant - Front of House', 'order_sequence' => 9, 'incharge_code' => 'OP-201124'],
             ['name' => 'Sales & Marketing', 'short_name' => 'S&M', 'description' => 'Sales and Marketing', 'order_sequence' => 3, 'incharge_code' => '1302210'],
         ];
     }

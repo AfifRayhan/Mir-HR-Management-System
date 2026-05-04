@@ -22,3 +22,13 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Dev artifacts
+attendance_analysis.sql
+sql.txt
+test_dump.txt
+test-remember.php
+make_controllers.py
+/_dev/
+/scratch/
+/tmp/

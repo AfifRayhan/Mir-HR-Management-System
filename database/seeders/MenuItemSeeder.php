@@ -16,16 +16,20 @@ class MenuItemSeeder extends Seeder
         // Define top-level menu items
         $items = [
             ['name' => 'HR Dashboard', 'slug' => 'hr-dashboard',       'icon' => 'bi-speedometer2',   'route_name' => 'hr-dashboard',       'sort_order' => 1],
-            ['name' => 'Employee Dashboard', 'slug' => 'employee-dashboard', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
-            ['name' => 'Security',    'slug' => 'security',           'icon' => 'bi-shield-lock',    'route_name' => null,                 'sort_order' => 2],
-            ['name' => 'Settings',    'slug' => 'settings',           'icon' => 'bi-gear',           'route_name' => null,                 'sort_order' => 3],
-            ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 4],
-            ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 5],
-            ['name' => 'Attendances', 'slug' => 'attendances',        'icon' => 'bi-clock-history',  'route_name' => null,                 'sort_order' => 6],
-            ['name' => 'Overtime',    'slug' => 'overtime',           'icon' => 'bi-clock-history',  'route_name' => 'overtimes.index', 'sort_order' => 7],
-            ['name' => 'Roster',      'slug' => 'roster',             'icon' => 'bi-calendar3',      'route_name' => 'roster.index',       'sort_order' => 8],
-            ['name' => 'Driver Roster', 'slug' => 'driver-roster',    'icon' => 'bi-car-front',      'route_name' => 'driver-roster.index', 'sort_order' => 9],
-            ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 10],
+            ['name' => 'Dashboard',       'slug' => 'employee-dashboard-main', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 2],
+            ['name' => 'My Profile',      'slug' => 'employee-profile',       'icon' => 'bi-person-vcard',   'route_name' => 'employee-profile',   'sort_order' => 3],
+            ['name' => 'My Attendances',     'slug' => 'employee-attendance',    'icon' => 'bi-clock',          'route_name' => 'employee.attendance.index', 'sort_order' => 4],
+            ['name' => 'Security',    'slug' => 'security',           'icon' => 'bi-shield-lock',    'route_name' => null,                 'sort_order' => 5],
+            ['name' => 'Settings',    'slug' => 'settings',           'icon' => 'bi-gear',           'route_name' => null,                 'sort_order' => 6],
+            ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 7],
+            ['name' => 'Team Leave',  'slug' => 'team-leave',         'icon' => 'bi-people-fill',    'route_name' => null,                 'sort_order' => 9],
+            ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 10],
+            ['name' => 'Supervisor Remarks', 'slug' => 'team-lead-remarks', 'icon' => 'bi-chat-left-text', 'route_name' => 'team-lead.remarks.index', 'sort_order' => 11],
+            ['name' => 'Attendance Approvals', 'slug' => 'team-lead-attendance-approvals', 'icon' => 'bi-check2-all', 'route_name' => 'team-lead.attendances.approvals', 'sort_order' => 12],
+            ['name' => 'Overtime',    'slug' => 'overtime',           'icon' => 'bi-clock-history',  'route_name' => 'overtimes.index', 'sort_order' => 13],
+            ['name' => 'Roster',      'slug' => 'roster',             'icon' => 'bi-calendar3',      'route_name' => 'roster.index',       'sort_order' => 14],
+            ['name' => 'Driver Roster', 'slug' => 'driver-roster',    'icon' => 'bi-car-front',      'route_name' => 'driver-roster.index', 'sort_order' => 15],
+            ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 16],
         ];
 
         $menuModels = [];
@@ -68,12 +72,13 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // Define child menu items under Leave
+        // Define child menu items under Leave (HR Admin version)
         $leaveChildren = [
             ['name' => 'Leave Types',    'slug' => 'leave-types',        'icon' => 'bi-tag',              'route_name' => 'settings.leave-types.index',   'sort_order' => 1],
             ['name' => 'Leave Accounts', 'slug' => 'leave-accounts',     'icon' => 'bi-wallet2',          'route_name' => 'personnel.leave-balances.index', 'sort_order' => 2],
             ['name' => 'Applications',   'slug' => 'leave-applications', 'icon' => 'bi-file-earmark-text', 'route_name' => 'personnel.leave-applications.index', 'sort_order' => 3],
-            ['name' => 'Manual Leave',   'slug' => 'leave-manual',       'icon' => 'bi-pencil-square',    'route_name' => 'personnel.leave.manual',             'sort_order' => 7],
+            ['name' => 'History',        'slug' => 'leave-history',      'icon' => 'bi-clock-history',    'route_name' => 'personnel.leave-applications.history', 'sort_order' => 4],
+            ['name' => 'Manual Leave',   'slug' => 'leave-manual',       'icon' => 'bi-pencil-square',    'route_name' => 'personnel.leave.manual',             'sort_order' => 5],
         ];
 
         foreach ($leaveChildren as $child) {
@@ -84,15 +89,16 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // Define additional leave items (Team Lead / Employee) under the same Leave parent
-        $additionalLeaveChildren = [
-            ['name' => 'My Applications', 'slug' => 'employee-leave-self',    'icon' => 'bi-journal-text',     'route_name' => 'employee.leave.index',       'sort_order' => 4],
-            ['name' => 'Leave Request',   'slug' => 'team-lead-leave-request', 'icon' => 'bi-journal-plus',     'route_name' => 'team-lead.leave.index',      'sort_order' => 5],
-            ['name' => 'Team Applications', 'slug' => 'team-lead-leave-apps', 'icon' => 'bi-people-fill',       'route_name' => 'team-lead.leave-applications.index', 'sort_order' => 6],
+        // Removed Requests child items to make Leave Request a direct link
+
+        // Define child menu items under Team Leave
+        $teamLeaveChildren = [
+            ['name' => 'Applications', 'slug' => 'team-lead-leave-apps', 'icon' => 'bi-file-earmark-text', 'route_name' => 'team-lead.leave-applications.index', 'sort_order' => 1],
+            ['name' => 'History',      'slug' => 'team-lead-leave-history', 'icon' => 'bi-clock-history', 'route_name' => 'team-lead.leave-applications.history', 'sort_order' => 2],
         ];
 
-        foreach ($additionalLeaveChildren as $child) {
-            $child['parent_id'] = $menuModels['leave']->id;
+        foreach ($teamLeaveChildren as $child) {
+            $child['parent_id'] = $menuModels['team-leave']->id;
             $menuModels[$child['slug']] = MenuItem::updateOrCreate(
                 ['slug' => $child['slug']],
                 $child
@@ -101,6 +107,7 @@ class MenuItemSeeder extends Seeder
 
         // Remove old Office Times from Personnel if it exists
         MenuItem::where('slug', 'personnel-office-times')->delete();
+        MenuItem::where('slug', 'attendances')->delete(); // Remove old ambiguous slug
 
         // Define child menu items under Settings
         $settingsChildren = [
@@ -121,20 +128,18 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // Define child menu items under Attendances
+        // Define child menu items under Attendances (HR Admin version)
         $attendanceChildren = [
             ['name' => 'Daily Attendance', 'slug' => 'attendance-daily', 'icon' => 'bi-calendar-check', 'route_name' => 'personnel.attendances.index', 'sort_order' => 1],
             ['name' => 'Adjustment',       'slug' => 'attendance-adjust', 'icon' => 'bi-pencil-square',  'route_name' => 'personnel.attendances.adjust', 'sort_order' => 2],
             ['name' => 'Approvals',        'slug' => 'attendance-approvals', 'icon' => 'bi-check2-all',  'route_name' => 'personnel.attendances.approvals', 'sort_order' => 3],
         ];
 
-        foreach ($attendanceChildren as $child) {
-            $child['parent_id'] = $menuModels['attendances']->id;
-            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
-                ['slug' => $child['slug']],
-                $child
-            );
-        }
+        // Create a parent for Admin Attendances
+        $adminAttendanceParent = MenuItem::updateOrCreate(
+            ['slug' => 'admin-attendances'],
+            ['name' => 'Attendances', 'icon' => 'bi-clock', 'route_name' => null, 'sort_order' => 11.5]
+        );
 
         // Define child menu items under Roster
         $rosterChildren = [
@@ -197,23 +202,6 @@ class MenuItemSeeder extends Seeder
                 $child
             );
         }
-
-        // Define child menu items under Employee Dashboard
-        $employeeDashboardChildren = [
-            ['name' => 'Dashboard',       'slug' => 'employee-dashboard-main', 'icon' => 'bi-speedometer2',   'route_name' => 'employee-dashboard', 'sort_order' => 1],
-            ['name' => 'My Profile',      'slug' => 'employee-profile',       'icon' => 'bi-person-vcard',   'route_name' => 'employee-profile',   'sort_order' => 2],
-            ['name' => 'Attendances',     'slug' => 'employee-attendance',    'icon' => 'bi-clock',          'route_name' => 'employee.attendance.index', 'sort_order' => 3],
-            ['name' => 'Leave Requests',  'slug' => 'employee-leave',         'icon' => 'bi-calendar2-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4],
-        ];
-
-        foreach ($employeeDashboardChildren as $child) {
-            $child['parent_id'] = $menuModels['employee-dashboard']->id;
-            $menuModels[$child['slug']] = MenuItem::updateOrCreate(
-                ['slug' => $child['slug']],
-                $child
-            );
-        }
-
         // Define core roles
         $roles = [
             'employee' => [
@@ -238,38 +226,44 @@ class MenuItemSeeder extends Seeder
             );
         }
 
-        // HR Admin gets HR Dashboard + all other items EXCEPT Employee Dashboard (and its children) and specific lead/employee leave items
+        // HR Admin gets HR Dashboard + all other items EXCEPT the self-service employee items and Team Lead specifics
         $adminMenuIds = MenuItem::whereNotIn('slug', [
-            'employee-dashboard',
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
-            'employee-leave',
-            'employee-leave-self',
+            'employee-leave-request',
             'team-lead-leave-request',
+            'team-leave',
             'team-lead-leave-apps',
+            'team-lead-leave-history',
+            'team-lead-remarks',
+            'team-lead-attendance-approvals',
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Employee Dashboard + Overtime + all dashboard children
-        $employeeMenuIds = MenuItem::whereIn('slug', ['employee-dashboard', 'overtime', 'overtime-monthly'])
-            ->orWhere('parent_id', $menuModels['employee-dashboard']->id)
-            ->pluck('id')->all();
+        // Employee gets Self-Service items + Overtime + Leave Request (specific)
+        $employeeMenuIds = MenuItem::whereIn('slug', [
+            'employee-dashboard-main',
+            'employee-profile',
+            'employee-attendance',
+            'overtime', 
+            'overtime-monthly',
+            'employee-leave-request'
+        ])->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 
-        // Cleanup old team-lead-leave parent if it exists
-        MenuItem::where('slug', 'team-lead-leave')->delete();
-
-        $teamLeadMenuIds = array_merge(
-            $employeeMenuIds, 
-            [
-                $menuModels['personnel']->id,
-                $menuModels['attendances']->id,
-                $menuModels['leave']->id,
-                $menuModels['team-lead-leave-request']->id,
-                $menuModels['team-lead-leave-apps']->id,
-            ]
-        );
+        // Team Lead gets Self-Service + Attendance Approvals + Leave Request (specific) + Team Leave + Remarks
+        $teamLeadMenuIds = MenuItem::whereIn('slug', [
+            'employee-dashboard-main',
+            'employee-profile',
+            'employee-attendance',
+            'team-lead-remarks',
+            'team-lead-attendance-approvals',
+            'team-lead-leave-request',
+            'team-leave',
+            'team-lead-leave-apps',
+            'team-lead-leave-history',
+        ])->pluck('id')->all();
 
         $roleModels['team_lead']->menuItems()->sync($teamLeadMenuIds);
     }

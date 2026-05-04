@@ -45,7 +45,8 @@ class MenuService
                     $child->is_active = ($child->id === $exactChildMatch->id);
                 } else {
                     // Fallback to prefix matching for resource sub-routes (show, edit, etc.)
-                    $child->is_active = $child->route_name && str_starts_with($currentRoute, str_replace('.index', '', $child->route_name));
+                    $baseRoute = str_replace('.index', '', $child->route_name);
+                    $child->is_active = $child->route_name && ($currentRoute === $baseRoute || str_starts_with($currentRoute, $baseRoute . '.'));
                 }
                 return $child;
             });

@@ -101,10 +101,17 @@ class ReportGeneratorController extends Controller
             'report_name' => 'required|string',
         ]);
 
-        // Generate PDF
-        $pdf = Pdf::loadHTML($request->input('final_content'));
+        $content = $request->input('final_content');
 
-        // Download name
+        // Strip potentially dangerous tags (script, iframe, object, embed, link, meta, base)
+        $content = preg_replace('/<\s*(script|iframe|object|embed|link|meta|base)[^>]*>.*?<\s*\/\s*\1\s*>/is', '', $content);
+        $content = preg_replace('/<\s*(script|iframe|object|embed|link|meta|base)[^>]*\/?>/is', '', $content);
+
+        // Remove event handlers (onclick, onerror, onload, etc.)
+        $content = preg_replace('/\bon\w+\s*=\s*["\'][^"\']*["\']/i', '', $content);
+        $content = preg_replace('/\bon\w+\s*=\s*\S+/i', '', $content);
+
+        $pdf = Pdf::loadHTML($content);
         $fileName = Str::slug($request->input('report_name')) . '-' . date('Ymd-His') . '.pdf';
 
         return $pdf->download($fileName);

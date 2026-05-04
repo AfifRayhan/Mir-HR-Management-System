@@ -14,11 +14,7 @@
     @endphp
 
     <div class="{{ $isTeamLeadLayout ? 'ui-layout' : 'ui-layout' }}">
-        @if($isTeamLeadLayout)
-            @include('partials.team-lead-sidebar')
-        @else
-            @include('partials.employee-sidebar')
-        @endif
+        @include('partials.ui-sidebar')
 
         <main class="{{ $isTeamLeadLayout ? 'ui-main' : 'ui-main' }}">
 

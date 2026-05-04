@@ -7,19 +7,28 @@ use App\Models\Device;
 use App\Models\DeviceLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class DeviceLogController extends Controller
 {
     /**
      * Receive logs from a device in JSON format.
+     * Requires both X-Device-UID and X-API-Token headers.
      */
     public function sync(Request $request)
     {
         $deviceUid = $request->header('X-Device-UID');
+        $apiToken = $request->header('X-API-Token');
 
-        if (!$deviceUid) {
+        if (!$deviceUid || !$apiToken) {
             return response()->json(['message' => 'Missing credentials'], 401);
+        }
+
+        // Validate API token against env secret (timing-safe comparison)
+        $expectedToken = config('services.device_sync.api_token', '');
+        if (empty($expectedToken) || !hash_equals($expectedToken, $apiToken)) {
+            return response()->json(['message' => 'Invalid credentials'], 403);
         }
 
         $device = Device::where('device_uid', $deviceUid)->first();
@@ -37,6 +46,11 @@ class DeviceLogController extends Controller
         // Handle both single object and array of objects
         if (!isset($logs[0])) {
             $logs = [$logs];
+        }
+
+        // Limit batch size to prevent abuse
+        if (count($logs) > 500) {
+            return response()->json(['message' => 'Batch size exceeds limit (500)'], 400);
         }
 
         DB::beginTransaction();
@@ -66,9 +80,10 @@ class DeviceLogController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Device sync error', ['device_uid' => $deviceUid, 'error' => $e->getMessage()]);
             return response()->json([
                 'message' => 'Error syncing logs',
-                'error' => $e->getMessage()
+                'error' => 'Internal processing error'
             ], 500);
         }
     }

@@ -19,6 +19,9 @@ class QualificationSeeder extends Seeder
             return;
         }
 
+        // Clear existing records to prevent duplicates
+        \App\Models\EmployeeQualification::truncate();
+
         $file = fopen($filePath, 'r');
         $header = fgetcsv($file);
 

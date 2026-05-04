@@ -31,9 +31,11 @@ class UserController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Sorting
-        $sortColumn = $request->input('sort', 'name');
-        $sortDirection = $request->input('direction', 'asc');
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'email', 'created_at'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'name';
+        $sortDirection = in_array(strtolower($request->input('direction', 'asc')), $allowedDirections) ? strtolower($request->input('direction', 'asc')) : 'asc';
         $query->orderBy($sortColumn, $sortDirection);
 
         $users = $query->paginate(10)->withQueryString();

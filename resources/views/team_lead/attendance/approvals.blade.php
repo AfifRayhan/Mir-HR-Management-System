@@ -8,7 +8,7 @@
     
 
     <div class="ui-layout">
-        @include('partials.team-lead-sidebar')
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="container-fluid">

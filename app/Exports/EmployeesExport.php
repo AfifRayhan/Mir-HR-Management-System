@@ -179,9 +179,11 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
             $query->where('status', $this->request['status']);
         }
 
-        // Sorting
-        $sortColumn = $this->request['sort'] ?? 'created_at';
-        $sortDirection = $this->request['direction'] ?? 'asc';
+        // Sorting — whitelist allowed columns and directions to prevent SQL injection
+        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
+        $allowedDirections = ['asc', 'desc'];
+        $sortColumn = in_array($this->request['sort'] ?? null, $allowedSortColumns) ? $this->request['sort'] : 'created_at';
+        $sortDirection = in_array(strtolower($this->request['direction'] ?? 'asc'), $allowedDirections) ? strtolower($this->request['direction'] ?? 'asc') : 'asc';
         
         if ($sortColumn === 'employee_code') {
             $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)

@@ -21,6 +21,9 @@ class ExperienceSeeder extends Seeder
             return;
         }
 
+        // Clear existing records to prevent duplicates
+        EmployeeExperience::truncate();
+
         $file = fopen($filePath, 'r');
         $header = fgetcsv($file);
 

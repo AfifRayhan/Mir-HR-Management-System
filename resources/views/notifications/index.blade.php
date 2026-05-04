@@ -158,13 +158,7 @@
     <div class="{{ $useHrLayout ? 'ui-layout' : 'ui-layout' }}">
 
         {{-- Sidebar --}}
-        @if($useHrLayout)
-            @include('partials.ui-sidebar')
-        @elseif($useTeamLeadLayout)
-            @include('partials.team-lead-sidebar')
-        @else
-            @include('partials.employee-sidebar')
-        @endif
+        @include('partials.ui-sidebar')
 
         <main class="{{ $useHrLayout ? 'ui-main' : 'ui-main' }}">
 

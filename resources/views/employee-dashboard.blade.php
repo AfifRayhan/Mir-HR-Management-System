@@ -13,11 +13,7 @@
     @endphp
 
     <div class="{{ $isTeamLeadLayout ? 'ui-layout ui-scope-lead' : 'ui-layout ui-scope-emp' }}">
-        @if($isTeamLeadLayout)
-        @include('partials.team-lead-sidebar')
-        @else
-        @include('partials.employee-sidebar')
-        @endif
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="row mb-3">

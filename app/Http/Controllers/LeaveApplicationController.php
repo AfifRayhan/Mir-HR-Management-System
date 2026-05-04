@@ -13,10 +13,11 @@ use App\Models\WeeklyHoliday;
 use App\Models\Holiday;
 use App\Services\NotificationService;
 use App\Services\AttendanceService;
+use Illuminate\Support\Facades\Storage;
 
 class LeaveApplicationController extends Controller
 {
-    protected $attendanceService;
+    protected AttendanceService $attendanceService;
 
     public function __construct(AttendanceService $attendanceService)
     {
@@ -31,10 +32,61 @@ class LeaveApplicationController extends Controller
         $employee = Employee::where('user_id', $user->id)->first();
 
         $applications = LeaveApplication::with(['employee.user', 'leaveType', 'approver'])
+            ->where('status', 'pending')
             ->orderBy('created_at', 'desc')
             ->get();
 
         return view('personnel.leave-applications.index', compact('applications', 'user', 'roleName', 'employee'));
+    }
+
+    public function historyHR(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $roleName = optional($user->role)->name ?? 'Unassigned';
+        $employee = Employee::where('user_id', $user->id)->first();
+
+        $allEmployees = Employee::orderBy('name')->get();
+
+        $month = $request->input('month');
+        $year = $request->has('year') ? $request->input('year') : date('Y');
+        $employeeId = $request->input('employee_id');
+        $leaveTypeId = $request->input('leave_type_id');
+        $status = $request->input('status');
+
+        $query = LeaveApplication::with([
+            'employee.user', 
+            'leaveType', 
+            'approver',
+            'employee.leaveBalances' => function($q) use ($year) {
+                $q->where('year', $year ?: date('Y'));
+            }
+        ]);
+
+        if ($month) {
+            $query->whereMonth('from_date', $month);
+        }
+        if ($year) {
+            $query->whereYear('from_date', $year);
+        }
+        if ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        }
+        if ($leaveTypeId) {
+            $query->where('leave_type_id', $leaveTypeId);
+        }
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $applications = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $leaveTypes = LeaveType::orderBy('name')->get();
+
+        return view('personnel.leave-applications.history', compact(
+            'applications', 'user', 'roleName', 'employee', 
+            'month', 'year', 'employeeId', 'leaveTypeId', 'status', 
+            'allEmployees', 'leaveTypes'
+        ));
     }
 
     // --- HR Manual Leave methods ---
@@ -132,8 +184,9 @@ class LeaveApplicationController extends Controller
         $documentPath = null;
         if ($request->hasFile('supporting_document')) {
             $file = $request->file('supporting_document');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $documentPath = $file->storeAs('supporting_documents', $fileName, 'public');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . \Illuminate\Support\Str::random(16) . '.' . $extension;
+            $documentPath = $file->storeAs('supporting_documents', $fileName, 'local');
         }
 
         // Create as approved immediately (HR is manually entering it)
@@ -337,8 +390,8 @@ class LeaveApplicationController extends Controller
             ->where('year', date('Y'))
             ->get();
 
-        $hasOfficeConfig = \App\Models\WeeklyHoliday::where('office_id', $employee->office_id)->exists();
-        $weeklyHolidayDays = \App\Models\WeeklyHoliday::where('is_holiday', true)
+        $hasOfficeConfig = WeeklyHoliday::where('office_id', $employee->office_id)->exists();
+        $weeklyHolidayDays = WeeklyHoliday::where('is_holiday', true)
             ->where(function ($q) use ($hasOfficeConfig, $employee) {
                 if ($hasOfficeConfig) {
                     $q->where('office_id', $employee->office_id);
@@ -461,8 +514,8 @@ class LeaveApplicationController extends Controller
             ->where('year', date('Y'))
             ->get();
 
-        $hasOfficeConfig = \App\Models\WeeklyHoliday::where('office_id', $employee->office_id)->exists();
-        $weeklyHolidayDays = \App\Models\WeeklyHoliday::where('is_holiday', true)
+        $hasOfficeConfig = WeeklyHoliday::where('office_id', $employee->office_id)->exists();
+        $weeklyHolidayDays = WeeklyHoliday::where('is_holiday', true)
             ->where(function ($q) use ($hasOfficeConfig, $employee) {
                 if ($hasOfficeConfig) {
                     $q->where('office_id', $employee->office_id);
@@ -532,7 +585,7 @@ class LeaveApplicationController extends Controller
         }
 
         // Check max consecutive days limit (against working days)
-        $leaveType = \App\Models\LeaveType::find($request->leave_type_id);
+        $leaveType = LeaveType::find($request->leave_type_id);
         if ($leaveType && $leaveType->max_consecutive_days && $totalDays > $leaveType->max_consecutive_days) {
             return redirect()->back()->with(
                 'error',
@@ -557,8 +610,9 @@ class LeaveApplicationController extends Controller
         $documentPath = null;
         if ($request->hasFile('supporting_document')) {
             $file = $request->file('supporting_document');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $documentPath = $file->storeAs('supporting_documents', $fileName, 'public');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . \Illuminate\Support\Str::random(16) . '.' . $extension;
+            $documentPath = $file->storeAs('supporting_documents', $fileName, 'local');
         }
 
         $application = LeaveApplication::create([
@@ -611,5 +665,20 @@ class LeaveApplicationController extends Controller
             }
         }
         return array_unique($dates);
+    }
+    public function viewDocument($id)
+    {
+        $application = LeaveApplication::findOrFail($id);
+        
+        if (!$application->supporting_document) {
+            abort(404, 'No document found for this application.');
+        }
+
+        // Verify file exists on local disk
+        if (!Storage::disk('local')->exists($application->supporting_document)) {
+            abort(404, 'The supporting document file could not be found.');
+        }
+
+        return Storage::disk('local')->response($application->supporting_document);
     }
 }

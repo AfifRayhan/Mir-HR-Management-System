@@ -65,7 +65,7 @@ class AttendanceController extends Controller
             });
         }
 
-        $records = $query->get();
+        $records = $query->lazy();
 
         return PDF::loadView('personnel.attendance.exports.daily-pdf', [
                 'records' => $records,
@@ -109,7 +109,7 @@ class AttendanceController extends Controller
             });
         }
 
-        $records = $query->get();
+        $records = $query->lazy();
         $filename = 'attendance_' . $date . '.doc';
 
         return response()->view('personnel.attendance.exports.word', [

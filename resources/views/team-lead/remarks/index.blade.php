@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="ui-layout">
-        @include('partials.team-lead-sidebar')
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="row mb-4 align-items-center">

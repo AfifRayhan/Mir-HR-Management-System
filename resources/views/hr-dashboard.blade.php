@@ -311,7 +311,7 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="office-attendance-data" type="application/json">
-        {!! json_encode($officeAttendanceData) !!}
+        @json($officeAttendanceData)
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

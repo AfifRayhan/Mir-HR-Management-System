@@ -28,29 +28,41 @@
     </a>
 
     <ul class="ui-sidebar-nav">
-        @foreach($sidebarItems as $item)
-            @if($item->slug === 'employee-dashboard' && $item->filtered_children->isNotEmpty())
-                @foreach($item->filtered_children as $child)
-                    <li>
-                        <a href="{{ $child->route_name ? route($child->route_name) : '#' }}" 
-                           class="ui-sidebar-link {{ $child->is_active ? 'active' : '' }}">
-                            <i class="bi {{ $child->icon }}"></i>
-                            <span>{{ __($child->name) }}</span>
-                        </a>
-                    </li>
-                @endforeach
-            @else
-                <li>
-                    <a href="{{ $item->route_name ? route($item->route_name) : '#' }}" 
-                       class="ui-sidebar-link {{ $item->is_active ? 'active' : '' }}">
-                        <i class="bi {{ $item->icon }}"></i>
-                        <span>{{ __($item->name) }}</span>
-                    </a>
-                </li>
-            @endif
-        @endforeach
+        <li>
+            <a href="{{ route('employee-dashboard') }}" class="ui-sidebar-link {{ request()->routeIs('employee-dashboard') ? 'active' : '' }}">
+                <i class="bi bi-speedometer2"></i>
+                <span>{{ __('Dashboard') }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('employee-profile') }}" class="ui-sidebar-link {{ request()->routeIs('employee-profile') ? 'active' : '' }}">
+                <i class="bi bi-person-vcard"></i>
+                <span>{{ __('My Profile') }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('employee.attendance.index') }}" class="ui-sidebar-link {{ request()->routeIs('employee.attendance.index') ? 'active' : '' }}">
+                <i class="bi bi-clock"></i>
+                <span>{{ __('Attendances') }}</span>
+            </a>
+        </li>
 
-        {{-- Notifications Link --}}
+        {{-- Leave Request Section (Direct Link) --}}
+        <li>
+            <a href="{{ route('employee.leave.index') }}" 
+               class="ui-sidebar-link {{ request()->routeIs('employee.leave.index') ? 'active' : '' }}">
+                <i class="bi bi-calendar2-minus"></i>
+                <span>{{ __('Leave Request') }}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('overtimes.index') }}" class="ui-sidebar-link {{ request()->routeIs('overtimes.*') ? 'active' : '' }}">
+                <i class="bi bi-clock-history"></i>
+                <span>{{ __('Overtime') }}</span>
+            </a>
+        </li>
+
         <li>
             <a href="{{ route('notifications.index') }}" 
                class="ui-sidebar-link {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
@@ -102,7 +114,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-@endPushOnce
-
-
-
+@endPushOnce

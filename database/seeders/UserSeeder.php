@@ -28,9 +28,17 @@ class UserSeeder extends Seeder
             if ($deptData['incharge_code']) {
                 $managerEmp = Employee::where('employee_code', $deptData['incharge_code'])->first();
                 if ($managerEmp) {
-                    Department::where('name', $deptData['name'])->update([
-                        'incharge_id' => $managerEmp->id
-                    ]);
+                    $dept = Department::where('name', $deptData['name'])->first();
+                    if ($dept) {
+                        $dept->update(['incharge_id' => $managerEmp->id]);
+                        
+                        // Also update reporting manager for all employees in this department
+                        // that don't have a reporting manager assigned yet
+                        Employee::where('department_id', $dept->id)
+                            ->where('id', '!=', $managerEmp->id)
+                            ->whereNull('reporting_manager_id')
+                            ->update(['reporting_manager_id' => $managerEmp->id]);
+                    }
                 }
             }
         }

@@ -59,6 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Secure Document Viewing
+    Route::get('leave-applications/document/{id}', [LeaveApplicationController::class, 'viewDocument'])->name('leave-applications.view-document');
+
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -75,8 +78,8 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
     Route::put('role-permissions', [RolePermissionController::class, 'update'])->name('role-permissions.update');
 });
 
-// Personnel management routes
-Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')->group(function () {
+// Personnel management routes (restricted by menu-based permission check)
+Route::middleware(['auth', 'verified', 'permission:personnel'])->prefix('personnel')->name('personnel.')->group(function () {
     Route::get('employees/next-code', [EmployeeController::class, 'getNextCode'])->name('employees.next-code');
     Route::delete('employees/experience/{experience}', [EmployeeController::class, 'destroyExperience'])->name('employees.delete-experience');
     Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
@@ -87,6 +90,7 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::resource('grades', GradeController::class);
 
     Route::get('leave-applications', [LeaveApplicationController::class, 'indexHR'])->name('leave-applications.index');
+    Route::get('leave-applications/history', [LeaveApplicationController::class, 'historyHR'])->name('leave-applications.history');
     Route::put('leave-applications/{leaveApplication}/status', [LeaveApplicationController::class, 'updateStatus'])->name('leave-applications.status');
 
     Route::get('leave/manual', [LeaveApplicationController::class, 'manualLeave'])->name('leave.manual');
@@ -107,8 +111,8 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
     Route::post('attendances/approvals/{id}/approve', [AttendanceController::class, 'approveAdjustment'])->name('attendances.approve-adjustment');
     Route::post('attendances/approvals/{id}/reject', [AttendanceController::class, 'rejectAdjustment'])->name('attendances.reject-adjustment');
 
-    // Reports & Exports
-    Route::prefix('reports')->name('reports.')->group(function () {
+    // Reports & Exports (with rate limiting)
+    Route::prefix('reports')->name('reports.')->middleware('throttle:exports')->group(function () {
         // Employee Exports
         Route::get('employees/export/excel', [EmployeeController::class, 'exportExcel'])->name('employees.export.excel');
         Route::get('employees/export/csv', [EmployeeController::class, 'exportCsv'])->name('employees.export.csv');
@@ -163,12 +167,16 @@ Route::middleware(['auth', 'verified'])->prefix('personnel')->name('personnel.')
 
 });
 
-// Overtime routes
+// Overtime routes — controller handles per-employee authorization internally
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('overtimes/auto-fill', [OvertimeController::class, 'autoFill'])->name('overtimes.auto-fill');
     Route::get('overtimes/export', [OvertimeController::class, 'export'])->name('overtimes.export');
     Route::get('overtimes', [OvertimeController::class, 'index'])->name('overtimes.index');
     Route::post('overtimes/save', [OvertimeController::class, 'save'])->name('overtimes.save');
+});
+
+// Overtime settings — restricted to users with settings permission
+Route::middleware(['auth', 'verified', 'permission:settings'])->group(function () {
     Route::get('overtimes/settings', [OvertimeSettingController::class, 'index'])->name('overtimes.settings');
     Route::post('overtimes/settings', [OvertimeSettingController::class, 'store'])->name('overtimes.settings.save');
 });
@@ -223,8 +231,8 @@ Route::middleware(['auth', 'verified', 'permission:settings'])->prefix('settings
     });
 });
 
-// Roster management routes (HR Admin only)
-Route::middleware(['auth', 'verified'])->prefix('roster')->name('roster.')->group(function () {
+// Roster management routes (restricted by menu-based permission check)
+Route::middleware(['auth', 'verified', 'permission:roster'])->prefix('roster')->name('roster.')->group(function () {
     Route::get('/', [RosterController::class, 'index'])->name('index');
     Route::post('/save', [RosterController::class, 'save'])->name('save');
     Route::get('/import-previous', [RosterController::class, 'importPrevious'])->name('import-previous');
@@ -235,8 +243,8 @@ Route::middleware(['auth', 'verified'])->prefix('roster')->name('roster.')->grou
     Route::resource('times', RosterTimeController::class);
 });
 
-// Driver Roster management routes
-Route::middleware(['auth', 'verified'])->prefix('driver-roster')->name('driver-roster.')->group(function () {
+// Driver Roster management routes (restricted by menu-based permission check)
+Route::middleware(['auth', 'verified', 'permission:driver-roster'])->prefix('driver-roster')->name('driver-roster.')->group(function () {
     Route::get('/', [DriverRosterController::class, 'index'])->name('index');
     Route::post('/save', [DriverRosterController::class, 'save'])->name('save');
     Route::get('/import-previous', [DriverRosterController::class, 'importPrevious'])->name('import-previous');

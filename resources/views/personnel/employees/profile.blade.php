@@ -4,7 +4,7 @@
         .profile-card {
             background: var(--ui-card-bg, #fff);
             border-radius: var(--ui-radius-lg);
-            padding: 2.5rem;
+            padding: 1.5rem;
             box-shadow: var(--ui-shadow);
             border: 1px solid rgba(226, 232, 240, 0.5);
             max-width: 1200px;
@@ -13,63 +13,63 @@
         .profile-header {
             display: flex;
             align-items: center;
-            gap: 1.75rem;
-            margin-bottom: 2.5rem;
-            padding-bottom: 2.5rem;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--ui-border);
         }
         .profile-header-avatar {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--ui-primary) 0%, var(--ui-primary-dark) 100%);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             font-weight: 800;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         .profile-header-info h1 {
-            font-size: 2.25rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             color: var(--ui-text);
             letter-spacing: -0.02em;
         }
         .role-badge {
             background: var(--ui-primary-soft);
             color: var(--ui-primary-dark);
-            padding: 0.4rem 1.25rem;
+            padding: 0.25rem 1rem;
             border-radius: 9999px;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
             display: inline-block;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .section-title {
-            font-size: 1.35rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--ui-text);
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
         .section-title i {
             color: var(--ui-primary);
-            font-size: 1.5rem;
+            font-size: 1.25rem;
         }
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         .info-box {
             background: var(--ui-bg);
-            padding: 1.25rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-radius: var(--ui-radius-md);
             border: 1px solid rgba(226, 232, 240, 0.8);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -80,10 +80,10 @@
             border-color: var(--ui-primary-soft);
         }
         .info-box label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--ui-text-light);
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             display: block;
             text-transform: uppercase;
             letter-spacing: 0.06em;
@@ -91,7 +91,7 @@
         .info-box .value {
             font-weight: 600;
             color: var(--ui-text);
-            font-size: 1.05rem;
+            font-size: 0.9rem;
             word-break: break-word;
             line-height: 1.4;
         }
@@ -116,7 +116,7 @@
         .divider {
             height: 1px;
             background: var(--ui-border);
-            margin: 3rem 0;
+            margin: 1.5rem 0;
             opacity: 0.6;
         }
         .experience-item {
@@ -124,8 +124,8 @@
             border: 1px solid var(--ui-border);
             border-left: 4px solid var(--ui-primary);
             border-radius: var(--ui-radius-md);
-            padding: 1.75rem;
-            margin-bottom: 1.25rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .experience-item:hover {
@@ -139,20 +139,21 @@
         }
         .ui-table th {
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 0.05em;
             color: var(--ui-text-light);
             background: var(--ui-bg);
-            padding: 1.25rem 1rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--ui-border);
             font-weight: 700;
         }
         .ui-table td {
-            padding: 1.25rem 1rem;
+            padding: 0.75rem 1rem;
             vertical-align: middle;
             color: var(--ui-text);
             font-weight: 500;
             border-bottom: 1px solid var(--ui-border);
+            font-size: 0.85rem;
         }
         .ui-table tbody tr:last-child td {
             border-bottom: none;
@@ -162,6 +163,34 @@
         }
         .ui-table tbody tr:hover {
             background-color: rgba(248, 250, 252, 0.8);
+        }
+        .btn-reset-password {
+            background: var(--ui-primary-soft, #ecfdf5);
+            color: var(--ui-primary-dark, #065f46);
+            border: 1.5px solid var(--ui-primary, #10b981);
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--ui-radius-md, 12px);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+        }
+        .btn-reset-password:hover {
+            background: var(--ui-primary, #10b981);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-reset-password:active {
+            transform: translateY(0);
+        }
+        .btn-reset-password i {
+            font-size: 1.1rem;
         }
     </style>
     @endpush
@@ -173,11 +202,7 @@
     @endphp
 
     <div class="ui-layout {{ $isTeamLeadLayout ? 'ui-scope-lead' : 'ui-scope-emp' }}">
-        @if($isTeamLeadLayout)
-        @include('partials.team-lead-sidebar')
-        @else
-        @include('partials.employee-sidebar')
-        @endif
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="profile-card">
@@ -189,6 +214,10 @@
                         <h1>{{ ($employee ? $employee->name : $user->name) }}</h1>
                         <div class="role-badge"><i class="bi bi-person-badge me-2"></i>{{ 'Employee ID: ' . ($employee ? $employee->employee_code : ($user->employee_id ?? 'N/A')) }}</div>
                     </div>
+                    <button type="button" onclick="openResetPasswordModal()" class="btn-reset-password ms-auto">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>{{ __('Reset Password') }}</span>
+                    </button>
                 </div>
 
                 <div class="section-title">
@@ -440,6 +469,79 @@
             </div>
         </main>
     </div>
+    @push('scripts')
+    <script>
+    async function openResetPasswordModal() {
+        const { value: formValues } = await Swal.fire({
+            title: 'Reset Password',
+            html: `
+                <div class="text-start">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Current Password</label>
+                        <input type="password" id="swal-current-password" class="form-control" placeholder="Enter current password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">New Password</label>
+                        <input type="password" id="swal-new-password" class="form-control" placeholder="Min 8 characters">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Confirm New Password</label>
+                        <input type="password" id="swal-confirm-password" class="form-control" placeholder="Repeat new password">
+                    </div>
+                </div>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Update Password',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                const current_password = document.getElementById('swal-current-password').value;
+                const password = document.getElementById('swal-new-password').value;
+                const password_confirmation = document.getElementById('swal-confirm-password').value;
+
+                if (!current_password || !password || !password_confirmation) {
+                    Swal.showValidationMessage('Please fill in all fields');
+                    return false;
+                }
+
+                if (password !== password_confirmation) {
+                    Swal.showValidationMessage('New passwords do not match');
+                    return false;
+                }
+
+                return axios.put("{{ route('password.update') }}", {
+                    current_password: current_password,
+                    password: password,
+                    password_confirmation: password_confirmation
+                }, {
+                    headers: { 'Accept': 'application/json' }
+                })
+                .catch(error => {
+                    if (error.response && error.response.data && error.response.data.errors) {
+                        const firstError = Object.values(error.response.data.errors)[0][0];
+                        Swal.showValidationMessage(firstError);
+                    } else if (error.response && error.response.data && error.response.data.message) {
+                        Swal.showValidationMessage(error.response.data.message);
+                    } else {
+                        Swal.showValidationMessage('An error occurred. Please try again.');
+                    }
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+
+        if (formValues) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Password Updated',
+                text: 'Your password has been changed successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    }
+    </script>
+    @endpush
 </x-app-layout>
 
 

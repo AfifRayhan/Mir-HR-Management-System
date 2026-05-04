@@ -9,6 +9,8 @@
             border-radius: 1rem;
             padding: 1rem 1.15rem;
             transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
         }
 
         .balance-card:hover {
@@ -19,7 +21,7 @@
     @endpush
 
     <div class="ui-layout">
-        @include('partials.team-lead-sidebar')
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
 
@@ -47,12 +49,14 @@
                 @forelse($balances as $balance)
                 <div class="col">
                     <div class="balance-card h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.03em;">{{ $balance->leaveType->name }}</span>
-                            <i class="bi bi-calendar-check text-success" style="font-size: 1.1rem;"></i>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem; letter-spacing: 0.03em;">{{ $balance->leaveType->name }}</span>
+                                <i class="bi bi-calendar-check text-success" style="font-size: 1.1rem;"></i>
+                            </div>
+                            <div class="fw-bold text-dark mb-1" style="font-size: 1.75rem; line-height: 1;">{{ $balance->remaining_days }}</div>
+                            <div class="fw-bold text-muted" style="font-size: 0.72rem;">{{ __('Days Remaining') }}</div>
                         </div>
-                        <div class="fw-bold text-dark mb-1" style="font-size: 1.75rem; line-height: 1;">{{ $balance->remaining_days }}</div>
-                        <div class="fw-bold text-muted" style="font-size: 0.72rem;">{{ __('Days Remaining') }}</div>
                         <div class="mt-2 pt-2 border-top">
                             <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
                                 <span>{{ __('Used:') }} <span class="fw-bold">{{ $balance->used_days }}</span></span>

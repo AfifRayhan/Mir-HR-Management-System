@@ -4,13 +4,14 @@ namespace App\Exports;
 
 use App\Models\AttendanceRecord;
 use Illuminate\Support\Facades\Cache;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -18,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
-class AttendancesExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents, WithDrawings, WithCustomStartCell
+class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents, WithDrawings, WithCustomStartCell, WithCustomChunkSize
 {
     use Exportable;
 
@@ -54,7 +55,12 @@ class AttendancesExport implements FromCollection, WithHeadings, WithMapping, Wi
         return $drawing;
     }
 
-    public function collection()
+    public function chunkSize(): int
+    {
+        return 500;
+    }
+
+    public function query()
     {
         $date         = $this->request['date'] ?? now()->toDateString();
         $departmentId = $this->request['department_id'] ?? null;
@@ -87,8 +93,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithMapping, Wi
             });
         }
 
-        $records = $query->get();
-        return $records;
+        return $query;
     }
 
     public function headings(): array

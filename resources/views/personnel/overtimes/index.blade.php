@@ -26,13 +26,7 @@
     @endphp
 
     <div class="ui-layout {{ $isAdmin ? '' : ($isTeamLeadLayout ? 'ui-scope-lead' : 'ui-scope-emp') }}">
-        @if($isAdmin)
-            @include('partials.ui-sidebar')
-        @elseif($isTeamLeadLayout)
-            @include('partials.team-lead-sidebar')
-        @else
-            @include('partials.employee-sidebar')
-        @endif
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="row mb-4">

@@ -62,25 +62,27 @@
         </li>
         @endif
 
-        {{-- Leave dropdown --}}
-        @php $leaveActive = request()->routeIs('team-lead.leave.*') || request()->routeIs('team-lead.leave-applications.*'); @endphp
-        <li class="ui-sidebar-parent {{ $leaveActive ? 'open' : '' }}">
-            <span class="ui-sidebar-link ui-sidebar-toggle" onclick="this.closest('.ui-sidebar-parent').classList.toggle('open')">
+        {{-- Leave Request Section (Direct Link) --}}
+        <li>
+            <a href="{{ route('team-lead.leave.index') }}" 
+               class="ui-sidebar-link {{ request()->routeIs('team-lead.leave.index') ? 'active' : '' }}">
                 <i class="bi bi-calendar2-minus"></i>
-                <span>{{ __('Leave') }}</span>
+                <span>{{ __('Leave Request') }}</span>
+            </a>
+        </li>
+
+        {{-- Team Leave Section (Subordinates) --}}
+        @php $teamLeaveActive = request()->routeIs('team-lead.leave-applications.*'); @endphp
+        <li class="ui-sidebar-parent {{ $teamLeaveActive ? 'open' : '' }}">
+            <span class="ui-sidebar-link ui-sidebar-toggle" onclick="this.closest('.ui-sidebar-parent').classList.toggle('open')">
+                <i class="bi bi-people-fill"></i>
+                <span>{{ __('Team Leave') }}</span>
                 <i class="bi bi-chevron-down ui-chevron ms-auto"></i>
             </span>
             <ul class="ui-sidebar-submenu">
                 <li>
-                    <a href="{{ route('team-lead.leave.index') }}"
-                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave.index') ? 'active' : '' }}">
-                        <i class="bi bi-journal-plus"></i>
-                        <span>{{ __('Requests') }}</span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{ route('team-lead.leave-applications.index') }}"
-                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave-applications.index') ? 'active' : '' }}">
+                        class="ui-sidebar-link {{ request()->routeIs('team-lead.leave-applications.index') && !request()->routeIs('team-lead.leave-applications.history') ? 'active' : '' }}">
                         <i class="bi bi-file-earmark-text"></i>
                         <span>{{ __('Applications') }}</span>
                     </a>
@@ -94,6 +96,7 @@
                 </li>
             </ul>
         </li>
+
         <li>
             <a href="{{ route('team-lead.remarks.index') }}" class="ui-sidebar-link {{ request()->routeIs('team-lead.remarks.*') ? 'active' : '' }}">
                 <i class="bi bi-chat-left-dots"></i>
@@ -158,7 +161,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-@endPushOnce
-
-
-
+@endPushOnce

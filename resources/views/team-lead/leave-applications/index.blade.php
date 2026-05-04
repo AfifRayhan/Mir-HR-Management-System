@@ -2,7 +2,7 @@
     
 
     <div class="ui-layout">
-        @include('partials.team-lead-sidebar')
+        @include('partials.ui-sidebar')
 
         <main class="ui-main">
             <div class="row mb-4">
@@ -71,7 +71,7 @@
                                 </td>
                                 <td>
                                     @if($app->supporting_document)
-                                    <a href="{{ asset('storage/' . $app->supporting_document) }}" target="_blank" class="badge bg-success text-white text-decoration-none shadow-sm">
+                                    <a href="{{ route('leave-applications.view-document', $app->id) }}" target="_blank" class="badge bg-success text-white text-decoration-none shadow-sm">
                                         <i class="bi bi-file-earmark-medical me-1"></i>{{ __('View') }}
                                     </a>
                                     @else
