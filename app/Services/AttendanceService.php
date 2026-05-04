@@ -25,6 +25,7 @@ class AttendanceService
         'Technician (Borak)'    => 'tech-borak',
         'Technician (Jessore)'  => 'tech-jessore',
         'Technician (Sylhet)'   => 'tech-sylhet',
+        'Drivers'               => 'drivers',
     ];
     /**
      * Process logs for a specific date and update attendance records.

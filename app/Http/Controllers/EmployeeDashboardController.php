@@ -265,12 +265,21 @@ class EmployeeDashboardController extends Controller
      */
     private function getMyRosterData(Employee $employee, Carbon $today): array
     {
-        // Roster week starts on Saturday (6)
-        $startOfWeek = $today->copy()->startOfWeek(6);
-        $endOfWeek = $startOfWeek->copy()->addDays(6);
-
         // Resolve group slug
         $groupSlug = AttendanceService::ROSTER_GROUP_SLUG_MAP[$employee->roster_group] ?? null;
+
+        // Roster week/month logic
+        if ($groupSlug === 'drivers') {
+            $startView = $today->copy()->startOfMonth();
+            $endView = $today->copy()->endOfMonth();
+        } else {
+            // Roster week starts on Saturday (6)
+            $startView = $today->copy()->startOfWeek(6);
+            $endView = $startView->copy()->addDays(6);
+        }
+        
+        $startOfWeek = $startView; 
+        $endOfWeek = $endView;
         
         if (!$groupSlug) {
             return [
@@ -286,7 +295,7 @@ class EmployeeDashboardController extends Controller
             ->get()
             ->keyBy('shift_key');
 
-        // Fetch schedules for the current week
+        // Fetch schedules for the requested range
         $schedules = RosterSchedule::where('employee_id', $employee->id)
             ->whereBetween('date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
             ->get()

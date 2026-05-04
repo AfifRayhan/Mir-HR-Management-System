@@ -48,7 +48,7 @@ class DriverRosterController extends Controller
         $monthStart = Carbon::parse($monthParam . '-01')->startOfMonth();
         $monthEnd   = $monthStart->copy()->endOfMonth();
         
-        $mode = $request->query('mode', 'weekly');
+        $mode = $request->query('mode', 'monthly');
 
         // Determine the query range based on mode
         if ($mode === 'weekly') {

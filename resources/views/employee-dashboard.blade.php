@@ -154,7 +154,7 @@
                     <div class="ui-panel p-0 mb-4 shadow-sm border-0">
                         <div class="p-4 border-bottom d-flex align-items-center justify-content-between bg-white">
                             <h6 class="mb-0 font-bold text-gray-800">
-                                <i class="bi bi-calendar3 me-2 text-success"></i>{{ __('Weekly Roster Schedule') }} 
+                                <i class="bi bi-calendar3 me-2 text-success"></i>{{ $rosterStart->diffInDays($rosterEnd) > 7 ? __('Monthly Roster Schedule') : __('Weekly Roster Schedule') }} 
                                 <span class="text-muted small fw-normal ms-2">({{ $rosterStart->format('d M') }} - {{ $rosterEnd->format('d M, Y') }})</span>
                             </h6>
                             <div class="dropdown d-inline-block">
@@ -194,8 +194,9 @@
                                         @php
                                             $todayStr = now()->toDateString();
                                             $cursor = $rosterStart->copy();
+                                            $diffInDays = $rosterStart->diffInDays($rosterEnd);
                                         @endphp
-                                        @for($i = 0; $i < 7; $i++)
+                                        @for($i = 0; $i <= $diffInDays; $i++)
                                             @php
                                                 $dateStr = $cursor->toDateString();
                                                 $assignment = $myRoster[$dateStr] ?? null;
