@@ -38,6 +38,8 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Roster',      'slug' => 'roster',             'icon' => 'bi-calendar3',      'route_name' => 'roster.index',       'sort_order' => 14],
             ['name' => 'Driver Roster', 'slug' => 'driver-roster',    'icon' => 'bi-car-front',      'route_name' => 'driver-roster.index', 'sort_order' => 15],
             ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 16],
+            ['name' => 'Leave Requests', 'slug' => 'employee-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4.5],
+            ['name' => 'Leave Requests', 'slug' => 'team-lead-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'team-lead.leave.index', 'sort_order' => 4.6],
         ];
 
         $menuModels = [];
@@ -239,6 +241,8 @@ class MenuItemSeeder extends Seeder
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
+            'employee-leave-request',
+            'team-lead-leave-request',
             'team-leave',
             'team-lead-leave-apps',
             'team-lead-leave-history',
@@ -247,21 +251,23 @@ class MenuItemSeeder extends Seeder
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Self-Service items + Overtime
+        // Employee gets Self-Service items + Overtime + Leave Request
         $employeeMenuIds = MenuItem::whereIn('slug', [
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
+            'employee-leave-request',
             'overtime', 
             'overtime-monthly',
         ])->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 
-        // Team Lead gets Self-Service + Attendance Approvals + Team Leave + Remarks
+        // Team Lead gets Self-Service + Attendance Approvals + Team Leave + Remarks + Leave Request
         $teamLeadMenuIds = MenuItem::whereIn('slug', [
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
+            'team-lead-leave-request',
             'team-lead-remarks',
             'team-lead-attendance-approvals',
             'team-leave',
