@@ -6,7 +6,7 @@ use App\Models\ReportTemplate;
 use App\Models\ReportTemplateType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf as Pdf;
 
 class ReportGeneratorController extends Controller
 {

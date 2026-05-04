@@ -36,15 +36,17 @@
     <table class="header-table">
         <tr>
             <td style="width: 80px;">
-                @php
-                    $logoPath = public_path('images/Mirtel Group Logo .png');
-                    $logoData = '';
-                    if (file_exists($logoPath)) {
-                        $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
-                    }
-                @endphp
-                @if($logoData)
-                    <img src="{{ $logoData }}" class="logo">
+                @if(isset($params['format']) && $params['format'] === 'pdf')
+                    @php
+                        $logoPath = public_path('images/Mirtel Group Logo .png');
+                        $logoData = '';
+                        if (file_exists($logoPath)) {
+                            $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                        }
+                    @endphp
+                    @if($logoData)
+                        <img src="{{ $logoData }}" class="logo">
+                    @endif
                 @endif
             </td>
             <td>

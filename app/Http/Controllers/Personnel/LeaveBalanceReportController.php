@@ -8,7 +8,7 @@ use App\Models\Employee;
 use App\Models\LeaveBalance;
 use App\Exports\LeaveBalanceExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\Snappy\Facades\SnappyPdf as Pdf;
 
 class LeaveBalanceReportController extends Controller
 {
@@ -54,6 +54,9 @@ class LeaveBalanceReportController extends Controller
 
     public function exportPdf(Request $request)
     {
+        ini_set('memory_limit', '1024M');
+        set_time_limit(300);
+        
         $params = $request->all();
         $params['format'] = 'pdf';
         $export = new LeaveBalanceExport($params);

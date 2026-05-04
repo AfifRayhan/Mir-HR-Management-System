@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use App\Models\Employee;
 use App\Models\LeaveBalance;
-use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -45,17 +44,17 @@ class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDra
             ->where('year', $year)
             ->get();
 
-        $viewName = 'personnel.reports.leave-balance.export-' . ($format === 'pdf' ? 'pdf' : ($format === 'word' ? 'word' : 'excel'));
-        if ($format === 'excel' && !view()->exists($viewName)) {
-            $viewName = 'personnel.reports.leave-balance.export';
+        $viewName = 'personnel.reports.leave-balance.export-excel';
+        if ($format === 'pdf') {
+            $viewName = 'personnel.reports.leave-balance.export-pdf';
+        } elseif ($format === 'word') {
+            $viewName = 'personnel.reports.leave-balance.export-word';
+        } elseif ($format === 'csv') {
+            $viewName = 'personnel.reports.leave-balance.export-excel';
         }
-        if ($format === 'pdf' && !view()->exists($viewName)) {
-            $viewName = 'personnel.reports.leave-balance.export';
-        }
-        if ($format === 'word' && !view()->exists($viewName)) {
-            $viewName = 'personnel.reports.leave-balance.export';
-        }
-        if ($format === 'csv' && !view()->exists($viewName)) {
+
+        // Fallback to old view if new one doesn't exist (word/pdf are not created yet)
+        if (!view()->exists($viewName)) {
             $viewName = 'personnel.reports.leave-balance.export';
         }
 
@@ -92,6 +91,10 @@ class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDra
 
     public function styles(Worksheet $sheet)
     {
+        if (($this->params['format'] ?? 'excel') === 'pdf' || ($this->params['format'] ?? 'excel') === 'csv') {
+            return [];
+        }
+
         return [];
     }
 
@@ -102,7 +105,10 @@ class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDra
                 if (($this->params['format'] ?? 'excel') === 'csv') return;
 
                 $sheet = $event->sheet->getDelegate();
+                
+                // Set header row height for the logo area
                 $sheet->getRowDimension(1)->setRowHeight(70);
+                
                 $sheet->setShowGridlines(false);
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_PORTRAIT)

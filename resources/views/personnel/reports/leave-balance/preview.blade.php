@@ -185,7 +185,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4">
                             <li>
-                                <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadExcel">
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ route('personnel.reports.leave-balance.export.excel', request()->all()) }}">
                                     <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3">
                                         <i class="bi bi-file-earmark-excel text-success"></i>
                                     </div>
@@ -196,7 +196,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadCsv">
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ route('personnel.reports.leave-balance.export.csv', request()->all()) }}">
                                     <div class="bg-secondary bg-opacity-10 p-2 rounded-3 me-3">
                                         <i class="bi bi-filetype-csv text-secondary"></i>
                                     </div>
@@ -208,7 +208,7 @@
                             </li>
                             <li class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadPdf">
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ route('personnel.reports.leave-balance.export.pdf', request()->all()) }}">
                                     <div class="bg-danger bg-opacity-10 p-2 rounded-3 me-3">
                                         <i class="bi bi-file-earmark-pdf text-danger"></i>
                                     </div>
@@ -219,7 +219,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item d-flex align-items-center py-2" href="#" id="downloadWord">
+                                <a class="dropdown-item d-flex align-items-center py-2" href="{{ route('personnel.reports.leave-balance.export.word', request()->all()) }}">
                                     <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
                                         <i class="bi bi-file-earmark-word text-primary"></i>
                                     </div>
@@ -240,41 +240,6 @@
             @endif
         </main>
     </div>
-
-    @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var routes = {
-                excel: "{{ route('personnel.reports.leave-balance.export.excel') }}",
-                csv: "{{ route('personnel.reports.leave-balance.export.csv') }}",
-                pdf: "{{ route('personnel.reports.leave-balance.export.pdf') }}",
-                word: "{{ route('personnel.reports.leave-balance.export.word') }}",
-            };
-
-            function buildDownloadUrl(baseRoute) {
-                var params = new URLSearchParams(window.location.search);
-                return baseRoute + '?' + params.toString();
-            }
-
-            document.getElementById('downloadExcel')?.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.location.href = buildDownloadUrl(routes.excel);
-            });
-            document.getElementById('downloadCsv')?.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.location.href = buildDownloadUrl(routes.csv);
-            });
-            document.getElementById('downloadPdf')?.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.location.href = buildDownloadUrl(routes.pdf);
-            });
-            document.getElementById('downloadWord')?.addEventListener('click', function (e) {
-                e.preventDefault();
-                window.location.href = buildDownloadUrl(routes.word);
-            });
-        });
-    </script>
-    @endpush
 </x-app-layout>
 
 

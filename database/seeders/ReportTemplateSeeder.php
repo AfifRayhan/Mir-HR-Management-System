@@ -14,7 +14,7 @@ class ReportTemplateSeeder extends Seeder
     public function run(): void
     {
         // 1. Seed Report Template Types
-        $typesFile = base_path('ReportTemplateTypes.csv');
+        $typesFile = storage_path('app/private/ReportTemplateTypes.csv');
         if (file_exists($typesFile)) {
             $handle = fopen($typesFile, 'r');
             $header = fgetcsv($handle); // Skip header: Id,ReportName,KeyTag
@@ -34,7 +34,7 @@ class ReportTemplateSeeder extends Seeder
         }
 
         // 2. Seed Report Templates
-        $templatesFile = base_path('ReportTemplates.csv');
+        $templatesFile = storage_path('app/private/ReportTemplates.csv');
         if (file_exists($templatesFile)) {
             $handle = fopen($templatesFile, 'r');
             $header = fgetcsv($handle); // Skip header: Id,ReportTemplateTypeId,ReportFormat,Text
