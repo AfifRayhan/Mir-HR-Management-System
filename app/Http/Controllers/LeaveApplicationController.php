@@ -666,7 +666,7 @@ class LeaveApplicationController extends Controller
         }
         return array_unique($dates);
     }
-    public function viewDocument($id)
+    public function viewDocument(int $id)
     {
         $application = LeaveApplication::findOrFail($id);
         
@@ -679,6 +679,6 @@ class LeaveApplicationController extends Controller
             abort(404, 'The supporting document file could not be found.');
         }
 
-        return Storage::disk('local')->response($application->supporting_document);
+        return response()->file(Storage::disk('local')->path($application->supporting_document));
     }
 }

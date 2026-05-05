@@ -10,6 +10,7 @@ use App\Models\WeeklyHoliday;
 use App\Models\Holiday;
 use App\Models\RosterSchedule;
 use App\Models\RosterTime;
+use App\Models\LeaveApplication;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -34,12 +35,12 @@ class AttendanceService
     {
         $date = Carbon::parse($date)->toDateString();
 
-        // Get all employees
-        $employees = Employee::where('status', 'active')->get();
-
-        foreach ($employees as $employee) {
-            $this->processEmployeeAttendance($employee, $date);
-        }
+        // Get all active employees and process them in chunks
+        Employee::where('status', 'active')->chunk(100, function ($employees) use ($date) {
+            foreach ($employees as $employee) {
+                $this->processEmployeeAttendance($employee, $date);
+            }
+        });
     }
 
     /**
@@ -49,7 +50,19 @@ class AttendanceService
     {
         $date = Carbon::parse($date)->toDateString();
 
-        // Check for manual adjustment first (it overrides off-days)
+        // 1. Check for Approved Leave (Overrides everything else)
+        $leave = LeaveApplication::where('employee_id', $employee->id)
+            ->where('status', 'approved')
+            ->where('from_date', '<=', $date)
+            ->where('to_date', '>=', $date)
+            ->first();
+
+        if ($leave) {
+            $this->updateOrCreateRecord($employee, $date, null, null, null, false, null, 'leave');
+            return;
+        }
+
+        // 2. Check for manual adjustment
         $adjustment = ManualAttendanceAdjustment::where('employee_id', $employee->id)
             ->where('date', $date)
             ->where('status', 'approved')
@@ -64,10 +77,16 @@ class AttendanceService
         $officeTime = $employee->officeTime;
         $rosterShift = null;
 
+        // 3. Skip processing for non-working days if no adjustment exists
         if ($officeTime && $officeTime->shift_name === 'Roster') {
             $rosterShift = $this->getRosterShiftForDate($employee, $date);
-            // Only skip if no adjustment exists AND it's an off-day
+            // Roster employee: Only skip if no adjustment AND (no shift OR is off day)
             if (!$adjustment && (!$rosterShift || $rosterShift->is_off_day)) {
+                return;
+            }
+        } else {
+            // General employee: Only skip if no adjustment AND it is NOT a working day
+            if (!$adjustment && !$this->isWorkingDay($employee, $date)) {
                 return;
             }
         }
@@ -135,11 +154,11 @@ class AttendanceService
     /**
      * Update or create attendance record based on in/out times.
      */
-    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null, $isManual = false, ?RosterTime $rosterShift = null)
+    protected function updateOrCreateRecord(Employee $employee, $date, $inTime, $outTime, $machineId = null, $isManual = false, ?RosterTime $rosterShift = null, $forcedStatus = null)
     {
         $officeTime = $employee->officeTime;
 
-        $status = 'absent';
+        $status = $forcedStatus ?? 'absent';
         $lateSeconds = 0;
         $workingHours = 0;
 

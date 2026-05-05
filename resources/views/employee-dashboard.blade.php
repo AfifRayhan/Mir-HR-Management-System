@@ -90,16 +90,18 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="ui-metric-card" onclick="location.href='{{ route('overtimes.index') }}';" style="cursor: pointer;">
-                        <div class="ui-metric-icon" style="background-color: rgba(99, 102, 241, 0.1); color: #6366f1;">
-                            <i class="bi bi-clock-fill text-2xl"></i>
+                    <a href="{{ route('overtimes.index') }}" class="text-decoration-none d-block">
+                        <div class="ui-metric-card">
+                            <div class="ui-metric-icon" style="background-color: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                                <i class="bi bi-clock-fill text-2xl"></i>
+                            </div>
+                            <div class="metric-content">
+                                <div class="ui-metric-label text-dark">{{ __('Overtime Hours') }}</div>
+                                <div class="ui-metric-value text-dark">{{ number_format($overtimeHours, 2) }}</div>
+                                <div class="metric-sub text-muted">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
+                            </div>
                         </div>
-                        <div class="metric-content">
-                            <div class="ui-metric-label">{{ __('Overtime Hours') }}</div>
-                            <div class="ui-metric-value">{{ number_format($overtimeHours, 2) }}</div>
-                            <div class="metric-sub">{{ __("This month " . "(" . now()->format('F') . ")") }}</div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 

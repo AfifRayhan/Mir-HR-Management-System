@@ -200,10 +200,10 @@ return [
         |--------------------------------------------------------------------------
         |
         | Configure here which Pdf driver should be used by default.
-        | Available options: Excel::MPDF | Excel::TCPDF | Excel::DOMPDF
+        | Available options: Excel::MPDF | Excel::TCPDF | Excel::DOMPDF | 'snappy'
         |
         */
-        'pdf'      => Excel::DOMPDF,
+        'pdf'      => 'snappy',
     ],
 
     /*

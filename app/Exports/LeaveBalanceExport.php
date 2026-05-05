@@ -19,9 +19,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDrawings, WithStyles, WithCustomStartCell, WithEvents
 {
-    protected $params;
+    protected array $params;
 
-    public function __construct($params)
+    public function __construct(array $params)
     {
         $this->params = $params;
     }

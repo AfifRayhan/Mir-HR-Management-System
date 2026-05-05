@@ -2,35 +2,6 @@
     @push('styles')
     @vite(['resources/css/role-permissions.css'])
     <style>
-        /* UI refinement to match other pages */
-        .rp-tree-toggle {
-            transition: all 0.2s ease;
-            background: var(--ui-bg);
-            border: 1px solid var(--ui-border);
-            color: var(--ui-primary);
-        }
-        .rp-tree-toggle:hover {
-            background: var(--ui-primary-soft);
-            border-color: var(--ui-primary);
-        }
-        .rp-tree-item {
-            padding: 8px 12px;
-            border-radius: var(--ui-radius-sm);
-            transition: background 0.15s;
-        }
-        .rp-tree-item:hover {
-            background: var(--ui-bg);
-        }
-        .rp-subtree {
-            border-left: 2px dashed var(--ui-border);
-            margin-left: 10px !important;
-            padding-left: 24px !important;
-        }
-        .btn-check:checked + .btn-outline-primary {
-            background-color: var(--ui-primary);
-            border-color: var(--ui-primary);
-            color: #fff;
-        }
         .rp-header-card {
             background: #fff;
             border: 1px solid var(--ui-border);
@@ -53,7 +24,6 @@
         @include('partials.ui-sidebar')
 
         <main class="ui-main">
-            <!-- Page Header -->
             <div class="row mb-4 align-items-center">
                 <div class="col-md-8">
                     <h5 class="mb-1 text-2xl font-bold">{{ __('Security & Permissions') }}</h5>
@@ -70,9 +40,9 @@
             <form method="POST" action="{{ route('security.role-permissions.update') }}" id="rpForm">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="manage_by" id="manage_by_input" value="{{ $manageBy }}">
 
                 <div class="row g-4">
-                    {{-- Left Side: Selectors --}}
                     <div class="col-lg-4">
                         <div class="rp-header-card h-100">
                             <div class="ui-panel-title mb-4">
@@ -81,19 +51,20 @@
 
                             <div class="mb-4">
                                 <label class="form-label small fw-bold text-muted mb-2">{{ __('Manage Permissions By') }}</label>
-                                <div class="btn-group w-100 p-1 bg-light rounded-pill" role="group">
-                                    <input type="radio" class="btn-check" name="manage_by" id="manage_by_role" value="role" {{ $selectedRole ? 'checked' : '' }}>
-                                    <label class="btn btn-sm rounded-pill px-4 border-0" for="manage_by_role">{{ __('Role') }}</label>
+                                <div class="rp-manage-toggle" role="group" aria-label="{{ __('Manage Permissions By') }}">
+                                    <input type="radio" class="btn-check" name="manage_by_switch" id="manage_by_role" value="role" {{ $manageBy === 'role' ? 'checked' : '' }}>
+                                    <label class="rp-manage-option" for="manage_by_role">{{ __('Role') }}</label>
 
-                                    <input type="radio" class="btn-check" name="manage_by" id="manage_by_user" value="user" {{ $selectedUser ? 'checked' : '' }}>
-                                    <label class="btn btn-sm rounded-pill px-4 border-0" for="manage_by_user">{{ __('Employee') }}</label>
+                                    <input type="radio" class="btn-check" name="manage_by_switch" id="manage_by_user" value="user" {{ $manageBy === 'user' ? 'checked' : '' }}>
+                                    <label class="rp-manage-option" for="manage_by_user">{{ __('Employee') }}</label>
                                 </div>
                             </div>
 
-                            <div id="role_selector_group" class="{{ $selectedUser ? 'd-none' : '' }}">
+                            <div id="role_selector_group" class="{{ $manageBy === 'user' ? 'd-none' : '' }}">
                                 <div class="mb-3">
                                     <label for="role_id" class="form-label small fw-bold text-muted">{{ __('System Role') }}</label>
                                     <select name="role_id" id="role_id" class="form-select rounded-3 border-light shadow-sm" data-index-url="{{ route('security.role-permissions.index') }}">
+                                        <option value="">{{ __('--- Select Role ---') }}</option>
                                         @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ $selectedRole && $selectedRole->id === $role->id ? 'selected' : '' }}>
                                             {{ $role->name }}
@@ -106,7 +77,7 @@
                                 </div>
                             </div>
 
-                            <div id="user_selector_group" class="{{ $selectedRole ? 'd-none' : '' }}">
+                            <div id="user_selector_group" class="{{ $manageBy === 'role' ? 'd-none' : '' }}">
                                 <div class="mb-3">
                                     <label for="user_id" class="form-label small fw-bold text-muted">{{ __('Target Employee') }}</label>
                                     <select name="user_id" id="user_id" class="form-select rounded-3 border-light shadow-sm" data-index-url="{{ route('security.role-permissions.index') }}">
@@ -131,84 +102,15 @@
                         </div>
                     </div>
 
-                    {{-- Right Side: Tree --}}
                     <div class="col-lg-8">
-                        <div class="rp-tree-card">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <div class="ui-panel-title m-0 border-0 p-0">
-                                    <i class="bi bi-list-check me-2 text-success"></i>{{ __('Navigation Access Tree') }}
-                                </div>
-                                <div class="form-check mb-0 bg-light px-3 py-1 rounded-pill">
-                                    <input class="form-check-input" type="checkbox" id="checkAll">
-                                    <label class="form-check-label small fw-bold text-dark" for="checkAll">{{ __('Select All') }}</label>
-                                </div>
-                            </div>
-
-                            <ul class="rp-tree">
-                                @php
-                                    // List of redundant or system-only slugs to hide from the UI tree
-                                    $redundantSlugs = [
-                                        'employee-leave-req',
-                                        'team-lead-leave-req',
-                                        'team-lead-leave-apps',
-                                        'team-lead-leave-history'
-                                    ];
-                                @endphp
-                                @foreach($menuItems as $item)
-                                @if(!in_array($item->slug, $redundantSlugs))
-                                <li class="mb-2 border-0">
-                                    <div class="rp-tree-item d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center flex-grow-1">
-                                            @php
-                                                $visibleChildren = $item->children->filter(fn($c) => !in_array($c->slug, $redundantSlugs));
-                                            @endphp
-                                            <span class="rp-tree-toggle me-3 {{ $visibleChildren->isEmpty() ? 'no-children' : '' }}"
-                                                data-target="sub-{{ $item->slug }}"
-                                                onclick="toggleSub(this)">
-                                                <i class="bi bi-plus-square"></i>
-                                            </span>
-                                            <div class="form-check mb-0">
-                                                <input class="form-check-input menu-check parent-check"
-                                                    type="checkbox"
-                                                    name="menu_items[]"
-                                                    value="{{ $item->id }}"
-                                                    id="menu_{{ $item->id }}"
-                                                    data-slug="{{ $item->slug }}"
-                                                    {{ in_array($item->slug, $assignedSlugs) ? 'checked' : '' }}>
-                                                <label class="form-check-label rp-tree-label fw-bold text-gray-800" for="menu_{{ $item->id }}">
-                                                    <i class="{{ $item->icon }} me-2 text-muted"></i>{{ __($item->name) }}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    @if($visibleChildren->isNotEmpty())
-                                    <ul class="rp-subtree mt-2" id="sub-{{ $item->slug }}">
-                                        @foreach($visibleChildren as $child)
-                                        <li class="py-1 border-0">
-                                            <div class="rp-tree-item py-1">
-                                                <div class="form-check mb-0">
-                                                    <input class="form-check-input menu-check child-check"
-                                                        type="checkbox"
-                                                        name="menu_items[]"
-                                                        value="{{ $child->id }}"
-                                                        id="menu_{{ $child->id }}"
-                                                        data-parent="{{ $item->id }}"
-                                                        data-slug="{{ $child->slug }}"
-                                                        {{ in_array($child->slug, $assignedSlugs) ? 'checked' : '' }}>
-                                                    <label class="form-check-label text-gray-700" for="menu_{{ $child->id }}">
-                                                        <i class="{{ $child->icon }} me-2 text-muted small"></i>{{ __($child->name) }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                    @endif
-                                </li>
-                                @endif
-                                @endforeach
-                            </ul>
+                        <div id="rolePermissionTree" data-tree-url="{{ route('security.role-permissions.tree') }}">
+                            @include('security.role-permissions.partials.tree', [
+                                'menuItems' => $menuItems,
+                                'manageBy' => $manageBy,
+                                'selectedRole' => $selectedRole,
+                                'selectedUser' => $selectedUser,
+                                'assignedSlugs' => $assignedSlugs,
+                            ])
                         </div>
                     </div>
                 </div>
@@ -226,6 +128,10 @@
             const manageByRole = document.getElementById('manage_by_role');
             const manageByUser = document.getElementById('manage_by_user');
             const baseUrl = roleIdSelect.getAttribute('data-index-url');
+            const treeContainer = document.getElementById('rolePermissionTree');
+            const treeUrl = treeContainer ? treeContainer.getAttribute('data-tree-url') : '';
+            const manageByInput = document.getElementById('manage_by_input');
+            const submitButton = document.querySelector('#rpForm button[type="submit"]');
 
             function updateVisibility() {
                 if (manageByRole.checked) {
@@ -237,115 +143,258 @@
                 }
             }
 
+            function getCurrentManageBy() {
+                return manageByRole.checked ? 'role' : 'user';
+            }
+
+            function buildContextUrl(base, manageBy, selectedId) {
+                const url = new URL(base, window.location.origin);
+                url.searchParams.set('manage_by', manageBy);
+
+                if (manageBy === 'role') {
+                    if (selectedId) {
+                        url.searchParams.set('role_id', selectedId);
+                    }
+                } else if (selectedId) {
+                    url.searchParams.set('user_id', selectedId);
+                }
+
+                return url.toString();
+            }
+
+            function updateSubmitState() {
+                if (!submitButton) return;
+
+                const hasSelection = getCurrentManageBy() === 'role'
+                    ? Boolean(roleIdSelect && roleIdSelect.value)
+                    : Boolean(userIdSelect && userIdSelect.value);
+
+                submitButton.disabled = !hasSelection;
+            }
+
+            async function loadTree(manageBy, selectedId) {
+                if (!treeContainer || !treeUrl) return;
+
+                treeContainer.classList.add('rp-tree-loading');
+
+                try {
+                    const response = await fetch(buildContextUrl(treeUrl, manageBy, selectedId), {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to load permission tree.');
+                    }
+
+                    treeContainer.innerHTML = await response.text();
+                    if (manageByInput) {
+                        manageByInput.value = manageBy;
+                    }
+                    window.history.replaceState({}, '', buildContextUrl(baseUrl, manageBy, selectedId));
+                    initTreePanel();
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    treeContainer.classList.remove('rp-tree-loading');
+                }
+            }
+
+            function initTreePanel() {
+                const selectedPermissionCount = document.getElementById('selectedPermissionCount');
+                const expandAllModulesBtn = document.getElementById('expandAllModules');
+                const checkAll = document.getElementById('checkAll');
+                const allChecks = treeContainer ? treeContainer.querySelectorAll('.menu-check') : [];
+
+                function setModuleExpanded(toggle, isExpanded) {
+                    if (!toggle) return;
+                    const targetId = toggle.getAttribute('data-target');
+                    const sub = document.getElementById(targetId);
+                    if (!sub) return;
+
+                    sub.classList.toggle('open', isExpanded);
+                    toggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+
+                    const icon = toggle.querySelector('i');
+                    if (icon) {
+                        icon.className = isExpanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+                    }
+                }
+
+                function refreshExpandAllLabel() {
+                    if (!expandAllModulesBtn) return;
+                    const toggles = [...treeContainer.querySelectorAll('.rp-tree-toggle[data-target]')];
+                    const allExpanded = toggles.length > 0 && toggles.every(toggle => toggle.getAttribute('aria-expanded') === 'true');
+
+                    expandAllModulesBtn.innerHTML = allExpanded
+                        ? "<i class=\"bi bi-arrows-collapse me-1\"></i>{{ __('Collapse All') }}"
+                        : "<i class=\"bi bi-arrows-expand me-1\"></i>{{ __('Expand All') }}";
+                }
+
+                function syncModuleState(parentId) {
+                    const card = treeContainer.querySelector('[data-parent-card="' + parentId + '"]');
+                    const stateLabel = treeContainer.querySelector('[data-module-state="' + parentId + '"]');
+                    const parentCheck = document.getElementById('menu_' + parentId);
+                    const children = treeContainer.querySelectorAll('.child-check[data-parent="' + parentId + '"]');
+                    if (!card || !parentCheck) return;
+
+                    if (!stateLabel || children.length === 0) {
+                        card.classList.toggle('is-active', parentCheck.checked);
+                        card.classList.toggle('is-full', parentCheck.checked);
+                        return;
+                    }
+
+                    const checkedChildren = [...children].filter(c => c.checked).length;
+                    card.classList.toggle('is-active', checkedChildren > 0);
+                    card.classList.toggle('is-full', checkedChildren === children.length);
+                    stateLabel.textContent = checkedChildren + ' / ' + children.length + ' selected';
+                }
+
+                function updateCheckAll() {
+                    if (allChecks.length === 0) {
+                        if (selectedPermissionCount) {
+                            selectedPermissionCount.textContent = '0';
+                        }
+                        if (checkAll) {
+                            checkAll.checked = false;
+                            checkAll.indeterminate = false;
+                        }
+                        return;
+                    }
+
+                    const checkedCount = [...allChecks].filter(c => c.checked).length;
+                    const allChecked = checkedCount === allChecks.length;
+                    const someChecked = checkedCount > 0 && !allChecked;
+
+                    if (checkAll) {
+                        checkAll.checked = allChecked;
+                        checkAll.indeterminate = someChecked;
+                    }
+
+                    if (selectedPermissionCount) {
+                        selectedPermissionCount.textContent = checkedCount;
+                    }
+
+                    treeContainer.querySelectorAll('.parent-check').forEach(parent => {
+                        syncModuleState(parent.value);
+                    });
+                }
+
+                if (checkAll) {
+                    checkAll.addEventListener('change', function() {
+                        const isChecked = this.checked;
+                        allChecks.forEach(c => {
+                            if (c.checked !== isChecked) {
+                                c.checked = isChecked;
+                            }
+                        });
+                        updateCheckAll();
+                    });
+                }
+
+                treeContainer.querySelectorAll('.parent-check').forEach(parent => {
+                    parent.addEventListener('change', function() {
+                        const children = treeContainer.querySelectorAll('.child-check[data-parent="' + this.value + '"]');
+                        children.forEach(c => c.checked = this.checked);
+                        syncModuleState(this.value);
+                        updateCheckAll();
+                    });
+                });
+
+                treeContainer.querySelectorAll('.child-check').forEach(child => {
+                    child.addEventListener('change', function() {
+                        const parentId = this.getAttribute('data-parent');
+                        const siblings = treeContainer.querySelectorAll('.child-check[data-parent="' + parentId + '"]');
+                        const parentCheck = document.getElementById('menu_' + parentId);
+                        if (parentCheck) {
+                            const anyChecked = [...siblings].some(c => c.checked);
+                            parentCheck.checked = anyChecked;
+                        }
+                        syncModuleState(parentId);
+                        updateCheckAll();
+                    });
+                });
+
+                allChecks.forEach(c => c.addEventListener('change', updateCheckAll));
+                updateCheckAll();
+
+                if (expandAllModulesBtn) {
+                    expandAllModulesBtn.addEventListener('click', function() {
+                        const toggles = [...treeContainer.querySelectorAll('.rp-tree-toggle[data-target]')];
+                        const shouldExpand = toggles.some(toggle => toggle.getAttribute('aria-expanded') !== 'true');
+
+                        toggles.forEach(toggle => setModuleExpanded(toggle, shouldExpand));
+                        refreshExpandAllLabel();
+                    });
+                }
+
+                treeContainer.querySelectorAll('.rp-subtree').forEach(sub => {
+                    const toggle = treeContainer.querySelector('[data-target="' + sub.id + '"]');
+                    const hasChecked = sub.querySelector('.menu-check:checked');
+                    setModuleExpanded(toggle, Boolean(hasChecked));
+                });
+
+                refreshExpandAllLabel();
+            }
+
             if (manageByRole && manageByUser) {
-                manageByRole.addEventListener('change', updateVisibility);
-                manageByUser.addEventListener('change', updateVisibility);
+                manageByRole.addEventListener('change', function() {
+                    updateVisibility();
+                    if (manageByInput) manageByInput.value = 'role';
+                    updateSubmitState();
+                    loadTree('role', roleIdSelect ? roleIdSelect.value : '');
+                });
+                manageByUser.addEventListener('change', function() {
+                    updateVisibility();
+                    if (manageByInput) manageByInput.value = 'user';
+                    updateSubmitState();
+                    loadTree('user', userIdSelect ? userIdSelect.value : '');
+                });
                 updateVisibility();
             }
 
-            // Handle role change redirect
             if (roleIdSelect) {
                 roleIdSelect.addEventListener('change', function() {
-                    const roleId = this.value;
-                    if (roleId && baseUrl) {
-                        const url = new URL(baseUrl, window.location.origin);
-                        url.searchParams.set('role_id', roleId);
-                        window.location.href = url.toString();
-                    }
+                    updateSubmitState();
+                    loadTree('role', this.value);
                 });
             }
 
-            // Handle user change redirect
             if (userIdSelect) {
                 userIdSelect.addEventListener('change', function() {
-                    const userId = this.value;
-                    if (userId && baseUrl) {
-                        const url = new URL(baseUrl, window.location.origin);
-                        url.searchParams.set('user_id', userId);
-                        window.location.href = url.toString();
-                    }
+                    updateSubmitState();
+                    loadTree('user', this.value);
                 });
             }
 
-            // "All" checkbox logic
-            const checkAll = document.getElementById('checkAll');
-            const allChecks = document.querySelectorAll('.menu-check');
-
-            function updateCheckAll() {
-                if (allChecks.length === 0) return;
-                const checkedCount = [...allChecks].filter(c => c.checked).length;
-                const allChecked = checkedCount === allChecks.length;
-                const someChecked = checkedCount > 0 && !allChecked;
-
-                checkAll.checked = allChecked;
-                checkAll.indeterminate = someChecked;
-            }
-
-            if (checkAll) {
-                checkAll.addEventListener('change', function() {
-                    const isChecked = this.checked;
-                    allChecks.forEach(c => {
-                        if (c.checked !== isChecked) {
-                            c.checked = isChecked;
-                        }
-                    });
-                    updateCheckAll();
-                });
-            }
-
-            // Parent ↔ child cascade
-            document.querySelectorAll('.parent-check').forEach(parent => {
-                parent.addEventListener('change', function() {
-                    const children = document.querySelectorAll('.child-check[data-parent="' + this.value + '"]');
-                    children.forEach(c => c.checked = this.checked);
-                    updateCheckAll();
-                });
-            });
-
-            document.querySelectorAll('.child-check').forEach(child => {
-                child.addEventListener('change', function() {
-                    const parentId = this.getAttribute('data-parent');
-                    const siblings = document.querySelectorAll('.child-check[data-parent="' + parentId + '"]');
-                    const parentCheck = document.getElementById('menu_' + parentId);
-                    if (parentCheck) {
-                        const anyChecked = [...siblings].some(c => c.checked);
-                        parentCheck.checked = anyChecked;
-                    }
-                    updateCheckAll();
-                });
-            });
-
-            allChecks.forEach(c => c.addEventListener('change', updateCheckAll));
-
-            // Set initial "All" state
-            updateCheckAll();
-
-            // Auto-expand subtrees that have checked children
-            document.querySelectorAll('.rp-subtree').forEach(sub => {
-                const hasChecked = sub.querySelector('.menu-check:checked');
-                if (hasChecked) {
-                    sub.classList.add('open');
-                    const toggle = document.querySelector('[data-target="' + sub.id + '"]');
-                    if (toggle) {
-                        const icon = toggle.querySelector('i');
-                        if (icon) icon.className = 'bi bi-dash-square';
-                    }
-                }
-            });
+            updateSubmitState();
+            initTreePanel();
         });
 
-        // Toggle function needs to be global for onclick
         function toggleSub(el) {
             const targetId = el.getAttribute('data-target');
             const sub = document.getElementById(targetId);
             if (!sub) return;
+
+            const isExpanded = !sub.classList.contains('open');
+            sub.classList.toggle('open', isExpanded);
+            el.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+
             const icon = el.querySelector('i');
-            if (sub.classList.contains('open')) {
-                sub.classList.remove('open');
-                icon.className = 'bi bi-plus-square';
-            } else {
-                sub.classList.add('open');
-                icon.className = 'bi bi-dash-square';
+            if (icon) {
+                icon.className = isExpanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+            }
+
+            const expandAllModulesBtn = document.getElementById('expandAllModules');
+            const treeContainer = document.getElementById('rolePermissionTree');
+            if (expandAllModulesBtn && treeContainer) {
+                const toggles = [...treeContainer.querySelectorAll('.rp-tree-toggle[data-target]')];
+                const allExpanded = toggles.length > 0 && toggles.every(toggle => toggle.getAttribute('aria-expanded') === 'true');
+
+                expandAllModulesBtn.innerHTML = allExpanded
+                    ? "<i class=\"bi bi-arrows-collapse me-1\"></i>{{ __('Collapse All') }}"
+                    : "<i class=\"bi bi-arrows-expand me-1\"></i>{{ __('Expand All') }}";
             }
         }
     </script>

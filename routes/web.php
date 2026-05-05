@@ -75,6 +75,7 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
     Route::resource('roles', RoleController::class)->except(['show', 'create', 'edit']);
 
     Route::get('role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
+    Route::get('role-permissions/tree', [RolePermissionController::class, 'tree'])->name('role-permissions.tree');
     Route::put('role-permissions', [RolePermissionController::class, 'update'])->name('role-permissions.update');
 });
 
