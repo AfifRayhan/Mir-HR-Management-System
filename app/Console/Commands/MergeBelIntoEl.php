@@ -44,20 +44,22 @@ class MergeBelIntoEl extends Command
                     ->first();
 
                 if ($elBalance) {
-                    // Merge BEL into existing EL row
-                    $elBalance->opening_balance += $belBalance->opening_balance;
+                    // Merge BEL into existing EL row, capped at 40
+                    $elBalance->opening_balance = min(40, $elBalance->opening_balance + $belBalance->opening_balance);
                     $elBalance->used_days       += $belBalance->used_days;
-                    $elBalance->remaining_days  += $belBalance->remaining_days;
+                    $elBalance->remaining_days  = max(0, $elBalance->opening_balance - $elBalance->used_days);
                     $elBalance->save();
                 } else {
-                    // No EL row exists — create one from BEL's values under EL type
+                    // No EL row exists — create one from BEL's values under EL type (capped at 40)
+                    $opening = min(40, $belBalance->opening_balance);
+                    $used = $belBalance->used_days;
                     LeaveBalance::create([
                         'employee_id'    => $belBalance->employee_id,
                         'leave_type_id'  => $el->id,
                         'year'           => $belBalance->year,
-                        'opening_balance'=> $belBalance->opening_balance,
-                        'used_days'      => $belBalance->used_days,
-                        'remaining_days' => $belBalance->remaining_days,
+                        'opening_balance'=> $opening,
+                        'used_days'      => $used,
+                        'remaining_days' => max(0, $opening - $used),
                     ]);
                 }
 

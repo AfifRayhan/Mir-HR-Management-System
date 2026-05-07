@@ -125,6 +125,11 @@ class LeaveBalanceController extends Controller
                     if ($previousBalance && $previousBalance->remaining_days > 0) {
                         $openingBalance += $previousBalance->remaining_days;
                     }
+
+                    // Enforce 30+10 cap for Earn Leave (EL) including carry-forward
+                    if (str_contains(strtolower($type->name), 'earn')) {
+                        $openingBalance = min(40, $openingBalance);
+                    }
                 }
 
                 LeaveBalance::create([
@@ -183,7 +188,8 @@ class LeaveBalanceController extends Controller
                     $earnLeave += 10;
                 }
 
-                return $earnLeave;
+                // Never cross 30+10 (40 days)
+                return min(40, $earnLeave);
             }
         }
         
