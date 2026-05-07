@@ -39,7 +39,7 @@
     --bs-focus-ring-color: rgba(0, 122, 16, 0.25);
 }
 
-/* Role-Specific Overrides to keep views "Distinct" */
+/* Role-Specific Overrides to keep views "Consistent" */
 
 /* HR Admin Scope */
 .ui-scope-admin {
@@ -50,16 +50,14 @@
 
 /* Employee Scope */
 .ui-scope-emp {
-    --ui-primary: #275e26;
-    /* Slightly deeper green for employee context */
+    --ui-primary: #007a10;
     --ui-sidebar-bg: #ffffff;
-    --ui-accent: #275e26;
+    --ui-accent: #007a10;
 }
 
 /* Team Lead Scope */
 .ui-scope-lead {
-    --ui-primary: #15803d;
-    /* Distinct green for leads */
+    --ui-primary: #007a10;
     --ui-sidebar-bg: #ffffff;
-    --ui-accent: #15803d;
+    --ui-accent: #007a10;
 }

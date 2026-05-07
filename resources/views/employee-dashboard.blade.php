@@ -92,7 +92,7 @@
                 <div class="col">
                     <a href="{{ route('overtimes.index') }}" class="text-decoration-none d-block">
                         <div class="ui-metric-card">
-                            <div class="ui-metric-icon" style="background-color: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                            <div class="ui-metric-icon bg-primary-soft text-primary">
                                 <i class="bi bi-clock-fill text-2xl"></i>
                             </div>
                             <div class="metric-content">

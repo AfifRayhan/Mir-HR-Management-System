@@ -84,7 +84,8 @@ class LeaveBalanceSeeder extends Seeder
                     $earnLeave += 10;
                 }
 
-                return $earnLeave;
+                // Never cross 30+10 (40 days)
+                return min(40, $earnLeave);
             }
         }
         

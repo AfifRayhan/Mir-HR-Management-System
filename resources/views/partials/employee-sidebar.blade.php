@@ -3,7 +3,7 @@
     <button class="ui-mobile-hamburger" id="empSidebarToggle" aria-label="Toggle Sidebar">
         <i class="bi bi-list"></i>
     </button>
-    <a href="{{ route('employee-dashboard') }}" class="ui-topbar-brand" style="text-decoration: none;"><span>Employee</span>&nbsp;<span>Portal</span></a>
+    <a href="{{ route('hr-dashboard') }}" class="ui-topbar-brand" style="text-decoration: none;"><span>HRM</span>&nbsp;<span>System</span></a>
 
     {{-- Notification Mobile Bell --}}
     @auth
@@ -22,9 +22,9 @@
 <div class="ui-overlay" id="empSidebarOverlay"></div>
 
 <aside class="ui-sidebar" id="empSidebar">
-    <a href="{{ route('employee-dashboard') }}" class="ui-logo" style="text-decoration: none;">
-        <span>Employee</span>
-        <span>Portal</span>
+    <a href="{{ route('hr-dashboard') }}" class="ui-logo" style="text-decoration: none;">
+        <span>HRM</span>
+        <span>System</span>
     </a>
 
     <ul class="ui-sidebar-nav">

@@ -21,13 +21,18 @@
 }
 
 /* Text Utilities */
-.text-ui-primary { color: var(--ui-primary) !important; }
-.text-ui-success { color: var(--ui-success) !important; }
-.text-ui-danger { color: var(--ui-danger) !important; }
+.text-primary { color: var(--ui-primary) !important; }
+.text-success { color: var(--ui-success) !important; }
+.text-warning { color: var(--ui-warning) !important; }
+.text-danger { color: var(--ui-danger) !important; }
+.text-info { color: var(--ui-info) !important; }
 
 /* Background Utilities */
-.bg-ui-success-soft { background-color: var(--ui-success-soft) !important; }
-.bg-ui-danger-soft { background-color: var(--ui-danger-soft) !important; }
+.bg-primary-soft { background-color: var(--ui-primary-soft) !important; }
+.bg-success-soft { background-color: var(--ui-success-soft) !important; }
+.bg-warning-soft { background-color: var(--ui-warning-soft) !important; }
+.bg-danger-soft { background-color: var(--ui-danger-soft) !important; }
+.bg-info-soft { background-color: var(--ui-info-soft) !important; }
 
 /* Form Elements */
 .ui-form-label {
