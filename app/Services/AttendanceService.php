@@ -105,7 +105,10 @@ class AttendanceService
             }
 
             // Determine if this is an overnight roster shift
-            $isOvernightShift = $rosterShift && $rosterShift->is_overnight;
+            $isOvernightShift = $rosterShift && (
+                $rosterShift->is_overnight || 
+                ($rosterShift->start_time && $rosterShift->end_time && $rosterShift->start_time > $rosterShift->end_time)
+            );
 
             $logs = Attendance::where('user_id', $employee->employee_code)
                 ->where(function ($q) use ($date, $isOvernightShift) {
