@@ -33,10 +33,6 @@ class LeaveBalanceSeeder extends Seeder
             foreach ($leaveTypes as $type) {
                 $openingBalance = $this->getAllocatedDays($employee, $type);
 
-                // Approach 3: Bonus Earn Leave won't initialize if opening balance is 0 (due to < 1 year service)
-                if (str_contains(strtolower($type->name), 'bonus') && $openingBalance == 0) {
-                    continue;
-                }
 
                 // Initialize leave balance for each type for the current year
                 LeaveBalance::updateOrCreate(
@@ -73,24 +69,22 @@ class LeaveBalanceSeeder extends Seeder
             }
         } else {
             if (str_contains($nameStr, 'earn')) {
-                // Determine if this is "Bonus Earn Leave" or regular "Earn Leave"
-                if (str_contains($nameStr, 'bonus')) {
-                    if ($employee->joining_date) {
-                        $joinDate = \Carbon\Carbon::parse($employee->joining_date);
-                        $yearsOfService = $joinDate->diffInYears(now());
-                        return $yearsOfService >= 1 ? 10 : 0;
-                    }
+                if (!$employee->joining_date) {
                     return 0;
+                }
+                $joinDate       = \Carbon\Carbon::parse($employee->joining_date);
+                $daysSinceJoin  = $joinDate->diffInDays(now());
+                $yearsOfService = $joinDate->diffInYears(now());
+
+                // Accrued EL: 1 day per 18 working days, capped at 30
+                $earnLeave = (int) min(30, max(0, floor($daysSinceJoin / 18)));
+
+                // BEL bonus folded in: +10 for employees with >= 1 year service
+                if ($yearsOfService >= 1) {
+                    $earnLeave += 10;
                 }
 
-                if ($employee->joining_date) {
-                    $joinDate = \Carbon\Carbon::parse($employee->joining_date);
-                    $daysSinceJoin = $joinDate->diffInDays(now());
-                    $earnLeave = floor($daysSinceJoin / 18);
-                    return min(30, max(0, $earnLeave));
-                } else {
-                    return 0;
-                }
+                return $earnLeave;
             }
         }
         

@@ -18,14 +18,11 @@
     @endpush
 
     @php 
-        $user = auth()->user();
-        $roleName = optional($user->role)->name;
-        $isAdmin = $roleName === 'HR Admin' || $roleName === 'Superadmin';
-        // isTeamLeadLayout is passed from controller, but let's be safe
+        $canViewAll = $canViewAll ?? false;
         $isTeamLeadLayout = $isTeamLeadLayout ?? false;
     @endphp
 
-    <div class="ui-layout {{ $isAdmin ? '' : ($isTeamLeadLayout ? 'ui-scope-lead' : 'ui-scope-emp') }}">
+    <div class="ui-layout {{ $canViewAll ? '' : ($isTeamLeadLayout ? 'ui-scope-lead' : 'ui-scope-emp') }}">
         @include('partials.ui-sidebar')
 
         <main class="ui-main">

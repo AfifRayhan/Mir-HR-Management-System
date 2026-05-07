@@ -19,20 +19,12 @@ class OvertimeController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
-        $isAdmin = in_array($roleName, ['HR Admin', 'Superadmin']); // Assuming Superadmin also exists or HR Admin is enough
+        $canViewAll = $user->hasMenuAccess('overtime-admin-config');
 
         $myEmployee = Employee::with('designation')->where('user_id', $user->id)->first();
         $myEmployeeId = $myEmployee ? $myEmployee->id : 0;
         $isMySelfEligible = $myEmployee && $myEmployee->designation && $myEmployee->designation->is_ot_eligible;
 
-        // Resolve subordinates
-        $subordinateIds = [];
-        if ($myEmployeeId) {
-            $directReportIds = Employee::where('reporting_manager_id', $myEmployeeId)->pluck('id')->toArray();
-            $departmentIds = \App\Models\Department::where('incharge_id', $myEmployeeId)->pluck('id')->toArray();
-            $departmentalEmployeeIds = Employee::whereIn('department_id', $departmentIds)->pluck('id')->toArray();
-            $subordinateIds = array_diff(array_unique(array_merge($directReportIds, $departmentalEmployeeIds)), [$myEmployeeId]);
-        }
 
         // Filter employees list for the dropdown
         $query = Employee::where('status', 'active')
@@ -40,23 +32,15 @@ class OvertimeController extends Controller
                 $q->where('is_ot_eligible', true);
             });
 
-        if ($isAdmin) {
-            // HR Admin sees everyone
+        if ($canViewAll) {
+            // Permission granted - see everyone
         } elseif ($myEmployeeId) {
-            // Team Lead / Employee sees themselves (if eligible) + subordinates (if eligible)
-            $viewableIds = $subordinateIds;
-            if ($isMySelfEligible) {
-                $viewableIds[] = $myEmployeeId;
-            }
+            // No admin config permission - only see themselves
+            $query->where('id', $myEmployeeId);
             
-            if (empty($viewableIds)) {
-                // If I'm not eligible and have no subordinates (or none are eligible)
-                if (!$isMySelfEligible) {
-                    abort(403, 'You are not eligible for Overtime.');
-                }
+            if (!$isMySelfEligible) {
+                abort(403, 'You are not eligible for Overtime.');
             }
-            
-            $query->whereIn('id', $viewableIds);
         } else {
             // No linked employee? Maybe just see nothing or self
             $query->whereRaw('1 = 0');
@@ -88,17 +72,15 @@ class OvertimeController extends Controller
 
         if ($employeeId) {
             // Authorization check: Can I view this employee?
-            $isSubordinate = in_array($employeeId, $subordinateIds);
             $isSelf = ($employeeId == $myEmployeeId);
-
-            if (!$isAdmin && !$isSubordinate && !$isSelf) {
+            if (!$canViewAll && !$isSelf) {
                 abort(403, 'You do not have permission to view this employee\'s overtime.');
             }
 
             $selectedEmployee = Employee::with(['grade', 'officeTime'])->find($employeeId);
             
-            // Rule: Admin can edit anyone. Managers can edit subordinates. Employees can edit self.
-            $canEdit = $isAdmin || $isSubordinate || $isSelf;
+            // Rule: Users with Admin Config can edit anyone. Others can only edit themselves.
+            $canEdit = $canViewAll || $isSelf;
             $startDate = Carbon::createFromDate($year, $month, 1);
             $endDate = $startDate->copy()->endOfMonth();
 
@@ -189,7 +171,8 @@ class OvertimeController extends Controller
             'holidays',
             'canEdit',
             'isTeamLeadLayout',
-            'perHourRate'
+            'perHourRate',
+            'canViewAll'
         ));
     }
 
@@ -435,8 +418,8 @@ class OvertimeController extends Controller
         $user = Auth::user();
         $roleName = optional($user->role)->name ?? 'Unassigned';
         
-        // HR Admin / Superadmin can edit ANYONE (including themselves)
-        if (in_array($roleName, ['HR Admin', 'Superadmin'])) {
+        // Users with Admin Config permission can edit ANYONE
+        if ($user->hasMenuAccess('overtime-admin-config')) {
             return true;
         }
 
@@ -451,16 +434,7 @@ class OvertimeController extends Controller
             return true;
         }
 
-        // Check if Reporting Manager (Direct or Departmental)
-        $isDirectManager = ($targetEmployee->reporting_manager_id == $myEmployeeId);
-        $isDeptIncharge  = false;
-        if ($targetEmployee->department_id) {
-            $isDeptIncharge = \App\Models\Department::where('id', $targetEmployee->department_id)
-                ->where('incharge_id', $myEmployeeId)
-                ->exists();
-        }
-
-        return $isDirectManager || $isDeptIncharge;
+        return false; // No longer allowing manager edits unless they have Admin Config
     }
 
     private function getEmployeePerHourRate(Employee $employee): float

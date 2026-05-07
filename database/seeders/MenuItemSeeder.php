@@ -181,7 +181,7 @@ class MenuItemSeeder extends Seeder
 
         // Define child menu items under Overtime
         $overtimeChildren = [
-            ['name' => 'Monthly Config', 'slug' => 'overtime-monthly', 'icon' => 'bi-calendar-month', 'route_name' => 'overtimes.index', 'sort_order' => 1],
+            ['name' => 'Admin Config',   'slug' => 'overtime-admin-config', 'icon' => 'bi-gear-wide-connected', 'route_name' => 'overtimes.index', 'sort_order' => 1],
             ['name' => 'Settings',       'slug' => 'overtime-settings', 'icon' => 'bi-gear',           'route_name' => 'overtimes.settings', 'sort_order' => 2],
         ];
 
@@ -258,7 +258,6 @@ class MenuItemSeeder extends Seeder
             'employee-attendance',
             'employee-leave-request',
             'overtime', 
-            'overtime-monthly',
         ])->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 
