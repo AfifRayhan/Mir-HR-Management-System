@@ -151,6 +151,14 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Attendances', 'icon' => 'bi-clock', 'route_name' => null, 'sort_order' => 11.5]
         );
 
+        foreach ($attendanceChildren as $child) {
+            $child['parent_id'] = $adminAttendanceParent->id;
+            MenuItem::updateOrCreate(
+                ['slug' => $child['slug']],
+                $child
+            );
+        }
+
         // Define child menu items under Roster
         $rosterChildren = [
             ['name' => 'Manage Roster', 'slug' => 'roster-index', 'icon' => 'bi-calendar3', 'route_name' => 'roster.index', 'sort_order' => 1],
