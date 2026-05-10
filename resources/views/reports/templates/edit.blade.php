@@ -136,7 +136,6 @@
                 })
                 .then(editor => {
                     activeEditor = editor;
-                    console.log('CKEditor initialized');
                 })
                 .catch(error => {
                     console.error(error);

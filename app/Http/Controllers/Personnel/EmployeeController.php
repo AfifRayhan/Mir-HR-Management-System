@@ -196,7 +196,7 @@ class EmployeeController extends Controller
             'reporting_manager_id', 'roster_group', 'employee_type',
             'probation_duration', 'probation_start_date', 'probation_end_date', 'gross_salary',
         ]);
-        $employeeData['status'] = 'active'; // Employee status removed from form
+        $employeeData['status'] = $request->user_status ?? 'active'; // Employee status syncs with user status
         $employeeData['user_id'] = $userId;
 
         $employee = Employee::create($employeeData);
@@ -372,6 +372,11 @@ class EmployeeController extends Controller
             'reporting_manager_id', 'roster_group', 'employee_type',
             'probation_duration', 'probation_start_date', 'probation_end_date', 'gross_salary',
         ]);
+        
+        // Sync Employee status with user status
+        if ($request->has('user_status')) {
+            $employeeData['status'] = $request->user_status;
+        }
         
         // Handle Salary History
         if (isset($employeeData['gross_salary'])) {

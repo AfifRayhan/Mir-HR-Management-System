@@ -51,9 +51,9 @@ class HrDashboardController extends Controller
 
         // Core Data
         $upcomingHolidays = Holiday::query()->whereDate('from_date', '>=', $today)
+            ->whereYear('from_date', $today->year)
             ->where('is_active', true)
             ->orderBy('from_date', 'asc')
-            ->take(5)
             ->get();
 
         $totalEmployees = $activeEmployeesCount;

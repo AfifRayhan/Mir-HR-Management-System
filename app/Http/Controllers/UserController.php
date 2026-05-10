@@ -82,6 +82,10 @@ class UserController extends Controller
 
         $user->update($validated);
 
+        if ($user->employee) {
+            $user->employee->update(['status' => $validated['status']]);
+        }
+
         return redirect()->route('security.users.index')
             ->with('success', 'User updated successfully.');
     }

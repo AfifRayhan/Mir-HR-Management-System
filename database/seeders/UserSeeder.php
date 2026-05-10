@@ -45,11 +45,12 @@ class UserSeeder extends Seeder
 
         // Optional: Ensure an HR Admin always exists
         if ($hrAdminRole) {
+            $adminEmail = env('DEFAULT_ADMIN_EMAIL', 'hradmin@example.com');
             User::firstOrCreate(
-                ['email' => 'hradmin@example.com'],
+                ['email' => $adminEmail],
                 [
                     'name' => 'HR Admin',
-                    'password' => Hash::make('password'),
+                    'password' => Hash::make(env('DEFAULT_ADMIN_PASSWORD', 'secret')),
                     'employee_id' => null,
                     'role_id' => $hrAdminRole->id,
                     'status' => 'active',
@@ -59,9 +60,40 @@ class UserSeeder extends Seeder
 
         $inchargeIds = Department::whereNotNull('incharge_id')->pluck('incharge_id')->toArray();
         $employees = Employee::all();
-        $hashedPassword = Hash::make('password');
+        
+        $csvPath = storage_path('app/private/password.csv');
+        $passwordsByEmail = [];
+
+        if (file_exists($csvPath)) {
+            $this->command->info("Reading passwords from CSV...");
+            if (($handle = fopen($csvPath, "r")) !== false) {
+                $header = fgetcsv($handle, 1000, ","); // skip header
+                while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+                    if (count($data) >= 4) {
+                        $email = strtolower(trim($data[3]));
+                        $password = trim($data[2]);
+                        if (!empty($email) && !empty($password)) {
+                            $passwordsByEmail[$email] = $password;
+                        }
+                    }
+                }
+                fclose($handle);
+            }
+        }
+
+        $defaultPassword = env('DEFAULT_USER_PASSWORD');
+        if (empty($defaultPassword)) {
+            // Generate a random 40-character password so no one can log in
+            $defaultPassword = \Illuminate\Support\Str::random(40);
+        }
+        $hashedDefaultPassword = Hash::make($defaultPassword);
+        
+        $isProduction = app()->environment('production');
+
         $count = count($employees);
         $this->command->info("Creating/updating users for $count employees...");
+
+        $hashCache = [];
 
         foreach ($employees as $index => $emp) {
             $roleId = in_array($emp->id, $inchargeIds) ? ($teamLeadRole->id ?? null) : ($employeeRole->id ?? null);
@@ -71,12 +103,27 @@ class UserSeeder extends Seeder
                 $email = strtolower(str_replace(' ', '.', $emp->name)) . $emp->id . '@example.com';
             }
 
+            $lookupEmail = strtolower(trim($email));
+            
+            if (!$isProduction && env('DEFAULT_USER_PASSWORD')) {
+                // In local/development, force everyone to the default password for easy testing
+                $userHashedPassword = $hashedDefaultPassword;
+            } elseif (isset($passwordsByEmail[$lookupEmail])) {
+                $plain = $passwordsByEmail[$lookupEmail];
+                if (!isset($hashCache[$plain])) {
+                    $hashCache[$plain] = Hash::make($plain);
+                }
+                $userHashedPassword = $hashCache[$plain];
+            } else {
+                $userHashedPassword = $hashedDefaultPassword;
+            }
+
             $user = User::where('email', $email)->first();
             if (!$user) {
                 $user = User::create([
                     'name' => $emp->name,
                     'email' => $email,
-                    'password' => $hashedPassword,
+                    'password' => $userHashedPassword,
                     'role_id' => $roleId,
                     'status' => 'active',
                     'employee_id' => $emp->employee_code,
@@ -84,7 +131,7 @@ class UserSeeder extends Seeder
             } else {
                 $user->update([
                     'role_id' => $roleId,
-                    'password' => $hashedPassword,
+                    'password' => $userHashedPassword,
                 ]);
             }
 

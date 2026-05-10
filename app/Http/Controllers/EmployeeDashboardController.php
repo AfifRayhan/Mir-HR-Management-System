@@ -247,6 +247,7 @@ class EmployeeDashboardController extends Controller
         return [
             'activeNotices' => Notice::active()->orderBy('created_at', 'desc')->take(5)->get(),
             'upcomingHolidays' => Holiday::whereDate('from_date', '>=', $today)
+                ->whereYear('from_date', $today->year)
                 ->where('is_active', true)->orderBy('from_date', 'asc')->get(),
             'upcomingBirthdays' => Employee::whereNotNull('date_of_birth')->where('status', 'active')->get()
                 ->map(function ($emp) use ($today) {

@@ -14,7 +14,7 @@
                         <h5 class="mb-1 text-2xl font-bold">{{ isset($employee) ? __('Edit Employee') : __('Add New Employee') }}</h5>
                         <p class="mb-0 text-gray-500">{{ isset($employee) ? __('Update employee profile and associations') : __('Create a new employee profile in the system') }}</p>
                     </div>
-                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-secondary rounded-pill d-flex align-items-center">
+                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
                         <i class="bi bi-arrow-left me-2"></i>{{ __('Back to List') }}
                     </a>
                 </div>
@@ -28,8 +28,8 @@
 
                 <div class="form-card mb-5">
                     <!-- Personal Information -->
-                    <div class="form-section-title">
-                        <i class="bi bi-person-badge"></i>{{ __('Personal Information') }}
+                    <div class="form-section-title text-success mb-4">
+                        <i class="bi bi-person-badge me-2"></i>{{ __('Personal Information') }}
                     </div>
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
@@ -166,8 +166,8 @@
                     </div>
 
                     <!-- Emergency Contact Information -->
-                    <div class="form-section-title">
-                        <i class="bi bi-telephone-outbound"></i>{{ __('Emergency Contact Information') }}
+                    <div class="form-section-title text-success mb-4">
+                        <i class="bi bi-telephone-outbound me-2"></i>{{ __('Emergency Contact Information') }}
                     </div>
                     <div class="row g-4 mb-5">
                         <div class="col-md-3">
@@ -193,8 +193,8 @@
                     </div>
 
                     <!-- Organization Details -->
-                    <div class="form-section-title">
-                        <i class="bi bi-building"></i>{{ __('Organization & Role') }}
+                    <div class="form-section-title text-success mb-4">
+                        <i class="bi bi-building me-2"></i>{{ __('Organization & Role') }}
                     </div>
                     <div class="row g-4 mb-5">
                         <div class="col-md-4">
@@ -296,8 +296,8 @@
                     <!-- Probation Information -->
                     <div id="probation-section" class="row g-4 mb-5" @style(['display' => old('employee_type', $employee->employee_type ?? '') == 'Probation' ? 'flex' : 'none'])>
                         <div class="col-12">
-                            <div class="form-section-title mt-0">
-                                <i class="bi bi-clock-history"></i>{{ __('Probation Information') }}
+                            <div class="form-section-title mt-0 text-success mb-4">
+                                <i class="bi bi-clock-history me-2"></i>{{ __('Probation Information') }}
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -316,51 +316,12 @@
                             @error('probation_end_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
-
-                    <!-- Account & Status -->
-                    <div class="form-section-title">
-                        <i class="bi bi-shield-lock"></i>{{ __('System User Account') }}
-                    </div>
-                    <div class="row g-4 mb-3">
-                        <div class="col-12 mb-2">
-                            <div class="form-text text-muted">
-                                <i class="bi bi-info-circle me-1"></i>{{ __('Fill these fields to create or update the system user account for this employee. The corporate email field above will be used as the login email. To update an existing user account, its password field can be left blank.') }}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">{{ __('Password') }}</label>
-                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ isset($employee) && $employee->user_id ? __('Leave blank to keep existing') : __('Enter password') }}">
-                            @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">{{ __('Confirm Password') }}</label>
-                            <input type="password" name="password_confirmation" class="form-control" placeholder="{{ __('Confirm password') }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">{{ __('Role') }}</label>
-                            <select name="role_id" class="form-select @error('role_id') is-invalid @enderror">
-                                <option value="">{{ __('— No Account —') }}</option>
-                                @foreach($roles as $role)
-                                <option value="{{ $role->id }}" {{ old('role_id', isset($employee) && $employee->user ? $employee->user->role_id : '') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('role_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">{{ __('User Status') }}</label>
-                            <select name="user_status" class="form-select @error('user_status') is-invalid @enderror">
-                                <option value="active" {{ old('user_status', isset($employee) && $employee->user ? $employee->user->status : 'active') === 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                                <option value="inactive" {{ old('user_status', isset($employee) && $employee->user ? $employee->user->status : '') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                            </select>
-                            @error('user_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Experience Information -->
                 <div class="form-card mb-5">
-                    <div class="form-section-title position-relative d-flex align-items-center mb-4">
-                        <span><i class="bi bi-briefcase"></i>{{ __('Work Experience') }}</span>
+                    <div class="form-section-title position-relative d-flex align-items-center mb-4 text-success">
+                        <span><i class="bi bi-briefcase me-2"></i>{{ __('Work Experience') }}</span>
                         <button type="button" id="add-experience" class="btn btn-outline-success rounded-pill font-bold transition-all hover:bg-success hover:text-white position-absolute" style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
                             <i class="bi bi-plus-lg me-1"></i>{{ __('Add Experience') }}
                         </button>
@@ -461,8 +422,8 @@
 
                 <!-- Qualification Information -->
                 <div class="form-card mb-5">
-                    <div class="form-section-title position-relative d-flex align-items-center mb-4">
-                        <span><i class="bi bi-mortarboard"></i>{{ __('Academic Qualifications') }}</span>
+                    <div class="form-section-title position-relative d-flex align-items-center mb-4 text-success">
+                        <span><i class="bi bi-mortarboard me-2"></i>{{ __('Academic Qualifications') }}</span>
                         <button type="button" id="add-qualification" class="btn btn-outline-success rounded-pill font-bold transition-all hover:bg-success hover:text-white position-absolute" style="font-size: 11px; padding: 2px 12px; width: fit-content; border-width: 1px; right: 0; top: 50%; transform: translateY(-50%);">
                             <i class="bi bi-plus-lg me-1"></i>{{ __('Add Qualification') }}
                         </button>

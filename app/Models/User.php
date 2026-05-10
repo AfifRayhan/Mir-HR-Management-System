@@ -92,4 +92,9 @@ class User extends Authenticatable
     {
         return $this->notifications()->whereNull('read_at')->count();
     }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
 }
