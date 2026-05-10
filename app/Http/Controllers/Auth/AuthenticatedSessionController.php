@@ -29,8 +29,10 @@ class AuthenticatedSessionController extends Controller
 
         if ($request->boolean('remember')) {
             Cookie::queue('remember_email', $request->email, 60 * 24 * 30); // 30 days
+            Cookie::queue('remember_me', 'on', 60 * 24 * 30); // 30 days
         } else {
             Cookie::queue(Cookie::forget('remember_email'));
+            Cookie::queue(Cookie::forget('remember_me'));
         }
 
         $request->session()->regenerate();

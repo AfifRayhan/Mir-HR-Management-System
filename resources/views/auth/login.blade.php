@@ -71,7 +71,8 @@
                                 type="checkbox"
                                 class="form-check-input"
                                 name="remember"
-                                value="1">
+                                value="1"
+                                {{ Cookie::get('remember_me') ? 'checked' : '' }}>
                             <label class="form-check-label small" for="remember_me">
                                 {{ __('Remember me') }}
                             </label>
