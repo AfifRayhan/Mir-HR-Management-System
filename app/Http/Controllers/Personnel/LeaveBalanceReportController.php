@@ -24,7 +24,9 @@ class LeaveBalanceReportController extends Controller
         $year = $request->input('year', now()->year);
 
         $leaveBalances = collect();
+        $selectedEmployee = null;
         if ($selectedEmployeeId) {
+            $selectedEmployee = Employee::with(['department', 'designation', 'office'])->find($selectedEmployeeId);
             $leaveBalances = LeaveBalance::with('leaveType')
                 ->where('employee_id', $selectedEmployeeId)
                 ->where('year', $year)
@@ -32,7 +34,7 @@ class LeaveBalanceReportController extends Controller
         }
 
         return view('personnel.reports.leave-balance.preview', compact(
-            'employees', 'selectedEmployeeId', 'year', 'leaveBalances', 'user', 'roleName', 'employeeRecord'
+            'employees', 'selectedEmployeeId', 'selectedEmployee', 'year', 'leaveBalances', 'user', 'roleName', 'employeeRecord'
         ));
     }
 

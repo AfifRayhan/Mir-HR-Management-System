@@ -16,7 +16,12 @@ class RolePermissionController extends Controller
     public function index(Request $request)
     {
         $roles = Role::orderBy('name')->get();
-        $users = User::with('role')->orderBy('name')->get();
+        
+        $users = User::with(['role', 'employee'])
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
+
         $treeData = $this->resolveTreeData($request);
 
         return view('security.role-permissions.index', compact(

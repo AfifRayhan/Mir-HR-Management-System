@@ -377,11 +377,11 @@ class OvertimeExport implements FromArray, WithStyles, WithEvents, WithDrawings,
 
     public function drawings()
     {
-        $logo = $this->getData()['employee']->office->logo ?? 'images/Mirtel Group Logo .png';
+        $logo = $this->getData()['employee']->office->logo ?? 'images/MIRORIGINAL.jpeg';
         $logoPath = public_path($logo);
         
         if (!file_exists($logoPath)) {
-            $logoPath = public_path('images/Mirtel Group Logo .png');
+            $logoPath = public_path('images/MIRORIGINAL.jpeg');
         }
 
         $drawing = new Drawing();

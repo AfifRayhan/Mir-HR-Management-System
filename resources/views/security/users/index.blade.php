@@ -5,6 +5,45 @@
         @include('partials.ui-sidebar')
 
         <main class="ui-main">
+            <script>
+                document.addEventListener('click', function(e) {
+                    const btn = e.target.closest('[data-confirm-user]');
+                    if (!btn) return;
+
+                    const form = btn.closest('form');
+                    const pass = form.querySelector('input[name="password"]');
+                    const conf = form.querySelector('input[name="password_confirmation"]');
+                    
+                    if (pass && conf) {
+                        const pv = pass.value;
+                        const cv = conf.value;
+                        
+                        // Mismatch
+                        if (pv.length > 0 && pv !== cv) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Passwords do not match! Please check again.');
+                            conf.focus();
+                            return false;
+                        }
+
+                        // Confirm First
+                        if (btn.hasAttribute('data-confirm-user')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const msg = pv.length > 0 
+                                ? 'Update user and CHANGE password?' 
+                                : 'Update user info? (Password will not be changed)';
+                                
+                            if (confirm(msg)) {
+                                btn.removeAttribute('data-confirm-user');
+                                btn.click();
+                            }
+                        }
+                    }
+                }, true); // Use capture phase to get ahead of other listeners
+            </script>
             <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
@@ -66,7 +105,7 @@
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm">
+                            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill shadow-sm btn-update-user" data-confirm-user="true">
                                 <i class="bi bi-person-check me-2"></i>{{ __('Create User') }}
                             </button>
                         </form>
@@ -176,11 +215,11 @@
                                                         <div class="row g-2 mb-3">
                                                             <div class="col-6">
                                                                 <label class="form-label small fw-bold text-muted">{{ __('New Password') }}</label>
-                                                                <input type="password" name="password" class="form-control rounded-3" placeholder="Leave blank">
+                                                                <input type="password" name="password" id="edit_password_{{ $u->id }}" class="form-control rounded-3" placeholder="Enter new password">
                                                             </div>
                                                             <div class="col-6">
-                                                                <label class="form-label small fw-bold text-muted">{{ __('Confirm') }}</label>
-                                                                <input type="password" name="password_confirmation" class="form-control rounded-3" placeholder="Leave blank">
+                                                                <label class="form-label small fw-bold text-muted">{{ __('Confirm') }} <span class="text-danger">*</span></label>
+                                                                <input type="password" name="password_confirmation" id="edit_password_confirmation_{{ $u->id }}" class="form-control rounded-3" placeholder="Repeat new password">
                                                             </div>
                                                         </div>
                                                         <div class="row g-2">
@@ -204,7 +243,7 @@
                                                     </div>
                                                     <div class="modal-footer border-0 p-4 pt-0">
                                                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                                                        <button type="submit" class="btn btn-primary rounded-pill px-4">{{ __('Update User') }}</button>
+                                                        <button type="submit" class="btn btn-primary rounded-pill px-4 btn-update-user" data-confirm-user="true">{{ __('Update User') }}</button>
                                                     </div>
                                                 </form>
                                             </div>

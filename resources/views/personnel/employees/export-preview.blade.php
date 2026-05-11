@@ -54,9 +54,20 @@
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Preview & Export') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('Select columns, preview data, then download') }}</p>
+                    <div class="d-flex align-items-center">
+                        @if(isset($selectedOffice) && $selectedOffice->logo)
+                            <div class="me-4 border-end pe-4">
+                                <img src="{{ asset('storage/' . $selectedOffice->logo) }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                            </div>
+                        @else
+                            <div class="me-4 border-end pe-4">
+                                <img src="{{ asset('images/MIRORIGINAL.jpeg') }}" alt="Default Logo" style="height: 60px; object-fit: contain;">
+                            </div>
+                        @endif
+                        <div>
+                            <h5 class="mb-1 text-2xl font-bold">{{ __('Preview & Export') }}</h5>
+                            <p class="mb-0 text-gray-500">{{ __('Select columns, preview data, then download') }}</p>
+                        </div>
                     </div>
                     <a href="{{ route('personnel.employees.index') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
                         <i class="bi bi-arrow-left me-2"></i>{{ __('Back to Employees') }}
@@ -307,37 +318,22 @@
     </div>
 
     @push('scripts')
-    {{-- Pass server data to JS without triggering IDE linter errors --}}
-    <script type="application/json" id="exportPreviewData">
+    <script type="application/json" id="exportPreviewRoutes">
         @php
             echo json_encode([
-                'totalCols' => count($allColumns),
-                'filters' => array_filter([
-                    'search' => request('search'),
-                    'department_id' => request('department_id'),
-                    'office_id' => request('office_id'),
-                    'designation_id' => request('designation_id'),
-                    'section_id' => request('section_id'),
-                    'status' => request('status'),
-                    'sort' => request('sort'),
-                    'direction' => request('direction'),
-                ]),
-                'routes' => [
-                    'excel' => route('personnel.reports.employees.export.excel'),
-                    'csv' => route('personnel.reports.employees.export.csv'),
-                    'pdf' => route('personnel.reports.employees.export.pdf'),
-                    'word' => route('personnel.reports.employees.export.word'),
-                ],
+                'excel' => route('personnel.reports.employees.export.excel'),
+                'csv' => route('personnel.reports.employees.export.csv'),
+                'pdf' => route('personnel.reports.employees.export.pdf'),
+                'word' => route('personnel.reports.employees.export.word'),
             ]);
         @endphp
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var config = JSON.parse(document.getElementById('exportPreviewData').textContent);
             var checkboxes = document.querySelectorAll('.column-check');
             var countEl = document.getElementById('columnCount');
-            var totalCols = config.totalCols;
-            var routes = config.routes;
+            var totalCols = {{ count($allColumns) }};
+            var routes = JSON.parse(document.getElementById('exportPreviewRoutes').textContent);
 
             function updateCount() {
                 var checked = document.querySelectorAll('.column-check:checked').length;
@@ -366,28 +362,21 @@
                 collapseIcon.classList.replace('bi-chevron-down', 'bi-chevron-up');
             });
 
-            // Download links — build URL with current columns + filters
             function buildDownloadUrl(baseRoute) {
                 var params = new URLSearchParams();
-                
-                // 1. Add current Filters from UI
-                const filterInputs = [
-                    'search', 'office_id', 'department_id', 'section_id', 
-                    'designation_id', 'grade_id', 'status'
-                ];
-                filterInputs.forEach(name => {
-                    const el = document.querySelector(`[name="${name}"]`);
+                var filterInputs = ['search', 'office_id', 'department_id', 'section_id', 'designation_id', 'grade_id', 'status'];
+
+                filterInputs.forEach(function(name) {
+                    var el = document.querySelector('[name="' + name + '"]');
                     if (el && el.value) {
                         params.set(name, el.value);
                     }
                 });
 
-                // 2. Add selected columns from UI
                 document.querySelectorAll('.column-check:checked').forEach(function(cb) {
                     params.append('columns[]', cb.value);
                 });
 
-                // 3. Add current Sort/Direction from UI
                 var sortEl = document.querySelector('[name="sort"]');
                 var dirEl = document.querySelector('[name="direction"]');
                 if (sortEl) params.set('sort', sortEl.value);
@@ -406,6 +395,7 @@
             });
             document.getElementById('downloadPdf').addEventListener('click', function (e) {
                 e.preventDefault();
+
                 var selectedCount = document.querySelectorAll('.column-check:checked').length;
                 if (selectedCount > 9) {
                     Swal.fire({
@@ -416,24 +406,6 @@
                     });
                     return;
                 }
-                let timerInterval;
-                Swal.fire({
-                    title: 'Generating PDF...',
-                    html: 'Please wait while we prepare your document.<br><br><b></b>%',
-                    timer: 8000,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                        const b = Swal.getHtmlContainer().querySelector('b');
-                        timerInterval = setInterval(() => {
-                            const progress = Swal.getTimerProgressBar() ? Math.round((1 - Swal.getTimerLeft() / 8000) * 100) : 0;
-                            b.textContent = progress;
-                        }, 100);
-                    },
-                    willClose: () => {
-                        clearInterval(timerInterval);
-                    }
-                });
 
                 window.location.href = buildDownloadUrl(routes.pdf);
             });

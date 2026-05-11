@@ -30,6 +30,8 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
         'office', 'contact_no', 'joining_date', 'status',
     ];
 
+    protected $selectedOffice;
+
     public function __construct($request, $columns = null, $isPdf = false, $format = 'excel')
     {
         $this->request = $request;
@@ -45,6 +47,10 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
         }
 
         $this->columns = $selected;
+
+        if (isset($this->request['office_id'])) {
+            $this->selectedOffice = Office::find($this->request['office_id']);
+        }
     }
 
     public function startCell(): string
@@ -59,9 +65,18 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
         }
 
         $drawing = new Drawing();
-        $drawing->setName('Mir Telecom Logo');
-        $drawing->setDescription('Mir Telecom Logo');
-        $drawing->setPath(public_path('images/Mirtel Group Logo .png'));
+        $drawing->setName('Office Logo');
+        $drawing->setDescription('Office Logo');
+        
+        $logoPath = public_path('images/MIRORIGINAL.jpeg');
+        if ($this->selectedOffice && $this->selectedOffice->logo) {
+            $officeLogo = storage_path('app/public/' . $this->selectedOffice->logo);
+            if (file_exists($officeLogo)) {
+                $logoPath = $officeLogo;
+            }
+        }
+
+        $drawing->setPath($logoPath);
         $drawing->setHeight(50);
         $drawing->setCoordinates('A1');
         $drawing->setOffsetX(10);
@@ -356,7 +371,9 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
                 // Set to Landscape for better fit in PDF
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
-                    ->setPaperSize(PageSetup::PAPERSIZE_A4);
+                    ->setPaperSize(PageSetup::PAPERSIZE_A4)
+                    ->setFitToWidth(1)
+                    ->setFitToHeight(0);
                 
                 // Set narrow margins
                 $sheet->getPageMargins()->setTop(0.5);

@@ -39,12 +39,12 @@
 <body>
     <div style="text-align: center; margin-bottom: 10px;">
         @php
-            $logo = $employee->office->logo ?? 'images/Mirtel Group Logo .png';
+            $logo = $employee->office->logo ?? 'images/MIRORIGINAL.jpeg';
             $logoPath = public_path($logo);
             if (!file_exists($logoPath)) {
-                $logoPath = public_path('images/Mirtel Group Logo .png');
+                $logoPath = public_path('images/MIRORIGINAL.jpeg');
             }
-            $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+            $logoData = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath));
         @endphp
         @if($logoData)
             <img src="{{ $logoData }}" class="logo">

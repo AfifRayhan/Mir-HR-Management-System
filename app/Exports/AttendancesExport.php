@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Str;
 
 class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents, WithDrawings, WithCustomStartCell, WithCustomChunkSize
 {
@@ -25,11 +26,16 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
 
     protected $request;
     protected $format;
+    protected $selectedOffice;
 
     public function __construct($request, $format = 'excel')
     {
         $this->request = $request;
         $this->format = $format;
+
+        if (isset($this->request['office_id'])) {
+            $this->selectedOffice = \App\Models\Office::find($this->request['office_id']);
+        }
     }
 
     public function startCell(): string
@@ -44,9 +50,22 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
         }
 
         $drawing = new Drawing();
-        $drawing->setName('Mir Telecom Logo');
-        $drawing->setDescription('Mir Telecom Logo');
-        $drawing->setPath(public_path('images/Mirtel Group Logo .png'));
+        $drawing->setName('Office Logo');
+        $drawing->setDescription('Office Logo');
+        
+        $logoPath = public_path('images/MIRORIGINAL.jpeg');
+        if ($this->selectedOffice && $this->selectedOffice->logo) {
+            $officeLogo = $this->selectedOffice->logo;
+            $resolvedLogoPath = Str::startsWith($officeLogo, 'images/')
+                ? public_path($officeLogo)
+                : storage_path('app/public/' . $officeLogo);
+
+            if (file_exists($resolvedLogoPath)) {
+                $logoPath = $resolvedLogoPath;
+            }
+        }
+
+        $drawing->setPath($logoPath);
         $drawing->setHeight(50);
         $drawing->setCoordinates('A1');
         $drawing->setOffsetX(10);
@@ -204,14 +223,16 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
                 if ($this->format === 'csv') return;
 
                 $sheet = $event->sheet->getDelegate();
-                $sheet->setCellValue('B1', 'Mir Telecom Ltd.');
+                $sheet->setCellValue('B1', $this->selectedOffice->name ?? 'The Mir Group');
                 $sheet->setCellValue('B2', 'House-04, Road-21, Gulshan-1, Dhaka-1212');
                 $sheet->mergeCells("B1:E1");
                 $sheet->mergeCells("B2:E2");
                 $sheet->setShowGridlines(false);
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
-                    ->setPaperSize(PageSetup::PAPERSIZE_A4);
+                    ->setPaperSize(PageSetup::PAPERSIZE_A4)
+                    ->setFitToWidth(1)
+                    ->setFitToHeight(0);
             },
         ];
     }

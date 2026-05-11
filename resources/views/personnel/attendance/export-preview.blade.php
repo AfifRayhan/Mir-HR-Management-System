@@ -26,9 +26,24 @@
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Attendance Preview & Export') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('Filter data, preview records, then download') }}</p>
+                    <div class="d-flex align-items-center">
+                        @php
+                            $logoUrl = asset('images/MIRORIGINAL.jpeg');
+
+                            if (isset($selectedOffice) && $selectedOffice->logo) {
+                                $officeLogo = $selectedOffice->logo;
+                                $logoUrl = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                    ? asset($officeLogo)
+                                    : asset('storage/' . $officeLogo);
+                            }
+                        @endphp
+                        <div class="me-4 border-end pe-4">
+                            <img src="{{ $logoUrl }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                        </div>
+                        <div>
+                            <h5 class="mb-1 text-2xl font-bold">{{ __('Attendance Preview & Export') }}</h5>
+                            <p class="mb-0 text-gray-500">{{ __('Filter data, preview records, then download') }}</p>
+                        </div>
                     </div>
                     <a href="{{ route('personnel.attendances.index') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
                         <i class="bi bi-arrow-left me-2"></i>{{ __('Back to Attendance') }}

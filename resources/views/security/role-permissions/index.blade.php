@@ -17,6 +17,48 @@
             padding: 1.5rem;
             box-shadow: var(--ui-shadow);
         }
+
+        /* Autocomplete Styles */
+        .autocomplete-container {
+            position: relative;
+        }
+        .autocomplete-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid var(--ui-border);
+            border-radius: 0 0 var(--ui-radius-md) var(--ui-radius-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1050;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+        }
+        .autocomplete-results.show {
+            display: block;
+        }
+        .autocomplete-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--ui-border-faint);
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-item:hover, .autocomplete-item.active {
+            background: var(--ui-bg-faint);
+            color: var(--ui-primary);
+        }
+        .autocomplete-item .id-badge {
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--ui-secondary);
+            margin-right: 0.5rem;
+        }
     </style>
     @endpush
 
@@ -79,15 +121,44 @@
 
                             <div id="user_selector_group" class="{{ $manageBy === 'role' ? 'd-none' : '' }}">
                                 <div class="mb-3">
-                                    <label for="user_id" class="form-label small fw-bold text-muted">{{ __('Target Employee') }}</label>
-                                    <select name="user_id" id="user_id" class="form-select rounded-3 border-light shadow-sm" data-index-url="{{ route('security.role-permissions.index') }}">
+                                    <label class="form-label small fw-bold text-muted">{{ __('Search & Target Employee') }}</label>
+                                    
+                                    {{-- Enhanced Search Box with Autocomplete --}}
+                                    <div class="autocomplete-container">
+                                        <div class="input-group mb-2 shadow-sm">
+                                            <span class="input-group-text bg-white border-end-0 text-muted">
+                                                <i class="bi bi-search"></i>
+                                            </span>
+                                            <input type="text" id="employee_search_input" class="form-control border-start-0 ps-0" placeholder="{{ __('Search Name or ID...') }}" autocomplete="off">
+                                            <button class="btn btn-outline-secondary border-start-0 d-none" type="button" id="clear_employee_search" title="{{ __('Clear Search') }}">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                        <div id="autocomplete-results" class="autocomplete-results"></div>
+                                    </div>
+
+                                    {{-- Hidden Select for Form Submission --}}
+                                    <select name="user_id" id="user_id" class="d-none" data-index-url="{{ route('security.role-permissions.index') }}">
                                         <option value="">{{ __('--- Select Employee ---') }}</option>
                                         @foreach($users as $user)
-                                        <option value="{{ $user->id }}" {{ $selectedUser && $selectedUser->id === $user->id ? 'selected' : '' }}>
-                                            {{ $user->name }} ({{ $user->role->name ?? 'No Role' }})
+                                        <option value="{{ $user->id }}" 
+                                            {{ $selectedUser && $selectedUser->id === $user->id ? 'selected' : '' }}
+                                            data-name="{{ $user->name }}"
+                                            data-code="{{ $user->employee->employee_code ?? 'N/A' }}">
+                                            {{ $user->employee->employee_code ?? 'N/A' }} - {{ $user->name }}
                                         </option>
                                         @endforeach
                                     </select>
+                                    
+                                    <div id="selected_employee_badge" class="mt-2 {{ $selectedUser ? '' : 'd-none' }}">
+                                        <div class="alert alert-success py-2 px-3 rounded-3 d-flex align-items-center mb-0 border-0 shadow-sm">
+                                            <i class="bi bi-person-check-fill me-2"></i>
+                                            <span class="small fw-bold" id="active_employee_name">
+                                                {{ $selectedUser ? ($selectedUser->employee->employee_code ?? 'N/A') . ' - ' . $selectedUser->name : '' }}
+                                            </span>
+                                        </div>
+                                    </div>
+
                                     <div class="form-text text-xs mt-2 text-muted text-success">
                                         <i class="bi bi-lightning-charge me-1"></i>{{ __('Individual permissions override role defaults.') }}
                                     </div>
@@ -365,6 +436,120 @@
                 userIdSelect.addEventListener('change', function() {
                     updateSubmitState();
                     loadTree('user', this.value);
+                });
+            }
+
+            // Floating Autocomplete Employee Search Logic
+            const searchInput = document.getElementById('employee_search_input');
+            const clearSearchBtn = document.getElementById('clear_employee_search');
+            const resultsDiv = document.getElementById('autocomplete-results');
+            const originalOptions = userIdSelect ? Array.from(userIdSelect.options).slice(1) : []; // Skip placeholder
+            const selectedBadge = document.getElementById('selected_employee_badge');
+            const activeEmployeeName = document.getElementById('active_employee_name');
+            let activeIndex = -1;
+
+            function renderSuggestions() {
+                if (!searchInput || !resultsDiv) return;
+                
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                
+                // Show/hide clear button
+                if (clearSearchBtn) {
+                    clearSearchBtn.classList.toggle('d-none', searchTerm === '');
+                }
+
+                if (searchTerm.length < 1) {
+                    resultsDiv.classList.remove('show');
+                    resultsDiv.innerHTML = '';
+                    return;
+                }
+
+                const filtered = originalOptions.filter(opt => {
+                    return opt.text.toLowerCase().includes(searchTerm);
+                }).slice(0, 10); // Show top 10 matches
+
+                if (filtered.length === 0) {
+                    resultsDiv.innerHTML = '<div class="autocomplete-item text-muted text-center py-3">{{ __('No matching employees') }}</div>';
+                    resultsDiv.classList.add('show');
+                    return;
+                }
+
+                resultsDiv.innerHTML = '';
+                filtered.forEach((opt, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    if (index === activeIndex) item.classList.add('active');
+                    
+                    const code = opt.getAttribute('data-code') || 'N/A';
+                    const name = opt.getAttribute('data-name');
+                    
+                    item.innerHTML = `<span class="id-badge">${code}</span> ${name}`;
+                    item.addEventListener('mousedown', (e) => {
+                        e.preventDefault(); // Prevent blur
+                        selectUser(opt.value, `${code} - ${name}`);
+                    });
+                    resultsDiv.appendChild(item);
+                });
+                
+                resultsDiv.classList.add('show');
+            }
+
+            function selectUser(userId, displayText) {
+                userIdSelect.value = userId;
+                searchInput.value = '';
+                resultsDiv.classList.remove('show');
+                
+                if (selectedBadge) {
+                    selectedBadge.classList.remove('d-none');
+                    activeEmployeeName.textContent = displayText;
+                }
+                
+                // Trigger original logic
+                updateSubmitState();
+                loadTree('user', userId);
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    activeIndex = -1;
+                    renderSuggestions();
+                });
+
+                searchInput.addEventListener('focus', renderSuggestions);
+
+                searchInput.addEventListener('keydown', (e) => {
+                    const items = resultsDiv.querySelectorAll('.autocomplete-item');
+                    if (!resultsDiv.classList.contains('show') || items.length === 0) return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+                        renderSuggestions();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        activeIndex = Math.max(activeIndex - 1, 0);
+                        renderSuggestions();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (activeIndex > -1) {
+                            const activeItem = items[activeIndex];
+                            activeItem.dispatchEvent(new MouseEvent('mousedown'));
+                        }
+                    } else if (e.key === 'Escape') {
+                        resultsDiv.classList.remove('show');
+                    }
+                });
+
+                searchInput.addEventListener('blur', () => {
+                    setTimeout(() => resultsDiv.classList.remove('show'), 200);
+                });
+            }
+
+            if (clearSearchBtn) {
+                clearSearchBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    renderSuggestions();
+                    searchInput.focus();
                 });
             }
 

@@ -49,17 +49,30 @@
         <tr>
             <td style="width: 60px; vertical-align: top;">
                 @php
-                    $path = public_path('images/Mirtel Group Logo .png');
-                    $type = pathinfo($path, PATHINFO_EXTENSION);
-                    $data = file_exists($path) ? file_get_contents($path) : null;
-                    $base64 = $data ? 'data:image/' . $type . ';base64,' . base64_encode($data) : '';
+                    $logoPath = public_path('images/MIRORIGINAL.jpeg');
+                    if (isset($selectedOffice) && $selectedOffice->logo) {
+                        $officeLogo = $selectedOffice->logo;
+                        $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                            ? public_path($officeLogo)
+                            : storage_path('app/public/' . $officeLogo);
+
+                        if (file_exists($resolvedLogoPath)) {
+                            $logoPath = $resolvedLogoPath;
+                        }
+                    }
+                    
+                    $logoData = '';
+                    if (file_exists($logoPath)) {
+                        $mimeType = mime_content_type($logoPath);
+                        $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
+                    }
                 @endphp
-                @if($base64)
-                    <img src="{{ $base64 }}" class="logo">
+                @if($logoData)
+                    <img src="{{ $logoData }}" class="logo">
                 @endif
             </td>
             <td style="vertical-align: top;">
-                <div class="company-name">Mir Telecom Ltd.</div>
+                <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
                 <div class="address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
                 <div class="report-title">Monthly Attendance Report of {{ $monthName }}, {{ $year }}</div>
             </td>

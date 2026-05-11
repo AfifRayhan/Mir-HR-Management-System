@@ -34,12 +34,17 @@ class MenuService
                 return $user && $user->hasMenuAccess($child->slug);
             });
 
-            // Find if any child has an exact route match
+            // Remove sidebar-hidden children (permission-only items like "My Overtime")
+            $visibleChildren = $filteredChildren->filter(function ($child) {
+                return !$child->sidebar_hidden;
+            });
+
+            // Find if any child has an exact route match (check all accessible children for active state)
             $exactChildMatch = $filteredChildren->first(function ($child) use ($currentRoute) {
                 return $child->route_name && $currentRoute === $child->route_name;
             });
 
-            $filteredChildren = $filteredChildren->map(function ($child) use ($currentRoute, $exactChildMatch) {
+            $visibleChildren = $visibleChildren->map(function ($child) use ($currentRoute, $exactChildMatch) {
                 if ($exactChildMatch) {
                     // If there's an exact match in the group, only that one is active
                     $child->is_active = ($child->id === $exactChildMatch->id);
@@ -58,20 +63,20 @@ class MenuService
                 return null;
             }
 
-            // Determine if parent is open (if it has children)
+            // Determine if parent is open (if it has visible sidebar children)
             $isOpen = false;
-            if ($filteredChildren->isNotEmpty()) {
+            if ($visibleChildren->isNotEmpty()) {
                 if ($item->route_name && str_starts_with($currentRoute, explode('.', $item->route_name)[0] ?? '')) {
                     $isOpen = true;
                 } else {
-                    $isOpen = $filteredChildren->contains('is_active', true);
+                    $isOpen = $visibleChildren->contains('is_active', true);
                 }
             }
 
             // Enrich item with calculated properties
             $item->is_open = $isOpen;
             $item->is_active = $item->route_name && $currentRoute === $item->route_name;
-            $item->filtered_children = $filteredChildren;
+            $item->filtered_children = $visibleChildren;
 
             return $item;
         })->filter();

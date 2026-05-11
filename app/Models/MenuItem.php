@@ -16,6 +16,11 @@ class MenuItem extends Model
         'route_name',
         'parent_id',
         'sort_order',
+        'sidebar_hidden',
+    ];
+
+    protected $casts = [
+        'sidebar_hidden' => 'boolean',
     ];
 
     /**

@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .ui-download-bar {
@@ -29,9 +30,24 @@
             {{-- Header --}}
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Attendance Log') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('View detailed attendance history for a specific employee') }}</p>
+                    <div class="d-flex align-items-center">
+                        @php
+                            $logoUrl = asset('images/MIRORIGINAL.jpeg');
+
+                            if (isset($selectedEmployee) && $selectedEmployee->office && $selectedEmployee->office->logo) {
+                                $officeLogo = $selectedEmployee->office->logo;
+                                $logoUrl = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                    ? asset($officeLogo)
+                                    : asset('storage/' . $officeLogo);
+                            }
+                        @endphp
+                        <div class="me-4 border-end pe-4">
+                            <img src="{{ $logoUrl }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                        </div>
+                        <div>
+                            <h5 class="mb-1 text-2xl font-bold">{{ __('Employee Attendance Log') }}</h5>
+                            <p class="mb-0 text-gray-500">{{ __('View detailed attendance history for a specific employee') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -41,7 +57,7 @@
                 <form action="{{ route('personnel.reports.attendances.log.preview') }}" method="GET" class="row g-2">
                     <div class="col-md-4">
                         <label class="form-label small font-bold text-gray-600">{{ __('Employee') }}</label>
-                        <select name="employee_id" class="form-select" required>
+                        <select name="employee_id" class="form-select select2" required>
                             <option value="">{{ __('-- Select Employee --') }}</option>
                             @foreach($employees as $emp)
                                 <option value="{{ $emp->id }}" {{ $selectedEmployeeId == $emp->id ? 'selected' : '' }}>
@@ -69,7 +85,20 @@
 
                 <div class="info-card">
                     <div class="row align-items-center">
-                        <div class="col-md-6">
+                        <div class="col-md-1 text-center">
+                            @php
+                                $logoUrl = asset('images/MIRORIGINAL.jpeg');
+
+                                if ($selectedEmployee && $selectedEmployee->office && $selectedEmployee->office->logo) {
+                                    $officeLogo = $selectedEmployee->office->logo;
+                                    $logoUrl = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                        ? asset($officeLogo)
+                                        : asset('storage/' . $officeLogo);
+                                }
+                            @endphp
+                            <img src="{{ $logoUrl }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                        </div>
+                        <div class="col-md-5 ps-4">
                             <h4 class="mb-1 font-bold text-xl text-dark">{{ $selectedEmp->name }}</h4>
                             <p class="mb-0 text-muted">
                                 <span class="badge bg-light text-dark border me-2">{{ $selectedEmp->employee_code }}</span>
@@ -198,9 +227,12 @@
     </div>
 
     @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            $('.select2').select2({ theme: 'bootstrap-5' });
             flatpickr('#from_date', {
                 dateFormat: 'Y-m-d',
                 allowInput: false
@@ -242,7 +274,6 @@
     </script>
     @endpush
 </x-app-layout>
-
 
 
 

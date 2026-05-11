@@ -1,12 +1,11 @@
 <div class="rp-tree-card">
     @php
         $redundantSlugs = [
-            'employee-leave-req',
-            'team-lead-leave-req',
             'team-lead-leave-apps',
             'team-lead-leave-history'
         ];
 
+        // We filter out these specific items from the tree if they are meant to be direct links elsewhere
         $visibleMenuItems = $menuItems->filter(fn($item) => !in_array($item->slug, $redundantSlugs));
     @endphp
 
@@ -71,7 +70,10 @@
                             </div>
                             <div class="rp-module-copy">
                                 <div class="rp-module-title-row">
-                                    <h6 class="rp-module-title mb-0">{{ __($item->name) }}</h6>
+                                    <h6 class="rp-module-title mb-0">
+                                        {{ __($item->name) }}
+                                        <span class="ms-2 opacity-50 fw-normal font-monospace" style="font-size: 10px;">[{{ $item->slug }}]</span>
+                                    </h6>
                                     <span class="rp-module-badge">
                                         {{ $visibleChildren->isNotEmpty() ? trans_choice(':count link|:count links', $visibleChildren->count(), ['count' => $visibleChildren->count()]) : __('Single Link') }}
                                     </span>
@@ -120,7 +122,10 @@
                                             <span class="rp-child-icon">
                                                 <i class="{{ $child->icon }}"></i>
                                             </span>
-                                            <span class="rp-child-name">{{ __($child->name) }}</span>
+                                            <span class="rp-child-name">
+                                                {{ __($child->name) }}
+                                                <span class="ms-1 opacity-50 fw-normal font-monospace text-xs">[{{ $child->slug }}]</span>
+                                            </span>
                                         </div>
                                         <div class="form-check form-switch rp-switch mb-0">
                                             <input class="form-check-input menu-check child-check"

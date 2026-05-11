@@ -29,7 +29,9 @@ class MenuItemSeeder extends Seeder
             ['name' => 'My Attendances',     'slug' => 'employee-attendance',    'icon' => 'bi-clock',          'route_name' => 'employee.attendance.index', 'sort_order' => 4],
             ['name' => 'Security',    'slug' => 'security',           'icon' => 'bi-shield-lock',    'route_name' => null,                 'sort_order' => 5],
             ['name' => 'Settings',    'slug' => 'settings',           'icon' => 'bi-gear',           'route_name' => null,                 'sort_order' => 6],
-            ['name' => 'Leave',       'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 7],
+            ['name' => 'Leave Requests (Employee)', 'slug' => 'employee-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4.5],
+            ['name' => 'Leave Requests (Team Lead)', 'slug' => 'team-lead-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'team-lead.leave.index', 'sort_order' => 4.6],
+            ['name' => 'Leave (HR)',  'slug' => 'leave',              'icon' => 'bi-journal-check',  'route_name' => null,                 'sort_order' => 7],
             ['name' => 'Team Leave',  'slug' => 'team-leave',         'icon' => 'bi-people-fill',    'route_name' => null,                 'sort_order' => 9],
             ['name' => 'Personnel',   'slug' => 'personnel',          'icon' => 'bi-people',         'route_name' => null,                 'sort_order' => 10],
             ['name' => 'Supervisor Remarks', 'slug' => 'team-lead-remarks', 'icon' => 'bi-chat-left-text', 'route_name' => 'team-lead.remarks.index', 'sort_order' => 11],
@@ -38,8 +40,6 @@ class MenuItemSeeder extends Seeder
             ['name' => 'Roster',      'slug' => 'roster',             'icon' => 'bi-calendar3',      'route_name' => 'roster.index',       'sort_order' => 14],
             ['name' => 'Driver Roster', 'slug' => 'driver-roster',    'icon' => 'bi-car-front',      'route_name' => 'driver-roster.index', 'sort_order' => 15],
             ['name' => 'Reports',     'slug' => 'reports',            'icon' => 'bi-file-earmark-pdf', 'route_name' => null,                'sort_order' => 16],
-            ['name' => 'Leave Requests', 'slug' => 'employee-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'employee.leave.index', 'sort_order' => 4.5],
-            ['name' => 'Leave Requests', 'slug' => 'team-lead-leave-request', 'icon' => 'bi-calendar-minus', 'route_name' => 'team-lead.leave.index', 'sort_order' => 4.6],
         ];
 
         $menuModels = [];
@@ -189,8 +189,9 @@ class MenuItemSeeder extends Seeder
 
         // Define child menu items under Overtime
         $overtimeChildren = [
-            ['name' => 'Admin Config',   'slug' => 'overtime-admin-config', 'icon' => 'bi-gear-wide-connected', 'route_name' => 'overtimes.index', 'sort_order' => 1],
-            ['name' => 'Settings',       'slug' => 'overtime-settings', 'icon' => 'bi-gear',           'route_name' => 'overtimes.settings', 'sort_order' => 2],
+            ['name' => 'My Overtime',    'slug' => 'employee-overtime',     'icon' => 'bi-person-check',        'route_name' => 'overtimes.index',    'sort_order' => 0, 'sidebar_hidden' => true],
+            ['name' => 'Admin Config',   'slug' => 'overtime-admin-config', 'icon' => 'bi-gear-wide-connected', 'route_name' => 'overtimes.index',    'sort_order' => 1],
+            ['name' => 'Settings',       'slug' => 'overtime-settings',     'icon' => 'bi-gear',                'route_name' => 'overtimes.settings', 'sort_order' => 2],
         ];
 
         foreach ($overtimeChildren as $child) {
@@ -259,13 +260,14 @@ class MenuItemSeeder extends Seeder
         ])->pluck('id')->all();
         $roleModels['hr_admin']->menuItems()->sync($adminMenuIds);
 
-        // Employee gets Self-Service items + Overtime + Leave Request
+        // Employee gets Self-Service items + Overtime (self-service) + Leave Request
         $employeeMenuIds = MenuItem::whereIn('slug', [
             'employee-dashboard-main',
             'employee-profile',
             'employee-attendance',
             'employee-leave-request',
-            'overtime', 
+            'overtime',
+            'employee-overtime',
         ])->pluck('id')->all();
         $roleModels['employee']->menuItems()->sync($employeeMenuIds);
 

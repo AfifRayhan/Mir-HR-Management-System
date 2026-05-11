@@ -490,10 +490,16 @@ class EmployeeController extends Controller
 
         $employees = $query->get();
 
+        $selectedOffice = null;
+        if ($request->office_id) {
+            $selectedOffice = Office::find($request->office_id);
+        }
+
         return PDF::loadView('personnel.employees.exports.pdf', [
                 'employees' => $employees,
                 'allColumns' => $allColumns,
                 'selectedColumns' => $selectedColumns,
+                'selectedOffice' => $selectedOffice,
             ])
             ->setPaper('a3', 'landscape')
             ->setOption('margin-bottom', 10)
@@ -540,10 +546,16 @@ class EmployeeController extends Controller
 
         $filename = 'employees_' . date('Y-m-d_H-i-s') . '.doc';
 
+        $selectedOffice = null;
+        if ($request->office_id) {
+            $selectedOffice = Office::find($request->office_id);
+        }
+
         return response()->view('personnel.employees.exports.word', [
             'employees' => $employees,
             'allColumns' => $allColumns,
             'selectedColumns' => $selectedColumns,
+            'selectedOffice' => $selectedOffice,
         ])
         ->header('Content-Type', 'application/vnd.ms-word')
         ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
@@ -589,6 +601,11 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(50)->withQueryString();
 
+        $selectedOffice = null;
+        if ($request->office_id) {
+            $selectedOffice = Office::find($request->office_id);
+        }
+
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_ordered_all', 3600, fn() => Office::orderBy('name')->get());
         $departments = \Illuminate\Support\Facades\Cache::remember('departments_ordered_all', 3600, fn() => Department::orderBy('name')->get());
         $sections = \Illuminate\Support\Facades\Cache::remember('sections_ordered_all', 3600, fn() => Section::orderBy('name')->get());
@@ -604,6 +621,7 @@ class EmployeeController extends Controller
             'designations' => $designations,
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
+            'selectedOffice' => $selectedOffice,
         ]);
     }
 

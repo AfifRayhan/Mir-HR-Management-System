@@ -16,14 +16,17 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use Illuminate\Support\Str;
 
 class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDrawings, WithStyles, WithCustomStartCell, WithEvents
 {
     protected array $params;
+    protected $employee;
 
     public function __construct(array $params)
     {
         $this->params = $params;
+        $this->employee = Employee::with('office')->find($params['employee_id']);
     }
 
     public function title(): string
@@ -78,9 +81,22 @@ class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDra
         }
 
         $drawing = new Drawing();
-        $drawing->setName('Mir Telecom Logo');
-        $drawing->setDescription('Mir Telecom Logo');
-        $drawing->setPath(public_path('images/Mirtel Group Logo .png'));
+        $drawing->setName('Office Logo');
+        $drawing->setDescription('Office Logo');
+        
+        $logoPath = public_path('images/MIRORIGINAL.jpeg');
+        if ($this->employee && $this->employee->office && $this->employee->office->logo) {
+            $officeLogo = $this->employee->office->logo;
+            $resolvedLogoPath = Str::startsWith($officeLogo, 'images/')
+                ? public_path($officeLogo)
+                : storage_path('app/public/' . $officeLogo);
+
+            if (file_exists($resolvedLogoPath)) {
+                $logoPath = $resolvedLogoPath;
+            }
+        }
+
+        $drawing->setPath($logoPath);
         $drawing->setHeight(60);
         $drawing->setCoordinates('A1');
         $drawing->setOffsetX(10);
@@ -112,7 +128,9 @@ class LeaveBalanceExport implements FromView, WithTitle, ShouldAutoSize, WithDra
                 $sheet->setShowGridlines(false);
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_PORTRAIT)
-                    ->setPaperSize(PageSetup::PAPERSIZE_A4);
+                    ->setPaperSize(PageSetup::PAPERSIZE_A4)
+                    ->setFitToWidth(1)
+                    ->setFitToHeight(0);
             },
         ];
     }

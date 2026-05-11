@@ -76,9 +76,24 @@
             {{-- Header --}}
             <div class="row mb-4 no-print">
                 <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1 text-2xl font-bold">{{ __('Yearly Attendance Preview') }}</h5>
-                        <p class="mb-0 text-gray-500">{{ __('Monthly summary of employee attendance for the year') }} {{ $year }}</p>
+                    <div class="d-flex align-items-center">
+                        @php
+                            $logoUrl = asset('images/MIRORIGINAL.jpeg');
+
+                            if (isset($selectedOffice) && $selectedOffice->logo) {
+                                $officeLogo = $selectedOffice->logo;
+                                $logoUrl = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                    ? asset($officeLogo)
+                                    : asset('storage/' . $officeLogo);
+                            }
+                        @endphp
+                        <div class="me-4 border-end pe-4">
+                            <img src="{{ $logoUrl }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                        </div>
+                        <div>
+                            <h5 class="mb-1 text-2xl font-bold">{{ __('Yearly Attendance Preview') }}</h5>
+                            <p class="mb-0 text-gray-500">{{ __('Monthly summary of employee attendance for the year') }} {{ $year }}</p>
+                        </div>
                     </div>
                     <div class="d-flex gap-2">
                         <a href="{{ route('personnel.attendances.index') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center">

@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <td rowspan="3" colspan="2"></td> {{-- Logo Space --}}
-            <td colspan="5" style="font-size: 18pt; font-weight: bold; text-align: left; vertical-align: bottom;">Mir Telecom Ltd.</td>
+            <td colspan="5" style="font-size: 18pt; font-weight: bold; text-align: left; vertical-align: bottom;">{{ $employee->office->name ?? 'Unassigned Office' }}</td>
         </tr>
         <tr>
             <td colspan="5" style="font-size: 11pt; text-align: left; vertical-align: top;">House-04, Road-21, Gulshan-1, Dhaka-1212</td>

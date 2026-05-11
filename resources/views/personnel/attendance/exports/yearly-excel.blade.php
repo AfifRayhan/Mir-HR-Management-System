@@ -19,7 +19,7 @@
     <thead>
         <tr>
             <td rowspan="3" colspan="2"></td> {{-- Logo Space (A1:B3) --}}
-            <td colspan="10" style="font-size: 18pt; font-weight: bold; text-align: left; vertical-align: bottom;">Mir Telecom Ltd.</td>
+            <td colspan="10" style="font-size: 18pt; font-weight: bold; text-align: left; vertical-align: bottom;">{{ $selectedOffice->name ?? 'The Mir Group' }}</td>
         </tr>
         <tr>
             <td colspan="10" style="font-size: 11pt; text-align: left; vertical-align: top;">House-04, Road-21, Gulshan-1, Dhaka-1212</td>

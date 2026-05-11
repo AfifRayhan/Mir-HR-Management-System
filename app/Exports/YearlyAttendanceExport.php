@@ -24,16 +24,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use App\Services\AttendanceService;
+use Illuminate\Support\Str;
 
 class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, WithDrawings, WithStyles, WithCustomStartCell, WithEvents
 {
     protected $params;
     protected $attendanceService;
+    protected $selectedOffice;
 
     public function __construct($params)
     {
         $this->params = $params;
         $this->attendanceService = app(AttendanceService::class);
+
+        if (isset($this->params['office_id'])) {
+            $this->selectedOffice = \App\Models\Office::find($this->params['office_id']);
+        }
     }
 
     public function title(): string
@@ -179,7 +185,8 @@ class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wit
         return view($viewName, [
             'groupedData' => $groupedData,
             'year' => $year,
-            'params' => $this->params
+            'params' => $this->params,
+            'selectedOffice' => $this->selectedOffice
         ]);
     }
 
@@ -195,9 +202,22 @@ class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wit
         }
 
         $drawing = new Drawing();
-        $drawing->setName('Mir Telecom Logo');
-        $drawing->setDescription('Mir Telecom Logo');
-        $drawing->setPath(public_path('images/Mirtel Group Logo .png'));
+        $drawing->setName('Office Logo');
+        $drawing->setDescription('Office Logo');
+        
+        $logoPath = public_path('images/MIRORIGINAL.jpeg');
+        if ($this->selectedOffice && $this->selectedOffice->logo) {
+            $officeLogo = $this->selectedOffice->logo;
+            $resolvedLogoPath = Str::startsWith($officeLogo, 'images/')
+                ? public_path($officeLogo)
+                : storage_path('app/public/' . $officeLogo);
+
+            if (file_exists($resolvedLogoPath)) {
+                $logoPath = $resolvedLogoPath;
+            }
+        }
+
+        $drawing->setPath($logoPath);
         $drawing->setHeight(60);
         $drawing->setCoordinates('A1');
         $drawing->setOffsetX(10);
@@ -227,7 +247,7 @@ class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wit
         $sheet->getStyle("A6:{$lastColLetter}{$highestRow}")->getBorders()->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        $sheet->freezePane('D8');
+        $sheet->freezePane('D7');
 
         return [];
     }
@@ -242,7 +262,9 @@ class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wit
                 $sheet->setShowGridlines(false);
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_PORTRAIT)
-                    ->setPaperSize(PageSetup::PAPERSIZE_A4);
+                    ->setPaperSize(PageSetup::PAPERSIZE_A4)
+                    ->setFitToWidth(1)
+                    ->setFitToHeight(0);
             },
         ];
     }

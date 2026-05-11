@@ -31,10 +31,22 @@
         <tr>
             <td class="logo-cell">
                 @php
-                    $logoPath = public_path('images/Mirtel Group Logo .png');
+                    $logoPath = public_path('images/MIRORIGINAL.jpeg');
+                    if (isset($selectedOffice) && $selectedOffice->logo) {
+                        $officeLogo = $selectedOffice->logo;
+                        $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                            ? public_path($officeLogo)
+                            : storage_path('app/public/' . $officeLogo);
+
+                        if (file_exists($resolvedLogoPath)) {
+                            $logoPath = $resolvedLogoPath;
+                        }
+                    }
+                    
                     $logoData = '';
                     if (file_exists($logoPath)) {
-                        $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                        $mimeType = mime_content_type($logoPath);
+                        $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
                     }
                 @endphp
                 @if($logoData)
@@ -42,7 +54,7 @@
                 @endif
             </td>
             <td class="address-cell">
-                <div class="company-name">Mir Telecom Ltd.</div>
+                <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
                 <div class="company-address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
             </td>
         </tr>

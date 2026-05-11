@@ -48,6 +48,7 @@ class AttendanceController extends Controller
         ini_set('memory_limit', '1024M');
         set_time_limit(300);
         $date = $request->input('date', now()->toDateString());
+        $selectedOffice = $request->office_id ? Office::find($request->office_id) : null;
         
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
             ->whereHas('employee', function ($q) {
@@ -69,7 +70,8 @@ class AttendanceController extends Controller
 
         return PDF::loadView('personnel.attendance.exports.daily-pdf', [
                 'records' => $records,
-                'date' => $date
+                'date' => $date,
+                'selectedOffice' => $selectedOffice,
             ])
             ->setPaper('a3', 'landscape')
             ->setOption('margin-bottom', 10)
@@ -84,6 +86,7 @@ class AttendanceController extends Controller
         $date = $request->input('date', now()->toDateString());
         $departmentId = $request->input('department_id');
         $officeId = $request->input('office_id');
+        $selectedOffice = $officeId ? Office::find($officeId) : null;
         $status = $request->input('status');
         $search = $request->input('search');
 
@@ -114,7 +117,8 @@ class AttendanceController extends Controller
 
         return response()->view('personnel.attendance.exports.word', [
             'records' => $records,
-            'date' => $date
+            'date' => $date,
+            'selectedOffice' => $selectedOffice,
         ])
         ->header('Content-Type', 'application/vnd.ms-word')
         ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
@@ -217,10 +221,15 @@ class AttendanceController extends Controller
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
         $designations = \Illuminate\Support\Facades\Cache::remember('designations_all', 3600, fn() => \App\Models\Designation::all());
         $statuses = ['present', 'late', 'absent', 'leave'];
+        
+        $selectedOffice = null;
+        if ($officeId) {
+            $selectedOffice = Office::find($officeId);
+        }
 
         return view('personnel.attendance.export-preview', compact(
             'records', 'departments', 'offices', 'designations', 'statuses', 'date',
-            'user', 'roleName', 'employeeRecord'
+            'user', 'roleName', 'employeeRecord', 'selectedOffice'
         ));
     }
 
@@ -576,9 +585,14 @@ class AttendanceController extends Controller
         $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
 
+        $selectedOffice = null;
+        if ($officeId) {
+            $selectedOffice = Office::find($officeId);
+        }
+
         return view('personnel.attendance.export-monthly-preview', compact(
             'processedData', 'departments', 'offices', 'month', 'year', 'daysInMonth', 'employees',
-            'user', 'roleName', 'employeeRecord'
+            'user', 'roleName', 'employeeRecord', 'selectedOffice'
         ));
     }
 
@@ -753,8 +767,13 @@ class AttendanceController extends Controller
         $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
 
+        $selectedOffice = null;
+        if ($officeId) {
+            $selectedOffice = Office::find($officeId);
+        }
+
         return view('personnel.attendance.export-yearly-preview', compact(
-            'processedData', 'departments', 'offices', 'year', 'employees'
+            'processedData', 'departments', 'offices', 'year', 'employees', 'selectedOffice'
         ));
     }
 
@@ -822,7 +841,9 @@ class AttendanceController extends Controller
         $toDate = $request->input('to_date', now()->toDateString());
 
         $records = collect();
+        $selectedEmployee = null;
         if ($selectedEmployeeId) {
+            $selectedEmployee = Employee::with(['department', 'designation', 'office'])->find($selectedEmployeeId);
             $params = [
                 'employee_id' => $selectedEmployeeId,
                 'from_date' => $fromDate,
@@ -835,7 +856,7 @@ class AttendanceController extends Controller
         }
 
         return view('personnel.attendance.export-log-preview', compact(
-            'employees', 'selectedEmployeeId', 'fromDate', 'toDate', 'records'
+            'employees', 'selectedEmployeeId', 'selectedEmployee', 'fromDate', 'toDate', 'records'
         ));
     }
 
@@ -880,4 +901,3 @@ class AttendanceController extends Controller
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }
-

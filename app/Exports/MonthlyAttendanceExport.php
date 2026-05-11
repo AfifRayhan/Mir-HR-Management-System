@@ -24,16 +24,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use App\Services\AttendanceService;
+use Illuminate\Support\Str;
 
 class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, WithDrawings, WithStyles, WithCustomStartCell, WithEvents
 {
     protected $params;
     protected $attendanceService;
+    protected $selectedOffice;
 
     public function __construct($params)
     {
         $this->params = $params;
         $this->attendanceService = app(AttendanceService::class);
+
+        if (isset($this->params['office_id'])) {
+            $this->selectedOffice = \App\Models\Office::find($this->params['office_id']);
+        }
     }
 
     public function title(): string
@@ -156,7 +162,8 @@ class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wi
             'daysInMonth' => $daysInMonth,
             'monthName' => date('F', mktime(0, 0, 0, $month, 1)),
             'year' => $year,
-            'params' => $this->params
+            'params' => $this->params,
+            'selectedOffice' => $this->selectedOffice
         ]);
     }
 
@@ -172,9 +179,22 @@ class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wi
         }
 
         $drawing = new Drawing();
-        $drawing->setName('Mir Telecom Logo');
-        $drawing->setDescription('Mir Telecom Logo');
-        $drawing->setPath(public_path('images/Mirtel Group Logo .png'));
+        $drawing->setName('Office Logo');
+        $drawing->setDescription('Office Logo');
+        
+        $logoPath = public_path('images/MIRORIGINAL.jpeg');
+        if ($this->selectedOffice && $this->selectedOffice->logo) {
+            $officeLogo = $this->selectedOffice->logo;
+            $resolvedLogoPath = Str::startsWith($officeLogo, 'images/')
+                ? public_path($officeLogo)
+                : storage_path('app/public/' . $officeLogo);
+
+            if (file_exists($resolvedLogoPath)) {
+                $logoPath = $resolvedLogoPath;
+            }
+        }
+
+        $drawing->setPath($logoPath);
         $drawing->setHeight(60);
         $drawing->setCoordinates('A1');
         $drawing->setOffsetX(10);
@@ -230,7 +250,9 @@ class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wi
                 $sheet->setShowGridlines(false);
                 $sheet->getPageSetup()
                     ->setOrientation(PageSetup::ORIENTATION_LANDSCAPE)
-                    ->setPaperSize(PageSetup::PAPERSIZE_A4);
+                    ->setPaperSize(PageSetup::PAPERSIZE_A4)
+                    ->setFitToWidth(1)
+                    ->setFitToHeight(0);
             },
         ];
     }

@@ -31,10 +31,18 @@
         <tr>
             <td style="width: 80px;">
                 @php
-                    $logoPath = public_path('images/Mirtel Group Logo .png');
+                    $logoPath = public_path('images/MIRORIGINAL.jpeg');
+                    if (isset($selectedOffice) && $selectedOffice->logo) {
+                        $officeLogo = storage_path('app/public/' . $selectedOffice->logo);
+                        if (file_exists($officeLogo)) {
+                            $logoPath = $officeLogo;
+                        }
+                    }
+
                     $logoData = '';
                     if (file_exists($logoPath)) {
-                        $logoData = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                        $mimeType = mime_content_type($logoPath);
+                        $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
                     }
                 @endphp
                 @if($logoData)
