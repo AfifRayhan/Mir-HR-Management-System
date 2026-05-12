@@ -1,5 +1,18 @@
 <x-app-layout>
     @push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 31px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 18px;
+            padding-top: 5px;
+            font-size: 0.875rem;
+        }
     
     <style>
         .column-selector-grid {
@@ -81,13 +94,15 @@
                     <div class="row g-3">
                         {{-- Search --}}
                         <div class="col-md-4">
-                            <label class="form-label small fw-bold text-gray-600">{{ __('Search') }}</label>
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white border-end-0 text-gray-400">
-                                    <i class="bi bi-search"></i>
-                                </span>
-                                <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or ID..." value="{{ request('search') }}">
-                            </div>
+                            <label class="form-label small fw-bold text-gray-600">{{ __('Search Employee/ID') }}</label>
+                            <select name="search" class="form-select form-select-sm select2">
+                                <option value="">{{ __('All Employees') }}</option>
+                                @foreach($allEmployees as $empOpt)
+                                    <option value="{{ $empOpt->employee_code }}" {{ request('search') == $empOpt->employee_code ? 'selected' : '' }}>
+                                        {{ $empOpt->name }} ({{ $empOpt->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- Office --}}
@@ -234,7 +249,15 @@
                                 <tr>
                                     <td class="ps-4 text-gray-500">{{ $employees->firstItem() + $index }}</td>
                                     @foreach($selectedColumns as $key)
-                                        <td>{{ \App\Exports\EmployeesExport::getColumnValue($emp, $key) }}</td>
+                                        <td>
+                                            @if($key === 'name' || $key === 'employee_code')
+                                                <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="text-decoration-none fw-bold text-gray-800 hover:text-success transition-colors">
+                                                    {{ \App\Exports\EmployeesExport::getColumnValue($emp, $key) }}
+                                                </a>
+                                            @else
+                                                {{ \App\Exports\EmployeesExport::getColumnValue($emp, $key) }}
+                                            @endif
+                                        </td>
                                     @endforeach
                                 </tr>
                             @empty
@@ -318,6 +341,8 @@
     </div>
 
     @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="application/json" id="exportPreviewRoutes">
         @php
             echo json_encode([
@@ -413,6 +438,13 @@
                 e.preventDefault();
                 window.location.href = buildDownloadUrl(routes.word);
             });
+
+            if (typeof $.fn.select2 !== 'undefined') {
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%'
+                });
+            }
         });
     </script>
     @endpush

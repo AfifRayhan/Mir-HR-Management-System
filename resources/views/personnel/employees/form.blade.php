@@ -1,7 +1,18 @@
 <x-app-layout>
     @push('styles')
-    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            padding-top: 6px;
+        }
+    </style>
     @endpush
 
     <div class="ui-layout">
@@ -14,9 +25,16 @@
                         <h5 class="mb-1 text-2xl font-bold">{{ isset($employee) ? __('Edit Employee') : __('Add New Employee') }}</h5>
                         <p class="mb-0 text-gray-500">{{ isset($employee) ? __('Update employee profile and associations') : __('Create a new employee profile in the system') }}</p>
                     </div>
-                    <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
-                        <i class="bi bi-arrow-left me-2"></i>{{ __('Back to List') }}
-                    </a>
+                    <div class="d-flex gap-2">
+                        @if(isset($employee))
+                        <a href="{{ route('personnel.employees.profile-pdf', $employee->id) }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
+                            <i class="bi bi-download me-2"></i>{{ __('Download Profile') }}
+                        </a>
+                        @endif
+                        <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
+                            <i class="bi bi-arrow-left me-2"></i>{{ __('Back to List') }}
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -129,7 +147,7 @@
                             @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ __('Contact Number (Alternate)') }}</label>
+                            <label class="form-label">{{ __('Contact Number (Office)') }}</label>
                             <input type="text" name="contact_no" class="form-control @error('contact_no') is-invalid @enderror" value="{{ old('contact_no', $employee->contact_no ?? '') }}">
                             @error('contact_no') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
@@ -275,10 +293,12 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">{{ __('Reporting Manager') }}</label>
-                            <select name="reporting_manager_id" class="form-select @error('reporting_manager_id') is-invalid @enderror">
-                                <option value="">{{ __('Select Manager') }}</option>
+                            <select name="reporting_manager_id" class="form-select select2 @error('reporting_manager_id') is-invalid @enderror">
+                                <option value="">{{ __('-- Select Manager --') }}</option>
                                 @foreach($managers as $manager)
-                                <option value="{{ $manager->id }}" {{ old('reporting_manager_id', $employee->reporting_manager_id ?? '') == $manager->id ? 'selected' : '' }}>{{ $manager->name }} ({{ $manager->employee_code }})</option>
+                                    <option value="{{ $manager->id }}" {{ (old('reporting_manager_id', $employee->reporting_manager_id ?? '') == $manager->id) ? 'selected' : '' }}>
+                                        {{ $manager->name }} ({{ $manager->employee_code }})
+                                    </option>
                                 @endforeach
                             </select>
                             @error('reporting_manager_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -530,6 +550,84 @@
                     </div>
                 </template>
 
+                <!-- System User Account -->
+                <div class="form-card mb-5">
+                    <div class="form-section-title text-success mb-4">
+                        <i class="bi bi-shield-lock me-2"></i>{{ __('System User Account') }}
+                    </div>
+
+                    @if(isset($employee) && $employee->user)
+                        <div class="alert alert-success bg-success-soft border-success text-success d-flex align-items-center mb-4 py-3 shadow-sm border-0">
+                            <i class="bi bi-check-circle-fill me-3 fs-4"></i>
+                            <div>
+                                <p class="mb-0 fw-medium">{{ __('This employee is linked to user account:') }} <span class="fw-bold text-decoration-underline">{{ $employee->user->email }}</span></p>
+                                <p class="mb-0 small opacity-75">{{ __('You can update their role, status, or password below.') }}</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-light border-0 bg-gray-50 d-flex align-items-center mb-4 py-3">
+                            <i class="bi bi-info-circle me-3 fs-4 text-muted"></i>
+                            <div>
+                                <p class="mb-0 fw-medium text-muted">{{ __('No user account linked to this employee.') }}</p>
+                                <p class="mb-0 small text-muted opacity-75">{{ __('You can link an existing user account or create a new one.') }}</p>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ __('Link Existing User Account') }}</label>
+                            <select name="link_user_id" class="form-select @error('link_user_id') is-invalid @enderror">
+                                <option value="">{{ __('-- Create New or Keep Current --') }}</option>
+                                @foreach($unassignedUsers as $u)
+                                    <option value="{{ $u->id }}" {{ (isset($employee) && $employee->user_id == $u->id) ? 'selected' : '' }}>
+                                        {{ $u->name }} ({{ $u->email }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text text-xs mt-2 text-muted">
+                                {{ __('Select an existing account not yet associated with any employee.') }}
+                            </div>
+                            @error('link_user_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ __('Assigned System Role') }} <span class="text-danger">*</span></label>
+                            <select name="role_id" class="form-select @error('role_id') is-invalid @enderror" required>
+                                <option value="">{{ __('-- Select Role --') }}</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ (isset($employee) && $employee->user && $employee->user->role_id == $role->id) ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text text-xs mt-2 text-muted">
+                                {{ __('Controls permissions and system access levels.') }}
+                            </div>
+                            @error('role_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Account Password') }} @unless(isset($employee))<span class="text-danger">*</span>@endunless</label>
+                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" autocomplete="new-password" placeholder="••••••••">
+                            @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Confirm Password') }} @unless(isset($employee))<span class="text-danger">*</span>@endunless</label>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="••••••••">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Account Status') }}</label>
+                            <select name="user_status" class="form-select @error('user_status') is-invalid @enderror">
+                                <option value="active" {{ (isset($employee) && $employee->user && $employee->user->status == 'active') ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ (isset($employee) && $employee->user && $employee->user->status == 'inactive') ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            @error('user_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
+
                 <div class="d-flex justify-content-end gap-3 mb-5">
                     <a href="{{ route('personnel.employees.index') }}" class="btn btn-light bg-white border rounded-pill px-4 py-2 font-bold">{{ __('Cancel') }}</a>
                     <button type="submit" class="btn btn-primary bg-success border-success rounded-pill px-5 py-2 font-bold">{{ isset($employee) ? __('Update Employee') : __('Create Employee') }}</button>
@@ -539,13 +637,21 @@
     </div>
 
     @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof $ !== 'undefined') {
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                });
+            }
+
             const officeSelect = document.querySelector('select[name="office_id"]');
             const employeeCodeInput = document.querySelector('input[name="employee_code"]');
             const isEditMode = "{{ isset($employee) ? 'true' : 'false' }}" === "true";
-
             function updateEmployeeCode(selectedDate) {
                 if (isEditMode) return;
                 if (!selectedDate) return;
@@ -591,7 +697,6 @@
                 }
             }
 
-            // Intercept form submission if gross salary changed
             const employeeForm = document.getElementById('employee-form');
             const grossSalaryInput = document.getElementById('gross_salary');
             const salaryReasonInput = document.getElementById('salary_change_reason');
@@ -602,7 +707,7 @@
                     const currentSalary = parseFloat(grossSalaryInput.value) || 0;
 
                     if (initialSalary !== currentSalary && initialSalary > 0) {
-                        e.preventDefault(); // Stop normal submission
+                        e.preventDefault(); 
 
                         const isIncrement = currentSalary > initialSalary;
                         const actionText = isIncrement ? 'increment' : 'pay cut';
@@ -623,14 +728,13 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 salaryReasonInput.value = result.value || '';
-                                employeeForm.submit(); // Submit programmatically
+                                employeeForm.submit();
                             }
                         });
                     }
                 });
             }
 
-            // Probation Logic
             const employeeTypeSelect = document.getElementById('employee_type');
             const probationSection = document.getElementById('probation-section');
             const probationDurationInput = document.getElementById('probation_duration');
@@ -647,7 +751,6 @@
                     const endDate = new Date(startDate);
                     endDate.setMonth(startDate.getMonth() + durationMonths);
                     
-                    // Format back to YYYY-MM-DD
                     const yyyy = endDate.getFullYear();
                     const mm = String(endDate.getMonth() + 1).padStart(2, '0');
                     const dd = String(endDate.getDate()).padStart(2, '0');
@@ -682,7 +785,6 @@
                 probationDurationInput.addEventListener('input', calculateProbationEndDate);
             }
 
-            // Experience Repeater Logic
             const experienceContainer = document.getElementById('experience-container');
             const addExperienceBtn = document.getElementById('add-experience');
             const noExpMsg = document.getElementById('no-experience-msg');

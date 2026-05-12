@@ -1,4 +1,37 @@
 <x-app-layout>
+    @push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            padding-top: 6px;
+        }
+    </style>
+    @endpush
+    @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        (function($) {
+            $(document).ready(function() {
+                if (typeof $.fn.select2 !== 'undefined') {
+                    $('.select2').select2({
+                        theme: 'bootstrap-5',
+                        width: '100%',
+                        placeholder: '{{ __("All Users") }}',
+                        allowClear: true
+                    });
+                }
+            });
+        })(jQuery);
+    </script>
+    @endpush
     
 
     <div class="ui-layout">
@@ -119,10 +152,14 @@
                         <div class="p-4 border-bottom bg-light bg-opacity-10">
                             <form action="{{ route('security.users.index') }}" method="GET" class="row g-2 align-items-center">
                                 <div class="col-md-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search name or email..." value="{{ request('search') }}">
-                                    </div>
+                                    <select name="search" class="form-select select2" onchange="this.form.submit()">
+                                        <option value="">{{ __('All Users') }}</option>
+                                        @foreach($allUsers as $uOpt)
+                                            <option value="{{ $uOpt->id }}" {{ request('search') == $uOpt->id ? 'selected' : '' }}>
+                                                {{ $uOpt->name }} ({{ $uOpt->employee->employee_code ?? $uOpt->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                                 <div class="col-md-2">
                                     <select name="role_id" class="form-select">

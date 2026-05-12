@@ -17,10 +17,7 @@ class UserController extends Controller
 
         // Search
         if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                    ->orWhere('email', 'like', '%' . $request->search . '%');
-            });
+            $query->where('id', $request->search);
         }
 
         // Filters
@@ -40,8 +37,9 @@ class UserController extends Controller
 
         $users = $query->paginate(10)->withQueryString();
         $roles = Role::all();
+        $allUsers = User::with('employee:id,user_id,employee_code')->select('id', 'name', 'email')->orderBy('name')->get();
 
-        return view('security.users.index', compact('users', 'roles'));
+        return view('security.users.index', compact('users', 'roles', 'allUsers'));
     }
 
 

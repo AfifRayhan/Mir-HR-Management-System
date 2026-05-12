@@ -229,7 +229,7 @@ return new class extends Migration
             $table->foreignId('office_time_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('reporting_manager_id')->nullable()->constrained('employees')->nullOnDelete();
             
-            $table->enum('status', ['active', 'inactive', 'left', 'hold'])->default('active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->enum('employee_type', ['Regular', 'Probation'])->default('Regular');
             $table->integer('probation_duration')->nullable();
             $table->date('probation_start_date')->nullable();
@@ -266,6 +266,7 @@ return new class extends Migration
             $table->integer('total_days');
             $table->text('remarks')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->unique(['title', 'from_date', 'office_id'], 'holiday_unique_idx');
             $table->timestamps();
         });
 

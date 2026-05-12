@@ -11,6 +11,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    
+    protected $_isReportingManager = null;
 
     /**
      * The attributes that are mass assignable.
@@ -67,6 +69,30 @@ class User extends Authenticatable
     {
         $role = $this->role;
 
+        // Slugs specifically for Team Leads / Reporting Managers
+        $teamLeadOnlySlugs = [
+            'team-lead-leave-request',
+            'team-leave',
+            'team-lead-leave-apps',
+            'team-lead-leave-history',
+            'team-lead-remarks',
+            'team-lead-attendance-approvals',
+        ];
+
+        // Slugs that should be hidden for Team Leads (use TL counterparts instead)
+        $employeeOnlySlugs = [
+            'employee-leave-request',
+        ];
+
+        if ($this->isReportingManager()) {
+            if (in_array($slug, $teamLeadOnlySlugs)) {
+                return true;
+            }
+            if (in_array($slug, $employeeOnlySlugs)) {
+                return false;
+            }
+        }
+
         // Check role permissions
         $hasRoleAccess = $role ? $role->menuItems()->where('slug', $slug)->exists() : false;
 
@@ -76,6 +102,26 @@ class User extends Authenticatable
 
         // Check individual user permissions
         return $this->menuItems()->where('slug', $slug)->exists();
+    }
+
+    /**
+     * Check if the user is a reporting manager (has direct reports or is a department head).
+     */
+    public function isReportingManager(): bool
+    {
+        if ($this->_isReportingManager !== null) {
+            return $this->_isReportingManager;
+        }
+
+        $employee = $this->employee;
+        if (!$employee) {
+            return $this->_isReportingManager = false;
+        }
+
+        $hasReports = $employee->directReports()->exists();
+        $isDeptHead = \App\Models\Department::where('incharge_id', $employee->id)->exists();
+
+        return $this->_isReportingManager = ($hasReports || $isDeptHead);
     }
 
     public function approvedLeaveApplications()

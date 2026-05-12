@@ -8,6 +8,19 @@
     @push('styles')
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            padding-top: 6px;
+        }
+    </style>
     @endpush
 
     <div class="ui-layout">
@@ -30,7 +43,7 @@
                                     <label class="form-label font-bold text-gray-700">{{ __('Select Employee') }}</label>
                                     <select name="employee_id" class="form-select select2 rounded-3 @error('employee_id') is-invalid @enderror" required>
                                         <option value="">{{ __('-- Choose Employee --') }}</option>
-                                        @foreach($employees as $emp)
+                                        @foreach($allEmployees as $emp)
                                         <option value="{{ $emp->id }}" {{ old('employee_id') == $emp->id ? 'selected' : '' }}>
                                             {{ $emp->name }} ({{ $emp->employee_code }})
                                         </option>
@@ -86,6 +99,8 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             flatpickr('#adj_date', {
@@ -110,6 +125,13 @@
                 altFormat: 'h:i K',
                 allowInput: false,
             });
+
+            if (typeof $.fn.select2 !== 'undefined') {
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%'
+                });
+            }
         });
     </script>
     @endpush

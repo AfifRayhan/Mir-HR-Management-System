@@ -75,7 +75,9 @@ class EmployeeController extends Controller
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
         $designations = \Illuminate\Support\Facades\Cache::remember('designations_all', 3600, fn() => Designation::all());
  
-        return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'offices', 'designations'));
+        $allEmployees = Employee::select('id', 'name', 'employee_code')->orderBy('name')->get();
+ 
+        return view('personnel.employees.index', compact('employees', 'departments', 'sections', 'offices', 'designations', 'allEmployees'));
     }
 
     /**
@@ -97,6 +99,9 @@ class EmployeeController extends Controller
         // Generate auto employee code based on today as default
         $autoEmployeeCode = Employee::generateEmployeeCode(now());
 
+        // Users not linked to any employee
+        $unassignedUsers = User::whereDoesntHave('employee')->orderBy('name')->get();
+
         return view('personnel.employees.form', compact(
             'departments',
             'sections',
@@ -106,7 +111,8 @@ class EmployeeController extends Controller
             'officeTimes',
             'managers',
             'roles',
-            'autoEmployeeCode'
+            'autoEmployeeCode',
+            'unassignedUsers'
         ));
     }
 
@@ -157,13 +163,21 @@ class EmployeeController extends Controller
             'probation_end_date' => 'nullable|required_if:employee_type,Probation|date|after_or_equal:probation_start_date',
             'gross_salary' => 'nullable|numeric|min:0',
             // User validations
-            'password' => 'nullable|string|min:8|confirmed',
-            'role_id' => 'nullable|exists:roles,id',
+            'password' => 'required|string|min:8|confirmed',
+            'role_id' => 'required|exists:roles,id',
             'user_status' => 'nullable|in:active,inactive',
+            'link_user_id' => 'nullable|exists:users,id',
         ]);
 
-        $userId = null;
-        if ($request->filled('password') || $request->filled('role_id')) {
+        if ($request->filled('link_user_id')) {
+            $userId = $request->link_user_id;
+            // Optionally sync name/email to user if requested, but for now just link
+            $user = User::find($userId);
+            if ($user && empty($user->role_id) && $request->filled('role_id')) {
+                $user->role_id = $request->role_id;
+                $user->save();
+            }
+        } elseif ($request->filled('password') || $request->filled('role_id')) {
             $userEmail = $request->email;
             if (empty($userEmail)) {
                 return back()->withErrors(['email' => 'Email is required to create a user account.'])->withInput();
@@ -232,7 +246,7 @@ class EmployeeController extends Controller
             }
         }
 
-        return redirect()->route('personnel.employees.index')->with('success', 'Employee created successfully.');
+        return redirect()->route('personnel.employees.edit', $employee->id)->with('success', 'Employee created successfully.');
     }
 
     /**
@@ -259,6 +273,12 @@ class EmployeeController extends Controller
         // Roles for user modification
         $roles = \Illuminate\Support\Facades\Cache::remember('roles_ordered_all', 3600, fn() => Role::orderBy('name')->get());
 
+        // Users not linked to any employee
+        $unassignedUsers = User::whereDoesntHave('employee')
+            ->where('id', '!=', $employee->user_id ?? 0)
+            ->orderBy('name')
+            ->get();
+
         return view('personnel.employees.form', compact(
             'employee',
             'departments',
@@ -268,7 +288,8 @@ class EmployeeController extends Controller
             'offices',
             'officeTimes',
             'managers',
-            'roles'
+            'roles',
+            'unassignedUsers'
         ));
     }
 
@@ -320,24 +341,38 @@ class EmployeeController extends Controller
             'gross_salary' => 'nullable|numeric|min:0',
             // User validations
             'password' => 'nullable|string|min:8|confirmed',
-            'role_id' => 'nullable|exists:roles,id',
+            'role_id' => 'required|exists:roles,id',
             'user_status' => 'nullable|in:active,inactive',
+            'link_user_id' => 'nullable|exists:users,id',
         ]);
 
         if ($employee->user_id) {
             $user = User::find($employee->user_id);
             if ($user) {
-                if ($request->filled('email') && $user->email !== $request->email) {
-                    $existing = User::where('email', $request->email)->where('id', '!=', $user->id)->first();
-                    if ($existing) {
-                        return back()->withErrors(['email' => 'This email is already taken by another user.'])->withInput();
+                // If the form wants to UNLINK the current user (if link_user_id is set to something else or empty)
+                if ($request->has('link_user_id') && $request->link_user_id != $employee->user_id) {
+                    $employee->user_id = $request->link_user_id ?: null;
+                    $employee->save();
+                } else {
+                    if ($request->filled('email') && $user->email !== $request->email) {
+                        $existing = User::where('email', $request->email)->where('id', '!=', $user->id)->first();
+                        if ($existing) {
+                            return back()->withErrors(['email' => 'This email is already taken by another user.'])->withInput();
+                        }
                     }
+                    $user->name = $request->name;
+                    if ($request->filled('email')) $user->email = $request->email;
+                    if ($request->filled('password')) $user->password = Hash::make($request->password);
+                    $user->role_id = $request->role_id;
+                    if ($request->filled('user_status')) $user->status = $request->user_status;
+                    $user->save();
                 }
-                $user->name = $request->name;
-                if ($request->filled('email')) $user->email = $request->email;
-                if ($request->filled('password')) $user->password = Hash::make($request->password);
+            }
+        } elseif ($request->filled('link_user_id')) {
+            $employee->user_id = $request->link_user_id;
+            $user = User::find($request->link_user_id);
+            if ($user && empty($user->role_id) && $request->filled('role_id')) {
                 $user->role_id = $request->role_id;
-                if ($request->filled('user_status')) $user->status = $request->user_status;
                 $user->save();
             }
         } elseif ($request->filled('password') || $request->filled('role_id') || $request->filled('user_status')) {
@@ -372,6 +407,10 @@ class EmployeeController extends Controller
             'reporting_manager_id', 'roster_group', 'employee_type',
             'probation_duration', 'probation_start_date', 'probation_end_date', 'gross_salary',
         ]);
+        
+        if ($request->has('link_user_id')) {
+            $employeeData['user_id'] = $request->link_user_id ?: null;
+        }
         
         // Sync Employee status with user status
         if ($request->has('user_status')) {
@@ -419,7 +458,7 @@ class EmployeeController extends Controller
             }
         }
 
-        return redirect()->route('personnel.employees.index')->with('success', 'Employee updated successfully.');
+        return back()->with('success', 'Employee updated successfully.');
     }
 
     /**
@@ -427,12 +466,35 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        $userId = $employee->user_id;
-        $employee->delete();
-        
-        if ($userId) {
-            User::find($userId)?->delete();
-        }
+        DB::transaction(function () use ($employee) {
+            $linkedUsers = User::query()
+                ->where(function ($query) use ($employee) {
+                    $query->where('employee_id', (string) $employee->id);
+
+                    if ($employee->employee_code) {
+                        $query->orWhere('employee_id', $employee->employee_code);
+                    }
+
+                    if ($employee->user_id) {
+                        $query->orWhere('id', $employee->user_id);
+                    }
+                })
+                ->get();
+
+            if ($linkedUsers->isNotEmpty()) {
+                foreach ($linkedUsers as $linkedUser) {
+                    // Break the FK link first so employee deletion never depends on DB cascade behavior.
+                    if ((int) $employee->user_id === (int) $linkedUser->id) {
+                        $employee->user_id = null;
+                        $employee->save();
+                    }
+
+                    $linkedUser->delete();
+                }
+            }
+
+            Employee::whereKey($employee->id)->delete();
+        });
         
         return redirect()->route('personnel.employees.index')->with('success', 'Employee and associated user account deleted successfully.');
     }
@@ -611,6 +673,8 @@ class EmployeeController extends Controller
         $sections = \Illuminate\Support\Facades\Cache::remember('sections_ordered_all', 3600, fn() => Section::orderBy('name')->get());
         $designations = \Illuminate\Support\Facades\Cache::remember('designations_ordered_name_all', 3600, fn() => Designation::orderBy('name')->get());
 
+        $allEmployees = Employee::select('id', 'name', 'employee_code')->where('status', 'active')->orderBy('name')->get();
+ 
         return view('personnel.employees.export-preview', [
             'employees' => $employees,
             'allColumns' => $allColumns,
@@ -622,6 +686,7 @@ class EmployeeController extends Controller
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
             'selectedOffice' => $selectedOffice,
+            'allEmployees' => $allEmployees,
         ]);
     }
 
@@ -634,6 +699,39 @@ class EmployeeController extends Controller
         $officeId = $request->office_id;
         $code = Employee::generateEmployeeCode($date, $officeId);
         return response()->json(['code' => $code]);
+    }
+
+    /**
+     * Download individual employee profile as PDF.
+     */
+    public function profilePdf(Employee $employee)
+    {
+        ini_set('memory_limit', '512M');
+        set_time_limit(120);
+
+        $employee->load([
+            'department', 'section', 'designation', 'grade',
+            'office', 'officeTime', 'user', 'reportingManager',
+            'experiences', 'qualifications',
+        ]);
+
+        $office = $employee->office;
+
+        return PDF::loadView('personnel.employees.exports.profile-pdf', [
+                'employee' => $employee,
+                'office' => $office,
+            ])
+            ->setPaper('a4', 'portrait')
+            ->setOption('margin-bottom', 24)
+            ->setOption('margin-top', 10)
+            ->setOption('margin-left', 10)
+            ->setOption('margin-right', 10)
+            ->setOption('footer-center', 'Page [page] of [topage]')
+            ->setOption('footer-right', $employee->name)
+            ->setOption('footer-line', true)
+            ->setOption('footer-font-size', 8)
+            ->setOption('footer-spacing', 0)
+            ->download('profile_' . $employee->employee_code . '_' . date('Y-m-d') . '.pdf');
     }
 
     //Delete Experience

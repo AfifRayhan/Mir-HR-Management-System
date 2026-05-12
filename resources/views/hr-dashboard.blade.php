@@ -217,9 +217,9 @@
                                             <div class="text-muted" style="font-size: 0.75rem;">{{ $birthdayEmp->next_birthday->format('d M') }}</div>
                                         </div>
                                     </div>
-                                    @if($birthdayEmp->days_until_birthday === 0)
-                                    <span class="badge bg-danger-soft text-danger align-self-center" style="font-size: 0.7rem;">{{ __('Today!') }}</span>
-                                    @elseif($birthdayEmp->days_until_birthday === 1)
+                                    @if((int)$birthdayEmp->days_until_birthday == 0)
+                                    <span class="badge bg-danger text-white align-self-center" style="font-size: 0.7rem;">{{ __('Today') }}</span>
+                                    @elseif((int)$birthdayEmp->days_until_birthday == 1)
                                     <span class="badge bg-warning-soft text-warning align-self-center" style="font-size: 0.7rem;">{{ __('Tomorrow') }}</span>
                                     @else
                                     <span class="badge bg-light text-dark align-self-center" style="font-size: 0.7rem;">In {{ $birthdayEmp->days_until_birthday }} days</span>

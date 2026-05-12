@@ -167,9 +167,11 @@ class AttendanceController extends Controller
         $offices     = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
         $statuses    = ['present', 'late', 'absent', 'leave'];
 
+        $allEmployees = Employee::select('id', 'name', 'employee_code')->where('status', 'active')->orderBy('name')->get();
+ 
         return view('personnel.attendance.index', compact(
             'records', 'departments', 'offices', 'statuses', 'date',
-            'user', 'roleName', 'employeeRecord'
+            'user', 'roleName', 'employeeRecord', 'allEmployees'
         ));
     }
 
@@ -248,9 +250,9 @@ class AttendanceController extends Controller
         $roleName = optional($user->role)->name ?? 'Unassigned';
         $employeeRecord = Employee::where('user_id', $user->id)->first();
 
-        $employees = Employee::where('status', 'active')->get();
-
-        return view('personnel.attendance.adjust', compact('employees', 'user', 'roleName', 'employeeRecord'));
+        $allEmployees = Employee::where('status', 'active')->orderBy('name')->get();
+ 
+        return view('personnel.attendance.adjust', compact('allEmployees', 'user', 'roleName', 'employeeRecord'));
     }
 
     public function storeAdjustment(Request $request)

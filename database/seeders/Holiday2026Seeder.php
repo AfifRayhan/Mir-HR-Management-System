@@ -100,11 +100,17 @@ class Holiday2026Seeder extends Seeder
         ];
 
         foreach ($holidays as $holiday) {
-            Holiday::create(array_merge($holiday, [
-                'year' => 2026,
-                'all_office' => true,
-                'is_active' => true,
-            ]));
+            Holiday::updateOrCreate(
+                [
+                    'title' => $holiday['title'],
+                    'from_date' => $holiday['from_date'],
+                ],
+                array_merge($holiday, [
+                    'year' => 2026,
+                    'all_office' => true,
+                    'is_active' => true,
+                ])
+            );
         }
     }
 }

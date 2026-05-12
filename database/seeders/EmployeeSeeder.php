@@ -98,6 +98,18 @@ class EmployeeSeeder extends Seeder
             $tin = trim((string) ($row['AK'] ?? ''));
             $nationality = trim((string) ($row['AL'] ?? ''));
 
+            // Handle multiple phone numbers
+            $phone = null;
+            $altPhone = null;
+            if (!empty($contactNo)) {
+                // Split by '/' or ';' or ','
+                $numbers = preg_split('/[\/;,]/', $contactNo);
+                $phone = trim($numbers[0]);
+                if (isset($numbers[1]) && !empty(trim($numbers[1]))) {
+                    $altPhone = trim($numbers[1]);
+                }
+            }
+
             if (empty($office) || empty($department) || empty($name) || empty($empId) || $empId === '0123456') {
                 continue;
             }
@@ -132,13 +144,13 @@ class EmployeeSeeder extends Seeder
                 'tin' => null, // TIN previously mapped to AJ, but AJ is now personal_email
                 'nationality' => !empty($nationality) ? $nationality : 'Bangladeshi',
                 'no_of_children' => !empty($noOfChildren) ? (int)$noOfChildren : null,
-                'contact_no' => !empty($contactNo) ? $contactNo : null,
+                'contact_no' => !empty($altPhone) ? $altPhone : null,
                 'emergency_contact_name' => !empty($emergencyContactName) ? $emergencyContactName : null,
                 'emergency_contact_address' => !empty($emergencyContactAddress) ? $emergencyContactAddress : null,
                 'emergency_contact_no' => !empty($emergencyContactNo) ? $emergencyContactNo : null,
                 'emergency_contact_relation' => !empty($emergencyContactRelation) ? $emergencyContactRelation : null,
                 'date_of_birth' => !empty($dateOfBirth) ? date('Y-m-d', strtotime($dateOfBirth)) : null,
-                'phone' => null,
+                'phone' => !empty($phone) ? $phone : null,
                 'present_address' => !empty($presentAddress) ? $presentAddress : null,
                 'permanent_address' => !empty($permanentAddress) ? $permanentAddress : null,
                 'joining_date' => !empty($joiningDate) ? date('Y-m-d', strtotime($joiningDate)) : null,

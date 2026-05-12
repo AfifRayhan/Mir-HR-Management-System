@@ -485,7 +485,7 @@
             }).then(canvas => {
                 Swal.close();
                 const link = document.createElement('a');
-                link.download = `Roster_{{ str_replace(' ', '_', $employee->name) }}_{{ now()->format('Y-M') }}.png`;
+                link.download = `Roster_{{ str_replace(' ', '_', ($employee->name ?? $user->name)) }}_{{ now()->format('Y-M') }}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
@@ -515,7 +515,7 @@
                 const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
                 
                 pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`Roster_{{ str_replace(' ', '_', $employee->name) }}_{{ now()->format('Y-M') }}.pdf`);
+                pdf.save(`Roster_{{ str_replace(' ', '_', ($employee->name ?? $user->name)) }}_{{ now()->format('Y-M') }}.pdf`);
                 Swal.close();
             });
         };

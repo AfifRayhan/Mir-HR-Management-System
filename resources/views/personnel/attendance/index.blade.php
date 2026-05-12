@@ -8,6 +8,19 @@
     @push('styles')
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            padding-top: 6px;
+        }
+    </style>
     @endpush
 
     <div class="ui-layout">
@@ -34,8 +47,15 @@
                             <input type="text" id="attendance_date" name="date" class="form-control" value="{{ $date }}" placeholder="Select date" readonly>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">{{ __('Search Employee') }}</label>
-                            <input type="text" name="search" class="form-control" placeholder="{{ __('Name or Employee Code') }}" value="{{ request('search') }}">
+                            <label class="form-label">{{ __('Search Employee/ID') }}</label>
+                            <select name="search" class="form-select select2" onchange="this.form.submit()">
+                                <option value="">{{ __('All Employees') }}</option>
+                                @foreach($allEmployees as $empOpt)
+                                    <option value="{{ $empOpt->employee_code }}" {{ request('search') == $empOpt->employee_code ? 'selected' : '' }}>
+                                        {{ $empOpt->name }} ({{ $empOpt->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-2">
                             <label class="form-label">{{ __('Office') }}</label>
@@ -96,12 +116,12 @@
                                 @forelse($records as $record)
                                 <tr>
                                     <td>
-                                        <div class="d-flex align-items-center">
+                                        <a href="{{ route('personnel.employees.edit', $record->employee->id) }}" class="text-decoration-none d-flex align-items-center group">
                                             <div class="ms-2">
-                                                <div class="fw-bold text-dark">{{ $record->employee->name }}</div>
+                                                <div class="fw-bold text-gray-800 group-hover:text-success transition-colors">{{ $record->employee->name }}</div>
                                                 <div class="small text-muted">{{ $record->employee->employee_code }}</div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </td>
                                     <td>
                                         <div class="small">{{ $record->employee->department->name ?? 'N/A' }}</div>
@@ -155,6 +175,8 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         const exportRoutes = {
             excel: "{{ route('personnel.reports.attendances.export.excel') }}",
@@ -182,6 +204,13 @@
                     document.getElementById('attendance_date').closest('form').submit();
                 }
             });
+
+            if (typeof $.fn.select2 !== 'undefined') {
+                $('.select2').select2({
+                    theme: 'bootstrap-5',
+                    width: '100%'
+                });
+            }
         });
     </script>
     @endpush

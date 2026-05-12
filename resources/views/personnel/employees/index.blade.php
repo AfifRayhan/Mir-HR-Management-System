@@ -1,4 +1,18 @@
 <x-app-layout>
+    @push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.5rem;
+            border-color: #dee2e6;
+            min-height: 38px;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            padding-top: 6px;
+        }
+    </style>
+    @endpush
     
 
     <div class="ui-layout">
@@ -21,15 +35,17 @@
 
             <!-- Filter Bar -->
             <div class="ui-filter-bar">
-                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2">
+                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2" id="employee-filter-form">
                     <div class="col-md-2">
-                        <label class="form-label small font-bold text-gray-600">{{ __('Search') }}</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0 text-gray-400">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Name or ID..." value="{{ request('search') }}">
-                        </div>
+                        <label class="form-label small font-bold text-gray-600">{{ __('Search Employee/ID') }}</label>
+                        <select name="search" class="form-select select2" id="employee-search">
+                            <option value="">{{ __('All Employees') }}</option>
+                            @foreach($allEmployees as $empOpt)
+                                <option value="{{ $empOpt->employee_code }}" {{ request('search') == $empOpt->employee_code ? 'selected' : '' }}>
+                                    {{ $empOpt->name }} ({{ $empOpt->employee_code }})
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label small font-bold text-gray-600">{{ __('Department') }}</label>
@@ -130,7 +146,6 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th>{{ __('Account') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th class="text-end pe-4">{{ __('Actions') }}</th>
                             </tr>
@@ -140,15 +155,15 @@
                             <tr>
                                 <td class="ps-4 font-bold text-gray-700">{{ $emp->employee_code }}</td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="emp-avatar-sm me-3">
+                                    <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="text-decoration-none d-flex align-items-center group">
+                                        <div class="emp-avatar-sm me-3 transition-all group-hover:scale-105">
                                             {{ strtoupper(substr($emp->name, 0, 1)) }}
                                         </div>
                                         <div style="min-width: 150px;">
-                                            <div class="fw-bold mb-0 text-gray-800 text-nowrap">{{ $emp->name }}</div>
+                                            <div class="fw-bold mb-0 text-gray-800 text-nowrap group-hover:text-success transition-colors">{{ $emp->name }}</div>
                                             <div class="small text-muted text-nowrap">{{ $emp->contact_no ?? 'No phone' }}</div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </td>
                                 <td><span class="badge bg-light text-dark">{{ $emp->department->name ?? 'N/A' }}</span></td>
                                 <td>{{ $emp->office->name ?? 'N/A' }}</td>
@@ -156,17 +171,6 @@
                                 <td>{{ $emp->section->name ?? 'N/A' }}</td>
                                 <td>{{ number_format($emp->gross_salary, 2) }}</td>
                                 <td>{{ \Carbon\Carbon::parse($emp->joining_date)->format('d M Y') }}</td>
-                                <td>
-                                    @if($emp->user)
-                                    <span class="text-success small" title="{{ $emp->user->email }}">
-                                        <i class="bi bi-link-45deg me-1"></i>{{ __('Linked') }}
-                                    </span>
-                                    @else
-                                    <span class="text-gray-400 small">
-                                        <i class="bi bi-link-45deg me-1"></i>{{ __('Not Linked') }}
-                                    </span>
-                                    @endif
-                                </td>
                                 <td>
                                     @php
                                         $statusColors = [
@@ -197,7 +201,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="11" class="text-center py-5">
+                                <td colspan="10" class="text-center py-5">
                                     <i class="bi bi-people text-4xl text-gray-200 d-block mb-3"></i>
                                     <span class="text-gray-500">{{ __('No employees found.') }}</span>
                                 </td>
@@ -213,6 +217,22 @@
             </div>
         </main>
     </div>
+    @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                theme: 'bootstrap-5',
+                width: '100%'
+            });
+
+            $('#employee-search').on('select2:select select2:clear change', function() {
+                $('#employee-filter-form').trigger('submit');
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>
 
 

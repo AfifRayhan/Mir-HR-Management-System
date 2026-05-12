@@ -21,6 +21,10 @@
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         .swal2-popup {
             font-family: 'Figtree', sans-serif !important;
@@ -47,7 +51,20 @@
     @if(session('warning')) data-flash-warning="{{ session('warning') }}" @endif
     @if(session('info')) data-flash-info="{{ session('info') }}" @endif
 >
-    <!-- Main app content (navigation handled inside individual pages like the HR dashboard) -->
+
+    @php
+        $showBirthdayCelebration = false;
+        $celebrationName = '';
+        if (Auth::check() && Auth::user()->employee && Auth::user()->employee->date_of_birth) {
+            $dob = \Carbon\Carbon::parse(Auth::user()->employee->date_of_birth);
+            if ($dob->isBirthday() && !session('birthday_celebrated_' . date('Y'))) {
+                $showBirthdayCelebration = true;
+                $celebrationName = Auth::user()->name;
+                session(['birthday_celebrated_' . date('Y') => true]);
+            }
+        }
+    @endphp
+
     <main>
         {{ $slot }}
     </main>
@@ -56,6 +73,55 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 0. Handle Birthday Celebration
+            @if($showBirthdayCelebration)
+                const duration = 5 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 2000 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    confetti(Object.assign({}, defaults, { 
+                        particleCount, 
+                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                        colors: ['#10b981', '#ffffff', '#fbbf24']
+                    }));
+                    confetti(Object.assign({}, defaults, { 
+                        particleCount, 
+                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                        colors: ['#10b981', '#ffffff', '#fbbf24']
+                    }));
+                }, 250);
+
+                Swal.fire({
+                    title: '{{ __("Happy Birthday!") }}',
+                    html: '<div class="py-3 text-center">' +
+                          '<i class="bi bi-gift-fill text-success" style="font-size: 4rem;"></i>' +
+                          '<h3 class="mt-4 font-bold text-gray-800">{{ __("Wishing you a wonderful day,") }} {{ $celebrationName }}!</h3>' +
+                          '<p class="text-muted">{{ __("May your year ahead be filled with success, happiness, and great health.") }}</p>' +
+                          '</div>',
+                    showConfirmButton: true,
+                    confirmButtonText: '{{ __("Thank You!") }}',
+                    backdrop: `rgba(16, 185, 129, 0.15)`,
+                    showClass: {
+                        popup: 'animate__animated animate__zoomIn'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                });
+            @endif
+
             // 1. Handle Flash Messages
             const Toast = Swal.mixin({
                 toast: true,

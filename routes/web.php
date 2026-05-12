@@ -83,8 +83,9 @@ Route::middleware(['auth', 'permission:security'])->prefix('security')->name('se
 Route::middleware(['auth', 'verified', 'permission:personnel'])->prefix('personnel')->name('personnel.')->group(function () {
     Route::get('employees/next-code', [EmployeeController::class, 'getNextCode'])->name('employees.next-code');
     Route::delete('employees/experience/{experience}', [EmployeeController::class, 'destroyExperience'])->name('employees.delete-experience');
-    Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
-    Route::resource('employees', EmployeeController::class);
+      Route::delete('employees/qualification/{qualification}', [EmployeeController::class, 'destroyQualification'])->name('employees.delete-qualification');
+      Route::get('employees/{employee}/profile-pdf', [EmployeeController::class, 'profilePdf'])->name('employees.profile-pdf');
+      Route::resource('employees', EmployeeController::class);
     Route::resource('departments', DepartmentController::class);
     Route::resource('sections', SectionController::class);
     Route::resource('designations', DesignationController::class);

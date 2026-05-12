@@ -174,16 +174,10 @@ class HrDashboardController extends Controller
         })->take(7);
     }
 
-    /**
-     * Get upcoming birthdays for management-grade active employees.
-     */
     private function getUpcomingBirthdays(Carbon $today)
     {
         return Employee::query()->whereNotNull('date_of_birth')
             ->where('status', 'active')
-            ->whereHas('grade', function($query) {
-                $query->where('name', 'Management');
-            })
             ->get()
             ->map(function ($employee) use ($today) {
                 $birthday = Carbon::parse($employee->date_of_birth);
