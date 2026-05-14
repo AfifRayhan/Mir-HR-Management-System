@@ -95,9 +95,10 @@
             'id' => $emp->id,
             'name' => $emp->name,
             'employee_id' => $emp->employee_code,
+            'gender' => $emp->gender,
             'designation' => $emp->designation ? $emp->designation->name : '',
             'department' => $emp->department ? $emp->department->name : '',
-            'office_name' => $emp->office ? $emp->office->name : '',
+            'office_name' => $emp->office ? rtrim($emp->office->name, '.') : '',
             'joining_date' => $emp->joining_date ? \Carbon\Carbon::parse($emp->joining_date)->format('Y-m-d') : '',
         ];
     })) }}"></div>
@@ -146,7 +147,7 @@
                             
                             data.tags.forEach(tag => {
                                 // Remove # for the label
-                                const labelName = tag.replace('#', '');
+                                const labelName = tag.replace('#', '').replace(/_/g, ' ');
                                 // Input name should include # or not, let's keep it without # to be standard, controller handles it
                                 const inputName = `tags[${tag}]`;
                                 
@@ -157,7 +158,7 @@
                                 
                                 html += `
                                     <div class="col-md-6">
-                                        <label class="form-label small fw-bold text-muted">${labelName}</label>
+                                        <label class="form-label small fw-bold text-muted text-capitalize">${labelName}</label>
                                 `;
                                 
                                 if (tag === '#employee_name') {
@@ -186,6 +187,9 @@
                                     const employee = employeesData.find(e => e.id === selectedId);
                                     
                                     if (employee) {
+                                        const gender = (employee.gender || 'male').toLowerCase();
+                                        const isMale = gender === 'male';
+
                                         // Auto-fill tags if they exist
                                         const tagsToFill = {
                                             '#employee_id': employee.employee_id,
@@ -193,6 +197,10 @@
                                             '#department': employee.department,
                                             '#office_name': employee.office_name,
                                             '#joining_date': employee.joining_date,
+                                            '#title': isMale ? 'Mr.' : 'Ms.',
+                                            '#heshe': isMale ? 'He' : 'She',
+                                            '#himher': isMale ? 'him' : 'her',
+                                            '#hisher': isMale ? 'his' : 'her',
                                         };
 
                                         for (const [tag, value] of Object.entries(tagsToFill)) {

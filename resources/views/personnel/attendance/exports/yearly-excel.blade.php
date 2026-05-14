@@ -1,52 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <style>
-        table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 10px; }
-        th, td { border: 1px solid #000; padding: 4px; text-align: center; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .logo { width: 150px; }
-        .office-header { background-color: #f0f0f0; font-weight: bold; text-align: left; padding-left: 10px; }
-        .dept-header { background-color: #f9f9f9; font-weight: bold; text-align: left; padding-left: 20px; }
-        .emp-header { background-color: #ffffff; font-weight: bold; text-align: left; padding-left: 5px; }
-        .bg-light { background-color: #f8f9fa; }
-        .fw-bold { font-weight: bold; }
-    </style>
-</head>
-<body>
 <table>
     <thead>
         <tr>
-            <td rowspan="3" colspan="2"></td> {{-- Logo Space (A1:B3) --}}
-            <td colspan="10" style="font-size: 18pt; font-weight: bold; text-align: left; vertical-align: bottom;">{{ $selectedOffice->name ?? 'The Mir Group' }}</td>
+            <td rowspan="4" colspan="2" style="vertical-align: middle; text-align: center;"></td> {{-- Logo Space (A1:B4) --}}
+            <td colspan="5" style="font-size: 16pt; font-weight: bold; text-align: left; vertical-align: bottom;">{{ $selectedOffice->name ?? 'The Mir Group' }}</td>
+            <td colspan="5" style="font-size: 8pt; border: 1px solid #000000; text-align: center; vertical-align: middle;">
+                <strong>Attendance Legends</strong><br>
+                P=Present, A=Absent, LP=Late Present<br>
+                L=1d Leave, HL=0.5d Leave, LA=Late Absent, H=Holiday
+            </td>
         </tr>
         <tr>
-            <td colspan="10" style="font-size: 11pt; text-align: left; vertical-align: top;">House-04, Road-21, Gulshan-1, Dhaka-1212</td>
+            <td colspan="5" style="font-size: 10pt; text-align: left; vertical-align: top;">House-04, Road-21, Gulshan-1, Dhaka-1212</td>
+            <td colspan="5" rowspan="2" style="font-size: 12pt; font-weight: bold; text-align: right; vertical-align: middle;">Yearly Attendance Report - {{ $year }}</td>
+        </tr>
+        <tr>
+            <td colspan="5"></td>
         </tr>
         <tr>
             <td colspan="10"></td>
         </tr>
-        <tr>
-            <td colspan="12" style="font-size: 14pt; font-weight: bold; text-align: center; background-color: #f2f2f2;">Yearly Attendance Report - {{ $year }}</td>
-        </tr>
-        <tr><td colspan="12"></td></tr>
     </thead>
     
     <thead>
         <tr style="background-color: #007a10; color: #ffffff;">
-            <th style="width: 100px; font-weight: bold; text-align: center;">Emp ID</th>
-            <th style="width: 200px; font-weight: bold; text-align: center;">Name</th>
-            <th style="width: 150px; font-weight: bold; text-align: center;">Designation</th>
-            <th style="width: 100px; font-weight: bold; text-align: center;">Month</th>
-            <th style="font-weight: bold; text-align: center;">P</th>
-            <th style="font-weight: bold; text-align: center;">A</th>
-            <th style="font-weight: bold; text-align: center;">LP</th>
-            <th style="font-weight: bold; text-align: center;">LA</th>
-            <th style="font-weight: bold; text-align: center;">L</th>
-            <th style="font-weight: bold; text-align: center;">H</th>
-            <th style="font-weight: bold; text-align: center;">WD</th>
-            <th style="font-weight: bold; text-align: center;">Total</th>
+            <th style="width: 80px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">Emp ID</th>
+            <th style="width: 150px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">Name</th>
+            <th style="width: 120px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">Designation</th>
+            <th style="width: 80px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">Month</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">P</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">A</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">LP</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">LA</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">L</th>
+            <th style="width: 30px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">H</th>
+            <th style="width: 40px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">WD</th>
+            <th style="width: 50px; font-weight: bold; text-align: center; border: 1px solid #005a0b;">Total</th>
         </tr>
     </thead>
     <tbody>
@@ -56,7 +44,7 @@
             </tr>
             @foreach($departments as $deptName => $employees)
                 <tr>
-                    <td colspan="12" style="background-color: #f2f2f2; font-weight: bold; text-align: left;">Department: {{ $deptName }}</td>
+                    <td colspan="12" style="background-color: #f8fafc; color: #000000; font-weight: bold; text-align: left; border-top: 1px solid #000000; border-bottom: 1px solid #000000;">Department: {{ $deptName }} ({{ count($employees) }})</td>
                 </tr>
                 @foreach($employees as $data)
                     @php
@@ -73,40 +61,34 @@
                         @endphp
                         <tr>
                             @if($m == 1)
-                                <td rowspan="13" style="vertical-align: middle; text-align: center;">{{ $emp->employee_code }}</td>
-                                <td rowspan="13" style="vertical-align: middle; text-align: left;">{{ $emp->name }}</td>
-                                <td rowspan="13" style="vertical-align: middle; text-align: left;">{{ $emp->designation->name ?? 'N/A' }}</td>
+                                <td rowspan="13" style="vertical-align: middle; text-align: center; border: 1px solid #dee2e6;">{{ $emp->employee_code }}</td>
+                                <td rowspan="13" style="vertical-align: middle; text-align: left; border: 1px solid #dee2e6;">{{ $emp->name }}</td>
+                                <td rowspan="13" style="vertical-align: middle; text-align: left; border: 1px solid #dee2e6;">{{ $emp->designation->name ?? 'N/A' }}</td>
                             @endif
-                            <td style="text-align: left; padding-left: 10px;">{{ date('F', mktime(0, 0, 0, $m, 1)) }}</td>
-                            <td style="text-align: center;">{{ $s['P'] }}</td>
-                            <td style="text-align: center;">{{ $s['A'] }}</td>
-                            <td style="text-align: center;">{{ $s['LP'] }}</td>
-                            <td style="text-align: center;">{{ $s['LA'] }}</td>
-                            <td style="text-align: center;">{{ $s['L'] }}</td>
-                            <td style="text-align: center;">{{ $s['H'] }}</td>
-                            <td style="text-align: center;">{{ $s['WD'] }}</td>
-                            <td style="text-align: center; font-weight: bold;">{{ $monthTotal }}</td>
+                            <td style="text-align: left; padding-left: 10px; border: 1px solid #dee2e6;">{{ date('F', mktime(0, 0, 0, $m, 1)) }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['P'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['A'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['LP'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['LA'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['L'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['H'] }}</td>
+                            <td style="text-align: center; border: 1px solid #dee2e6;">{{ $s['WD'] }}</td>
+                            <td style="text-align: center; font-weight: bold; border: 1px solid #dee2e6;">{{ $monthTotal }}</td>
                         </tr>
                     @endfor
                     <tr style="background-color: #f8f9fa; font-weight: bold;">
-                        <td style="text-align: left; padding-left: 10px;">{{ __('YEAR TOTAL') }}</td>
-                        <td style="text-align: center;">{{ $yearP }}</td>
-                        <td style="text-align: center;">{{ $yearA }}</td>
-                        <td style="text-align: center;">{{ $yearLP }}</td>
-                        <td style="text-align: center;">{{ $yearLA }}</td>
-                        <td style="text-align: center;">{{ $yearL }}</td>
-                        <td style="text-align: center;">{{ $yearH }}</td>
-                        <td style="text-align: center;">{{ $yearWD }}</td>
-                        <td style="text-align: center;">{{ $yearP + $yearLP + $yearL }}</td>
+                        <td style="text-align: left; padding-left: 10px; border: 1px solid #dee2e6;">{{ __('YEAR TOTAL') }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearP }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearA }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearLP }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearLA }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearL }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearH }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearWD }}</td>
+                        <td style="text-align: center; border: 1px solid #dee2e6;">{{ $yearP + $yearLP + $yearL }}</td>
                     </tr>
                 @endforeach
             @endforeach
         @endforeach
     </tbody>
 </table>
-</body>
-</html>
-
-
-
-

@@ -5,8 +5,8 @@
     <title>Attendance Report</title>
     <style>
         @page {
-            size: A3 landscape;
-            margin: 10mm;
+            size: A4 landscape;
+            margin: 5mm;
         }
         body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 9pt; color: #333; line-height: 1.3; }
         .header-table { width: 100%; border: none; margin-bottom: 20px; border-collapse: collapse; }
@@ -27,6 +27,27 @@
         .status-leave { color: #2563eb; font-weight: bold; }
         
         .text-center { text-align: center !important; }
+
+        .office-header {
+            background-color: #000;
+            color: #fff;
+            font-weight: bold;
+            text-align: left !important;
+            padding: 4px 10px !important;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
+        .dept-header {
+            background-color: #fff;
+            border-top: 1px solid #000 !important;
+            border-bottom: 1px solid #000 !important;
+            font-weight: bold;
+            text-align: left !important;
+            padding: 4px 20px !important;
+            font-size: 8pt;
+            color: #000;
+        }
+        tbody { page-break-inside: avoid; }
     </style>
 </head>
 <body>
@@ -70,7 +91,7 @@
         <thead>
             <tr>
                 <th style="width: 250px;">Employee</th>
-                <th style="width: 300px;">Department / Designation</th>
+                <th style="width: 250px;">Designation</th>
                 <th style="width: 120px;">In Time</th>
                 <th style="width: 120px;">Out Time</th>
                 <th style="width: 120px;">Working Hours</th>
@@ -79,26 +100,42 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($records as $record)
-                <tr>
-                    <td>
-                        <strong>{{ $record->employee->name }}</strong><br>
-                        <small style="color: #666;">Code: {{ $record->employee->employee_code }}</small>
-                    </td>
-                    <td>
-                        {{ $record->employee->department->name ?? 'N/A' }}<br>
-                        <small style="color: #666;">{{ $record->employee->designation->name ?? 'N/A' }}</small>
-                    </td>
-                    <td class="text-center">{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
-                    <td class="text-center">{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
-                    <td class="text-center">{{ $record->working_hours }}h</td>
-                    <td class="text-center">{{ $record->late_timing }}</td>
-                    <td class="text-center">
-                        <span class="status-{{ strtolower($record->status) }}">
-                            {{ ucfirst($record->status) }}
-                        </span>
-                    </td>
+            @php
+                $groupedRecords = $records->groupBy(fn($r) => $r->employee->office->name ?? 'Unassigned');
+            @endphp
+
+            @foreach($groupedRecords as $officeName => $officeRecords)
+                <tr style="page-break-inside: avoid;">
+                    <td colspan="7" class="office-header">Office: {{ $officeName }}</td>
                 </tr>
+                @php
+                    $deptGrouped = $officeRecords->groupBy(fn($r) => $r->employee->department->name ?? 'Unassigned');
+                @endphp
+                @foreach($deptGrouped as $deptName => $deptRecords)
+                    <tr style="page-break-inside: avoid;">
+                        <td colspan="7" class="dept-header">Department: {{ $deptName }} ({{ $deptRecords->count() }})</td>
+                    </tr>
+                    @foreach($deptRecords as $record)
+                        <tr>
+                            <td style="padding: 4px 8px;">
+                                <strong>{{ $record->employee->name }}</strong><br>
+                                <small style="color: #666; font-size: 7pt;">Code: {{ $record->employee->employee_code }}</small>
+                            </td>
+                            <td style="padding: 4px 8px;">
+                                {{ $record->employee->designation->name ?? 'N/A' }}
+                            </td>
+                            <td class="text-center" style="padding: 4px 8px;">{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
+                            <td class="text-center" style="padding: 4px 8px;">{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
+                            <td class="text-center" style="padding: 4px 8px;">{{ $record->working_hours }}h</td>
+                            <td class="text-center" style="padding: 4px 8px;">{{ $record->late_timing }}</td>
+                            <td class="text-center" style="padding: 4px 8px;">
+                                <span class="status-{{ strtolower($record->status) }}">
+                                    {{ ucfirst($record->status) }}
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
             @endforeach
         </tbody>
     </table>

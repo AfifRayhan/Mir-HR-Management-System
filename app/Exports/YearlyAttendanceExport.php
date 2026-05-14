@@ -55,14 +55,23 @@ class YearlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wit
         $year = $this->params['year'] ?? date('Y');
 
         $query = Employee::with(['department', 'designation', 'office', 'officeTime'])
-            ->where('status', 'active');
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->select('employees.*');
 
         if (!empty($this->params['office_id'])) {
-            $query->where('office_id', $this->params['office_id']);
+            $query->where('employees.office_id', $this->params['office_id']);
         }
         if (!empty($this->params['department_id'])) {
-            $query->where('department_id', $this->params['department_id']);
+            $query->where('employees.department_id', $this->params['department_id']);
         }
+
+        $query->orderBy('employees.office_id')
+              ->orderBy('departments.order_sequence')
+              ->orderBy('designations.priority')
+              ->orderBy('employees.id')
+              ->orderBy('employees.name');
 
         $employees = $query->get();
         $totalEmployees = count($employees);

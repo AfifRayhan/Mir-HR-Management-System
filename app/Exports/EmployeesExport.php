@@ -17,7 +17,10 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
-class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents, WithDrawings, WithCustomStartCell
+use Maatwebsite\Excel\Concerns\FromView;
+use Illuminate\Contracts\View\View;
+
+class EmployeesExport implements FromView, WithColumnWidths, WithStyles, WithDrawings, WithCustomStartCell
 {
     use Exportable;
 
@@ -26,8 +29,8 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
     protected $format;
 
     public const DEFAULT_COLUMNS = [
-        'employee_code', 'name', 'department', 'section', 'designation',
-        'office', 'contact_no', 'joining_date', 'status',
+        'employee_code', 'name', 'phone', 'email', 'joining_date', 
+        'section', 'designation', 'grade', 'office_time', 'gross_salary', 'status',
     ];
 
     protected $selectedOffice;
@@ -115,11 +118,9 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
             'discontinuation_reason' => 'Discontinuation Reason',
             'present_address' => 'Present Address',
             'permanent_address' => 'Permanent Address',
-            'department' => 'Department',
             'section' => 'Section',
             'designation' => 'Designation',
             'grade' => 'Grade',
-            'office' => 'Office',
             'office_time' => 'Office Time',
             'gross_salary' => 'Gross Salary',
             'status' => 'Status',
@@ -170,50 +171,55 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
 
     public function query()
     {
-        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
+        $query = Employee::query()
+            ->select('employees.*')
+            ->with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user'])
+            ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
+            ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id');
 
         // Search
         if ($this->request['search'] ?? null) {
             $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->request['search'] . '%')
-                    ->orWhere('employee_code', 'like', '%' . $this->request['search'] . '%');
+                $q->where('employees.name', 'like', '%' . $this->request['search'] . '%')
+                    ->orWhere('employees.employee_code', 'like', '%' . $this->request['search'] . '%');
             });
         }
 
         // Filters
         if ($this->request['department_id'] ?? null) {
-            $query->where('department_id', $this->request['department_id']);
+            $query->where('employees.department_id', $this->request['department_id']);
         }
         if ($this->request['section_id'] ?? null) {
-            $query->where('section_id', $this->request['section_id']);
+            $query->where('employees.section_id', $this->request['section_id']);
         }
         if ($this->request['designation_id'] ?? null) {
-            $query->where('designation_id', $this->request['designation_id']);
+            $query->where('employees.designation_id', $this->request['designation_id']);
         }
         if ($this->request['status'] ?? null) {
-            $query->where('status', $this->request['status']);
+            $query->where('employees.status', $this->request['status']);
+        }
+        if ($this->request['office_id'] ?? null) {
+            $query->where('employees.office_id', $this->request['office_id']);
         }
 
-        // Sorting — whitelist allowed columns and directions to prevent SQL injection
-        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
-        $allowedDirections = ['asc', 'desc'];
-        $sortColumn = in_array($this->request['sort'] ?? null, $allowedSortColumns) ? $this->request['sort'] : 'created_at';
-        $sortDirection = in_array(strtolower($this->request['direction'] ?? 'asc'), $allowedDirections) ? strtolower($this->request['direction'] ?? 'asc') : 'asc';
-        
-        if ($sortColumn === 'employee_code') {
-            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
-                  ->orderBy('employee_code', $sortDirection);
-        } else {
-            $query->orderBy($sortColumn, $sortDirection);
-        }
+        // Default sorting for tree view: Office > Dept Order > Desig Priority > Emp Code
+        $query->orderBy('employees.office_id')
+              ->orderBy('departments.order_sequence')
+              ->orderBy('designations.priority')
+              ->orderByRaw('LENGTH(employees.employee_code) ASC')
+              ->orderBy('employees.employee_code', 'ASC');
 
         return $query;
     }
 
-    public function headings(): array
+    public function view(): View
     {
-        $defs = self::getColumnDefinitions();
-        return array_map(fn($key) => $defs[$key], $this->columns);
+        return view('personnel.employees.exports.excel', [
+            'employees' => $this->query()->get(),
+            'selectedColumns' => $this->columns,
+            'allColumns' => self::getColumnDefinitions(),
+            'selectedOffice' => $this->selectedOffice,
+        ]);
     }
 
     public function columnWidths(): array
@@ -222,52 +228,37 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
         $colMap = [
             'employee_code' => 12,
             'name' => 15,
-            'email' => 25,
-            'personal_email' => 25,
+            'email' => 17,
+            'personal_email' => 17,
             'phone' => 15,
-            'blood_group' => 8,
+            'blood_group' => 3,
             'father_name' => 15,
             'mother_name' => 15,
-            'gender' => 10,
-            'religion' => 10,
-            'marital_status' => 12,
+            'gender' => 7,
+            'religion' => 7,
+            'marital_status' => 7,
             'national_id' => 18,
             'tin' => 15,
             'nationality' => 12,
             'contact_no' => 15,
             'date_of_birth' => 12,
             'joining_date' => 12,
-            'department' => 18,
             'section' => 18,
             'designation' => 16,
             'grade' => 10,
-            'office' => 20,
             'office_time' => 15,
             'gross_salary' => 12,
             'status' => 10,
         ];
 
         foreach ($this->columns as $index => $key) {
-            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1);
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 2); // +2 because # is at index 1 (B)
             $width = $colMap[$key] ?? 15;
-            
-            // For first column (A), ensure enough width for logo in non-CSV
-            if ($index === 0 && $this->format !== 'csv') {
-                $width = max($width, 20);
-            }
-            
             $widths[$columnLetter] = $width;
         }
+        $widths['A'] = 6; // # column
 
         return $widths;
-    }
-
-    /**
-    * @var Employee $employee
-    */
-    public function map($employee): array
-    {
-        return array_map(fn($key) => self::getColumnValue($employee, $key), $this->columns);
     }
 
     public function styles(Worksheet $sheet)
@@ -286,19 +277,19 @@ class EmployeesExport implements FromQuery, WithHeadings, WithMapping, WithColum
             $sheet->getStyle('B2')->getAlignment()->setWrapText(false);
             
             // White background for the logo/header area to remove gridlines
-            $headerArea = "A1:{$lastCol}4";
+            $headerArea = "A1:{$lastCol}3";
             $sheet->getStyle($headerArea)->getFill()
                 ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                 ->getStartColor()->setARGB('FFFFFFFF');
             
             // Report Title (EMPLOYEE LIST)
-            $sheet->getStyle("A4:{$lastCol}4")->getFont()->setBold(true)->setSize(12);
-            $sheet->getStyle("A4:{$lastCol}4")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->getStyle("A3:{$lastCol}3")->getFont()->setBold(true)->setSize(12);
+            $sheet->getStyle("A3:{$lastCol}3")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
-            // Table Headings styling (Row 5)
-            $headerRange = "A5:{$lastCol}5";
-            $dataStartRow = 6;
-            $tableStartRow = 5;
+            // Table Headings styling (Row 4)
+            $headerRange = "A4:{$lastCol}4";
+            $dataStartRow = 5;
+            $tableStartRow = 4;
         } else {
             $headerRange = "A1:{$lastCol}1";
             $dataStartRow = 2;

@@ -467,33 +467,22 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         DB::transaction(function () use ($employee) {
-            $linkedUsers = User::query()
-                ->where(function ($query) use ($employee) {
-                    $query->where('employee_id', (string) $employee->id);
+            // Capture the linked user ID before clearing the FK
+            $linkedUserId = $employee->user_id;
 
-                    if ($employee->employee_code) {
-                        $query->orWhere('employee_id', $employee->employee_code);
-                    }
-
-                    if ($employee->user_id) {
-                        $query->orWhere('id', $employee->user_id);
-                    }
-                })
-                ->get();
-
-            if ($linkedUsers->isNotEmpty()) {
-                foreach ($linkedUsers as $linkedUser) {
-                    // Break the FK link first so employee deletion never depends on DB cascade behavior.
-                    if ((int) $employee->user_id === (int) $linkedUser->id) {
-                        $employee->user_id = null;
-                        $employee->save();
-                    }
-
-                    $linkedUser->delete();
-                }
+            // Break the FK link first so employee deletion never depends on DB cascade behavior.
+            if ($linkedUserId) {
+                $employee->user_id = null;
+                $employee->save();
             }
 
+            // Delete the employee record
             Employee::whereKey($employee->id)->delete();
+
+            // Delete the linked user account
+            if ($linkedUserId) {
+                User::where('id', $linkedUserId)->delete();
+            }
         });
         
         return redirect()->route('personnel.employees.index')->with('success', 'Employee and associated user account deleted successfully.');
@@ -563,7 +552,7 @@ class EmployeeController extends Controller
                 'selectedColumns' => $selectedColumns,
                 'selectedOffice' => $selectedOffice,
             ])
-            ->setPaper('a3', 'landscape')
+            ->setPaper('a4', 'landscape')
             ->setOption('margin-bottom', 10)
             ->setOption('margin-top', 10)
             ->setOption('margin-left', 10)
@@ -634,32 +623,31 @@ class EmployeeController extends Controller
             $selectedColumns = EmployeesExport::DEFAULT_COLUMNS;
         }
 
-        $query = Employee::with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user']);
+        $query = Employee::query()
+            ->select('employees.*')
+            ->with(['department', 'section', 'designation', 'grade', 'office', 'officeTime', 'user'])
+            ->leftJoin('departments', 'employees.department_id', '=', 'departments.id')
+            ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id');
 
         // Reuse same filters as index
         if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('employee_code', 'like', '%' . $request->search . '%');
+                $q->where('employees.name', 'like', '%' . $request->search . '%')
+                  ->orWhere('employees.employee_code', 'like', '%' . $request->search . '%');
             });
         }
-        if ($request->department_id) $query->where('department_id', $request->department_id);
-        if ($request->office_id) $query->where('office_id', $request->office_id);
-        if ($request->designation_id) $query->where('designation_id', $request->designation_id);
-        if ($request->section_id) $query->where('section_id', $request->section_id);
-        if ($request->status) $query->where('status', $request->status);
+        if ($request->department_id) $query->where('employees.department_id', $request->department_id);
+        if ($request->office_id) $query->where('employees.office_id', $request->office_id);
+        if ($request->designation_id) $query->where('employees.designation_id', $request->designation_id);
+        if ($request->section_id) $query->where('employees.section_id', $request->section_id);
+        if ($request->status) $query->where('employees.status', $request->status);
 
-        // Sorting — whitelist allowed columns and directions to prevent SQL injection
-        $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
-        $allowedDirections = ['asc', 'desc'];
-        $sortColumn = in_array($request->input('sort'), $allowedSortColumns) ? $request->input('sort') : 'created_at';
-        $sortDirection = in_array(strtolower($request->input('direction', 'asc')), $allowedDirections) ? strtolower($request->input('direction', 'asc')) : 'asc';
-        if ($sortColumn === 'employee_code') {
-            $query->orderByRaw('LENGTH(employee_code) ' . $sortDirection)
-                  ->orderBy('employee_code', $sortDirection);
-        } else {
-            $query->orderBy($sortColumn, $sortDirection);
-        }
+        // Hierarchical sorting for tree view
+        $query->orderBy('employees.office_id')
+              ->orderBy('departments.order_sequence')
+              ->orderBy('designations.priority')
+              ->orderByRaw('LENGTH(employees.employee_code) ASC')
+              ->orderBy('employees.employee_code', 'ASC');
 
         $employees = $query->paginate(50)->withQueryString();
 
@@ -683,8 +671,6 @@ class EmployeeController extends Controller
             'departments' => $departments,
             'sections' => $sections,
             'designations' => $designations,
-            'sortColumn' => $sortColumn,
-            'sortDirection' => $sortDirection,
             'selectedOffice' => $selectedOffice,
             'allEmployees' => $allEmployees,
         ]);

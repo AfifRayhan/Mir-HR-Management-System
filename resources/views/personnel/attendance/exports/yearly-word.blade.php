@@ -17,8 +17,8 @@
         .report-table th { background-color: #007A10; color: #ffffff; padding: 8px 4px; text-align: center; font-size: 9pt; border: 1px solid #005a0b; }
         .report-table td { padding: 6px 4px; border: 1px solid #dee2e6; font-size: 8.5pt; vertical-align: middle; text-align: center; }
         
-        .office-header { background-color: #000000; color: #ffffff; font-weight: bold; text-align: left !important; padding-left: 10px !important; }
-        .dept-header { background-color: #f2f2f2; font-weight: bold; text-align: left !important; padding-left: 15px !important; }
+        .office-header { background-color: #000000 !important; color: #ffffff !important; font-weight: bold; text-align: left !important; padding: 8px 10px !important; }
+        .dept-header { background-color: #f8fafc !important; color: #000000 !important; font-weight: bold; text-align: left !important; padding: 6px 15px !important; border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6; }
         .bg-light { background-color: #f8f9fa; }
         .fw-bold { font-weight: bold; }
         
@@ -29,38 +29,46 @@
 <body>
     <table class="header-table">
         <tr>
-            <td class="logo-cell">
-                @php
-                    $logoPath = public_path('images/MIRORIGINAL.jpeg');
-                    if (isset($selectedOffice) && $selectedOffice->logo) {
-                        $officeLogo = $selectedOffice->logo;
-                        $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
-                            ? public_path($officeLogo)
-                            : storage_path('app/public/' . $officeLogo);
-
-                        if (file_exists($resolvedLogoPath)) {
-                            $logoPath = $resolvedLogoPath;
-                        }
-                    }
-                    
-                    $logoData = '';
-                    if (file_exists($logoPath)) {
-                        $mimeType = mime_content_type($logoPath);
-                        $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
-                    }
-                @endphp
-                @if($logoData)
-                    <img src="{{ $logoData }}" width="60" alt="Logo">
-                @endif
+            <td class="logo-cell" style="width: 30%;">
+                <div style="display: table;">
+                    <div style="display: table-cell; vertical-align: top;">
+                        @php
+                            $logoPath = public_path('images/MIRORIGINAL.jpeg');
+                            if (isset($selectedOffice) && $selectedOffice->logo) {
+                                $officeLogo = $selectedOffice->logo;
+                                $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                    ? public_path($officeLogo)
+                                    : storage_path('app/public/' . $officeLogo);
+                                if (file_exists($resolvedLogoPath)) $logoPath = $resolvedLogoPath;
+                            }
+                            $logoData = '';
+                            if (file_exists($logoPath)) {
+                                $mimeType = mime_content_type($logoPath);
+                                $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
+                            }
+                        @endphp
+                        @if($logoData)
+                            <img src="{{ $logoData }}" width="55" alt="Logo">
+                        @endif
+                    </div>
+                    <div style="display: table-cell; vertical-align: top; padding-left: 10px;">
+                        <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
+                        <div class="company-address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
+                    </div>
+                </div>
             </td>
-            <td class="address-cell">
-                <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
-                <div class="company-address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
+            <td style="width: 40%; text-align: center; vertical-align: top;">
+                <div style="display: inline-block; font-size: 8pt; border: 1px solid #999; padding: 5px 10px; text-align: center;">
+                    <div style="font-weight: bold; margin-bottom: 2px;">Attendance Legends</div>
+                    <div>P=Present, A=Absent, LP=Late Present</div>
+                    <div>L=1d Leave, HL=0.5d Leave, LA=Late Absent, H=Holiday</div>
+                </div>
+            </td>
+            <td style="width: 30%; text-align: right; vertical-align: top;">
+                <div class="report-title" style="margin-top: 0;">Yearly Attendance Report - {{ $year }}</div>
             </td>
         </tr>
     </table>
-
-    <div class="report-title">YEARLY ATTENDANCE REPORT - {{ $year }}</div>
 
     <table class="report-table">
         <thead>

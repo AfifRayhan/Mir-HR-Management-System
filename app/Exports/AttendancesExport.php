@@ -4,14 +4,13 @@ namespace App\Exports;
 
 use App\Models\AttendanceRecord;
 use Illuminate\Support\Facades\Cache;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
-use Maatwebsite\Excel\Concerns\WithCustomChunkSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -20,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Illuminate\Support\Str;
 
-class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents, WithDrawings, WithCustomStartCell, WithCustomChunkSize
+class AttendancesExport implements FromView, WithTitle, ShouldAutoSize, WithDrawings, WithStyles, WithCustomStartCell, WithEvents
 {
     use Exportable;
 
@@ -38,9 +37,14 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
         }
     }
 
+    public function title(): string
+    {
+        return 'Daily Attendance Report';
+    }
+
     public function startCell(): string
     {
-        return ($this->format === 'csv') ? 'A1' : 'A5';
+        return 'A1';
     }
 
     public function drawings()
@@ -74,12 +78,7 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
         return $drawing;
     }
 
-    public function chunkSize(): int
-    {
-        return 500;
-    }
-
-    public function query()
+    public function view(): View
     {
         $date         = $this->request['date'] ?? now()->toDateString();
         $departmentId = $this->request['department_id'] ?? null;
@@ -88,138 +87,55 @@ class AttendancesExport implements FromQuery, WithHeadings, WithMapping, WithCol
         $search       = $this->request['search'] ?? null;
 
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
-            ->whereHas('employee', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->where('date', $date);
+            ->join('employees', 'attendance_records.employee_id', '=', 'employees.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->where('attendance_records.date', $date)
+            ->select('attendance_records.*');
 
         if ($departmentId) {
-            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+            $query->where('employees.department_id', $departmentId);
         }
 
         if ($officeId) {
-            $query->whereHas('employee', fn($q) => $q->where('office_id', $officeId));
+            $query->where('employees.office_id', $officeId);
         }
 
         if ($status) {
-            $query->where('status', $status);
+            $query->where('attendance_records.status', $status);
         }
 
         if ($search) {
-            $query->whereHas('employee', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('employee_code', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('employees.name', 'like', "%{$search}%")
+                  ->orWhere('employees.employee_code', 'like', "%{$search}%");
             });
         }
 
-        return $query;
-    }
+        $records = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->get();
 
-    public function headings(): array
-    {
-        return [
-            'Employee',
-            'Department/Designation',
-            'In Time',
-            'Out Time',
-            'Working Hours',
-            'Late (H:M:S)',
-            'Status',
-        ];
-    }
-
-    public function columnWidths(): array
-    {
-        return [
-            'A' => 25, // Employee
-            'B' => 25, // Dept/Desig
-            'C' => 15, // In Time
-            'D' => 15, // Out Time
-            'E' => 15, // Working Hours
-            'F' => 15, // Late
-            'G' => 12, // Status
-        ];
-    }
-
-    /**
-    * @var AttendanceRecord $record
-    */
-    public function map($record): array
-    {
-        return [
-            $record->employee->name . ' (' . $record->employee->employee_code . ')',
-            ($record->employee->department->name ?? 'N/A') . ' / ' . ($record->employee->designation->name ?? 'N/A'),
-            $record->in_time ? $record->in_time->format('h:i A') : '-',
-            $record->out_time ? $record->out_time->format('h:i A') : '-',
-            $record->working_hours . 'h',
-            $record->late_timing,
-            $record->status === 'weekly_holiday' ? ($record->employee->roster_group ? 'Off Day' : 'Weekly Holiday') : ($record->status === 'off_day' ? 'Off Day' : ucfirst($record->status)),
-        ];
+        return view('personnel.attendance.exports.daily-excel', [
+            'records' => $records,
+            'date' => $date,
+            'selectedOffice' => $this->selectedOffice
+        ]);
     }
 
     public function styles(Worksheet $sheet)
     {
-        $lastCol = 'G';
-        
-        if ($this->format !== 'csv') {
-            $sheet->getRowDimension(1)->setRowHeight(60);
-            $sheet->getStyle('B1')->getFont()->setBold(true)->setSize(16);
-            $sheet->getStyle('B2')->getFont()->setSize(10);
-            
-            $headerArea = "A1:{$lastCol}4";
-            $sheet->getStyle($headerArea)->getFill()
-                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('FFFFFFFF');
-            
-            $title = 'ATTENDANCE REPORT - ' . ($this->request['date'] ?? now()->toDateString());
-            $sheet->setCellValue('G4', $title);
-            $sheet->getStyle("A4:{$lastCol}4")->getFont()->setBold(true)->setSize(12);
-            $sheet->getStyle("A4:{$lastCol}4")->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-
-            $headerRange = "A5:{$lastCol}5";
-            $dataStartRow = 6;
-            $tableStartRow = 5;
-        } else {
-            $headerRange = "A1:{$lastCol}1";
-            $dataStartRow = 2;
-            $tableStartRow = 1;
-        }
-
-        $sheet->getStyle($headerRange)->applyFromArray([
-            'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
-            'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FF007A10'],
-            ],
-            'alignment' => [
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-            ],
-        ]);
-
-        $highestRow = $sheet->getHighestRow();
-        $fullTableRange = "A{$tableStartRow}:{$lastCol}{$highestRow}";
-        $dataRange = "A{$dataStartRow}:{$lastCol}{$highestRow}";
-        
-        $sheet->getStyle($dataRange)->getAlignment()->applyFromArray([
-            'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
-            'wrapText' => true,
-        ]);
-        
-        $sheet->getStyle($fullTableRange)->getBorders()->getAllBorders()
-            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-        $sheet->freezePane("A{$dataStartRow}");
-
-        return [];
+        return []; // Styles are mostly handled in the blade via HTML styles
     }
 
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                
                 if ($this->format === 'csv') return;
 
                 $sheet = $event->sheet->getDelegate();

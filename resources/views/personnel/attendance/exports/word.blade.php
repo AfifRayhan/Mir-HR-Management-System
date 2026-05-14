@@ -14,9 +14,10 @@
         .report-title { text-align: right; font-size: 12pt; font-weight: bold; margin-bottom: 10px; }
         
         .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .report-table th { background-color: #007A10; color: #ffffff; padding: 10px 5px; text-align: center; font-size: 10pt; border: 1px solid #005a0b; }
-        .report-table td { padding: 8px 5px; border: 1px solid #dee2e6; font-size: 9.5pt; vertical-align: middle; text-align: left; }
-        .report-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .report-table th { background-color: #007A10; color: #ffffff; padding: 8px 4px; text-align: center; font-size: 9pt; border: 1px solid #005a0b; }
+        .report-table td { padding: 6px 4px; border: 1px solid #dee2e6; font-size: 9pt; vertical-align: middle; text-align: left; }
+        .office-header { background-color: #000000; color: #ffffff; font-weight: bold; padding: 8px; font-size: 10pt; }
+        .dept-header { background-color: #f8fafc; color: #000000; font-weight: bold; padding: 6px; font-size: 9.5pt; border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6; }
         
         .status-present { color: #007A10; font-weight: bold; }
         .status-late { color: #ffc107; font-weight: bold; }
@@ -63,30 +64,47 @@
     <table class="report-table">
         <thead>
             <tr>
-                <th>Employee</th>
-                <th>Department/Designation</th>
-                <th>In Time</th>
-                <th>Out Time</th>
-                <th>Working Hours</th>
-                <th>Late (H:M:S)</th>
-                <th>Status</th>
+                <th style="width: 25%;">Employee</th>
+                <th style="width: 20%;">Designation</th>
+                <th style="width: 12%;">In Time</th>
+                <th style="width: 12%;">Out Time</th>
+                <th style="width: 12%;">Work Hours</th>
+                <th style="width: 12%;">Late</th>
+                <th style="width: 7%;">Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($records as $record)
+            @php
+                $groupedRecords = $records->groupBy(fn($r) => $r->employee->office->name ?? 'Unassigned');
+            @endphp
+
+            @foreach($groupedRecords as $officeName => $officeRecords)
                 <tr>
-                    <td>{{ $record->employee->name }} ({{ $record->employee->employee_code }})</td>
-                    <td>{{ $record->employee->department->name ?? 'N/A' }} / {{ $record->employee->designation->name ?? 'N/A' }}</td>
-                    <td style="text-align: center;">{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
-                    <td style="text-align: center;">{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
-                    <td style="text-align: center;">{{ $record->working_hours }}h</td>
-                    <td style="text-align: center;">{{ $record->late_timing }}</td>
-                    <td style="text-align: center;">
-                        <span class="status-{{ strtolower($record->status) }}">
-                            {{ ucfirst($record->status) }}
-                        </span>
-                    </td>
+                    <td colspan="7" class="office-header">Office: {{ $officeName }}</td>
                 </tr>
+                @php
+                    $deptGrouped = $officeRecords->groupBy(fn($r) => $r->employee->department->name ?? 'Unassigned');
+                @endphp
+                @foreach($deptGrouped as $deptName => $deptRecords)
+                    <tr>
+                        <td colspan="7" class="dept-header">Department: {{ $deptName }} ({{ $deptRecords->count() }})</td>
+                    </tr>
+                    @foreach($deptRecords as $record)
+                        <tr>
+                            <td>{{ $record->employee->name }} ({{ $record->employee->employee_code }})</td>
+                            <td>{{ $record->employee->designation->name ?? 'N/A' }}</td>
+                            <td style="text-align: center;">{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
+                            <td style="text-align: center;">{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
+                            <td style="text-align: center;">{{ $record->working_hours }}h</td>
+                            <td style="text-align: center;">{{ $record->late_timing }}</td>
+                            <td style="text-align: center;">
+                                <span class="status-{{ strtolower($record->status) }}">
+                                    {{ ucfirst($record->status) }}
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
             @endforeach
         </tbody>
     </table>

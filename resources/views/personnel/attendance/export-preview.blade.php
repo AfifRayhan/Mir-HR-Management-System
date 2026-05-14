@@ -12,9 +12,39 @@
             z-index: 10;
             box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
         }
-        .preview-count {
+        .office-group-header {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-weight: bold;
+            text-align: left !important;
+            padding: 8px 15px !important;
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .dept-group-header {
+            background-color: #fff;
+            font-weight: 500;
+            text-align: center !important;
+            padding: 6px 15px !important;
             font-size: 0.8rem;
-            color: #6b7280;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .ui-table {
+            border: 1px solid #e2e8f0;
+        }
+        .ui-table th, .ui-table td {
+            border: 1px solid #e2e8f0 !important;
+            padding: 8px 12px !important;
+            font-size: 0.8rem;
+            vertical-align: middle;
+        }
+        .ui-table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: center;
         }
     </style>
     @endpush
@@ -142,46 +172,57 @@
                     <table class="table ui-table mb-0">
                         <thead>
                             <tr>
-                                <th class="ps-4">#</th>
-                                <th>{{ __('Employee') }}</th>
-                                <th>{{ __('Department/Designation') }}</th>
+                                <th style="width: 100px;">{{ __('Emp Id') }}</th>
+                                <th style="width: 200px;">{{ __('Name') }}</th>
+                                <th style="width: 180px;">{{ __('Designation') }}</th>
                                 <th>{{ __('In Time') }}</th>
                                 <th>{{ __('Out Time') }}</th>
-                                <th>{{ __('Working Hours') }}</th>
-                                <th>{{ __('Late (H:M:S)') }}</th>
+                                <th>{{ __('Work Hours') }}</th>
+                                <th>{{ __('Late') }}</th>
                                 <th>{{ __('Status') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($records as $index => $record)
+                            @php
+                                $groupedRecords = $records->groupBy(fn($r) => $r->employee->office->name ?? 'Unassigned');
+                            @endphp
+
+                            @forelse($groupedRecords as $officeName => $officeRecords)
                                 <tr>
-                                    <td class="ps-4 text-gray-500">{{ $records->firstItem() + $index }}</td>
-                                    <td>
-                                        <div class="fw-bold text-dark">{{ $record->employee->name }}</div>
-                                        <div class="small text-muted">{{ $record->employee->employee_code }}</div>
-                                    </td>
-                                    <td>
-                                        <div class="small">{{ $record->employee->department->name ?? 'N/A' }}</div>
-                                        <div class="small text-muted">{{ $record->employee->designation->name ?? 'N/A' }}</div>
-                                    </td>
-                                    <td>{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
-                                    <td>{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
-                                    <td>{{ $record->working_hours }}h</td>
-                                    <td>{{ $record->late_timing }}</td>
-                                    <td>
-                                        @php
-                                        $statusClass = [
-                                            'present' => 'bg-success',
-                                            'late' => 'bg-warning text-dark',
-                                            'absent' => 'bg-danger',
-                                            'leave' => 'bg-info text-dark',
-                                        ][$record->status] ?? 'bg-secondary';
-                                        @endphp
-                                        <span class="badge {{ $statusClass }}">
-                                            {{ ucfirst($record->status) }}
-                                        </span>
-                                    </td>
+                                    <td colspan="8" class="office-group-header">Office: {{ $officeName }}</td>
                                 </tr>
+                                @php
+                                    $deptGrouped = $officeRecords->groupBy(fn($r) => $r->employee->department->name ?? 'Unassigned');
+                                @endphp
+                                @foreach($deptGrouped as $deptName => $deptRecords)
+                                    <tr>
+                                        <td colspan="8" class="dept-group-header">Department: {{ $deptName }} ({{ $deptRecords->count() }})</td>
+                                    </tr>
+                                    @foreach($deptRecords as $record)
+                                        <tr>
+                                            <td class="text-center">{{ $record->employee->employee_code }}</td>
+                                            <td>{{ $record->employee->name }}</td>
+                                            <td>{{ $record->employee->designation->name ?? 'N/A' }}</td>
+                                            <td class="text-center">{{ $record->in_time ? $record->in_time->format('h:i A') : '-' }}</td>
+                                            <td class="text-center">{{ $record->out_time ? $record->out_time->format('h:i A') : '-' }}</td>
+                                            <td class="text-center">{{ $record->working_hours }}h</td>
+                                            <td class="text-center">{{ $record->late_timing }}</td>
+                                            <td class="text-center">
+                                                @php
+                                                $statusClass = [
+                                                    'present' => 'bg-success',
+                                                    'late' => 'bg-warning text-dark',
+                                                    'absent' => 'bg-danger',
+                                                    'leave' => 'bg-info text-dark',
+                                                ][$record->status] ?? 'bg-secondary';
+                                                @endphp
+                                                <span class="badge {{ $statusClass }}">
+                                                    {{ ucfirst($record->status) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
                             @empty
                                 <tr>
                                     <td colspan="8" class="text-center py-5">

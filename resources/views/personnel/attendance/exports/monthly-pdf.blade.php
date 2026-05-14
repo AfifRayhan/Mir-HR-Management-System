@@ -47,42 +47,43 @@
 <body>
     <table class="header-table">
         <tr>
-            <td style="width: 60px; vertical-align: top;">
-                @php
-                    $logoPath = public_path('images/MIRORIGINAL.jpeg');
-                    if (isset($selectedOffice) && $selectedOffice->logo) {
-                        $officeLogo = $selectedOffice->logo;
-                        $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
-                            ? public_path($officeLogo)
-                            : storage_path('app/public/' . $officeLogo);
-
-                        if (file_exists($resolvedLogoPath)) {
-                            $logoPath = $resolvedLogoPath;
-                        }
-                    }
-                    
-                    $logoData = '';
-                    if (file_exists($logoPath)) {
-                        $mimeType = mime_content_type($logoPath);
-                        $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
-                    }
-                @endphp
-                @if($logoData)
-                    <img src="{{ $logoData }}" class="logo">
-                @endif
+            <td style="width: 33%; vertical-align: top;">
+                <div style="display: table;">
+                    <div style="display: table-cell; vertical-align: top;">
+                        @php
+                            $logoPath = public_path('images/MIRORIGINAL.jpeg');
+                            if (isset($selectedOffice) && $selectedOffice->logo) {
+                                $officeLogo = $selectedOffice->logo;
+                                $resolvedLogoPath = \Illuminate\Support\Str::startsWith($officeLogo, 'images/')
+                                    ? public_path($officeLogo)
+                                    : storage_path('app/public/' . $officeLogo);
+                                if (file_exists($resolvedLogoPath)) $logoPath = $resolvedLogoPath;
+                            }
+                            $logoData = '';
+                            if (file_exists($logoPath)) {
+                                $mimeType = mime_content_type($logoPath);
+                                $logoData = 'data:' . $mimeType . ';base64,' . base64_encode(file_get_contents($logoPath));
+                            }
+                        @endphp
+                        @if($logoData)
+                            <img src="{{ $logoData }}" class="logo">
+                        @endif
+                    </div>
+                    <div style="display: table-cell; vertical-align: top; padding-left: 10px;">
+                        <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
+                        <div class="address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
+                    </div>
+                </div>
             </td>
-            <td style="vertical-align: top;">
-                <div class="company-name">{{ $selectedOffice->name ?? 'The Mir Group' }}</div>
-                <div class="address">House-04, Road-21, Gulshan-1, Dhaka-1212</div>
-                <div class="report-title">Monthly Attendance Report of {{ $monthName }}, {{ $year }}</div>
+            <td style="width: 34%; text-align: center; vertical-align: top;">
+                <div style="display: inline-block; font-size: 7.5pt; border: 1px solid #999; padding: 4px 8px; text-align: center;">
+                    <div style="font-weight: bold; margin-bottom: 2px;">Attendance Legends</div>
+                    <div>P=Present, A=Absent, LP=Late Present</div>
+                    <div>L=1d Leave, HL=0.5d Leave, LA=Late Absent, H=Holiday</div>
+                </div>
             </td>
-            <td style="width: 200px; text-align: right; vertical-align: top;">
-                <table class="legend-table" style="float: right;">
-                    <tr><td style="padding: 1px 4px;">P = Present, A = Absent</td></tr>
-                    <tr><td style="padding: 1px 4px;">L = 1 day Leave, HL = 0.5 day Leave</td></tr>
-                    <tr><td style="padding: 1px 4px;">LP = Late Present</td></tr>
-                    <tr><td style="padding: 1px 4px;">LA = Late Absent, H = Holiday</td></tr>
-                </table>
+            <td style="width: 33%; text-align: right; vertical-align: top;">
+                <div class="report-title" style="margin-top: 0; border-bottom: none;">Monthly Attendance Report of {{ $monthName }}, {{ $year }}</div>
             </td>
         </tr>
     </table>

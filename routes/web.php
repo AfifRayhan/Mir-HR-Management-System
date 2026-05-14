@@ -162,6 +162,7 @@ Route::middleware(['auth', 'verified', 'permission:personnel'])->prefix('personn
         Route::get('generate/fields', [ReportGeneratorController::class, 'getFields'])->name('generate.fields');
         Route::post('generate/preview', [ReportGeneratorController::class, 'preview'])->name('generate.preview');
         Route::post('generate/pdf', [ReportGeneratorController::class, 'generatePdf'])->name('generate.pdf');
+        Route::post('generate/docx', [ReportGeneratorController::class, 'generateDocx'])->name('generate.docx');
     });
 
     // Report templates routes

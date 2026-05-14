@@ -56,15 +56,24 @@ class MonthlyAttendanceExport implements FromView, WithTitle, ShouldAutoSize, Wi
         $year = $this->params['year'] ?? date('Y');
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
-        $query = Employee::with(['department', 'designation', 'office'])
-            ->where('status', 'active');
+        $query = Employee::with(['department', 'designation', 'office', 'officeTime'])
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->select('employees.*');
 
         if (!empty($this->params['office_id'])) {
-            $query->where('office_id', $this->params['office_id']);
+            $query->where('employees.office_id', $this->params['office_id']);
         }
         if (!empty($this->params['department_id'])) {
-            $query->where('department_id', $this->params['department_id']);
+            $query->where('employees.department_id', $this->params['department_id']);
         }
+
+        $query->orderBy('employees.office_id')
+              ->orderBy('departments.order_sequence')
+              ->orderBy('designations.priority')
+              ->orderBy('employees.id')
+              ->orderBy('employees.name');
 
         $holidays = Holiday::where(function($q) use ($month, $year) {
                 $q->whereYear('from_date', $year)->whereMonth('from_date', $month)

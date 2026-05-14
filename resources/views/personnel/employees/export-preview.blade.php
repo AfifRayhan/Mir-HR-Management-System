@@ -43,19 +43,25 @@
             z-index: 10;
             box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
         }
-        .preview-count {
-            font-size: 0.8rem;
-            color: #6b7280;
+        .ui-table {
+            border: 1px solid #e2e8f0;
+            table-layout: fixed;
+            width: 100%;
         }
-        @media (max-width: 992px) {
-            .column-selector-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .ui-table th, .ui-table td {
+            border: 1px solid #e2e8f0 !important;
+            padding: 4px 6px !important;
+            font-size: 0.7rem;
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        @media (max-width: 576px) {
-            .column-selector-grid {
-                grid-template-columns: 1fr;
-            }
+        .ui-table thead th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: center;
         }
     </style>
     @endpush
@@ -68,15 +74,17 @@
             <div class="row mb-4">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">
-                        @if(isset($selectedOffice) && $selectedOffice->logo)
-                            <div class="me-4 border-end pe-4">
-                                <img src="{{ asset('storage/' . $selectedOffice->logo) }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
-                            </div>
-                        @else
-                            <div class="me-4 border-end pe-4">
-                                <img src="{{ asset('images/MIRORIGINAL.jpeg') }}" alt="Default Logo" style="height: 60px; object-fit: contain;">
-                            </div>
-                        @endif
+                        @php
+                            $logoUrl = asset('images/MIRORIGINAL.jpeg');
+                            if (isset($selectedOffice) && $selectedOffice->logo) {
+                                $logoUrl = \Illuminate\Support\Str::startsWith($selectedOffice->logo, 'images/')
+                                    ? asset($selectedOffice->logo)
+                                    : asset('storage/' . $selectedOffice->logo);
+                            }
+                        @endphp
+                        <div class="me-4 border-end pe-4">
+                            <img src="{{ $logoUrl }}" alt="Office Logo" style="height: 60px; object-fit: contain;">
+                        </div>
                         <div>
                             <h5 class="mb-1 text-2xl font-bold">{{ __('Preview & Export') }}</h5>
                             <p class="mb-0 text-gray-500">{{ __('Select columns, preview data, then download') }}</p>
@@ -188,13 +196,42 @@
                     </div>
 
                     <div class="collapse" id="columnPanel">
-                        <div class="column-selector-grid mb-3">
-                            @foreach($allColumns as $key => $label)
-                                <div class="form-check">
-                                    <input class="form-check-input column-check" type="checkbox"
-                                        name="columns[]" value="{{ $key }}" id="col_{{ $key }}"
-                                        {{ in_array($key, $selectedColumns) ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="col_{{ $key }}">{{ $label }}</label>
+                        @php
+                            $columnGroups = [
+                                'Personal Information' => [
+                                    'employee_code', 'name', 'personal_email', 'phone', 'blood_group', 
+                                    'gender', 'religion', 'marital_status', 'national_id', 'tin', 'nationality', 
+                                    'no_of_children', 'contact_no', 'date_of_birth', 'present_address', 'permanent_address'
+                                ],
+                                'Emergency Contact Information' => [
+                                    'father_name', 'mother_name', 'spouse_name', 'emergency_contact_name', 
+                                    'emergency_contact_relation', 'emergency_contact_no', 'emergency_contact_address'
+                                ],
+                                'Organization & Role' => [
+                                    'email', 'joining_date', 'discontinuation_date', 'discontinuation_reason', 'department', 
+                                    'section', 'designation', 'grade', 'office', 'office_time', 'gross_salary', 'status'
+                                ]
+                            ];
+                        @endphp
+
+                        <div class="row g-4 mb-3">
+                            @foreach($columnGroups as $groupName => $keys)
+                                <div class="col-md-4">
+                                    <h6 class="small fw-bold text-success border-bottom pb-1 mb-2">{{ __($groupName) }}</h6>
+                                    <div class="d-flex flex-column gap-1">
+                                        @foreach($keys as $key)
+                                            @if(isset($allColumns[$key]))
+                                                <div class="form-check">
+                                                    <input class="form-check-input column-check" type="checkbox"
+                                                        name="columns[]" value="{{ $key }}" id="col_{{ $key }}"
+                                                        {{ in_array($key, $selectedColumns) ? 'checked' : '' }}>
+                                                    <label class="form-check-label small" for="col_{{ $key }}">
+                                                        {{ $allColumns[$key] }}
+                                                    </label>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -203,21 +240,7 @@
                     {{-- Sort Controls & Action Buttons (Single Row) --}}
                     <div class="d-flex align-items-center flex-wrap gap-3 py-3 border-top mt-3">
                         <div class="d-flex align-items-center gap-2">
-                            <label class="form-label mb-0 fw-bold small text-gray-600">{{ __('Sort by:') }}</label>
-                            <select name="sort" class="form-select form-select-sm" style="width: auto; min-width: 140px;">
-                                <option value="created_at" {{ $sortColumn === 'created_at' ? 'selected' : '' }}>{{ __('Created Date') }}</option>
-                                <option value="employee_code" {{ $sortColumn === 'employee_code' ? 'selected' : '' }}>{{ __('Employee Code') }}</option>
-                                <option value="name" {{ $sortColumn === 'name' ? 'selected' : '' }}>{{ __('Full Name') }}</option>
-                                <option value="email" {{ $sortColumn === 'email' ? 'selected' : '' }}>{{ __('Email') }}</option>
-                                <option value="joining_date" {{ $sortColumn === 'joining_date' ? 'selected' : '' }}>{{ __('Joining Date') }}</option>
-                                <option value="date_of_birth" {{ $sortColumn === 'date_of_birth' ? 'selected' : '' }}>{{ __('Date of Birth') }}</option>
-                                <option value="gross_salary" {{ $sortColumn === 'gross_salary' ? 'selected' : '' }}>{{ __('Gross Salary') }}</option>
-                                <option value="status" {{ $sortColumn === 'status' ? 'selected' : '' }}>{{ __('Status') }}</option>
-                            </select>
-                            <select name="direction" class="form-select form-select-sm" style="width: auto;">
-                                <option value="asc" {{ $sortDirection === 'asc' ? 'selected' : '' }}>{{ __('Ascending') }}</option>
-                                <option value="desc" {{ $sortDirection === 'desc' ? 'selected' : '' }}>{{ __('Descending') }}</option>
-                            </select>
+                            {{-- Sorting is fixed to Tree View --}}
                         </div>
                         
                         <div class="ms-auto d-flex gap-2">
@@ -238,24 +261,65 @@
                     <table class="table ui-table mb-0">
                         <thead>
                             <tr>
-                                <th class="ps-4">#</th>
+                                <th style="width: 40px;">#</th>
                                 @foreach($selectedColumns as $key)
-                                    <th>{{ $allColumns[$key] }}</th>
+                                    @php
+                                        $width = match($key) {
+                                            'employee_code' => '80px',
+                                            'name' => '150px',
+                                            'contact_no' => '90px',
+                                            'joining_date' => '90px',
+                                            'department' => '110px',
+                                            'section' => '100px',
+                                            'designation' => '110px',
+                                            'office' => '110px',
+                                            'status' => '70px',
+                                            'personal_email' => '150px',
+                                            default => '100px'
+                                        };
+                                    @endphp
+                                    <th style="width: {{ $width }}; text-align: center;">{{ $allColumns[$key] }}</th>
                                 @endforeach
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $currentOfficeId = null;
+                                $currentDeptId = null;
+                            @endphp
                             @forelse($employees as $index => $emp)
+                                @if($currentOfficeId !== $emp->office_id)
+                                    <tr class="bg-gray-900 text-white">
+                                        <td colspan="{{ count($selectedColumns) + 1 }}" class="fw-bold py-2 px-3">
+                                            <i class="bi bi-building me-2"></i>Office: {{ $emp->office->name ?? 'N/A' }}
+                                        </td>
+                                    </tr>
+                                    @php $currentOfficeId = $emp->office_id; $currentDeptId = null; @endphp
+                                @endif
+
+                                @if($currentDeptId !== $emp->department_id)
+                                    <tr class="bg-gray-100 border-top border-bottom">
+                                        <td colspan="{{ count($selectedColumns) + 1 }}" class="fw-bold py-2 px-4 text-gray-700">
+                                            <i class="bi bi-diagram-3 me-2 text-success"></i>Department: {{ $emp->department->name ?? 'N/A' }}
+                                        </td>
+                                    </tr>
+                                    @php $currentDeptId = $emp->department_id; @endphp
+                                @endif
+
                                 <tr>
-                                    <td class="ps-4 text-gray-500">{{ $employees->firstItem() + $index }}</td>
+                                    <td class="text-center text-gray-500">{{ $employees->firstItem() + $index }}</td>
                                     @foreach($selectedColumns as $key)
-                                        <td>
+                                        @php
+                                            $val = \App\Exports\EmployeesExport::getColumnValue($emp, $key);
+                                        @endphp
+                                        <td class="{{ in_array($key, ['employee_code', 'joining_date', 'status']) ? 'text-center' : '' }} text-truncate copyable-cell" 
+                                            style="max-width: 150px; cursor: pointer;" title="{{ $val }}" data-copy-val="{{ $val }}">
                                             @if($key === 'name' || $key === 'employee_code')
                                                 <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="text-decoration-none fw-bold text-gray-800 hover:text-success transition-colors">
-                                                    {{ \App\Exports\EmployeesExport::getColumnValue($emp, $key) }}
+                                                    {{ $val }}
                                                 </a>
                                             @else
-                                                {{ \App\Exports\EmployeesExport::getColumnValue($emp, $key) }}
+                                                {{ $val }}
                                             @endif
                                         </td>
                                     @endforeach
@@ -422,12 +486,12 @@
                 e.preventDefault();
 
                 var selectedCount = document.querySelectorAll('.column-check:checked').length;
-                if (selectedCount > 9) {
+                if (selectedCount > 20) {
                     Swal.fire({
                         title: 'Too Many Columns',
-                        text: 'PDF exports are limited to 9 columns to ensure readability. Please deselect some columns or use Excel/CSV for larger datasets.',
+                        text: 'PDF exports are limited to 20 columns to ensure readability. Please deselect some columns or use Excel/CSV for larger datasets.',
                         icon: 'warning',
-                        confirmButtonColor: '#4F46E5'
+                        confirmButtonColor: '#007A10'
                     });
                     return;
                 }
@@ -437,6 +501,31 @@
             document.getElementById('downloadWord').addEventListener('click', function (e) {
                 e.preventDefault();
                 window.location.href = buildDownloadUrl(routes.word);
+            });
+
+            document.querySelectorAll('.copyable-cell').forEach(function(cell) {
+                cell.addEventListener('dblclick', function() {
+                    var val = this.getAttribute('data-copy-val');
+                    if (val) {
+                        navigator.clipboard.writeText(val).then(function() {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Copied to clipboard'
+                            });
+                        });
+                    }
+                });
             });
 
             if (typeof $.fn.select2 !== 'undefined') {

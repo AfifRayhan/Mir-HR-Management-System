@@ -51,29 +51,36 @@ class AttendanceController extends Controller
         $selectedOffice = $request->office_id ? Office::find($request->office_id) : null;
         
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
-            ->whereHas('employee', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->where('date', $date);
+            ->join('employees', 'attendance_records.employee_id', '=', 'employees.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->where('attendance_records.date', $date)
+            ->select('attendance_records.*');
 
-        if ($request->department_id) $query->whereHas('employee', fn($q) => $q->where('department_id', $request->department_id));
-        if ($request->office_id) $query->whereHas('employee', fn($q) => $q->where('office_id', $request->office_id));
-        if ($request->status) $query->where('status', $request->status);
+        if ($request->department_id) $query->where('employees.department_id', $request->department_id);
+        if ($request->office_id) $query->where('employees.office_id', $request->office_id);
+        if ($request->status) $query->where('attendance_records.status', $request->status);
         if ($request->search) {
-            $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('employee_code', 'like', "%{$request->search}%");
+            $query->where(function($q) use ($request) {
+                $q->where('employees.name', 'like', "%{$request->search}%")
+                  ->orWhere('employees.employee_code', 'like', "%{$request->search}%");
             });
         }
 
-        $records = $query->lazy();
+        $records = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->get();
 
         return PDF::loadView('personnel.attendance.exports.daily-pdf', [
                 'records' => $records,
                 'date' => $date,
                 'selectedOffice' => $selectedOffice,
             ])
-            ->setPaper('a3', 'landscape')
+            ->setPaper('a4', 'landscape')
             ->setOption('margin-bottom', 10)
             ->setOption('margin-top', 10)
             ->setOption('margin-left', 10)
@@ -91,28 +98,35 @@ class AttendanceController extends Controller
         $search = $request->input('search');
 
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
-            ->whereHas('employee', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->where('date', $date);
+            ->join('employees', 'attendance_records.employee_id', '=', 'employees.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->where('attendance_records.date', $date)
+            ->select('attendance_records.*');
 
         if ($departmentId) {
-            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+            $query->where('employees.department_id', $departmentId);
         }
         if ($officeId) {
-            $query->whereHas('employee', fn($q) => $q->where('office_id', $officeId));
+            $query->where('employees.office_id', $officeId);
         }
         if ($status) {
-            $query->where('status', $status);
+            $query->where('attendance_records.status', $status);
         }
         if ($search) {
-            $query->whereHas('employee', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('employee_code', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('employees.name', 'like', "%{$search}%")
+                  ->orWhere('employees.employee_code', 'like', "%{$search}%");
             });
         }
 
-        $records = $query->lazy();
+        $records = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->get();
         $filename = 'attendance_' . $date . '.doc';
 
         return response()->view('personnel.attendance.exports.word', [
@@ -190,35 +204,42 @@ class AttendanceController extends Controller
         $search       = $request->input('search');
 
         $query = AttendanceRecord::with(['employee.department', 'employee.designation', 'employee.office'])
-            ->whereHas('employee', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->where('date', $date);
+            ->join('employees', 'attendance_records.employee_id', '=', 'employees.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->where('attendance_records.date', $date)
+            ->select('attendance_records.*');
 
         if ($departmentId) {
-            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+            $query->where('employees.department_id', $departmentId);
         }
 
         if ($officeId) {
-            $query->whereHas('employee', fn($q) => $q->where('office_id', $officeId));
+            $query->where('employees.office_id', $officeId);
         }
 
         if ($designationId) {
-            $query->whereHas('employee', fn($q) => $q->where('designation_id', $designationId));
+            $query->where('employees.designation_id', $designationId);
         }
 
         if ($status) {
-            $query->where('status', $status);
+            $query->where('attendance_records.status', $status);
         }
 
         if ($search) {
-            $query->whereHas('employee', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('employee_code', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('employees.name', 'like', "%{$search}%")
+                  ->orWhere('employees.employee_code', 'like', "%{$search}%");
             });
         }
 
-        $records = $query->paginate(20)->withQueryString();
+        $records = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->paginate(50)->withQueryString();
         $departments = \Illuminate\Support\Facades\Cache::remember('departments_all', 3600, fn() => Department::all());
         $offices = \Illuminate\Support\Facades\Cache::remember('offices_all', 3600, fn() => Office::all());
         $designations = \Illuminate\Support\Facades\Cache::remember('designations_all', 3600, fn() => \App\Models\Designation::all());
@@ -470,17 +491,25 @@ class AttendanceController extends Controller
         $daysInMonth = $startDate->daysInMonth;
 
         $query = Employee::with(['department', 'designation', 'office', 'officeTime'])
-            ->where('status', 'active');
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->select('employees.*');
 
         if ($officeId) {
-            $query->where('office_id', $officeId);
+            $query->where('employees.office_id', $officeId);
         }
         if ($departmentId) {
-            $query->where('department_id', $departmentId);
+            $query->where('employees.department_id', $departmentId);
         }
 
         // Add Pagination for speed
-        $employees = $query->orderBy('office_id')->orderBy('department_id')->paginate(30)->withQueryString();
+        $employees = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->paginate(30)->withQueryString();
 
         // Batch fetch data for current page employees
         $employeeIds = $employees->pluck('id');
@@ -618,7 +647,7 @@ class AttendanceController extends Controller
         $view = $export->view();
         
         return PDF::loadView($view->name(), $view->getData())
-            ->setPaper('a3', 'landscape')
+            ->setPaper('a4', 'landscape')
             ->setOption('margin-bottom', 5)
             ->setOption('margin-top', 5)
             ->setOption('margin-left', 5)
@@ -657,16 +686,24 @@ class AttendanceController extends Controller
         $officeId = $request->input('office_id');
 
         $query = Employee::with(['department', 'designation', 'office', 'officeTime'])
-            ->where('status', 'active');
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id')
+            ->where('employees.status', 'active')
+            ->select('employees.*');
 
         if ($officeId) {
-            $query->where('office_id', $officeId);
+            $query->where('employees.office_id', $officeId);
         }
         if ($departmentId) {
-            $query->where('department_id', $departmentId);
+            $query->where('employees.department_id', $departmentId);
         }
 
-        $employees = $query->orderBy('office_id')->orderBy('department_id')->paginate(30)->withQueryString();
+        $employees = $query->orderBy('employees.office_id')
+            ->orderBy('departments.order_sequence')
+            ->orderBy('designations.priority')
+            ->orderBy('employees.id')
+            ->orderBy('employees.name')
+            ->paginate(30)->withQueryString();
         $employeeIds = $employees->pluck('id');
 
         $attendance = AttendanceRecord::whereIn('employee_id', $employeeIds)
