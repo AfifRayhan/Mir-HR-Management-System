@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Designation;
 use App\Models\Grade;
 use App\Models\OvertimeRate;
+use App\Models\OvertimeSpecialRate;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class OvertimeSettingController extends Controller
@@ -18,7 +20,16 @@ class OvertimeSettingController extends Controller
         $gradeRates = OvertimeRate::whereNull('designation_id')->pluck('rate', 'grade_id')->all();
         $designationRates = OvertimeRate::whereNull('grade_id')->pluck('rate', 'designation_id')->all();
 
-        return view('personnel.overtimes.settings', compact('grades', 'designations', 'gradeRates', 'designationRates'));
+        $rosterGroups = Employee::whereNotNull('roster_group')
+            ->where('roster_group', '!=', '')
+            ->distinct()
+            ->orderBy('roster_group')
+            ->pluck('roster_group');
+            
+        $specialRates = OvertimeSpecialRate::where('is_eid_special', true)
+            ->pluck('rate', 'roster_group')->all();
+
+        return view('personnel.overtimes.settings', compact('grades', 'designations', 'gradeRates', 'designationRates', 'rosterGroups', 'specialRates'));
     }
 
     public function store(Request $request)
@@ -52,6 +63,19 @@ class OvertimeSettingController extends Controller
         Designation::query()->update(['is_ot_eligible' => false]);
         if (!empty($eligibleIds)) {
             Designation::whereIn('id', $eligibleIds)->update(['is_ot_eligible' => true]);
+        }
+
+        // Save special eid rates
+        $specialRates = $request->input('special_rates', []);
+        foreach ($specialRates as $group => $rate) {
+            if ($rate !== null && $rate !== '') {
+                OvertimeSpecialRate::updateOrCreate(
+                    ['roster_group' => $group, 'is_eid_special' => true],
+                    ['rate' => $rate]
+                );
+            } else {
+                OvertimeSpecialRate::where('roster_group', $group)->where('is_eid_special', true)->delete();
+            }
         }
 
         return redirect()->route('overtimes.settings')->with('success', 'Overtime settings updated successfully.');

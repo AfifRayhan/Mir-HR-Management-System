@@ -3,6 +3,8 @@ namespace Tests\Feature;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Holiday;
+use App\Models\ManualAttendanceAdjustment;
 use App\Models\RosterSchedule;
 use App\Models\RosterTime;
 use App\Services\AttendanceService;
@@ -223,5 +225,82 @@ class OvernightLogFetchTest extends TestCase
         // CURRENT BUG: $record->in_time would be 2026-04-21 06:10:00
         // DESIRED: $record->in_time should be 2026-04-21 22:05:00
         $this->assertEquals('2026-04-21 22:05:00', $record->in_time->toDateTimeString(), 'Check-in for Day 2 should be the 10:05 PM log, not the 6:10 AM log');
+    }
+
+    public function test_eid_adjacent_noc_shift_b_uses_eid_timing_for_late_calculation()
+    {
+        $officeTime = \App\Models\OfficeTime::create([
+            'shift_name' => 'Roster',
+            'start_time' => '10:00:00',
+            'end_time'   => '18:00:00',
+        ]);
+
+        $employee = \App\Models\Employee::create([
+            'name' => 'Mahmudul Hasan',
+            'employee_code' => 'T005',
+            'email' => 'test5@example.com',
+            'roster_group'  => 'NOC (Borak)',
+            'office_time_id' => $officeTime->id,
+            'status' => 'active',
+        ]);
+
+        RosterTime::create([
+            'group_slug'    => 'noc-borak',
+            'shift_key'     => 'B',
+            'display_label' => 'Shift B',
+            'start_time'    => '14:00:00',
+            'end_time'      => '22:00:00',
+            'badge_class'   => 'badge-b',
+            'is_off_day'    => false,
+            'is_overnight'  => false,
+        ]);
+
+        RosterTime::create([
+            'group_slug'    => 'noc-borak',
+            'shift_key'     => 'EB',
+            'display_label' => 'Eid Shift B',
+            'start_time'    => '19:00:00',
+            'end_time'      => '03:00:00',
+            'badge_class'   => 'badge-b',
+            'is_off_day'    => false,
+            'is_overnight'  => true,
+        ]);
+
+        Holiday::create([
+            'type' => 'Eid Day',
+            'year' => 2026,
+            'title' => 'Eid-ul-Adha',
+            'all_office' => true,
+            'from_date' => '2026-05-28',
+            'to_date' => '2026-05-28',
+            'total_days' => 1,
+            'is_active' => true,
+        ]);
+
+        RosterSchedule::create([
+            'employee_id' => $employee->id,
+            'date'        => '2026-05-27',
+            'shift_type'  => 'B',
+        ]);
+
+        ManualAttendanceAdjustment::create([
+            'employee_id' => $employee->id,
+            'date'        => '2026-05-27',
+            'in_time'     => '2026-05-27 19:00:00',
+            'out_time'    => '2026-05-28 07:00:00',
+            'reason'      => 'Eid duty',
+            'status'      => 'approved',
+        ]);
+
+        (new AttendanceService())->processEmployeeAttendance($employee, '2026-05-27');
+
+        $record = \App\Models\AttendanceRecord::where('employee_id', $employee->id)
+            ->whereDate('date', '2026-05-27')
+            ->first();
+
+        $this->assertNotNull($record);
+        $this->assertEquals('present', $record->status);
+        $this->assertEquals(0, $record->late_seconds);
+        $this->assertEquals('2026-05-28 07:00:00', $record->out_time->toDateTimeString());
     }
 }

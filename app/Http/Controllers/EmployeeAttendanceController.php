@@ -191,9 +191,7 @@ class EmployeeAttendanceController extends Controller
         if ($validated['out_time']) {
             $validated['out_time'] = $date . ' ' . $validated['out_time'];
             if (strtotime($validated['out_time']) < strtotime($validated['in_time'])) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['out_time' => 'The out time must be after or equal to in time.']);
+                $validated['out_time'] = Carbon::parse($validated['out_time'])->addDay()->toDateTimeString();
             }
         }
 

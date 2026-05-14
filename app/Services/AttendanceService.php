@@ -251,10 +251,40 @@ class AttendanceService
             return null;
         }
 
+        $shiftKey = $this->resolveRosterShiftKey($groupSlug, $schedule->shift_type, $date);
+
         // Look up the shift timing
         return RosterTime::where('group_slug', $groupSlug)
-            ->where('shift_key', $schedule->shift_type)
+            ->where('shift_key', $shiftKey)
             ->first();
+    }
+
+    protected function resolveRosterShiftKey(string $groupSlug, string $shiftType, string $date): string
+    {
+        if (!$this->isEidAdjacentNocDate($groupSlug, $date)) {
+            return $shiftType;
+        }
+
+        return match ($shiftType) {
+            'A' => 'EA',
+            'B' => 'EB',
+            default => $shiftType,
+        };
+    }
+
+    protected function isEidAdjacentNocDate(string $groupSlug, string $date): bool
+    {
+        if (!in_array($groupSlug, ['noc-borak', 'noc-sylhet'], true)) {
+            return false;
+        }
+
+        $targetDate = Carbon::parse($date)->toDateString();
+
+        return Holiday::where('type', 'Eid Day')
+            ->where('is_active', true)
+            ->whereDate('from_date', '<=', Carbon::parse($targetDate)->addDay())
+            ->whereDate('to_date', '>=', Carbon::parse($targetDate)->subDay())
+            ->exists();
     }
 
     /**

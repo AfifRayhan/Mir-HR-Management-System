@@ -292,12 +292,9 @@ class AttendanceController extends Controller
         $validated['in_time'] = $date . ' ' . $validated['in_time'];
         if ($validated['out_time']) {
             $validated['out_time'] = $date . ' ' . $validated['out_time'];
-            
-            // Validate after_or_equal:in_time manually or using custom logic
+
             if (strtotime($validated['out_time']) < strtotime($validated['in_time'])) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors(['out_time' => 'The out time must be after or equal to in time.']);
+                $validated['out_time'] = Carbon::parse($validated['out_time'])->addDay()->toDateTimeString();
             }
         }
 

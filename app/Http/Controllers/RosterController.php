@@ -57,11 +57,35 @@ class RosterController extends Controller
 
         // Determine the query range based on mode
         if ($mode === 'weekly') {
-            $startOfDisplay = Carbon::now()->startOfWeek(6);
-            $endOfDisplay   = $startOfDisplay->copy()->addDays(6);
+            // For weekly pattern template, we show a 7-day window (Sat-Fri) 
+            // relative to the selected month's start.
+            $startOfDisplay = $monthStart->copy();
+            while ($startOfDisplay->dayOfWeek !== 6) { // Find first Saturday
+                $startOfDisplay->subDay();
+            }
+            $endOfDisplay = $startOfDisplay->copy()->addDays(6);
         } else {
             $startOfDisplay = $monthStart;
             $endOfDisplay   = $monthEnd;
+        }
+
+        // Fetch Eid Adjacent days dynamically
+        $eidHolidays = \App\Models\Holiday::where('type', 'Eid Day')
+            ->where(function($q) use ($monthStart, $monthEnd) {
+                $q->whereBetween('from_date', [$monthStart->copy()->subDays(2), $monthEnd->copy()->addDays(2)])
+                  ->orWhereBetween('to_date', [$monthStart->copy()->subDays(2), $monthEnd->copy()->addDays(2)]);
+            })->get();
+            
+        $eidAdjacentDays = [];
+        foreach ($eidHolidays as $h) {
+            $c = $h->from_date->copy();
+            while ($c <= $h->to_date) {
+                $d = Carbon::parse($c);
+                $eidAdjacentDays[$d->copy()->subDay()->format('Y-m-d')] = true;
+                $eidAdjacentDays[$d->format('Y-m-d')] = true;
+                $eidAdjacentDays[$d->copy()->addDay()->format('Y-m-d')] = true;
+                $c->addDay();
+            }
         }
 
         $query = Employee::whereHas('officeTime', fn($q) => $q->where('shift_name', 'Roster'))
@@ -152,7 +176,7 @@ class RosterController extends Controller
         return compact(
             'groupSlug', 'groupLabel', 'monthStart', 'monthEnd',
             'employees', 'scheduleMap', 'patternMap',
-            'days', 'groups', 'shiftTypes', 'monthParam', 'mode'
+            'days', 'groups', 'shiftTypes', 'monthParam', 'mode', 'eidAdjacentDays'
         );
     }
 

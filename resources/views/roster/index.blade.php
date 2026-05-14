@@ -63,18 +63,29 @@
                             <i class="bi bi-table me-2 text-success"></i>
                             @if($mode === 'weekly')
                                 Weekly Pattern Template
+                                @if($eidAdjacentDays && in_array($groupSlug, ['noc-borak', 'noc-sylhet']))
+                                    <span class="ms-2 badge bg-warning text-dark border border-warning-subtle rounded-pill" style="font-size: 0.65rem;">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                        Eid detected this month - Adjust specific dates in Monthly Mode
+                                    </span>
+                                @endif
                             @else
                                 {{ $monthStart->format('F Y') }}
+                                @if($eidAdjacentDays && in_array($groupSlug, ['noc-borak', 'noc-sylhet']))
+                                    <span class="ms-3 badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 fw-bold" style="font-size: 0.7rem;">
+                                        <i class="bi bi-info-circle-fill me-1"></i>
+                                        Eid Mode: Shift A = 7AM–3PM | Shift B = 7PM–3AM
+                                    </span>
+                                @endif
                             @endif
                         </h6>
+                        
                     </div>
                     <div class="d-flex align-items-stretch gap-2">
                         @if($employees->isNotEmpty())
-                            @if($mode === 'weekly')
-                                <button onclick="importPreviousSchedule()" class="btn btn-outline-success px-4 rounded-pill font-bold shadow-sm d-flex align-items-center text-nowrap">
-                                    <i class="bi bi-download me-1"></i> Import Previous
-                                </button>
-                            @endif
+                            <button onclick="importPreviousSchedule()" class="btn btn-outline-success px-4 rounded-pill font-bold shadow-sm d-flex align-items-center text-nowrap">
+                                <i class="bi bi-download me-1"></i> Import Previous
+                            </button>
 
                             <div class="dropdown d-flex">
                                 <button class="btn btn-outline-success px-4 rounded-pill font-bold shadow-sm dropdown-toggle d-flex align-items-center text-nowrap w-100" type="button" data-bs-toggle="dropdown">
@@ -109,19 +120,24 @@
                     </p>
                 </div>
                 @else
+                @php
+                    $visibleShiftTypes = collect($shiftTypes)
+                        ->reject(fn ($config, $type) => in_array($type, ['EA', 'EB']))
+                        ->all();
+                @endphp
                 <div class="p-0" id="roster-wrapper" 
                      data-employees="{{ json_encode($employees) }}"
-                     data-shifts="{{ json_encode(array_keys($shiftTypes)) }}">
+                     data-shifts="{{ json_encode(array_keys($visibleShiftTypes)) }}">
                     <table class="table roster-table mb-0 table-bordered w-100">
                         <thead>
                             <tr>
                                 <th class="ps-3">{{ $mode === 'weekly' ? 'Day Name' : 'Day' }}</th>
                                 <th class="text-center">{{ $mode === 'weekly' ? '#' : 'Date' }}</th>
-                                @foreach($shiftTypes as $type => $config)
+                                @foreach($visibleShiftTypes as $type => $config)
                                 <th>
                                     <span class="shift-badge {{ $config['badge'] }}">{{ $config['label'] }}</span> 
                                     @if($config['time'])
-                                    <small class="d-block opacity-75">({{ $config['time'] }})</small>
+                                    <small class="d-block opacity-75 shift-time-range" data-original-time="({{ $config['time'] }})">({{ $config['time'] }})</small>
                                     @endif
                                 </th>
                                 @endforeach
@@ -133,9 +149,11 @@
                                 $dateStr   = $day->format('Y-m-d');
                                 $dayOfWeek = $day->dayOfWeek;
                                 $isWeekend = in_array($dayOfWeek, [5, 6]); // Fri=5, Sat=6 (BD)
+                                $isNocGroup = in_array($groupSlug, ['noc-borak', 'noc-sylhet']);
+                                $isEidAdj  = $isNocGroup && isset($eidAdjacentDays[$dateStr]);
 
                                 $shiftBuckets = [];
-                                foreach(array_keys($shiftTypes) as $st) { $shiftBuckets[$st] = []; }
+                                foreach(array_keys($visibleShiftTypes) as $st) { $shiftBuckets[$st] = []; }
                                 
                                 foreach ($employees as $emp) {
                                     if ($mode === 'weekly') {
@@ -143,23 +161,69 @@
                                     } else {
                                         $assigned = $scheduleMap[$emp->id][$dateStr] ?? 'Off';
                                     }
+
+                                    if ($isEidAdj) {
+                                        if ($assigned === 'EA') {
+                                            $assigned = 'A';
+                                        } elseif ($assigned === 'EB') {
+                                            $assigned = 'B';
+                                        }
+                                    }
+                                    
                                     // Compatibility check: if old data exists that doesn't match new keys
                                     if (!isset($shiftBuckets[$assigned])) {
                                         $assigned = 'Off';
                                     }
+
+                                    // Eid Constraint: If it's an Eid day, only allow A, B, or Off
+                                    if ($isEidAdj && $assigned !== 'Off') {
+                                        $conf = $visibleShiftTypes[$assigned] ?? null;
+                                        $isAllowed = ($conf && ($conf['label'] === 'Shift A' || $conf['label'] === 'Morning' || $conf['label'] === 'Shift B' || $conf['label'] === 'Night'));
+                                        if (!$isAllowed) {
+                                            $assigned = 'Off';
+                                        }
+                                    }
+
                                     $shiftBuckets[$assigned][] = $emp->id;
                                 }
                             @endphp
-                            <tr class="{{ $isWeekend ? 'weekend-row' : '' }}" 
+                            <tr class="{{ $isWeekend ? 'weekend-row' : '' }} {{ $isEidAdj ? 'eid-row' : '' }}" 
                                 data-date="{{ $dateStr }}" 
                                 data-day-index="{{ $index }}">
-                                <td class="ps-3 day-label">{{ $day->format('l') }}</td>
-                                <td class="text-center fw-bold">{{ $mode === 'weekly' ? $index + 1 : $day->format('d') }}</td>
+                                <td class="ps-3 day-label">
+                                    {{ $day->format('l') }}
+                                    @if($isEidAdj)
+                                        <div class="text-danger fw-bold" style="font-size: 0.65rem; line-height: 1;">
+                                            <i class="bi bi-star-fill small"></i> EID DUTY
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="text-center fw-bold">
+                                    {{ $mode === 'weekly' ? $index + 1 : $day->format('d') }}
+                                </td>
 
-                                @foreach($shiftTypes as $shift => $config)
-                                @php $assigned = $shiftBuckets[$shift] ?? []; @endphp
-                                <td>
+                                @foreach($visibleShiftTypes as $shift => $config)
+                                @php 
+                                    $assigned = $shiftBuckets[$shift] ?? []; 
+                                    $isAllowedOnEid = ($config['label'] === 'Shift A' || $config['label'] === 'Morning' || $config['label'] === 'Shift B' || $config['label'] === 'Night' || $shift === 'Off');
+                                    $isLocked = ($isEidAdj && !$isAllowedOnEid);
+                                @endphp
+                                <td class="{{ $isLocked ? 'shift-locked' : '' }}">
                                     <div class="roster-cell-container" data-shift-type="{{ $shift }}">
+                                        @if($isEidAdj && $isAllowedOnEid)
+                                            @if($config['label'] === 'Shift A' || $config['label'] === 'Morning')
+                                                <div class="eid-shift-indicator">Eid Shift A</div>
+                                            @elseif($config['label'] === 'Shift B' || $config['label'] === 'Night')
+                                                <div class="eid-shift-indicator">Eid Shift B</div>
+                                            @endif
+                                        @endif
+
+                                        @if($isLocked)
+                                            <div class="locked-overlay" title="This shift is not active during Eid duty">
+                                                <i class="bi bi-lock-fill"></i>
+                                            </div>
+                                        @endif
+
                                         {{-- The real select (hidden) --}}
                                         <select class="form-select form-select-sm roster-cell d-none"
                                                 multiple
@@ -178,7 +242,7 @@
                                             {{-- Badges will be rendered here by JS --}}
                                         </div>
 
-                                        @if($shift !== 'Off')
+                                        @if($shift !== 'Off' && !$isLocked)
                                             <div class="add-emp-btn" 
                                                  title="Add employee to {{ $shift }}"
                                                  onclick="toggleEmpSelector(this, '{{ $index }}', '{{ $shift }}')">
@@ -352,18 +416,23 @@
         const month = '{{ $monthParam }}';
 
         saveBtn.addEventListener('click', function () {
-            const rows = document.querySelectorAll('tr[data-date]');
-            const schedules = [];
-            const employeeIds = employees.map(e => e.id);
+                const rows = document.querySelectorAll('tr[data-date]');
+                const schedules = [];
+                const employeeIds = employees.map(e => e.id);
 
             rows.forEach(row => {
                 const date = row.dataset.date;
                 const dayIndex = row.dataset.dayIndex;
+                const isEidRow = row.classList.contains('eid-row');
                 const assigned = {};
 
                 // Collect selections from each shift select
                 row.querySelectorAll('select.roster-cell').forEach(sel => {
-                    const shift = sel.dataset.shift;
+                    let shift = sel.dataset.shift;
+                    if (isEidRow) {
+                        if (shift === 'A') shift = 'EA';
+                        if (shift === 'B') shift = 'EB';
+                    }
                     Array.from(sel.selectedOptions).forEach(opt => {
                         assigned[opt.value] = shift;
                     });
@@ -449,33 +518,48 @@
 
                 // Apply imported pattern to the current rows
                 const rows = document.querySelectorAll('tr[data-date]');
-                rows.forEach((row, rowIndex) => {
-                    // 1. Clear current assignments (transfer everyone to 'Off')
-                    const badges = row.querySelectorAll('.emp-badge .bi-x');
+                const mode = '{{ $mode }}';
+                const allShifts = Object.keys(@json($visibleShiftTypes));
+                
+                rows.forEach((row) => {
+                    const dateStr = row.dataset.date;
+                    const dayIndex = row.dataset.dayIndex;
+                    
+                    // Robust date parsing (no timezone shifts)
+                    const [y, m, d] = dateStr.split('-');
+                    const date = new Date(y, m - 1, d);
+                    
+                    const sunBaseDow = date.getDay(); // 0=Sun
+                    const dayIndexMap = { 6:0, 0:1, 1:2, 2:3, 3:4, 4:5, 5:6 };
+                    const patternIndex = mode === 'weekly' ? dayIndex : dayIndexMap[sunBaseDow];
+
+                    // 1. Clear current assignments
+                    const badges = row.querySelectorAll('.emp-badge .remove-btn');
                     badges.forEach(b => b.click());
                     
-                    // 2. Apply imported assignments if they exist for this dayIndex
-                    if (data[rowIndex]) {
-                        Object.entries(data[rowIndex]).forEach(([empId, shiftType]) => {
-                            // Find 'Off' select (source)
+                    // 2. Apply imported assignments
+                    if (data[patternIndex]) {
+                        const isEidRow = row.classList.contains('eid-row');
+
+                        Object.entries(data[patternIndex]).forEach(([empId, shiftType]) => {
+                            if (isEidRow) {
+                                if (shiftType === 'EA') shiftType = 'A';
+                                if (shiftType === 'EB') shiftType = 'B';
+                            }
                             const offSel = row.querySelector('select[data-shift="Off"]');
-                            if (!offSel) return;
+                            const targetSel = row.querySelector(`select[data-shift="${shiftType}"]`);
+                            if (!offSel || !targetSel) return;
                             
                             const optToMove = Array.from(offSel.options).find(o => o.value == empId);
                             if (!optToMove) return;
 
-                            // Deselect from 'Off'
                             optToMove.selected = false;
-                            
-                            // Select in target shift
-                            const targetSel = row.querySelector(`select[data-shift="${shiftType}"]`);
-                            if (targetSel) {
-                                const targetOpt = Array.from(targetSel.options).find(o => o.value == empId);
-                                if (targetOpt) targetOpt.selected = true;
-                            }
+                            const targetOpt = Array.from(targetSel.options).find(o => o.value == empId);
+                            if (targetOpt) targetOpt.selected = true;
                         });
-                        // Sync UI for this row
-                        syncRosterUI(rowIndex);
+                        
+                        // 3. Re-render the row UI
+                        syncRosterUI(dayIndex);
                     }
                 });
 
@@ -540,11 +624,41 @@
                 Swal.close();
             });
         };
+
+        // --- Eid Shift Label Swap Logic ---
+        const isNocGroup = {{ in_array($groupSlug, ['noc-borak', 'noc-sylhet']) ? 'true' : 'false' }};
+        const eidRows = document.querySelectorAll('.eid-row');
+        const shiftTimeLabels = document.querySelectorAll('.shift-time-range');
+
+        if (isNocGroup) {
+            eidRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    shiftTimeLabels.forEach(label => {
+                        const headerCell = label.closest('th');
+                        const shiftLabel = headerCell.querySelector('.shift-badge').textContent.trim();
+                        
+                        if (shiftLabel === 'Shift A' || shiftLabel === 'Morning') {
+                            label.textContent = '(7AM–3PM)';
+                            label.classList.add('text-danger', 'fw-bold');
+                        } else if (shiftLabel === 'Shift B' || shiftLabel === 'Night') {
+                            label.textContent = '(7PM–3AM)';
+                            label.classList.add('text-danger', 'fw-bold');
+                        }
+                    });
+                });
+
+                row.addEventListener('mouseleave', function() {
+                    shiftTimeLabels.forEach(label => {
+                        label.textContent = label.dataset.originalTime;
+                        label.classList.remove('text-danger', 'fw-bold');
+                    });
+                });
+            });
+        }
     });
     </script>
     @endpush
 </x-app-layout>
-
 
 
 

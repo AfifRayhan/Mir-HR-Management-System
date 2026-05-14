@@ -45,3 +45,26 @@
 }
 .emp-selector-item:hover { background: #f1f5f9; color: var(--ui-success); }
 .emp-selector-item.selected { background: #ecfdf5; color: #059669; cursor: default; }
+
+/* Eid Special Rows */
+.eid-row { background-color: #fff1f2 !important; border-left: 4px solid #f43f5e; }
+.eid-row .day-label { color: #e11d48; }
+.eid-row td { border-bottom: 1px solid #fecdd3 !important; }
+.eid-row:hover { background-color: #ffe4e6 !important; }
+
+.eid-shift-indicator {
+    position: absolute; top: -14px; right: 0; font-size: 0.6rem;
+    background: #f43f5e; color: #fff; padding: 0 5px; border-radius: 4px;
+    font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(244, 63, 94, 0.2); z-index: 10;
+}
+
+.shift-locked { background-color: #f8fafc !important; cursor: not-allowed; }
+.locked-overlay {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(248, 250, 252, 0.7); z-index: 5; color: #94a3b8; font-size: 1.2rem;
+}
+.shift-locked .badge-list { opacity: 0.5; filter: grayscale(1); }
+
+
+

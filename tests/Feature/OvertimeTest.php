@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Employee;
 use App\Models\Grade;
+use App\Models\Holiday;
 use App\Models\Overtime;
 use App\Models\OvertimeRate;
+use App\Models\OvertimeSpecialRate;
 use App\Models\Designation;
 use App\Models\Role;
 use App\Models\User;
@@ -324,6 +326,107 @@ class OvertimeTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonPath('suggestions.2026-04-03.ot_start', '10:00');
         $response->assertJsonPath('suggestions.2026-04-03.ot_stop', '14:00');
+    }
+
+    public function test_noc_eid_adjacent_holiday_duty_pays_base_units_plus_entered_extra_hours()
+    {
+        $this->employee->update([
+            'gross_salary' => 35400,
+            'roster_group' => 'NOC (Borak)',
+        ]);
+
+        OvertimeSpecialRate::create([
+            'roster_group' => 'NOC (Borak)',
+            'rate' => 200,
+            'is_eid_special' => true,
+        ]);
+
+        Holiday::create([
+            'type' => 'Eid Day',
+            'year' => 2026,
+            'title' => 'Eid-ul-Adha',
+            'all_office' => true,
+            'from_date' => '2026-05-28',
+            'to_date' => '2026-05-28',
+            'total_days' => 1,
+            'is_active' => true,
+        ]);
+
+        $data = [
+            'employee_id' => $this->employee->id,
+            'month' => '05',
+            'year' => '2026',
+            'ot' => [
+                '2026-05-27' => [
+                    'start' => '15:00',
+                    'stop' => '19:00',
+                    'holiday_plus_5' => 'on',
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($this->admin)->post(route('overtimes.save'), $data);
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(302);
+
+        // Base = 2 * ((35400 * 0.6) / 30) = 1416
+        // Extra = 4 * 200 = 800
+        // Total = 2216
+        $this->assertDatabaseHas('overtimes', [
+            'employee_id' => $this->employee->id,
+            'date' => '2026-05-27 00:00:00',
+            'total_ot_hours' => 4.00,
+            'amount' => 2216.00,
+        ]);
+    }
+
+    public function test_noc_eid_adjacent_full_span_entry_only_pays_hours_beyond_first_eight()
+    {
+        $this->employee->update([
+            'gross_salary' => 35400,
+            'roster_group' => 'NOC (Borak)',
+        ]);
+
+        OvertimeSpecialRate::create([
+            'roster_group' => 'NOC (Borak)',
+            'rate' => 200,
+            'is_eid_special' => true,
+        ]);
+
+        Holiday::create([
+            'type' => 'Eid Day',
+            'year' => 2026,
+            'title' => 'Eid-ul-Adha',
+            'all_office' => true,
+            'from_date' => '2026-05-28',
+            'to_date' => '2026-05-28',
+            'total_days' => 1,
+            'is_active' => true,
+        ]);
+
+        $data = [
+            'employee_id' => $this->employee->id,
+            'month' => '05',
+            'year' => '2026',
+            'ot' => [
+                '2026-05-27' => [
+                    'start' => '07:00',
+                    'stop' => '19:00',
+                    'holiday_plus_5' => 'on',
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($this->admin)->post(route('overtimes.save'), $data);
+        $response->assertSessionHasNoErrors();
+        $response->assertStatus(302);
+
+        $this->assertDatabaseHas('overtimes', [
+            'employee_id' => $this->employee->id,
+            'date' => '2026-05-27 00:00:00',
+            'total_ot_hours' => 12.00,
+            'amount' => 2216.00,
+        ]);
     }
 
     public function test_overtime_index_displays_calculation_summary_footer()

@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OvertimeExport;
+use App\Models\OvertimeSpecialRate;
 
 class OvertimeController extends Controller
 {
+    private const NOC_ROSTER_GROUPS = [
+        'noc-borak',
+        'noc-sylhet',
+        'NOC (Borak)',
+        'NOC (Sylhet)',
+    ];
+
     public function index(Request $request)
     {
         /** @var \App\Models\User $user */
@@ -69,6 +77,7 @@ class OvertimeController extends Controller
         $rosterSchedules = [];
         $weeklyHolidays = [];
         $holidays = [];
+        $eidAdjacentDays = [];
 
         if ($employeeId) {
             // Authorization check: Can I view this employee?
@@ -135,10 +144,21 @@ class OvertimeController extends Controller
                 }
             }
             $holidays = $holidayMap;
+
+            // Find Eid Adjacent days
+            foreach ($holidays as $date => $holiday) {
+                if ($holiday['type'] === 'Eid Day') {
+                    $d = Carbon::parse($date);
+                    $eidAdjacentDays[$d->copy()->subDay()->format('Y-m-d')] = true;
+                    $eidAdjacentDays[$date] = true;
+                    $eidAdjacentDays[$d->copy()->addDay()->format('Y-m-d')] = true;
+                }
+            }
         }
 
         // Resolve per-hour rate for JS real-time display
         $perHourRate = 0.0;
+        $specialEidRate = 0.0;
         if ($selectedEmployee) {
             if ($selectedEmployee->designation_id) {
                 $designationRate = \App\Models\OvertimeRate::where('designation_id', $selectedEmployee->designation_id)
@@ -156,6 +176,11 @@ class OvertimeController extends Controller
                     $perHourRate = (float) $gradeRate;
                 }
             }
+            if ($selectedEmployee->roster_group) {
+                $specialEidRate = (float) OvertimeSpecialRate::where('roster_group', $selectedEmployee->roster_group)
+                    ->where('is_eid_special', true)
+                    ->value('rate');
+            }
         }
 
         return view('personnel.overtimes.index', compact(
@@ -172,6 +197,8 @@ class OvertimeController extends Controller
             'canEdit',
             'isTeamLeadLayout',
             'perHourRate',
+            'specialEidRate',
+            'eidAdjacentDays',
             'canViewAll'
         ));
     }
@@ -194,6 +221,29 @@ class OvertimeController extends Controller
 
         $otData = $request->ot;
 
+        // Fetch Eid adjacent days dynamically for the backend calculateAmount call
+        $startDate = Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+        $eidHolidays = \App\Models\Holiday::where('type', 'Eid Day')
+            ->where(function($q) use ($startDate, $endDate) {
+                $q->whereBetween('from_date', [$startDate->copy()->subDays(5), $endDate->copy()->addDays(5)])
+                  ->orWhereBetween('to_date', [$startDate->copy()->subDays(5), $endDate->copy()->addDays(5)]);
+            })->get();
+            
+        $eidAdjacentDays = [];
+        $eidActualDays = [];
+        foreach ($eidHolidays as $h) {
+            $c = $h->from_date->copy();
+            while ($c <= $h->to_date) {
+                $dateStr = $c->format('Y-m-d');
+                $eidActualDays[$dateStr] = true;
+                $eidAdjacentDays[\Illuminate\Support\Carbon::parse($dateStr)->subDay()->format('Y-m-d')] = true;
+                $eidAdjacentDays[$dateStr] = true;
+                $eidAdjacentDays[\Illuminate\Support\Carbon::parse($dateStr)->addDay()->format('Y-m-d')] = true;
+                $c->addDay();
+            }
+        }
+
         foreach ($otData as $date => $data) {
             $totalHours = $this->calculateTotalHours($data['start'], $data['stop']);
             
@@ -203,7 +253,9 @@ class OvertimeController extends Controller
                 continue;
             }
 
-            $amount = $this->calculateAmount($employee, $totalHours, $data);
+            $isEidAdjacent = isset($eidAdjacentDays[$date]);
+            $isEidDay = isset($eidActualDays[$date]);
+            $amount = $this->calculateAmount($employee, $totalHours, $data, $isEidAdjacent, $isEidDay);
 
             Overtime::updateOrCreate(
                 ['employee_id' => $employeeId, 'date' => $date],
@@ -268,12 +320,34 @@ class OvertimeController extends Controller
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
             ->pluck('date')
-            ->map(fn($d) => \Illuminate\Support\Carbon::parse($d)->format('Y-m-d'))
+            ->map(fn ($date) => Carbon::parse($date)->format('Y-m-d'))
             ->flip()
-            ->toArray(); // use as a lookup set
+            ->all();
+
+        // Fetch Eid adjacent days for the bypass logic
+        $startDate = \Illuminate\Support\Carbon::createFromDate($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+        $eidHolidays = \App\Models\Holiday::where('type', 'Eid Day')
+            ->where(function($q) use ($startDate, $endDate) {
+                $q->whereBetween('from_date', [$startDate->copy()->subDays(5), $endDate->copy()->addDays(5)])
+                  ->orWhereBetween('to_date', [$startDate->copy()->subDays(5), $endDate->copy()->addDays(5)]);
+            })->get();
+            
+        $eidAdjacentDays = [];
+        foreach ($eidHolidays as $h) {
+            $c = $h->from_date->copy();
+            while ($c <= $h->to_date) {
+                $dateStr = $c->format('Y-m-d');
+                $eidAdjacentDays[\Illuminate\Support\Carbon::parse($dateStr)->subDay()->format('Y-m-d')] = true;
+                $eidAdjacentDays[$dateStr] = true;
+                $eidAdjacentDays[\Illuminate\Support\Carbon::parse($dateStr)->addDay()->format('Y-m-d')] = true;
+                $c->addDay();
+            }
+        }
 
         $suggestions = [];
         $attendanceService = app(\App\Services\AttendanceService::class);
+        $isNocGroup = $this->isNocRosterGroup($employee->roster_group);
 
         foreach ($attendanceRecords as $dateStr => $record) {
             if (isset($existingOt[$dateStr])) {
@@ -282,11 +356,15 @@ class OvertimeController extends Controller
 
             $inTime  = \Illuminate\Support\Carbon::parse($record->in_time);
             $outTime = \Illuminate\Support\Carbon::parse($record->out_time);
+            $isEidAdjacent = isset($eidAdjacentDays[$dateStr]);
 
             // Check if it's a working day (standard or roster)
             $isWorkingDay = $attendanceService->isWorkingDay($employee, $dateStr);
 
-            if ($isWorkingDay) {
+            // SPECIAL BYPASS: NOC on Eid days treat the whole shift as OT
+            if ($isNocGroup && $isEidAdjacent) {
+                $otStart = $inTime->copy();
+            } else if ($isWorkingDay) {
                 // Workday: OT starts after full shift duration is completed
                 $shiftHours = $this->resolveShiftDuration($employee, $dateStr);
                 if ($shiftHours === null || $shiftHours <= 0) {
@@ -306,6 +384,7 @@ class OvertimeController extends Controller
                 'ot_start'       => $otStart->format('H:i'),
                 'ot_stop'        => $outTime->format('H:i'),
                 'total_ot_hours' => round($otStart->diffInMinutes($outTime) / 60, 2),
+                'eid_duty'       => ($isNocGroup && $isEidAdjacent)
             ];
         }
 
@@ -371,15 +450,55 @@ class OvertimeController extends Controller
         return $startTime->diffInMinutes($stopTime) / 60;
     }
 
-    private function calculateAmount(Employee $employee, float $totalHours, array $data): float
+    private function isNocRosterGroup(?string $rosterGroup): bool
+    {
+        return in_array($rosterGroup, self::NOC_ROSTER_GROUPS, true);
+    }
+
+    private function resolveNocHybridExtraHours(float $totalHours): float
+    {
+        if ($totalHours <= 0) {
+            return 0;
+        }
+
+        // Support both entry styles:
+        // - full duty span entered (e.g. 12h => 4 extra)
+        // - extra block only entered (e.g. 4h => 4 extra)
+        return $totalHours > 8 ? ($totalHours - 8) : $totalHours;
+    }
+
+    private function calculateAmount(Employee $employee, float $totalHours, array $data, bool $isEidAdjacent = false, bool $isEidDay = false): float
     {
         $perHourRate = $this->getEmployeePerHourRate($employee);
+        $isNocGroup = $this->isNocRosterGroup($employee->roster_group);
+        $hasHybridDuty = isset($data['eid_duty']) || isset($data['holiday_plus_5']);
+        
+        if ($isEidAdjacent && $employee->roster_group) {
+            $specialRate = (float) OvertimeSpecialRate::where('roster_group', $employee->roster_group)
+                ->where('is_eid_special', true)
+                ->value('rate');
+            if ($specialRate > 0) {
+                $perHourRate = $specialRate;
+            }
+        }
 
         // Full-shift income (per-day amount) — used when hours > 5
         $fullShiftIncome = ($employee->gross_salary * 0.6) / 30;
 
         // If any duty is marked, use shift-based (units) calculation
-        if (isset($data['workday_plus_5']) || isset($data['holiday_plus_5']) || isset($data['eid_duty'])) {
+        if (isset($data['eid_duty']) || isset($data['holiday_plus_5']) || isset($data['workday_plus_5'])) {
+            
+            // HYBRID LOGIC: NOC on Eid-adjacent dates get (Base Units + Extra Hourly)
+            if ($hasHybridDuty && $isNocGroup && $isEidAdjacent) {
+                $units = $isEidDay ? 3 : 2;
+                $baseAmount = $units * $fullShiftIncome;
+                $extraHours = $this->resolveNocHybridExtraHours($totalHours);
+                // Floor the extra hours before multiplying by rate, to match existing hourly policy
+                $extraAmount = floor($extraHours) * $perHourRate;
+                
+                return round($baseAmount + $extraAmount, 2);
+            }
+
             $units = 0;
             
             // Base category units

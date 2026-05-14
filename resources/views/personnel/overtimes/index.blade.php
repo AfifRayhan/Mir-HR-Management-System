@@ -151,13 +151,15 @@
 
                                             $isEidDay = ($holiday && $holiday['type'] === 'Eid Day');
                                             $isHoliday = (bool)$holiday;
+                                            $isEidAdjacent = isset($eidAdjacentDays[$dateStr]);
                                             
                                             $isDayOff = $isWeeklyOff || $isHoliday;
                                         @endphp
                                         <tr class="{{ $isDayOff ? 'bg-dayoff' : '' }}" 
                                             data-date="{{ $dateStr }}"
                                             data-is-off="{{ $isDayOff ? '1' : '0' }}" 
-                                            data-is-eid="{{ $isEidDay ? '1' : '0' }}">
+                                            data-is-eid="{{ $isEidDay ? '1' : '0' }}"
+                                            data-is-eid-adjacent="{{ $isEidAdjacent ? '1' : '0' }}">
                                             <td class="text-xs fw-bold">
                                                 {{ $day->format('l, M d') }}
                                                 @if($isEidDay) 
@@ -301,8 +303,10 @@
 
             const otForm = document.getElementById('ot-form');
             const perHourRate    = Number("{{ $perHourRate ?? 0 }}");
+            const specialEidRate = Number("{{ $specialEidRate ?? 0 }}");
             const gross          = parseFloat(otForm.dataset.gross) || 0;
             const fullShiftIncome = (gross * 0.6) / 30;
+            const isNocGroup = {{ ($selectedEmployee && in_array($selectedEmployee->roster_group, ['noc-borak', 'noc-sylhet', 'NOC (Borak)', 'NOC (Sylhet)'])) ? 'true' : 'false' }};
 
             window.clearTime = function(btn, date) {
                 const input = $(btn).siblings('input');
@@ -312,6 +316,16 @@
                 }
                 calculateAmount(date);
             };
+
+            function resolveNocHybridExtraHours(hours) {
+                if (hours <= 0) return 0;
+                return hours > 8 ? (hours - 8) : hours;
+            }
+
+            function formatRateDisplay(primaryRate, secondaryRate = null) {
+                const format = (rate) => Number(rate).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                return secondaryRate !== null ? `${format(primaryRate)}/${format(secondaryRate)}` : format(primaryRate);
+            }
 
             function calculateAmount(date) {
                 const start = $(`input[name="ot[${date}][start]"]`).val();
@@ -331,6 +345,9 @@
                 const row = $(`tr[data-date="${date}"]`);
                 const isOff = row.data('is-off') == '1';
                 const isEid = row.data('is-eid') == '1';
+                const isEidAdjacent = row.data('is-eid-adjacent') == '1';
+                
+                const currentRate = (isEidAdjacent && specialEidRate > 0) ? specialEidRate : perHourRate;
 
                 const workdayCheck = $(`input[name="ot[${date}][workday_plus_5]"]`);
                 const holidayCheck = $(`input[name="ot[${date}][holiday_plus_5]"]`);
@@ -361,37 +378,39 @@
                 const workdayPlus5 = workdayCheck.is(':checked');
                 const holidayPlus5 = holidayCheck.is(':checked');
                 const eidDuty      = eidCheck.is(':checked');
+                const hasHybridDuty = holidayPlus5 || eidDuty;
 
                 $(`#total_hours_${date}`).text(hours.toFixed(2));
 
-                // Two-tier formula mirrors PHP calculateAmount() exactly:
-                //   ≤ 5 hrs → hours × perHourRate × multiplier
-                //   > 5 hrs → one full shift × multiplier
-                // Tier 1: Floor hours, no multipliers
-                if (hours <= 5) {
-                    const amount = Math.floor(hours) * perHourRate;
-                    $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                } else {
-                    let units = 0;
-                    
-                    if (eidCheck.is(':checked')) {
-                        units = 3;
-                    } else if (holidayCheck.is(':checked')) {
-                        units = 2;
-                    }
+                if (workdayPlus5 || holidayPlus5 || eidDuty) {
+                    // HYBRID LOGIC for NOC on Eid
+                    if (hasHybridDuty && isNocGroup && row.data('is-eid-adjacent') == '1') {
+                        const isEidDay = row.data('is-eid') == '1';
+                        const units = isEidDay ? 3 : 2;
+                        const baseAmount = units * fullShiftIncome;
+                        const extraHours = resolveNocHybridExtraHours(hours);
+                        const extraAmount = Math.floor(extraHours) * currentRate;
+                        const totalAmount = baseAmount + extraAmount;
+                        $(`#amount_${date}`).text(totalAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                    } else {
+                        let units = 0;
+                        if (eidDuty) units = 3;
+                        else if (holidayPlus5) units = 2;
 
-                    if (workdayCheck.is(':checked')) {
-                        if (eidCheck.is(':checked')) {
-                            units += 3;
-                        } else if (holidayCheck.is(':checked')) {
-                            units += 2;
-                        } else {
-                            units += 2;
-                            if (hours > 12) units += 1;
+                        if (workdayPlus5) {
+                            if (eidDuty) units += 3;
+                            else if (holidayPlus5) units += 2;
+                            else {
+                                units += 2;
+                                if (hours > 12) units += 1;
+                            }
                         }
+                        const amount = fullShiftIncome * units;
+                        $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                     }
-                    
-                    const amount = fullShiftIncome * units;
+                } else {
+                    // Standard Hourly fallback
+                    const amount = Math.floor(hours) * currentRate;
                     $(`#amount_${date}`).text(amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 }
                 updateGrandTotal();
@@ -402,6 +421,7 @@
                 let totalRawHours = 0;
                 let hourlyOTHours = 0;
                 let hourlyUnits = 0;
+                let hourlySubtotal = 0;
                 let workdayUnits = 0;
                 let holidayUnits = 0;
                 let eidUnits = 0;
@@ -426,12 +446,24 @@
                     const isWorkdayChecked = row.find('.ot-check[name*="workday_plus_5"]').is(':checked');
                     const isHolidayChecked = row.find('.ot-check[name*="holiday_plus_5"]').is(':checked');
                     const isEidChecked = row.find('.ot-check[name*="eid_duty"]').is(':checked');
+                    const isNocHybridRow = isNocGroup && row.data('is-eid-adjacent') == '1'
+                        && (isHolidayChecked || isEidChecked);
 
-                    if (!isWorkdayChecked && !isHolidayChecked && !isEidChecked) {
+                    if (isNocHybridRow) {
+                        const extraHours = Math.floor(resolveNocHybridExtraHours(hours));
+                        const currRate = (row.data('is-eid-adjacent') == '1' && specialEidRate > 0) ? specialEidRate : perHourRate;
+                        hourlyOTHours += extraHours;
+                        hourlyUnits += extraHours;
+                        hourlySubtotal += extraHours * currRate;
+                    } else if (!isWorkdayChecked && !isHolidayChecked && !isEidChecked) {
                         // Hourly OT Category (Floor hours for BOTH count and payment)
                         const floorHours = Math.floor(hours);
                         hourlyOTHours += floorHours;
                         hourlyUnits += floorHours;
+                        
+                        const isEidAdj = row.data('is-eid-adjacent') == '1';
+                        const currRate = (isEidAdj && specialEidRate > 0) ? specialEidRate : perHourRate;
+                        hourlySubtotal += floorHours * currRate;
                     }
                 });
 
@@ -471,7 +503,11 @@
                 $('#footer_gross_salary').text(gross.toLocaleString());
                 $('#footer_basic_salary').text(basic.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#footer_per_day').text(perDay.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#footer_per_hour').text(perHourRate.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#footer_per_hour').text(
+                    (isNocGroup && specialEidRate > 0)
+                        ? formatRateDisplay(specialEidRate, perHourRate)
+                        : formatRateDisplay(perHourRate)
+                );
 
                 $('#total_payable_display').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BDT');
                 $('#summary_grand_total').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
@@ -493,7 +529,13 @@
                 $('#summary_holiday_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#summary_eid_rate').text(fullShiftIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
-                $('#summary_hourly_subtotal').text((perHourRate * hourlyUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                if (specialEidRate > 0 && hourlySubtotal !== (perHourRate * hourlyUnits)) {
+                    $('#summary_hourly_rate').text('Mixed');
+                } else {
+                    $('#summary_hourly_rate').text(perHourRate.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                }
+
+                $('#summary_hourly_subtotal').text(hourlySubtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#summary_workday_subtotal').text((fullShiftIncome * workdayUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#summary_holiday_subtotal').text((fullShiftIncome * holidayUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#summary_eid_subtotal').text((fullShiftIncome * eidUnits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
@@ -558,7 +600,7 @@
                                     const isOff = tr.data('is-off') === 1;
                                     const isEid = tr.data('is-eid') === 1;
 
-                                    if (isEid) {
+                                    if (info.eid_duty || isEid) {
                                         $(`input[name="ot[${date}][eid_duty]"]`).prop('checked', true);
                                     } else if (isOff) {
                                         $(`input[name="ot[${date}][holiday_plus_5]"]`).prop('checked', true);

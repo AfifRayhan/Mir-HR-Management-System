@@ -110,6 +110,28 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Special Eid Rates Section --}}
+                    <div class="col-lg-12">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 1rem;">
+                            <div class="card-header bg-white border-0 py-3" style="border-radius: 1rem 1rem 0 0;">
+                                <h6 class="mb-0 fw-bold"><i class="bi bi-star-fill me-2 text-danger"></i>{{ __('Special Eid Rates (Roster Groups)') }}</h6>
+                                <small class="text-muted text-xs">{{ __('Specific hourly fallback rates for NOC/Roster groups during Eid-adjacent days.') }}</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    @foreach($rosterGroups as $group)
+                                        <div class="col-md-3">
+                                            <label class="form-label small mb-1">{{ $group }}</label>
+                                            <input type="number" step="0.01" name="special_rates[{{ $group }}]" 
+                                                   class="form-control form-control-sm" value="{{ $specialRates[$group] ?? '' }}" 
+                                                   placeholder="Inherit">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="mt-4 text-end">

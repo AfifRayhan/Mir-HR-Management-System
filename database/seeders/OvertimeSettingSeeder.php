@@ -66,5 +66,18 @@ class OvertimeSettingSeeder extends Seeder
                 $query->orWhere('name', 'like', '%' . $keyword . '%');
             }
         })->update(['is_ot_eligible' => true]);
+
+        // Seed Special Eid Rates for NOC groups
+        $special_rates = [
+            'NOC (Borak)' => 200.00,
+            'NOC (Sylhet)' => 200.00,
+        ];
+
+        foreach ($special_rates as $rosterGroup => $rate) {
+            \App\Models\OvertimeSpecialRate::updateOrCreate(
+                ['roster_group' => $rosterGroup, 'is_eid_special' => true],
+                ['rate' => $rate]
+            );
+        }
     }
 }
