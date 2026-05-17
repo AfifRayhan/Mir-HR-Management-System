@@ -9,6 +9,19 @@ class Office extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('offices_all');
+            \Illuminate\Support\Facades\Cache::forget('offices_ordered_all');
+        });
+
+        static::deleted(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('offices_all');
+            \Illuminate\Support\Facades\Cache::forget('offices_ordered_all');
+        });
+    }
+
     protected $fillable = [
         'name',
         'office_type_id',

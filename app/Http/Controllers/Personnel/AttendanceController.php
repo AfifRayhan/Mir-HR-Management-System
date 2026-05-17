@@ -75,7 +75,7 @@ class AttendanceController extends Controller
             ->orderBy('employees.name')
             ->get();
 
-        return PDF::loadView('personnel.attendance.exports.daily-pdf', [
+        $pdf = PDF::loadView('personnel.attendance.exports.daily-pdf', [
                 'records' => $records,
                 'date' => $date,
                 'selectedOffice' => $selectedOffice,
@@ -84,8 +84,12 @@ class AttendanceController extends Controller
             ->setOption('margin-bottom', 10)
             ->setOption('margin-top', 10)
             ->setOption('margin-left', 10)
-            ->setOption('margin-right', 10)
-            ->download('attendance_' . $date . '.pdf');
+            ->setOption('margin-right', 10);
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('attendance_' . $date . '.pdf');
+        }
+        return $pdf->download('attendance_' . $date . '.pdf');
     }
 
     public function exportWord(Request $request)
@@ -643,13 +647,17 @@ class AttendanceController extends Controller
         $export = new MonthlyAttendanceExport($params);
         $view = $export->view();
         
-        return PDF::loadView($view->name(), $view->getData())
+        $pdf = PDF::loadView($view->name(), $view->getData())
             ->setPaper('a4', 'landscape')
             ->setOption('margin-bottom', 5)
             ->setOption('margin-top', 5)
             ->setOption('margin-left', 5)
-            ->setOption('margin-right', 5)
-            ->download('monthly_attendance_' . date('Y-m') . '.pdf');
+            ->setOption('margin-right', 5);
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('monthly_attendance_' . date('Y-m') . '.pdf');
+        }
+        return $pdf->download('monthly_attendance_' . date('Y-m') . '.pdf');
     }
 
     public function exportMonthlyCsv(Request $request)
@@ -834,13 +842,17 @@ class AttendanceController extends Controller
         $export = new YearlyAttendanceExport($params);
         $view = $export->view();
         
-        return PDF::loadView($view->name(), $view->getData())
+        $pdf = PDF::loadView($view->name(), $view->getData())
             ->setPaper('a4', 'portrait')
             ->setOption('margin-bottom', 5)
             ->setOption('margin-top', 5)
             ->setOption('margin-left', 5)
-            ->setOption('margin-right', 5)
-            ->download('yearly_attendance_' . $params['year'] . '.pdf');
+            ->setOption('margin-right', 5);
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('yearly_attendance_' . $params['year'] . '.pdf');
+        }
+        return $pdf->download('yearly_attendance_' . $params['year'] . '.pdf');
     }
 
     public function exportYearlyCsv(Request $request)
@@ -919,9 +931,13 @@ class AttendanceController extends Controller
         $export = new EmployeeLogExport($params);
         $view = $export->view();
         
-        return PDF::loadView($view->name(), $view->getData())
-            ->setPaper('a4', 'portrait')
-            ->download('employee_log_' . $params['employee_id'] . '.pdf');
+        $pdf = PDF::loadView($view->name(), $view->getData())
+            ->setPaper('a4', 'portrait');
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('employee_log_' . $params['employee_id'] . '.pdf');
+        }
+        return $pdf->download('employee_log_' . $params['employee_id'] . '.pdf');
     }
 
     public function exportLogWord(Request $request)

@@ -9,6 +9,21 @@ class Department extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('departments_all');
+            \Illuminate\Support\Facades\Cache::forget('departments_ordered_all');
+            \Illuminate\Support\Facades\Cache::forget('sections_with_dept_all');
+        });
+
+        static::deleted(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('departments_all');
+            \Illuminate\Support\Facades\Cache::forget('departments_ordered_all');
+            \Illuminate\Support\Facades\Cache::forget('sections_with_dept_all');
+        });
+    }
+
     protected $fillable = [
         'name',
         'short_name',

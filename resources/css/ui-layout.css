@@ -14,7 +14,7 @@ body {
 
 /* Sidebar */
 .ui-sidebar {
-    width: var(--ui-sidebar-width);
+    width: 85px;
     background-color: var(--ui-sidebar-bg, #ffffff);
     border-right: 1px solid var(--ui-border);
     display: flex;
@@ -24,7 +24,13 @@ body {
     height: 100vh;
     z-index: 1000;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
-    transition: transform 0.3s ease;
+    transition: width 0.3s ease, transform 0.3s ease;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.ui-sidebar:hover {
+    width: var(--ui-sidebar-width);
 }
 
 .ui-logo {
@@ -40,6 +46,15 @@ body {
 
 .ui-logo span:last-child {
     color: var(--ui-text);
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+}
+
+.ui-sidebar:hover .ui-logo span:last-child {
+    opacity: 1;
+    max-width: 200px;
 }
 
 .ui-sidebar-nav {
@@ -47,9 +62,14 @@ body {
     padding: 0;
     margin: 0;
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: var(--ui-primary-soft) transparent;
+}
+
+.ui-sidebar:hover .ui-sidebar-nav {
+    overflow-y: auto;
 }
 
 .ui-sidebar-link {
@@ -68,7 +88,31 @@ body {
 
 .ui-sidebar-link i {
     font-size: 1.25rem;
+    margin-right: 0;
+    min-width: 1.5rem;
+    text-align: center;
+    transition: margin 0.3s ease;
+}
+
+.ui-sidebar:hover .ui-sidebar-link i {
     margin-right: 1rem;
+}
+
+.ui-sidebar-link > span,
+.ui-sidebar-link > .d-flex {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+}
+
+.ui-sidebar:hover .ui-sidebar-link > span,
+.ui-sidebar:hover .ui-sidebar-link > .d-flex {
+    opacity: 1;
+    max-width: 280px;
+    flex: 1;
 }
 
 .ui-sidebar-link:hover {
@@ -86,7 +130,7 @@ body {
 .ui-main {
     flex: 1;
     padding: 2rem 2.5rem;
-    padding-left: calc(var(--ui-sidebar-width) + 2.5rem);
+    padding-left: calc(85px + 2.5rem);
     background-color: var(--ui-bg);
     min-height: 100vh;
 }
@@ -135,7 +179,15 @@ body {
 
 .ui-chevron {
     font-size: 0.75rem;
-    transition: transform 0.3s ease;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, max-width 0.3s ease;
+}
+
+.ui-sidebar:hover .ui-chevron {
+    opacity: 1;
+    max-width: 20px;
 }
 
 .ui-sidebar-parent.open > .ui-sidebar-toggle .ui-chevron {
@@ -156,8 +208,13 @@ body {
 }
 
 .ui-sidebar-submenu .ui-sidebar-link {
-    padding: 0.5rem 1rem 0.5rem 2.75rem;
+    padding: 0.5rem 1rem 0.5rem 0.85rem;
     font-size: 0.85rem;
+    transition: padding-left 0.3s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.ui-sidebar:hover .ui-sidebar-submenu .ui-sidebar-link {
+    padding-left: 2.75rem;
 }
 
 /* Mobile Adjustments */
@@ -169,9 +226,20 @@ body {
         transform: translateX(-100%);
         z-index: 1100;
         top: 0;
+        width: var(--ui-sidebar-width);
     }
     .ui-sidebar.sidebar-open {
         transform: translateX(0);
+    }
+    .ui-sidebar .ui-logo span:last-child,
+    .ui-sidebar .ui-sidebar-link > span,
+    .ui-sidebar .ui-sidebar-link > .d-flex,
+    .ui-sidebar .ui-chevron {
+        opacity: 1;
+        max-width: none;
+    }
+    .ui-sidebar .ui-sidebar-link i {
+        margin-right: 1rem;
     }
     .ui-main {
         padding: 5rem 1.5rem 1.5rem;

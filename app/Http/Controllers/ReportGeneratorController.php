@@ -194,6 +194,9 @@ class ReportGeneratorController extends Controller
 
         $fileName = Str::slug($request->input('report_name')) . '-' . date('Ymd-His') . '.pdf';
 
+        if ($request->input('action') === 'print') {
+            return $pdf->inline($fileName);
+        }
         return $pdf->download($fileName);
     }
 

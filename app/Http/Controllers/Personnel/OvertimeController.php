@@ -672,6 +672,9 @@ class OvertimeController extends Controller
             $pdf = PDF::loadView($view->name(), $viewData);
             $pdf->setPaper('a4', 'portrait');
             $filename = "Overtime_{$employee->name}_" . ($viewData['monthName'] ?? 'Report') . "_{$year}.pdf";
+            if ($request->input('action') === 'print') {
+                return $pdf->inline($filename);
+            }
             return $pdf->download($filename);
         } elseif (in_array($format, ['excel', 'csv'])) {
             $filename = "Overtime_{$employee->name}_" . Carbon::createFromDate($year, $month, 1)->format('F') . "_{$year}." . ($format === 'excel' ? 'xlsx' : 'csv');

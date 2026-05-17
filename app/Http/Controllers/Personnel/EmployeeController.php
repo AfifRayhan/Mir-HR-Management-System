@@ -52,8 +52,9 @@ class EmployeeController extends Controller
         if ($request->section_id) {
             $query->where('section_id', $request->section_id);
         }
-        if ($request->status) {
-            $query->where('status', $request->status);
+        $statusFilter = $request->has('status') ? $request->status : 'active';
+        if ($statusFilter) {
+            $query->where('status', $statusFilter);
         }
  
         // Sorting — whitelist allowed columns and directions to prevent SQL injection
@@ -525,7 +526,8 @@ class EmployeeController extends Controller
         if ($request->department_id) $query->where('department_id', $request->department_id);
         if ($request->designation_id) $query->where('designation_id', $request->designation_id);
         if ($request->section_id) $query->where('section_id', $request->section_id);
-        if ($request->status) $query->where('status', $request->status);
+        $statusFilter = $request->has('status') ? $request->status : 'active';
+        if ($statusFilter) $query->where('status', $statusFilter);
 
         // Sorting — whitelist allowed columns and directions to prevent SQL injection
         $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
@@ -546,7 +548,7 @@ class EmployeeController extends Controller
             $selectedOffice = Office::find($request->office_id);
         }
 
-        return PDF::loadView('personnel.employees.exports.pdf', [
+        $pdf = PDF::loadView('personnel.employees.exports.pdf', [
                 'employees' => $employees,
                 'allColumns' => $allColumns,
                 'selectedColumns' => $selectedColumns,
@@ -556,8 +558,12 @@ class EmployeeController extends Controller
             ->setOption('margin-bottom', 10)
             ->setOption('margin-top', 10)
             ->setOption('margin-left', 10)
-            ->setOption('margin-right', 10)
-            ->download('employees_' . date('Y-m-d_H-i-s') . '.pdf');
+            ->setOption('margin-right', 10);
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('employees_' . date('Y-m-d_H-i-s') . '.pdf');
+        }
+        return $pdf->download('employees_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 
     public function exportWord(Request $request)
@@ -579,7 +585,8 @@ class EmployeeController extends Controller
         if ($request->department_id) $query->where('department_id', $request->department_id);
         if ($request->designation_id) $query->where('designation_id', $request->designation_id);
         if ($request->section_id) $query->where('section_id', $request->section_id);
-        if ($request->status) $query->where('status', $request->status);
+        $statusFilter = $request->has('status') ? $request->status : 'active';
+        if ($statusFilter) $query->where('status', $statusFilter);
 
         // Sorting — whitelist allowed columns and directions to prevent SQL injection
         $allowedSortColumns = ['name', 'employee_code', 'created_at', 'joining_date', 'department_id', 'designation_id', 'office_id', 'status'];
@@ -640,7 +647,8 @@ class EmployeeController extends Controller
         if ($request->office_id) $query->where('employees.office_id', $request->office_id);
         if ($request->designation_id) $query->where('employees.designation_id', $request->designation_id);
         if ($request->section_id) $query->where('employees.section_id', $request->section_id);
-        if ($request->status) $query->where('employees.status', $request->status);
+        $statusFilter = $request->has('status') ? $request->status : 'active';
+        if ($statusFilter !== 'all') $query->where('employees.status', $statusFilter);
 
         // Hierarchical sorting for tree view
         $query->orderBy('employees.office_id')
@@ -703,7 +711,7 @@ class EmployeeController extends Controller
 
         $office = $employee->office;
 
-        return PDF::loadView('personnel.employees.exports.profile-pdf', [
+        $pdf = PDF::loadView('personnel.employees.exports.profile-pdf', [
                 'employee' => $employee,
                 'office' => $office,
             ])
@@ -716,8 +724,12 @@ class EmployeeController extends Controller
             ->setOption('footer-right', $employee->name)
             ->setOption('footer-line', true)
             ->setOption('footer-font-size', 8)
-            ->setOption('footer-spacing', 0)
-            ->download('profile_' . $employee->employee_code . '_' . date('Y-m-d') . '.pdf');
+            ->setOption('footer-spacing', 0);
+
+        if (request()->input('action') === 'print') {
+            return $pdf->inline('profile_' . $employee->employee_code . '_' . date('Y-m-d') . '.pdf');
+        }
+        return $pdf->download('profile_' . $employee->employee_code . '_' . date('Y-m-d') . '.pdf');
     }
 
     //Delete Experience

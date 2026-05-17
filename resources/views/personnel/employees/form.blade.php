@@ -30,6 +30,9 @@
                         <a href="{{ route('personnel.employees.profile-pdf', $employee->id) }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
                             <i class="bi bi-download me-2"></i>{{ __('Download Profile') }}
                         </a>
+                        <a href="{{ route('personnel.employees.profile-pdf', ['employee' => $employee->id, 'action' => 'print']) }}" target="_blank" class="btn btn-outline-info rounded-pill d-flex align-items-center">
+                            <i class="bi bi-printer me-2"></i>{{ __('Print Profile') }}
+                        </a>
                         @endif
                         <a href="{{ route('personnel.employees.index') }}" class="btn btn-outline-success rounded-pill d-flex align-items-center">
                             <i class="bi bi-arrow-left me-2"></i>{{ __('Back to List') }}

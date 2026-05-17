@@ -382,8 +382,19 @@
                                     <i class="bi bi-file-earmark-pdf text-danger"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold">{{ __('PDF Document') }}</div>
+                                    <div class="fw-bold">{{ __('Download PDF') }}</div>
                                     <div class="small text-muted">{{ __('Print-ready document (.pdf)') }}</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2" href="#" id="printPdf">
+                                <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-printer text-info"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('Print PDF') }}</div>
+                                    <div class="small text-muted">{{ __('Open PDF for printing') }}</div>
                                 </div>
                             </a>
                         </li>
@@ -497,6 +508,22 @@
                 }
 
                 window.location.href = buildDownloadUrl(routes.pdf);
+            });
+            document.getElementById('printPdf').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                var selectedCount = document.querySelectorAll('.column-check:checked').length;
+                if (selectedCount > 20) {
+                    Swal.fire({
+                        title: 'Too Many Columns',
+                        text: 'PDF exports are limited to 20 columns to ensure readability. Please deselect some columns or use Excel/CSV for larger datasets.',
+                        icon: 'warning',
+                        confirmButtonColor: '#007A10'
+                    });
+                    return;
+                }
+
+                window.open(buildDownloadUrl(routes.pdf) + '&action=print', '_blank');
             });
             document.getElementById('downloadWord').addEventListener('click', function (e) {
                 e.preventDefault();

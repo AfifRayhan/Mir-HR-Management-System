@@ -52,9 +52,29 @@
     height: 110px;
 }
 
+.auth-brand-panel {
+    background: linear-gradient(180deg, #228f54 0%, #1c8b4d 100%) !important;
+}
+
 .auth-logo-img {
     width: 110px;
     height: 110px;
+    object-fit: cover;
+}
+
+.auth-mobile-branding {
+    display: none;
+}
+
+.auth-mobile-logo-shell {
+    width: 88px;
+    height: 88px;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.auth-mobile-logo-img {
+    width: 88px;
+    height: 88px;
     object-fit: cover;
 }
 
@@ -129,4 +149,26 @@
 .auth-link-muted:hover {
     color: var(--ui-text-light);
     text-decoration: underline;
+}
+
+@media (max-width: 767.98px) {
+    .auth-page-wrapper {
+        padding: 1.5rem 0.9rem;
+    }
+
+    .auth-card {
+        border-radius: 1.85rem;
+    }
+
+    .auth-card-row {
+        flex-direction: column;
+    }
+
+    .auth-mobile-branding {
+        display: block;
+        margin: -1.5rem -1.5rem 1.75rem;
+        padding: 1.75rem 1.5rem 1.5rem;
+        background: linear-gradient(180deg, #228f54 0%, #1c8b4d 100%);
+        border-radius: 1.85rem 1.85rem 0 0;
+    }
 }

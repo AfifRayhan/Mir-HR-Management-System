@@ -64,6 +64,17 @@
                                 </button>
                             </form>
 
+                            <!-- PDF Print Form -->
+                            <form action="{{ route('personnel.reports.generate.pdf') }}" method="POST" id="print-pdf-form" target="_blank">
+                                @csrf
+                                <input type="hidden" name="action" value="print">
+                                <input type="hidden" name="report_name" value="{{ $reportName }}">
+                                <input type="hidden" name="final_content" id="print-pdf-content" value="">
+                                <button type="submit" class="btn btn-info px-4 py-2 font-bold text-white">
+                                    <i class="bi bi-printer me-2"></i> {{ __('Print PDF') }}
+                                </button>
+                            </form>
+
                             <!-- DOCX Download Form -->
                             <form action="{{ route('personnel.reports.generate.docx') }}" method="POST" id="docx-form">
                                 @csrf
@@ -126,6 +137,7 @@
             }
 
             syncEditorContent('pdf-form', 'pdf-content');
+            syncEditorContent('print-pdf-form', 'print-pdf-content');
             syncEditorContent('docx-form', 'docx-content');
         });
     </script>

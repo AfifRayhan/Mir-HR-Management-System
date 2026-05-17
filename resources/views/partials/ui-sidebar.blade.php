@@ -37,7 +37,7 @@ $currentRoute = request()->route()->getName() ?? '';
         @if($item->filtered_children->isNotEmpty())
         {{-- Parent with submenu --}}
         <li class="ui-sidebar-parent {{ $item->is_open ? 'open' : '' }}">
-            <span class="ui-sidebar-link ui-sidebar-toggle" onclick="this.closest('.ui-sidebar-parent').classList.toggle('open')">
+            <span class="ui-sidebar-link ui-sidebar-toggle" onclick="this.closest('.ui-sidebar-parent').classList.toggle('open')" title="{{ __($item->name) }}">
                 <i class="{{ $item->icon }}"></i>
                 <span>{{ __($item->name) }}</span>
                 <i class="bi bi-chevron-down ui-chevron ms-auto"></i>
@@ -46,7 +46,8 @@ $currentRoute = request()->route()->getName() ?? '';
                 @foreach($item->filtered_children as $child)
                 <li>
                     <a href="{{ $child->route_name ? route($child->route_name) : '#' }}"
-                        class="ui-sidebar-link {{ $child->is_active ? 'active' : '' }}">
+                        class="ui-sidebar-link {{ $child->is_active ? 'active' : '' }}"
+                        title="{{ __($child->name) }}">
                         <i class="{{ $child->icon }}"></i>
                         <span>{{ __($child->name) }}</span>
                     </a>
@@ -58,7 +59,8 @@ $currentRoute = request()->route()->getName() ?? '';
         {{-- Simple link --}}
         <li>
             <a href="{{ $item->route_name ? route($item->route_name) : '#' }}"
-                class="ui-sidebar-link {{ $item->is_active ? 'active' : '' }}">
+                class="ui-sidebar-link {{ $item->is_active ? 'active' : '' }}"
+                title="{{ __($item->name) }}">
                 <i class="{{ $item->icon }}"></i>
                 <span>{{ __($item->name) }}</span>
             </a>

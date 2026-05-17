@@ -276,8 +276,19 @@
                                     <i class="bi bi-file-earmark-pdf text-danger"></i>
                                 </div>
                                 <div>
-                                    <div class="fw-bold">{{ __('PDF Document') }}</div>
+                                    <div class="fw-bold">{{ __('Download PDF') }}</div>
                                     <div class="small text-muted">{{ __('Print-ready document (.pdf)') }}</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2" target="_blank" href="{{ route('personnel.reports.attendances.yearly.export.pdf', array_merge(request()->all(), ['action' => 'print'])) }}">
+                                <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3">
+                                    <i class="bi bi-printer text-info"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ __('Print PDF') }}</div>
+                                    <div class="small text-muted">{{ __('Open PDF for printing') }}</div>
                                 </div>
                             </a>
                         </li>

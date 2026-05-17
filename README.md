@@ -204,9 +204,9 @@ composer dev
 ```
 
 This concurrently starts:
-- Laravel dev server (`php artisan serve`)
-- Queue worker (`php artisan queue:listen`)
-- Log viewer (`php artisan pail`)
+- Laravel dev server (`php.exe artisan serve`)
+- Queue worker (`php.exe artisan queue:listen`)
+- Log viewer (`php.exe artisan pail`)
 - Vite dev server (`npm run dev`)
 
 **Option B — Manual start:**

@@ -3,13 +3,13 @@
     <x-auth-session-status class="mb-3" :status="session('status')" />
 
     <div class="card shadow-sm border-0 auth-card">
-        <div class="row g-0">
+        <div class="row g-0 auth-card-row">
             <!-- Left branding column -->
-            <div class="col-md-5 d-none d-md-flex flex-column justify-content-center align-items-center bg-success text-white p-4">
+            <div class="col-md-5 d-none d-md-flex flex-column justify-content-center align-items-center bg-success text-white p-4 auth-brand-panel">
                 <div class="text-center">
                     <div class="rounded-circle bg-white bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3 auth-logo-container">
                         <img
-                            src="{{ asset('images/finallogo.png') }}"
+                            src="{{ asset('images/MIRORIGINAL.jpeg') }}"
                             alt="{{ config('app.name', 'Mir HR Management System') }} logo"
                             class="img-fluid rounded-circle auth-logo-img">
                     </div>
@@ -23,6 +23,19 @@
             <!-- Right login form column -->
             <div class="col-md-7">
                 <div class="card-body p-4">
+                    <!-- Mobile branding (hidden on desktop) -->
+                    <div class="d-md-none auth-mobile-branding text-center mb-4">
+                        <div class="rounded-circle bg-white d-inline-flex align-items-center justify-content-center mb-3 auth-mobile-logo-shell">
+                            <img
+                                src="{{ asset('images/MIRORIGINAL.jpeg') }}"
+                                alt="{{ config('app.name', 'Mir HR Management System') }} logo"
+                                class="img-fluid rounded-circle auth-mobile-logo-img">
+                        </div>
+                        <h2 class="h5 fw-bold mb-0 text-white">
+                            Mir HR Management System
+                        </h2>
+                    </div>
+
                     <h1 class="h4 fw-semibold mb-1 text-center">
                         {{ __('Log in') }}
                     </h1>
@@ -91,6 +104,5 @@
         </div>
     </div>
 </x-guest-layout>
-
 
 

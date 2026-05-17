@@ -64,9 +64,13 @@ class LeaveBalanceReportController extends Controller
         $export = new LeaveBalanceExport($params);
         $view = $export->view();
         
-        return Pdf::loadView($view->name(), $view->getData())
-            ->setPaper('a4', 'portrait')
-            ->download('leave_balance_' . $params['employee_id'] . '_' . $params['year'] . '.pdf');
+        $pdf = Pdf::loadView($view->name(), $view->getData())
+            ->setPaper('a4', 'portrait');
+
+        if ($request->input('action') === 'print') {
+            return $pdf->inline('leave_balance_' . $params['employee_id'] . '_' . $params['year'] . '.pdf');
+        }
+        return $pdf->download('leave_balance_' . $params['employee_id'] . '_' . $params['year'] . '.pdf');
     }
 
     public function exportWord(Request $request)

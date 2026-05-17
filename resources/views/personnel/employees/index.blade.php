@@ -35,8 +35,8 @@
 
             <!-- Filter Bar -->
             <div class="ui-filter-bar">
-                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2" id="employee-filter-form">
-                    <div class="col-md-2">
+                <form action="{{ route('personnel.employees.index') }}" method="GET" class="row g-2 align-items-end" id="employee-filter-form">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Search Employee/ID') }}</label>
                         <select name="search" class="form-select select2" id="employee-search">
                             <option value="">{{ __('All Employees') }}</option>
@@ -47,7 +47,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Department') }}</label>
                         <select name="department_id" class="form-select">
                             <option value="">{{ __('All') }}</option>
@@ -58,9 +58,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Section') }}</label>
-                        <select name="section_id" class="form-select text-xs px-1">
+                        <select name="section_id" class="form-select text-xs">
                             <option value="">{{ __('All') }}</option>
                             @foreach($sections as $sec)
                             <option value="{{ $sec->id }}" {{ request('section_id') == $sec->id ? 'selected' : '' }}>
@@ -69,9 +69,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Office') }}</label>
-                        <select name="office_id" class="form-select text-xs px-1">
+                        <select name="office_id" class="form-select text-xs">
                             <option value="">{{ __('All') }}</option>
                             @foreach($offices as $office)
                             <option value="{{ $office->id }}" {{ request('office_id') == $office->id ? 'selected' : '' }}>
@@ -80,7 +80,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Designation') }}</label>
                         <select name="designation_id" class="form-select">
                             <option value="">{{ __('All') }}</option>
@@ -91,17 +91,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                         <label class="form-label small font-bold text-gray-600">{{ __('Status') }}</label>
-                        <select name="status" class="form-select text-xs px-1">
+                        <select name="status" class="form-select text-xs">
+                            @php $selectedStatus = request()->has('status') ? request('status') : 'active'; @endphp
                             <option value="">{{ __('All') }}</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
+                            <option value="active" {{ $selectedStatus == 'active' ? 'selected' : '' }}>{{ __('Active') }}</option>
+                            <option value="inactive" {{ $selectedStatus == 'inactive' ? 'selected' : '' }}>{{ __('Inactive') }}</option>
                         </select>
                     </div>
-                    <div class="col-md-3 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn ui-btn-search flex-grow-1">{{ __('Search') }}</button>
-                        <a href="{{ route('personnel.employees.index') }}" class="btn ui-btn-clear flex-grow-1">{{ __('Clear') }}</a>
+                    <div class="col-xl-auto col-lg-auto col-md-12 col-sm-12 d-flex gap-2 pb-1">
+                        <button type="submit" class="btn ui-btn-search px-3">{{ __('Search') }}</button>
+                        <a href="{{ route('personnel.employees.index') }}" class="btn ui-btn-clear px-3">{{ __('Clear') }}</a>
                     </div>
                 </form>
             </div>
@@ -131,10 +132,9 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th>{{ __('Department') }}</th>
+                                <th>{{ __('Department / Section') }}</th>
                                 <th>{{ __('Office') }}</th>
                                 <th>{{ __('Designation') }}</th>
-                                <th>{{ __('Section') }}</th>
                                 <th>{{ __('Gross Salary') }}</th>
                                 <th>
                                     <a href="{{ route('personnel.employees.index', array_merge(request()->query(), ['sort' => 'joining_date', 'direction' => request('direction') === 'asc' ? 'desc' : 'asc'])) }}" class="sort-link">
@@ -146,32 +146,14 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th>{{ __('Status') }}</th>
                                 <th class="text-end pe-4">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($employees as $emp)
                             <tr>
-                                <td class="ps-4 font-bold text-gray-700">{{ $emp->employee_code }}</td>
-                                <td>
-                                    <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="text-decoration-none d-flex align-items-center group">
-                                        <div class="emp-avatar-sm me-3 transition-all group-hover:scale-105">
-                                            {{ strtoupper(substr($emp->name, 0, 1)) }}
-                                        </div>
-                                        <div style="min-width: 150px;">
-                                            <div class="fw-bold mb-0 text-gray-800 text-nowrap group-hover:text-success transition-colors">{{ $emp->name }}</div>
-                                            <div class="small text-muted text-nowrap">{{ $emp->contact_no ?? 'No phone' }}</div>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td><span class="badge bg-light text-dark">{{ $emp->department->name ?? 'N/A' }}</span></td>
-                                <td>{{ $emp->office->name ?? 'N/A' }}</td>
-                                <td>{{ $emp->designation->name ?? 'N/A' }}</td>
-                                <td>{{ $emp->section->name ?? 'N/A' }}</td>
-                                <td>{{ number_format($emp->gross_salary, 2) }}</td>
-                                <td>{{ \Carbon\Carbon::parse($emp->joining_date)->format('d M Y') }}</td>
-                                <td>
+                                <td class="ps-4">
+                                    <div class="font-bold text-gray-700 mb-1">{{ $emp->employee_code }}</div>
                                     @php
                                         $statusColors = [
                                             'active' => 'bg-success-soft text-success',
@@ -179,10 +161,29 @@
                                         ];
                                         $badgeClass = $statusColors[$emp->status] ?? 'bg-light text-dark';
                                     @endphp
-                                    <span class="badge {{ $badgeClass }}">
+                                    <span class="badge {{ $badgeClass }} text-xs" style="padding: 0.35em 0.5em;">
                                         {{ ucfirst($emp->status) }}
                                     </span>
                                 </td>
+                                <td>
+                                    <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="text-decoration-none d-flex align-items-center group">
+                                        <div class="emp-avatar-sm me-3 transition-all group-hover:scale-105">
+                                            {{ strtoupper(substr($emp->name, 0, 1)) }}
+                                        </div>
+                                        <div style="min-width: 150px;">
+                                            <div class="fw-bold mb-0 text-gray-800 text-nowrap group-hover:text-success transition-colors">{{ $emp->name }}</div>
+                                            <div class="small text-muted text-nowrap">{{ $emp->phone ?? $emp->contact_no ?? 'No phone' }}</div>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-gray-800 mb-1">{{ $emp->department->name ?? 'N/A' }}</div>
+                                    <div class="small text-muted">{{ $emp->section->name ?? 'No Section' }}</div>
+                                </td>
+                                <td>{{ $emp->office->name ?? 'N/A' }}</td>
+                                <td>{{ $emp->designation->name ?? 'N/A' }}</td>
+                                <td>{{ number_format($emp->gross_salary, 2) }}</td>
+                                <td>{{ \Carbon\Carbon::parse($emp->joining_date)->format('d M Y') }}</td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
                                         <a href="{{ route('personnel.employees.edit', $emp->id) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('Edit') }}">
