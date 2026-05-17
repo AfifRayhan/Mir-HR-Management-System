@@ -140,6 +140,9 @@
                                             $record = $overtimeRecords[$dateStr] ?? null;
                                             $roster = $rosterSchedules[$dateStr] ?? null;
                                             $holiday = $holidays[$dateStr] ?? null;
+                                            $totalOtHours = $record ? (float) $record->total_ot_hours : 0;
+                                            $totalOtMinutes = (int) round($totalOtHours * 60);
+                                            $formattedTotalOtHours = sprintf('%d:%02d', intdiv($totalOtMinutes, 60), $totalOtMinutes % 60);
                                             
                                             $isRosterEmployee = ($selectedEmployee->officeTime && $selectedEmployee->officeTime->shift_name === 'Roster');
                                             
@@ -185,7 +188,7 @@
                                                 </div>
                                             </td>
                                             <td class="text-center text-xs">
-                                                <span id="total_hours_{{ $dateStr }}">{{ $record ? $record->total_ot_hours : '0.00' }}</span>
+                                                <span id="total_hours_{{ $dateStr }}" data-hours="{{ $totalOtHours }}">{{ $formattedTotalOtHours }}</span>
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox" name="ot[{{ $dateStr }}][workday_plus_5]" class="form-check-input ot-check" {{ $record && $record->is_workday_duty_plus_5 ? 'checked' : '' }} data-date="{{ $dateStr }}" {{ !$canEdit ? 'disabled' : '' }}>
@@ -211,7 +214,7 @@
                                         <td class="fw-bold text-xs">Gross Salary:</td>
                                         <td class="text-end text-xs" id="footer_gross_salary">0.00</td>
                                         <td class="text-end fw-bold text-xs">Total hours/Shift</td>
-                                        <td class="text-center fw-bold text-xs" id="summary_hourly_ot_hours">0.00</td>
+                                        <td class="text-center fw-bold text-xs" id="summary_hourly_ot_hours">0:00</td>
                                         <td class="text-center fw-bold text-xs" id="summary_workday_count">0</td>
                                         <td class="text-center fw-bold text-xs" id="summary_holiday_count">0</td>
                                         <td class="text-center fw-bold text-xs" id="summary_eid_count">0</td>
@@ -295,11 +298,25 @@
         $(document).ready(function() {
             $('.select2').select2({ theme: 'bootstrap-5' });
 
-            flatpickr(".timepicker", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true
+            document.querySelectorAll('.timepicker').forEach((input) => {
+                flatpickr(input, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    altInput: true,
+                    altFormat: "h:i K",
+                    time_24hr: false,
+                    allowInput: true,
+                    clickOpens: !input.readOnly,
+                    onReady: function(selectedDates, dateStr, instance) {
+                        if (instance.altInput) {
+                            instance.altInput.classList.add('form-control', 'form-control-xs');
+                            if (input.readOnly) {
+                                instance.altInput.readOnly = true;
+                            }
+                        }
+                    }
+                });
             });
 
             const otForm = document.getElementById('ot-form');
@@ -310,7 +327,7 @@
             const isNocGroup = {{ ($selectedEmployee && in_array($selectedEmployee->roster_group, ['noc-borak', 'noc-sylhet', 'NOC (Borak)', 'NOC (Sylhet)'])) ? 'true' : 'false' }};
 
             window.clearTime = function(btn, date) {
-                const input = $(btn).siblings('input');
+                const input = $(btn).siblings('input.timepicker').first();
                 input.val('');
                 if (input[0]._flatpickr) {
                     input[0]._flatpickr.clear();
@@ -328,6 +345,13 @@
                 return secondaryRate !== null ? `${format(primaryRate)}/${format(secondaryRate)}` : format(primaryRate);
             }
 
+            function formatHoursMinutes(hours) {
+                const totalMinutes = Math.max(0, Math.round(Number(hours || 0) * 60));
+                const hourPart = Math.floor(totalMinutes / 60);
+                const minutePart = totalMinutes % 60;
+                return `${hourPart}:${String(minutePart).padStart(2, '0')}`;
+            }
+
             function calculateAmount(date) {
                 const start = $(`input[name="ot[${date}][start]"]`).val();
                 const stop = $(`input[name="ot[${date}][stop]"]`).val();
@@ -340,7 +364,7 @@
                     hours = (e - s) / (1000 * 60 * 60);
                 }
 
-                $(`#total_hours_${date}`).text(hours.toFixed(2));
+                $(`#total_hours_${date}`).text(formatHoursMinutes(hours)).attr('data-hours', hours);
 
                 // Auto-toggle Duty Types
                 const row = $(`tr[data-date="${date}"]`);
@@ -380,8 +404,6 @@
                 const holidayPlus5 = holidayCheck.is(':checked');
                 const eidDuty      = eidCheck.is(':checked');
                 const hasHybridDuty = holidayPlus5 || eidDuty;
-
-                $(`#total_hours_${date}`).text(hours.toFixed(2));
 
                 if (workdayPlus5 || holidayPlus5 || eidDuty) {
                     // HYBRID LOGIC for NOC on Eid
@@ -440,7 +462,7 @@
 
                 // Raw hours and category breakdown logic
                 $('[id^="total_hours_"]').each(function() {
-                    const hours = parseFloat($(this).text()) || 0;
+                    const hours = parseFloat($(this).attr('data-hours')) || 0;
                     if (hours <= 0) return;
 
                     const row = $(this).closest('tr');
@@ -470,7 +492,7 @@
 
                 $('.ot-check[name*="[workday_plus_5]"]:checked').each(function() {
                     const row = $(this).closest('tr');
-                    const hours = parseFloat(row.find('span[id^="total_hours_"]').text()) || 0;
+                    const hours = parseFloat(row.find('span[id^="total_hours_"]').attr('data-hours')) || 0;
                     const isOff = row.data('is-off') == '1';
                     const isEid = row.data('is-eid') == '1';
                     
@@ -513,7 +535,7 @@
                 $('#total_payable_display').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' BDT');
                 $('#summary_grand_total').text(total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 
-                $('#summary_hourly_ot_hours').text(hourlyOTHours.toFixed(2));
+                $('#summary_hourly_ot_hours').text(formatHoursMinutes(hourlyOTHours));
                 $('#summary_workday_count').text(workdayCount);
                 $('#summary_holiday_count').text(holidayCount);
                 
